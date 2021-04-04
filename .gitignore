@@ -1,0 +1,11 @@
+/target
+*.jcache
+*.JCACHE
+/out
+/tests/tiles
+/tests/sprites
+*.egg-info
+__pycache__
+*.pyd
+/dist
+/build

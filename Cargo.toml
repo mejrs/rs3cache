@@ -1,0 +1,55 @@
+[package]
+name = "rs3cache"
+version = "0.1.0"
+authors = ["mejrs"]
+edition = "2018"
+
+[profile.release]
+lto = "thin"
+
+[lib]
+name = "rs3cache"
+# dual types make it work both for compiling as package and python lib
+crate-type = ["lib", "cdylib"]
+
+[features]
+singlethreaded = []
+mockdata = []
+save_mockdata = []
+web = []
+dont_save = []
+
+[dependencies]
+sqlite = "0.25.3"
+libflate = "1.0.3"
+bytes = "1.0.1"
+itertools = "0.10.0"
+ndarray = "0.14.0"
+image = "0.23.13"
+regex = "1.4.3"
+futures = "0.3.12"
+async-std = "1.9.0"
+num_cpus = "1.13.0"
+serde_json = "1.0.1"
+serde = { version = "1.0.123", features = ["derive"]}
+bzip2 = "0.4.1"
+static_assertions = "1.1.0"
+chrono = "0.4.19"
+criterion = "0.3"
+progress_bar = "0.1.3"
+path-absolutize = "3.0.7"
+
+[dependencies.clap]
+version = "2.33.3"
+features = ["yaml"]
+
+[dependencies.pyo3]
+version = "0.13.2"
+features = ["extension-module"]
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "my_benchmark"
+harness = false

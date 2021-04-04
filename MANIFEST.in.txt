@@ -1,0 +1,2 @@
+include Cargo-python.toml
+recursive-include src *
