@@ -31,7 +31,7 @@ pub fn save_all() -> CacheResult<()> {
     Ok(())
 }
 
-/// Returns a [`HashMap`] holding all sprites
+/// Returns a [`HashMap`] holding all sprites in `ids`.
 ///
 /// Sprites are scaled according to `scale`, which may not be `0`.
 ///
@@ -39,7 +39,8 @@ pub fn save_all() -> CacheResult<()> {
 ///
 /// Raises [`CacheError`](crate::utils::error::CacheError) if any of `ids` does not correspond to a sprite.
 ///
-/// Panics
+/// # Panics
+///
 /// **Panics** if `scale == 0`.
 
 pub fn dumps(scale: u32, ids: Vec<u32>) -> CacheResult<HashMap<(u32, u32), Sprite>> {
@@ -102,7 +103,7 @@ fn deserialize(file: Vec<u8>) -> CacheResult<HashMap<usize, Sprite>> {
                         let mask = if alpha {
                             buffer.read_n_bytes(pixel_count)
                         } else {
-                            iter::repeat(255u8).take(pixel_count).collect::<Vec<_>>()
+                            vec![255_u8; pixel_count]
                         };
                         let mut img = if !transposed {
                             RgbaImage::new(width as u32, height as u32)
