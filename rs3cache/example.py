@@ -1,4 +1,4 @@
-from ffi.rs3cache_py import *
+from rs3cache import *
 
 mapsquares = MapSquares()
 
