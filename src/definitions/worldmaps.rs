@@ -1,3 +1,5 @@
+//!
+
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     types::coordinate::Coordinate,
@@ -14,9 +16,10 @@ use std::{
     iter,
 };
 
-pub struct WorldMapFileType;
+/// Enumeration of the archives in the [WORLDMAP](IndexType::WORLDMAP) index.
+pub struct WorldMapType;
 
-impl WorldMapFileType {
+impl WorldMapType {
     #![allow(missing_docs)]
     pub const ZONES: u32 = 0;
     pub const PASTES: u32 = 1;
@@ -26,7 +29,7 @@ impl WorldMapFileType {
     pub const UNKNOWN_3: u32 = 3;
     pub const BIG: u32 = 4;
 }
-
+/// Describes the general properties of a map zone.
 #[derive(Debug, Serialize)]
 pub struct MapZone {
     id: u32,
@@ -41,9 +44,10 @@ pub struct MapZone {
 }
 
 impl MapZone {
+    /// Returns a mapping of all [`MapZone`] configurations.
     pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
         Ok(CacheIndex::new(IndexType::WORLDMAP)?
-            .archive(WorldMapFileType::ZONES)?
+            .archive(WorldMapType::ZONES)?
             .take_files()
             .into_iter()
             .map(|(file_id, file)| (file_id, Self::deserialize(file_id, file)))
@@ -91,11 +95,12 @@ impl MapZone {
         &self.name
     }
 
+    /// Get the map zone's center coordinate.
     pub const fn center(&self) -> Coordinate {
         self.center
     }
 
-    /// Get a reference to the map zone's show.
+    /// Whether the mapzone is shown.
     pub const fn show(&self) -> bool {
         self.show
     }
@@ -105,7 +110,7 @@ impl MapZone {
         self.unknown_1
     }
 
-    /// Get a reference to the map zone's default zoom.
+    /// The map zone's default zoom.
     pub const fn default_zoom(&self) -> u8 {
         self.default_zoom
     }
@@ -122,6 +127,7 @@ impl MapZone {
 }
 
 mod mapzone_fields_impl {
+    #![allow(missing_docs)]
     use crate::cache::buf::Buffer;
     use serde::Serialize;
 
@@ -164,24 +170,33 @@ mod mapzone_fields_impl {
 
 pub use mapzone_fields_impl::*;
 
+/// Describes how a worldmap is formed from the actual map.
 #[derive(Debug, Serialize)]
 pub struct MapPastes {
-    id: u32,
-    dim_i: u8,
-    dim_j: u8,
-    pastes: Vec<Paste>,
+    ///The map id.
+    pub id: u32,
+    /// The horizontal dimension of the world map.
+    pub dim_i: u8,
+    /// The vertical dimension of the world map.
+    pub dim_j: u8,
+
+    /// The [`Paste`]s making up the world map.
+    pub pastes: Vec<Paste>,
 }
 
 impl MapPastes {
+    /// Returns a mapping of all [`MapPastes`].
     pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
         Ok(CacheIndex::new(IndexType::WORLDMAP)?
-            .archive(WorldMapFileType::PASTES)?
+            .archive(WorldMapType::PASTES)?
             .take_files()
             .into_iter()
             .map(|(file_id, file)| (file_id, Self::deserialize(file_id, file)))
             .collect())
     }
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
+
+    /// Constructor for [`MapPastes`].
+    pub fn deserialize(id: u32, file: Vec<u8>) -> Self {
         let mut buf = Buffer::new(file);
         let mut pastes = Vec::new();
 
@@ -200,78 +215,79 @@ impl MapPastes {
     }
 }
 
-#[derive(Debug, Serialize)]
-pub struct Paste {
-    pub src_plane: u8,
-    pub n_planes: u8,
-    pub src_i: u16,
-    pub src_j: u16,
-    pub src_chunk: Option<Chunk>,
-
-    pub dst_plane: u8,
-    pub dst_i: u16,
-    pub dst_j: u16,
-
-    pub dst_chunk: Option<Chunk>,
-}
-
-impl Paste {
-    fn deserialize_square(buf: &mut Buffer) -> Self {
-        let src_plane = buf.read_unsigned_byte();
-        let n_planes = buf.read_unsigned_byte();
-        let src_i = buf.read_unsigned_short();
-        let src_j = buf.read_unsigned_short();
-
-        let dst_plane = buf.read_unsigned_byte();
-        let dst_i = buf.read_unsigned_short();
-        let dst_j = buf.read_unsigned_short();
-
-        Self {
-            src_plane,
-            n_planes,
-            src_i,
-            src_j,
-            src_chunk: None,
-
-            dst_plane,
-            dst_i,
-            dst_j,
-
-            dst_chunk: None,
-        }
-    }
-
-    fn deserialize_chunk(buf: &mut Buffer) -> Self {
-        let src_plane = buf.read_unsigned_byte();
-        let n_planes = buf.read_unsigned_byte();
-        let src_i = buf.read_unsigned_short();
-        let src_j = buf.read_unsigned_short();
-        let src_chunk = Chunk::deserialize(buf);
-
-        let dst_plane = buf.read_unsigned_byte();
-        let dst_i = buf.read_unsigned_short();
-        let dst_j = buf.read_unsigned_short();
-        let dst_chunk = Chunk::deserialize(buf);
-
-        Self {
-            src_plane,
-            n_planes,
-            src_i,
-            src_j,
-            src_chunk: Some(src_chunk),
-
-            dst_plane,
-            dst_i,
-            dst_j,
-
-            dst_chunk: Some(dst_chunk),
-        }
-    }
-}
-
 mod mappaste_fields_impl {
+    #![allow(missing_docs)]
     use crate::cache::buf::Buffer;
     use serde::Serialize;
+
+    #[derive(Debug, Serialize)]
+    pub struct Paste {
+        pub src_plane: u8,
+        pub n_planes: u8,
+        pub src_i: u16,
+        pub src_j: u16,
+        pub src_chunk: Option<Chunk>,
+
+        pub dst_plane: u8,
+        pub dst_i: u16,
+        pub dst_j: u16,
+
+        pub dst_chunk: Option<Chunk>,
+    }
+
+    impl Paste {
+        pub fn deserialize_square(buf: &mut Buffer) -> Self {
+            let src_plane = buf.read_unsigned_byte();
+            let n_planes = buf.read_unsigned_byte();
+            let src_i = buf.read_unsigned_short();
+            let src_j = buf.read_unsigned_short();
+
+            let dst_plane = buf.read_unsigned_byte();
+            let dst_i = buf.read_unsigned_short();
+            let dst_j = buf.read_unsigned_short();
+
+            Self {
+                src_plane,
+                n_planes,
+                src_i,
+                src_j,
+                src_chunk: None,
+
+                dst_plane,
+                dst_i,
+                dst_j,
+
+                dst_chunk: None,
+            }
+        }
+
+        pub fn deserialize_chunk(buf: &mut Buffer) -> Self {
+            let src_plane = buf.read_unsigned_byte();
+            let n_planes = buf.read_unsigned_byte();
+            let src_i = buf.read_unsigned_short();
+            let src_j = buf.read_unsigned_short();
+            let src_chunk = Chunk::deserialize(buf);
+
+            let dst_plane = buf.read_unsigned_byte();
+            let dst_i = buf.read_unsigned_short();
+            let dst_j = buf.read_unsigned_short();
+            let dst_chunk = Chunk::deserialize(buf);
+
+            Self {
+                src_plane,
+                n_planes,
+                src_i,
+                src_j,
+                src_chunk: Some(src_chunk),
+
+                dst_plane,
+                dst_i,
+                dst_j,
+
+                dst_chunk: Some(dst_chunk),
+            }
+        }
+    }
 
     #[derive(Debug, Serialize)]
     pub struct Chunk {
@@ -289,6 +305,7 @@ mod mappaste_fields_impl {
 }
 pub use mappaste_fields_impl::*;
 
+/// Exports all world map pastes to `out/map_pastes.json`.
 pub fn export_pastes() -> CacheResult<()> {
     use std::collections::BTreeMap;
 
@@ -302,6 +319,7 @@ pub fn export_pastes() -> CacheResult<()> {
     Ok(())
 }
 
+/// Exports all world map zones to `out/map_zones.json`.
 pub fn export_zones() -> CacheResult<()> {
     fs::create_dir_all("out")?;
     let mut map_zones = MapZone::dump_all()?.into_values().collect::<Vec<_>>();
@@ -313,10 +331,11 @@ pub fn export_zones() -> CacheResult<()> {
     Ok(())
 }
 
+/// Exports small images of world maps to `out/world_map_small`.
 pub fn dump_small() -> CacheResult<()> {
     fs::create_dir_all("out/world_map_small")?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapFileType::SMALL)?.take_files();
+    let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapType::SMALL)?.take_files();
     for (id, data) in files {
         let filename = format!("out/world_map_small/{}.png", id);
         let mut file = File::create(filename)?;
@@ -326,10 +345,11 @@ pub fn dump_small() -> CacheResult<()> {
     Ok(())
 }
 
+/// Exports big images of world maps to `out/world_map_big`.
 pub fn dump_big() -> CacheResult<()> {
     fs::create_dir_all("out/world_map_big")?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapFileType::BIG)?.take_files();
+    let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapType::BIG)?.take_files();
 
     for (id, data) in files {
         let mut buf = Buffer::new(data);
@@ -342,32 +362,4 @@ pub fn dump_big() -> CacheResult<()> {
     }
 
     Ok(())
-}
-
-#[cfg(test)]
-mod worldmap_tests {
-    use super::*;
-
-    #[test]
-    #[ignore]
-    fn check_pastes() -> CacheResult<()> {
-        export_pastes()
-    }
-
-    #[test]
-    #[ignore]
-    fn check_zones() -> CacheResult<()> {
-        export_zones()
-    }
-    #[test]
-    #[ignore]
-    fn check_big() -> CacheResult<()> {
-        dump_big()
-    }
-
-    #[test]
-    #[ignore]
-    fn check_small() -> CacheResult<()> {
-        dump_small()
-    }
 }

@@ -38,7 +38,7 @@ impl IndexType {
     /// Unimplemented.
     pub const STRUCT_CONFIG: u32 = 22;
     /// Contains [`MapZone`](crate::definitions::worldmaps::MapZone),
-    /// [`MapPaste`](crate::definitions::worldmaps::MapPaste) definitions,
+    /// [`MapPastes`](crate::definitions::worldmaps::MapPastes) definitions,
     /// as well as PNG images of the world map.
     pub const WORLDMAP: u32 = 23;
     /// Unimplemented.
@@ -101,7 +101,7 @@ impl IndexType {
     }
 }
 
-/// Enumeration of all configs in the Config (2) index.
+/// Enumeration of all archives in the Config (2) index.
 pub struct ConfigType;
 
 impl ConfigType {

@@ -11,7 +11,7 @@ args:
         long: dump
         help: Choose which archives to dump
         multiple: true 
-        possible_values: [all, sprites, locations, location_configs_each, location_configs, npc_configs, maplabels]
+        possible_values: [all, sprites, locations, location_configs_each, location_configs, npc_configs, maplabels, worldmaps]
         takes_value: true
     - assertion:
         long: assert
