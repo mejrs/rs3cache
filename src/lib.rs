@@ -56,7 +56,7 @@
     unused_import_braces,
     unused_extern_crates,
     broken_intra_doc_links,
-    //missing_docs,
+    missing_docs,
     missing_crate_level_docs,
     trivial_casts,
     trivial_numeric_casts,
@@ -85,10 +85,10 @@ pub mod cache {
 
 /// Various data types
 pub mod types {
+    /// The [`Coordinate`] type.
+    pub mod coordinate;
     /// Player variables
     pub mod variables;
-
-    pub mod coordinate;
 }
 
 /// Entities that can be deserialized from cache data.
@@ -96,19 +96,24 @@ pub mod definitions {
 
     /// Configuration of game locations.
     pub mod location_configs;
+
     /// Describes the id, position, type and rotation of game objects.
     pub mod locations;
+
     /// Configuration of npcs.
     pub mod npc_configs;
+
     /// Describes the position and id of npcs.
     pub mod npcs;
 
     /// Describes text, sprites and polygons drawn on the map.
     pub mod maplabel_configs;
+
     /// Configuration of images drawn on the world map.
     pub mod mapscenes;
 
     pub mod mapsquares;
+
     /// Describes the colours of tiles.
     pub mod overlays;
     /// Images displayed by the game client.
@@ -117,6 +122,7 @@ pub mod definitions {
     pub mod tiles;
     /// Describes the ground colours of tiles.
     pub mod underlays;
+
     pub mod worldmaps;
 }
 
@@ -140,7 +146,7 @@ pub mod utils {
     pub mod error;
     /// Threadpool adapter for iterators.
     pub mod par;
-    /// Clamps a [`Range`](https://doc.rust-lang.org/std/ops/struct.Range.html) to a certain interval.
+    /// Clamps a [`Range`](std::ops::Range) to a certain interval.
     pub mod rangeclamp;
 }
 
@@ -154,12 +160,3 @@ pub mod structures {
 pub mod ffi {
     pub mod python;
 }
-
-/// Utilities for tracking updates.
-pub mod diffs {
-    /// Tracks updates to archives
-    pub mod archive_diffs;
-}
-
-#[doc(hidden)]
-pub mod sandbox;

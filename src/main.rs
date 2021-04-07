@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use rs3cache::{cache::index, definitions, diffs::archive_diffs, renderers::map, sandbox};
+use rs3cache::{cache::index, definitions, renderers::map};
 
 use clap::{load_yaml, App};
 
@@ -22,14 +22,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "npc_configs" => definitions::npc_configs::export()?,
             "maplabels" => definitions::maplabel_configs::export()?,
             "sprites" => definitions::sprites::save_all()?,
+            "worldmaps" => {
+                definitions::worldmaps::dump_big()?;
+                definitions::worldmaps::dump_small()?;
+                definitions::worldmaps::export_pastes()?;
+                definitions::worldmaps::export_zones()?;
+            }
 
             "all" => {
-                definitions::location_configs::export()?;
-                definitions::location_configs::export_each()?;
+                {
+                    definitions::location_configs::export()?;
+                    definitions::location_configs::export_each()?;
+                }
                 definitions::locations::export()?;
                 definitions::npc_configs::export()?;
                 definitions::maplabel_configs::export()?;
                 definitions::sprites::save_all()?;
+                {
+                    definitions::worldmaps::dump_big()?;
+                    definitions::worldmaps::dump_small()?;
+                    definitions::worldmaps::export_pastes()?;
+                    definitions::worldmaps::export_zones()?;
+                }
             }
             _ => unreachable!(),
         }
