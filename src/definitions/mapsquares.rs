@@ -50,6 +50,11 @@ pub struct MapSquare {
     ///
     /// Locations can overlap on surrounding mapsquares.
     locations: Result<Vec<Location>, CacheError>,
+
+    /// All water locations in this [`MapSquare`].
+    ///
+    /// Locations can overlap on surrounding mapsquares.
+    water_locations: Result<Vec<Location>, CacheError>,
 }
 
 /// Iterator over a columns of planes with their x, y coordinates
@@ -74,8 +79,9 @@ impl MapSquare {
             Err(CacheError::FileNotFoundError(i, a, f)) => Err(CacheError::FileNotFoundError(i, a, f)),
             _ => unreachable!(),
         };
+        let water_locations = archive.take_file(&MapFileType::WATER_LOCATIONS).map(|file| Location::dump_water_locations(i, j, file));
 
-        MapSquare { i, j, tiles, locations }
+        MapSquare { i, j, tiles, locations, water_locations }
     }
     /// Iterator over a columns of planes with their x, y coordinates
     pub fn indexed_columns(&self) -> Result<ColumnIter, &CacheError> {
@@ -96,6 +102,16 @@ impl MapSquare {
     /// Take its locations, consuming `self`.
     pub fn take_locations(self) -> Result<Vec<Location>, CacheError> {
         self.locations
+    }
+
+     /// Returns a view over the `locations` field, if present.
+     pub fn get_water_locations(&self) -> Result<&Vec<Location>, &CacheError> {
+        self.water_locations.as_ref()
+    }
+
+    /// Take its locations, consuming `self`.
+    pub fn take_water_locations(self) -> Result<Vec<Location>, CacheError> {
+        self.water_locations
     }
 }
 

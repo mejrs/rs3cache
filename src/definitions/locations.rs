@@ -1,6 +1,6 @@
 use crate::{
     cache::buf::Buffer,
-    definitions::{mapsquares::MapSquareIterator, tiles::TileArray},
+    definitions::{mapsquares::MapSquareIterator, tiles::{Tile, TileArray}},
     utils::{error::CacheResult, par::ParApply},
 };
 
@@ -39,7 +39,7 @@ impl Watery {
         }
     }
 
-    /// Directly compare the contained value to a given plane
+    /// Directly compare the contained value to a given plane.
     pub fn contains(&self, plane: &u8) -> bool {
         match self {
             Self::True(value) => *value == *plane,
@@ -61,8 +61,11 @@ impl Serialize for Watery {
 }
 
 impl IntoPy<PyObject> for Watery {
-    fn into_py(self, _py: Python) -> PyObject {
-        unimplemented!()
+    fn into_py(self, py: Python) -> PyObject {
+        match self {
+            Self::True(val) => ((val as i8) - 1).into_py(py),
+            Self::False(val) => (val as i8).into_py(py),
+        }
     }
 }
 
@@ -114,8 +117,15 @@ pub struct Location {
 }
 
 impl Location {
+    // todo: fix this with water tiles
+    pub(crate) fn dump_water_locations(i: u8, j: u8, file: Vec<u8>) -> Vec<Self> {
+        let blanks = TileArray::from_elem((4,64,64), Tile::default());
+        Self::dump(i,j,&blanks, file)
+
+    }
+
     /// Constructor for [`Location`].
-    pub fn dump(i: u8, j: u8, tiles: &TileArray, file: Vec<u8>) -> Vec<Location> {
+    pub fn dump(i: u8, j: u8, tiles: &TileArray, file: Vec<u8>) -> Vec<Self> {
         let mut buffer = Buffer::new(file);
         let mut locations = Vec::new();
 
@@ -201,6 +211,9 @@ impl Location {
 
         locations
     }
+
+    
+
 }
 
 #[pyproto]

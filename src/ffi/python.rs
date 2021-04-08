@@ -112,6 +112,12 @@ impl PyMapSquare {
         Ok(locs)
     }
 
+    /// The [`Location`]s in a mapsquare.
+    pub fn water_locations(&self) -> PyResult<Vec<Location>> {
+        let locs = self.inner.get_water_locations()?.clone();
+        Ok(locs)
+    }
+
     /// The [`Tile`]s in a mapsquare.   
     pub fn tiles(&self) -> PyResult<HashMap<(u8, u8, u8), Tile>> {
         let tiles = self.inner.get_tiles()?;
