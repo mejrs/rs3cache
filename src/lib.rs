@@ -85,7 +85,6 @@ pub mod cache {
 
 /// Various data types
 pub mod types {
-    /// The [`Coordinate`] type.
     pub mod coordinate;
     /// Player variables
     pub mod variables;

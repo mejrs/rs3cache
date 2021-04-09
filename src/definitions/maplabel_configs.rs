@@ -96,7 +96,7 @@ pub struct MapLabelConfig {
 }
 
 impl MapLabelConfig {
-    /// Returns a mapping of all [MapLabel] configurations.
+    /// Returns a mapping of all [`MapLabelConfig`]s.
     pub fn dump_all() -> CacheResult<HashMap<u32, MapLabelConfig>> {
         Ok(CacheIndex::new(IndexType::CONFIG)?
             .archive(ConfigType::MAPLABELS)?
@@ -201,15 +201,15 @@ impl Polygon {
     }
 }
 
-/// Controls whether the [`MapLabel`] is shown.
+/// Controls whether the [`MapLabelConfig`] is shown.
 #[derive(Debug, Serialize)]
 pub struct Toggle {
     /// The [`Varp`] or [`Varbit`] controlling the toggle.
     #[serde(flatten)]
     pub var: VarpOrVarbit,
-    /// Lower bound of showing the [`MapLabel`].
+    /// Lower bound of showing the [`MapLabelConfig`].
     pub lower: u32,
-    /// Upper bound of showing the [`MapLabel`].
+    /// Upper bound of showing the [`MapLabelConfig`].
     pub upper: u32,
 }
 
@@ -234,9 +234,9 @@ pub struct LegacySwitch {
     pub var: VarpOrVarbit,
     /// Switch for the [`Varp`] or [`Varbit`].
     pub value: u8,
-    /// A reference pointing to the default [`MapLabel`].
+    /// A reference pointing to the default [`MapLabelConfig`].
     pub default_reference: u16,
-    /// A reference pointing to the legacy [`MapLabel`].
+    /// A reference pointing to the legacy [`MapLabelConfig`].
     pub legacy_reference: u16,
 }
 
@@ -265,9 +265,9 @@ impl LegacySwitch {
 pub struct PolygonPoint {
     /// Plane. Always zero.
     pub plane: u8,
-    /// X-coordinate offset from the [`MapLabel`] location.
+    /// X-coordinate offset from the [`MapLabelConfig`] location.
     pub dx: i16,
-    /// Y-coordinate offset from the [`MapLabel`] location.
+    /// Y-coordinate offset from the [`MapLabelConfig`] location.
     pub dy: i16,
 }
 

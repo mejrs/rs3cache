@@ -1,3 +1,5 @@
+//! The [`Coordinate`] type.
+
 use serde::Serialize;
 use std::convert::TryFrom;
 

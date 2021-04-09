@@ -23,7 +23,7 @@ use serde::Serialize;
 
 /// A varbit configuration.
 ///
-/// The 
+/// The varbit is the bits of Varp `index` from `least_significant_bit` to `most_significant_bit` inclusive.
 #[pyclass]
 #[allow(missing_docs)]
 #[derive(Debug, Serialize)]
