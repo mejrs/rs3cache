@@ -1,6 +1,9 @@
 use crate::{
     cache::buf::Buffer,
-    definitions::{mapsquares::MapSquareIterator, tiles::{Tile, TileArray}},
+    definitions::{
+        mapsquares::MapSquareIterator,
+        tiles::{Tile, TileArray},
+    },
     utils::{error::CacheResult, par::ParApply},
 };
 
@@ -119,9 +122,8 @@ pub struct Location {
 impl Location {
     // todo: fix this with water tiles
     pub(crate) fn dump_water_locations(i: u8, j: u8, file: Vec<u8>) -> Vec<Self> {
-        let blanks = TileArray::from_elem((4,64,64), Tile::default());
-        Self::dump(i,j,&blanks, file)
-
+        let blanks = TileArray::from_elem((4, 64, 64), Tile::default());
+        Self::dump(i, j, &blanks, file)
     }
 
     /// Constructor for [`Location`].
@@ -211,9 +213,6 @@ impl Location {
 
         locations
     }
-
-    
-
 }
 
 #[pyproto]

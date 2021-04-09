@@ -79,9 +79,17 @@ impl MapSquare {
             Err(CacheError::FileNotFoundError(i, a, f)) => Err(CacheError::FileNotFoundError(i, a, f)),
             _ => unreachable!(),
         };
-        let water_locations = archive.take_file(&MapFileType::WATER_LOCATIONS).map(|file| Location::dump_water_locations(i, j, file));
+        let water_locations = archive
+            .take_file(&MapFileType::WATER_LOCATIONS)
+            .map(|file| Location::dump_water_locations(i, j, file));
 
-        MapSquare { i, j, tiles, locations, water_locations }
+        MapSquare {
+            i,
+            j,
+            tiles,
+            locations,
+            water_locations,
+        }
     }
     /// Iterator over a columns of planes with their x, y coordinates
     pub fn indexed_columns(&self) -> Result<ColumnIter, &CacheError> {
@@ -104,8 +112,8 @@ impl MapSquare {
         self.locations
     }
 
-     /// Returns a view over the `locations` field, if present.
-     pub fn get_water_locations(&self) -> Result<&Vec<Location>, &CacheError> {
+    /// Returns a view over the `locations` field, if present.
+    pub fn get_water_locations(&self) -> Result<&Vec<Location>, &CacheError> {
         self.water_locations.as_ref()
     }
 
