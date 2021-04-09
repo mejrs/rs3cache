@@ -28,6 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 definitions::worldmaps::export_pastes()?;
                 definitions::worldmaps::export_zones()?;
             }
+            "varbit_configs" => definitions::varbit_configs::export()?,
 
             "all" => {
                 {
@@ -44,6 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     definitions::worldmaps::export_pastes()?;
                     definitions::worldmaps::export_zones()?;
                 }
+                definitions::varbit_configs::export()?;
             }
             _ => unreachable!(),
         }

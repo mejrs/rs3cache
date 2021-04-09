@@ -123,6 +123,8 @@ pub mod definitions {
     /// Describes the ground colours of tiles.
     pub mod underlays;
 
+    pub mod varbit_configs;
+
     pub mod worldmaps;
 }
 
