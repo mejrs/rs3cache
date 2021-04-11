@@ -1,4 +1,9 @@
+//! The interface between [rs3cache](crate) and the cache database.
+
 #![allow(unused_imports)] // varies based on mock config flags
+
+#[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
+compile_error!("mockdata and save_mockdata are incompatible");
 
 use crate::{
     cache::{
@@ -23,8 +28,8 @@ use std::{
     path::Path,
 };
 
-// System variable for cache folder
-pub(crate) const SYS_VAR: &str = "RUNESCAPE_CACHE_FOLDER";
+/// System variable for the location of the cache folder.
+pub const SYS_VAR: &str = "RUNESCAPE_CACHE_FOLDER";
 
 mod states {
     use std::ops::RangeInclusive;
@@ -58,7 +63,7 @@ mod states {
 pub use states::Initial;
 use states::{Grouped, IndexState, Truncated, TruncatedGrouped};
 
-/// The interface between [rs3cache](crate) and the cache files.
+/// Container of [`Archive`]s.
 pub struct CacheIndex<S: IndexState> {
     index_id: u32,
     metadatas: IndexMetadata,

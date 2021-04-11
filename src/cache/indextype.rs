@@ -1,3 +1,5 @@
+//! The names of various indexes and archives.
+
 /// Enumeration of all index types.
 pub struct IndexType;
 

@@ -1,3 +1,5 @@
+//! Functions to decompress cache data.
+
 use crate::utils::error::{CacheError, CacheResult};
 use libflate::{gzip, zlib};
 use std::io::Read;
@@ -17,6 +19,7 @@ impl Compression {
 }
 
 /// Decompresses index files.
+///
 /// Used internally by [`CacheIndex`](crate::cache::index::CacheIndex).
 pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<Vec<u8>> {
     if &encoded_data[0..3] == Compression::ZLIB {

@@ -1,3 +1,7 @@
+//! Wrapper around [`Cursor`](std::io::Cursor).
+//!
+//! This module provides various reads used to decode the cache data
+
 use bytes::Buf;
 use std::{
     io::{prelude::*, Cursor, SeekFrom},
@@ -55,7 +59,6 @@ impl Buffer {
     }
 
     /// Reads two or four unsigned bytes as an 32-bit unsigned integer.
-    #[inline(always)]
     pub fn read_smart32(&mut self) -> Option<u32> {
         let [.., condition] = self.read_bitflags();
         self.buf.seek(SeekFrom::Current(-1)).expect("Can never be invalid");
@@ -85,7 +88,6 @@ impl Buffer {
     }
 
     /// Reads either one or two bytes.
-    #[inline(always)]
     pub fn read_decr_smart(&mut self) -> Option<u16> {
         match self.read_unsigned_byte() as u16 {
             first if first < 128 => first.checked_sub(1),
@@ -97,7 +99,6 @@ impl Buffer {
     }
 
     /// Reads masked data.
-    #[inline(always)]
     pub fn read_masked_data(&mut self) -> Vec<(Option<u32>, Option<u32>)> {
         let mut result = Vec::new();
         let mut mask = self.read_unsigned_byte();

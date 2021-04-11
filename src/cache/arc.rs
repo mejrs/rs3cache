@@ -1,4 +1,12 @@
-use itertools::izip;
+//! Units of data in a [`CacheIndex`](crate::cache::index::CacheIndex).
+//! 
+//! Each [`Archive`] conatins files, which contain the actual data that can be parsed with
+//! the appropriate deserializer in [`definitions`](crate::definitions).
+//!
+//! None of the structs in this module can be constructed directly.
+//! Instead, construct a [`CacheIndex`](crate::cache::index::CacheIndex)
+//! and use its [`IntoIterator`] implementation or its [`archive`](crate::cache::index::CacheIndex::archive())
+//! method instead.
 
 use crate::{
     cache::{buf::Buffer, meta::Metadata},
@@ -9,10 +17,11 @@ use crate::{
 };
 
 use std::collections::HashMap;
-
 use std::collections::HashSet;
 
-/// A group of archives. Yielded by [`index::IntoIterGrouped`](crate::cache::index::IntoIterGrouped).
+use itertools::izip;
+
+/// A group of archives.
 pub struct ArchiveGroup {
     core_id: u32,
 

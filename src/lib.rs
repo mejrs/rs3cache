@@ -64,22 +64,15 @@
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
 
-#[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
-compile_error!("mockdata and save_mockdata are incompatible");
+
 
 /// Tools for decoding the cache itself.
 pub mod cache {
-    /// Data containers.
     pub mod arc;
-    /// Wrapper around [`Cursor`](std::io::Cursor).
     pub mod buf;
-    /// Decoder for raw data.
     pub mod decoder;
-    /// Loads data from the cache.
     pub mod index;
-    /// Enumeration of the names of various indices and some configs.
     pub mod indextype;
-    /// Metadata about the cache itself
     pub mod meta;
 }
 

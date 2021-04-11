@@ -1,3 +1,5 @@
+//! Metadata about the cache itself.
+    
 use crate::{
     cache::buf::Buffer,
     utils::{adapters::Accumulator, error::CacheResult},
@@ -65,18 +67,22 @@ impl Metadata {
     pub const fn archive_id(&self) -> u32 {
         self.archive_id
     }
+    
     /// The hashed name of the [`Archive`](crate::cache::arc::Archive), if present.
     #[inline(always)]
     pub const fn name(&self) -> Option<u32> {
         self.name
     }
+
     /// See [CRC](https://en.wikipedia.org/wiki/Cyclic_redundancy_check).
     #[inline(always)]
     pub const fn crc(&self) -> i32 {
         self.crc
     }
-    /// The amount of seconds between [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time)
-    /// and when the [`Archive`](crate::cache::arc::Archive) was compiled.
+
+    /// Usually, the amount of seconds between [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time)
+    /// and when the [`Archive`](crate::cache::arc::Archive) was compiled,
+    /// but it can also be a version counter.
     #[inline(always)]
     pub const fn version(&self) -> i32 {
         self.version
@@ -99,16 +105,19 @@ impl Metadata {
     pub const fn size(&self) -> Option<u32> {
         self.size
     }
+
     /// See [whirlpool digest](https://en.wikipedia.org/wiki/Whirlpool_(hash_function) ).
     #[inline(always)]
     pub fn digest(&self) -> Option<&[u8]> {
         self.digest.as_deref()
     }
-    /// The number of files in `self`.
+
+    /// The count of files in `self`.
     #[inline(always)]
     pub const fn child_count(&self) -> u32 {
         self.child_count
     }
+
     /// Enumerated file ids of files in the [`Archive`](crate::cache::arc::Archive).
     #[inline(always)]
     pub fn child_indices(&self) -> &[u32] {
