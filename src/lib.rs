@@ -40,15 +40,12 @@
 
 #![feature(
     const_fn,
-    map_first_last,
     option_result_contains,
-    test,
     map_into_keys_values,
     try_trait,
     backtrace,
     thread_spawn_unchecked,
     once_cell,
-    vec_into_raw_parts
 )]
 #![warn(
     unused_imports,
