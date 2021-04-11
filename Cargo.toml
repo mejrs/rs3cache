@@ -44,7 +44,8 @@ features = ["yaml"]
 
 [dependencies.pyo3]
 version = "0.13.2"
-features = ["extension-module"]
+# maybe necessary?
+# features = ["extension-module"]
 
 [dev-dependencies]
 criterion = "0.3"
