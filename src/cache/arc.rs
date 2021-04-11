@@ -1,5 +1,5 @@
 //! Units of data in a [`CacheIndex`](crate::cache::index::CacheIndex).
-//! 
+//!
 //! Each [`Archive`] conatins files, which contain the actual data that can be parsed with
 //! the appropriate deserializer in [`definitions`](crate::definitions).
 //!
@@ -16,8 +16,7 @@ use crate::{
     },
 };
 
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use itertools::izip;
 

@@ -64,8 +64,6 @@
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
 
-
-
 /// Tools for decoding the cache itself.
 pub mod cache {
     pub mod arc;

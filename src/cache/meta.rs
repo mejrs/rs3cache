@@ -1,5 +1,5 @@
 //! Metadata about the cache itself.
-    
+
 use crate::{
     cache::buf::Buffer,
     utils::{adapters::Accumulator, error::CacheResult},
@@ -67,7 +67,7 @@ impl Metadata {
     pub const fn archive_id(&self) -> u32 {
         self.archive_id
     }
-    
+
     /// The hashed name of the [`Archive`](crate::cache::arc::Archive), if present.
     #[inline(always)]
     pub const fn name(&self) -> Option<u32> {

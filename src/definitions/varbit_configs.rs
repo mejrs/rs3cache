@@ -1,6 +1,6 @@
 //! Bitpacked player variables.
 //!
-//! 
+//!
 //! See also [`Varp`](crate::types::variables::Varp) and [`Varbit`](crate::types::variables::Varbit).
 
 use crate::{
