@@ -34,29 +34,39 @@ use crate::{
         indextype::IndexType,
         meta::Metadata,
     },
-    definitions::{location_configs::LocationConfig, locations::Location, mapsquares::MapSquare, npc_configs::NpcConfig, tiles::Tile},
+    definitions::{
+        location_configs::LocationConfig, locations::Location, mapsquares::MapSquare, npc_configs::NpcConfig, tiles::Tile,
+        varbit_configs::VarbitConfig,
+    },
 };
 use pyo3::{prelude::*, wrap_pyfunction, PyObjectProtocol};
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 #[pymodule]
 fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(get_location_definitions, m)?)?;
-    m.add_function(wrap_pyfunction!(get_npc_definitions, m)?)?;
+    m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_varbit_configs, m)?)?;
     m.add_class::<PyMapSquares>()?;
     Ok(())
 }
 
 /// Wrapper for [`LocationConfig::dump_all`]
 #[pyfunction]
-pub fn get_location_definitions() -> PyResult<HashMap<u32, LocationConfig>> {
-    Ok(LocationConfig::dump_all()?)
+pub fn get_location_configs() -> PyResult<BTreeMap<u32, LocationConfig>> {
+    Ok(LocationConfig::dump_all()?.into_iter().collect())
 }
 
 /// Wrapper for [`NpcConfig::dump_all`]
 #[pyfunction]
-pub fn get_npc_definitions() -> PyResult<HashMap<u32, NpcConfig>> {
-    Ok(NpcConfig::dump_all()?)
+pub fn get_npc_configs() -> PyResult<BTreeMap<u32, NpcConfig>> {
+    Ok(NpcConfig::dump_all()?.into_iter().collect())
+}
+
+/// Wrapper for [`VarbitConfig::dump_all`]
+#[pyfunction]
+pub fn get_varbit_configs() -> PyResult<BTreeMap<u32, VarbitConfig>> {
+    Ok(VarbitConfig::dump_all()?.into_iter().collect())
 }
 
 /// Container of [`PyMapSquare`]s.

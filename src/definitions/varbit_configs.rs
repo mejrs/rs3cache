@@ -18,7 +18,7 @@ use std::{
     io::Write,
 };
 
-use pyo3::prelude::*;
+use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 /// A varbit configuration.
@@ -32,7 +32,6 @@ pub struct VarbitConfig {
     #[pyo3(get)]
     pub id: u32,
 
-    #[pyo3(get)]
     pub unknown_1: u8,
 
     /// The Varp that this varbit maps to.
@@ -90,6 +89,19 @@ impl VarbitConfig {
         }
     }
 }
+
+
+#[pyproto]
+impl PyObjectProtocol for VarbitConfig {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
+    }
+}
+
 
 /// Save the varbit configs as `varbit_configs.json`. Exposed as `--dump varbit_configs`.
 pub fn export() -> CacheResult<()> {
