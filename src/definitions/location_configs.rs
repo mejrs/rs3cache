@@ -1,7 +1,6 @@
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
-    types::variables::{Varbit, Varp, VarpOrVarbit},
     utils::{error::CacheResult, par::ParApply},
 };
 use pyo3::{prelude::*, PyObjectProtocol};
@@ -10,7 +9,6 @@ use std::{
     collections::HashMap,
     fs::{self, File},
     io::Write,
-    iter,
 };
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
@@ -508,18 +506,26 @@ pub fn export_each() -> CacheResult<()> {
     Ok(())
 }
 
-mod location_config_fields_impl {
+/// Defines the structs used as fields of [`LocationConfig`],
+pub mod location_config_fields {
     #![allow(missing_docs)]
-    use super::*;
+    use crate::{
+        cache::buf::Buffer,
+        types::variables::{Varbit, Varp, VarpOrVarbit},
+    };
+    use pyo3::prelude::*;
+    use serde::Serialize;
+    use std::{collections::HashMap, iter};
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
     #[pyclass]
-    #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
         #[pyo3(get)]
         #[serde(flatten)]
         pub var: VarpOrVarbit,
+
         #[pyo3(get)]
+        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
         pub ids: Vec<Option<u32>>,
     }
 
@@ -545,10 +551,14 @@ mod location_config_fields_impl {
         #[pyo3(get)]
         #[serde(flatten)]
         pub var: VarpOrVarbit,
+
+        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
         #[pyo3(get)]
         pub ids: Vec<Option<u32>>,
+
+        /// This [`LocationConfig`](super::LocationConfig)'s default id.
         #[pyo3(get)]
-        pub default_id: Option<u32>,
+        pub default: Option<u32>,
     }
 
     impl ExtendedLocationMorphTable {
@@ -559,18 +569,19 @@ mod location_config_fields_impl {
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default_id = buffer.read_smart32();
+            let default = buffer.read_smart32();
 
             let count = buffer.read_unsigned_smart() as usize;
 
             let ids = iter::repeat_with(|| buffer.read_smart32()).take(count + 1).collect::<Vec<_>>();
-            Self { var, ids, default_id }
+            Self { var, ids, default }
         }
     }
 
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
+        #[pyo3(get)]
         pub colours: Vec<(u16, u16)>,
     }
 
@@ -587,6 +598,7 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
+        #[pyo3(get)]
         pub models: HashMap<i8, Vec<Option<u32>>>,
     }
 
@@ -611,6 +623,7 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
+        #[pyo3(get)]
         pub textures: HashMap<u16, u16>,
     }
 
@@ -627,9 +640,16 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown79 {
+        #[pyo3(get)]
         pub unknown_1: u16,
+
+        #[pyo3(get)]
         pub unknown_2: u16,
+
+        #[pyo3(get)]
         pub unknown_3: u8,
+
+        #[pyo3(get)]
         pub values: Vec<u16>,
     }
 
@@ -655,7 +675,10 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown173 {
+        #[pyo3(get)]
         pub unknown_1: u16,
+
+        #[pyo3(get)]
         pub unknown_2: u16,
     }
 
@@ -671,9 +694,16 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown163 {
+        #[pyo3(get)]
         pub unknown_1: i8,
+
+        #[pyo3(get)]
         pub unknown_2: i8,
+
+        #[pyo3(get)]
         pub unknown_3: i8,
+
+        #[pyo3(get)]
         pub unknown_4: i8,
     }
 
@@ -696,7 +726,10 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown78 {
+        #[pyo3(get)]
         pub unknown_1: u16,
+
+        #[pyo3(get)]
         pub unknown_2: u8,
     }
 
@@ -712,6 +745,7 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown160 {
+        #[pyo3(get)]
         pub values: Vec<u16>,
     }
 
@@ -726,11 +760,22 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown201 {
+        #[pyo3(get)]
         pub unknown_1: u16,
+
+        #[pyo3(get)]
         pub unknown_2: u16,
+
+        #[pyo3(get)]
         pub unknown_3: u16,
+
+        #[pyo3(get)]
         pub unknown_4: u16,
+
+        #[pyo3(get)]
         pub unknown_5: u16,
+
+        #[pyo3(get)]
         pub unknown_6: u16,
     }
 
@@ -757,6 +802,7 @@ mod location_config_fields_impl {
     #[pyclass]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
+        #[pyo3(get)]
         pub headmodels: Vec<(Option<u32>, u8)>,
     }
 
@@ -769,21 +815,9 @@ mod location_config_fields_impl {
             HeadModels { headmodels }
         }
     }
-
-    #[allow(missing_docs)]
-    #[derive(Debug, Serialize)]
-    pub struct RecolourPalette {}
-
-    #[allow(missing_docs)]
-    #[derive(Debug, Serialize)]
-    pub struct OldCursors {}
-
-    #[allow(missing_docs)]
-    #[derive(Debug, Serialize)]
-    pub struct Unknown181 {}
 }
 
-pub use location_config_fields_impl::*;
+use location_config_fields::*;
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
 pub fn export() -> CacheResult<()> {

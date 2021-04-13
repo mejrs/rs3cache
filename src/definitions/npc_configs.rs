@@ -380,7 +380,8 @@ impl Display for NpcConfig {
     }
 }
 
-mod npc_config_fields_impl {
+/// Defines the structs used as fields of [`NpcConfig`],
+pub mod npc_config_fields {
     #![allow(missing_docs)]
 
     use crate::{
@@ -738,7 +739,7 @@ mod npc_config_fields_impl {
     }
 }
 
-pub use npc_config_fields_impl::*;
+use npc_config_fields::*;
 
 /// Save the npc configs as `npc_configs.json`. Exposed as `--dump npc_configs`.
 pub fn export() -> CacheResult<()> {

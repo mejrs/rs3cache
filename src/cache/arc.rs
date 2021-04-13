@@ -17,7 +17,7 @@ use crate::{
 };
 
 use itertools::izip;
-use pyo3::{exceptions::PyKeyError, prelude::*, types::PyByteArray, PyObjectProtocol};
+use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol};
 use std::collections::{BTreeMap, HashMap, HashSet};
 
 /// A group of archives.
@@ -54,7 +54,9 @@ impl IntoIterator for ArchiveGroup {
 /// A collection of files.
 #[pyclass]
 pub struct Archive {
+    #[pyo3(get)]
     index_id: u32,
+    #[pyo3(get)]
     archive_id: u32,
     files: HashMap<u32, File>,
     poison_state: HashSet<u32>,
@@ -154,16 +156,16 @@ impl Archive {
 
 #[pymethods]
 impl Archive {
-    fn file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyByteArray> {
+    fn file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyBytes> {
         if let Some(file) = self.files.get(&file_id) {
-            Ok(PyByteArray::new(py, file))
+            Ok(PyBytes::new(py, file))
         } else {
             Err(PyKeyError::new_err(format!("File {} is not present.", file_id)))
         }
     }
 
-    fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyByteArray>> {
-        Ok(self.files.iter().map(|(&id, file)| (id, PyByteArray::new(py, file))).collect())
+    fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
+        Ok(self.files.iter().map(|(&id, file)| (id, PyBytes::new(py, file))).collect())
     }
 }
 
