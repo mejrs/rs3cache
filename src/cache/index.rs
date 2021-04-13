@@ -349,6 +349,11 @@ impl CacheIndex<Initial> {
             state: Grouped { dim_i, dim_j },
         }
     }
+
+    /// Attempt to clone `self`.
+    pub fn try_clone(&self) -> CacheResult<Self> {
+        Self::new(self.index_id())
+    }
 }
 
 impl CacheIndex<Truncated> {

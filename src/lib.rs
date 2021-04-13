@@ -45,7 +45,7 @@
     try_trait,
     backtrace,
     thread_spawn_unchecked,
-    once_cell,
+    once_cell
 )]
 #![warn(
     unused_imports,

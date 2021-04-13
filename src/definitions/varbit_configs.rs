@@ -90,7 +90,6 @@ impl VarbitConfig {
     }
 }
 
-
 #[pyproto]
 impl PyObjectProtocol for VarbitConfig {
     fn __repr__(&self) -> PyResult<String> {
@@ -101,7 +100,6 @@ impl PyObjectProtocol for VarbitConfig {
         Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
     }
 }
-
 
 /// Save the varbit configs as `varbit_configs.json`. Exposed as `--dump varbit_configs`.
 pub fn export() -> CacheResult<()> {

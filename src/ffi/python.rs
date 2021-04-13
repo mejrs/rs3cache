@@ -30,7 +30,8 @@
 //!
 use crate::{
     cache::{
-        index::{CacheIndex, Initial},
+        arc::Archive,
+        index::{self, CacheIndex, Initial},
         indextype::IndexType,
         meta::Metadata,
     },
@@ -39,8 +40,8 @@ use crate::{
         varbit_configs::VarbitConfig,
     },
 };
-use pyo3::{prelude::*, wrap_pyfunction, PyObjectProtocol};
-use std::collections::{HashMap, BTreeMap};
+use pyo3::{prelude::*, wrap_pyfunction, PyIterProtocol, PyObjectProtocol};
+use std::collections::{BTreeMap, HashMap};
 
 #[pymodule]
 fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -48,6 +49,7 @@ fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_varbit_configs, m)?)?;
     m.add_class::<PyMapSquares>()?;
+    m.add_class::<PyCacheIndex>()?;
     Ok(())
 }
 
@@ -78,7 +80,8 @@ pub struct PyMapSquares {
 
 #[pymethods]
 impl PyMapSquares {
-    /// Constructor for MapSquares:
+    /// Constructor for MapSquares.
+    /// # Example
     /// ```python
     /// from rs3cache import *
     ///
@@ -90,9 +93,17 @@ impl PyMapSquares {
             index: CacheIndex::new(IndexType::MAPSV2)?,
         })
     }
-    /// Get a specific :
+
+    /// Get a specific mapsquare.
+    ///
+    /// # Exceptions
+    /// Raises `OverflowError` if `i` or `j` is not between 0 and 255.
+    ///
+    /// Raises `ValueError` if there is not a mapsquare at `(i,j)`.
+    ///
+    /// # Example
     /// ```python
-    /// from rs3cache import *
+    /// from rs3cache import MapSquares
     ///
     /// mapsquares = MapSquares()
     /// lumbridge = mapsquares.get(50, 50)
@@ -106,7 +117,7 @@ impl PyMapSquares {
     }
 }
 
-///
+/// Obtained from [`PyMapSquares`]'s [`get`](PyMapSquares::get) method.
 #[pyclass(name = "MapSquares")]
 pub struct PyMapSquare {
     inner: MapSquare,
@@ -122,7 +133,7 @@ impl PyMapSquare {
         Ok(locs)
     }
 
-    /// The [`Location`]s in a mapsquare.
+    /// The water [`Location`]s in a mapsquare.
     pub fn water_locations(&self) -> PyResult<Vec<Location>> {
         let locs = self.inner.get_water_locations()?.clone();
         Ok(locs)
@@ -144,5 +155,76 @@ impl PyObjectProtocol for PyMapSquare {
 
     fn __str__(&self) -> PyResult<String> {
         Ok(format!("MapSquare({},{})", self.inner.i, self.inner.j))
+    }
+}
+
+/// Wrapper over [`CacheIndex`]. The Python alias for this is `Index`
+///
+/// # Examples
+/// ```python
+/// from rs3cache import Index
+///
+/// index = Index(2)
+///```
+/// # Exceptions
+/// Raises `FileNotFoundError` if the cache cannot be found.
+#[pyclass(name = "Index")]
+pub struct PyCacheIndex {
+    inner: CacheIndex<Initial>,
+}
+
+#[pymethods]
+impl PyCacheIndex {
+    #[new]
+    /// Constructor of [`PyCacheIndex`].
+    pub fn new(index_id: u32) -> PyResult<Self> {
+        Ok(Self {
+            inner: CacheIndex::new(index_id)?,
+        })
+    }
+
+    /// Get a specific [`Archive`].
+    /// # Exceptions
+    /// Raises `ValueError` if the archive cannot be found.
+    pub fn archive(&self, archive_id: u32) -> PyResult<Archive> {
+        Ok(self.inner.archive(archive_id)?)
+    }
+}
+
+#[pyproto]
+impl PyObjectProtocol for PyCacheIndex {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("Index({})", self.inner.index_id()))
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!("Index({})", self.inner.index_id()))
+    }
+}
+
+#[pyproto]
+impl PyIterProtocol for PyCacheIndex {
+    fn __iter__(slf: PyRef<Self>) -> PyResult<Py<PyCacheIndexIter>> {
+        let iter = PyCacheIndexIter {
+            inner: slf.inner.try_clone()?.into_iter(),
+        };
+        Py::new(slf.py(), iter)
+    }
+}
+
+/// Iterator over all archives in an Index.
+#[pyclass(name = "IndexIter")]
+pub struct PyCacheIndexIter {
+    inner: index::IntoIter,
+}
+
+#[pyproto]
+impl PyIterProtocol for PyCacheIndexIter {
+    fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
+        slf
+    }
+
+    fn __next__(mut slf: PyRefMut<Self>) -> Option<Archive> {
+        slf.inner.next()
     }
 }

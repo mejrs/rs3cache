@@ -16,9 +16,9 @@ use crate::{
     },
 };
 
-use std::collections::{HashMap, HashSet};
-
 use itertools::izip;
+use pyo3::{exceptions::PyKeyError, prelude::*, types::PyByteArray, PyObjectProtocol};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 /// A group of archives.
 pub struct ArchiveGroup {
@@ -52,6 +52,7 @@ impl IntoIterator for ArchiveGroup {
 }
 
 /// A collection of files.
+#[pyclass]
 pub struct Archive {
     index_id: u32,
     archive_id: u32,
@@ -148,5 +149,31 @@ impl Archive {
     /// The quantity of files currently in the archive.
     pub fn file_count(&self) -> usize {
         self.files.len()
+    }
+}
+
+#[pymethods]
+impl Archive {
+    fn file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyByteArray> {
+        if let Some(file) = self.files.get(&file_id) {
+            Ok(PyByteArray::new(py, file))
+        } else {
+            Err(PyKeyError::new_err(format!("File {} is not present.", file_id)))
+        }
+    }
+
+    fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyByteArray>> {
+        Ok(self.files.iter().map(|(&id, file)| (id, PyByteArray::new(py, file))).collect())
+    }
+}
+
+#[pyproto]
+impl PyObjectProtocol for Archive {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("Archive({}, {})", self.index_id(), self.archive_id()))
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!("Archive({}, {})", self.index_id(), self.archive_id()))
     }
 }
