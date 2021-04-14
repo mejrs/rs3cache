@@ -135,28 +135,30 @@ type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 fn save_smallest(i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
+    // SAFETY (2) these checks assure that...
     assert_eq!(DIM % 4, 0);
-
     for img in &imgs {
         assert_eq!(img.dimensions(), (DIM, DIM));
     }
 
     for plane in 0..=3 {
-        let mut base = RgbaImage::from_fn(DIM, DIM, |x, y| {
+        let base = RgbaImage::from_fn(DIM, DIM, |x, y| {
             let mut i = (0..=plane).rev();
 
             loop {
-                unsafe {
-                    let p = i.next().unwrap_or_else(|| core::hint::unreachable_unchecked());
-                    let pixel = imgs.get_unchecked(p).unsafe_get_pixel(x, y);
+                // SAFETY (1): this will always be valid....
+                let p = unsafe { i.next().unwrap_unchecked()};
 
-                    if p == 0 || pixel[3] != 0 {
-                        break if p == plane {
-                            pixel
-                        } else {
-                            pixel.map_without_alpha(|channel| channel / 2)
-                        };
-                    }
+                // SAFETY (2):..these getters are always valid.
+                let pixel = unsafe { imgs.get_unchecked(p).unsafe_get_pixel(x, y) };
+
+                // SAFETY (1): ...as this exit condition always exits the loop if p == 0.
+                if p == 0 || pixel[3] != 0 {
+                    break if p == plane {
+                        pixel
+                    } else {
+                        pixel.map_without_alpha(|channel| channel / 2)
+                    };
                 }
             }
         });
@@ -165,17 +167,17 @@ fn save_smallest(i: u8, j: u8, imgs: [Img; 4]) {
             let base_i = i as u32 * 4;
             let base_j = j as u32 * 4;
             for (x, y) in iproduct!(0..4u32, 0..4u32) {
-                let sub_image = imageops::crop(&mut base, (DIM / 4) * x, DIM - (DIM / 4) * (y + 1), DIM / 4, DIM / 4).to_image();
+                let sub_image = base.view((DIM / 4) * x, DIM - (DIM / 4) * (y + 1), DIM / 4, DIM / 4);
                 debug_assert_eq!(sub_image.width(), 256);
                 debug_assert_eq!(sub_image.height(), 256);
 
                 #[cfg(not(test))]
-                if sub_image.pixels().any(|&pixel| pixel[3] != 0)
+                if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
                     let filename = format!("{}/{}/{}/{}_{}_{}.png", FOLDER, MAPID, 4, plane, base_i + x, base_j + y);
 
-                    sub_image.save(filename).unwrap();
+                    sub_image.to_image().save(filename).unwrap();
                 }
             }
         }
@@ -184,16 +186,16 @@ fn save_smallest(i: u8, j: u8, imgs: [Img; 4]) {
             let base_i = i as u32 * 2;
             let base_j = j as u32 * 2;
             for (x, y) in iproduct!(0..2u32, 0..2u32) {
-                let sub_image = imageops::crop(&mut base, (DIM / 2) * x, DIM - (DIM / 2) * (y + 1), DIM / 2, DIM / 2);
-                let resized = imageops::resize(&sub_image, 256, 256, imageops::FilterType::CatmullRom);
-
-                debug_assert_eq!(resized.width(), 256);
-                debug_assert_eq!(resized.height(), 256);
+                let sub_image = base.view((DIM / 2) * x, DIM - (DIM / 2) * (y + 1), DIM / 2, DIM / 2);
 
                 #[cfg(not(test))]
-                if resized.pixels().any(|&pixel| pixel[3] != 0)
+                if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
+                    let resized = imageops::resize(&sub_image, 256, 256, imageops::FilterType::CatmullRom);
+
+                    debug_assert_eq!(resized.width(), 256);
+                    debug_assert_eq!(resized.height(), 256);
                     let filename = format!("{}/{}/{}/{}_{}_{}.png", FOLDER, MAPID, 3, plane, base_i + x, base_j + y);
                     resized.save(filename).unwrap();
                 }
