@@ -268,7 +268,7 @@ impl NpcConfig {
                 archive
                     .take_files()
                     .into_iter()
-                    .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
+                    .map(move |(file_id, file)| (archive_id << 7 | file_id, file))
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
             .collect::<HashMap<u32, Self>>();
