@@ -73,6 +73,12 @@ pub fn get_varbit_configs() -> PyResult<BTreeMap<u32, VarbitConfig>> {
 
 /// Container of [`PyMapSquare`]s.
 /// Accessible with `from rs3cache import MapSquares`.
+/// # Example
+/// ```python
+/// from rs3cache import *
+///
+/// mapsquares = MapSquares()
+///```
 #[pyclass(name = "MapSquares")]
 pub struct PyMapSquares {
     index: CacheIndex<Initial>,
@@ -80,15 +86,8 @@ pub struct PyMapSquares {
 
 #[pymethods]
 impl PyMapSquares {
-    /// Constructor for MapSquares.
-    /// # Example
-    /// ```python
-    /// from rs3cache import *
-    ///
-    /// mapsquares = MapSquares()
-    ///```
     #[new]
-    pub fn new() -> PyResult<Self> {
+    fn new() -> PyResult<Self> {
         Ok(Self {
             index: CacheIndex::new(IndexType::MAPSV2)?,
         })
@@ -177,7 +176,7 @@ pub struct PyCacheIndex {
 impl PyCacheIndex {
     #[new]
     /// Constructor of [`PyCacheIndex`].
-    pub fn new(index_id: u32) -> PyResult<Self> {
+    fn new(index_id: u32) -> PyResult<Self> {
         Ok(Self {
             inner: CacheIndex::new(index_id)?,
         })
