@@ -147,7 +147,7 @@ fn save_smallest(i: u8, j: u8, imgs: [Img; 4]) {
 
             loop {
                 // SAFETY (1): this will always be valid....
-                let p = unsafe { i.next().unwrap_unchecked()};
+                let p = unsafe { i.next().unwrap_unchecked() };
 
                 // SAFETY (2):..these getters are always valid.
                 let pixel = unsafe { imgs.get_unchecked(p).unsafe_get_pixel(x, y) };
