@@ -7,12 +7,15 @@ print(lumbridge.metadata)
 for _, loc in zip(range(10), lumbridge.locations()):
     print(loc)
 
-defs = Definitions()
-print(defs.location_configs[89602])
+location_configs = get_location_configs()
 
-assert "Fire" in defs.location_configs[6].actions
-assert defs.location_configs[1].name == "Crate"
-assert defs.location_configs[118445].params.get(8178) == 50923
+print(location_configs[89602])
 
-print(defs.npc_configs[0])
-assert defs.npc_configs[0].name == "Hans"
+assert "Fire" in location_configs[6].actions
+assert location_configs[1].name == "Crate"
+assert location_configs[118445].params.get(8178) == 50923
+
+npc_configs = get_npc_configs()
+
+print(npc_configs[0])
+assert npc_configs[0].name == "Hans"
