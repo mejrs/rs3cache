@@ -40,13 +40,15 @@
 
 #![feature(
     const_fn,
+    option_insert,
     option_result_contains,
+    option_get_or_insert_default,
+    option_result_unwrap_unchecked,
     map_into_keys_values,
     try_trait,
     backtrace,
     thread_spawn_unchecked,
-    once_cell,
-    option_result_unwrap_unchecked
+    once_cell
 )]
 #![warn(
     unused_imports,
@@ -88,6 +90,8 @@ pub mod definitions {
     /// Describes the id, position, type and rotation of game objects.
     pub mod locations;
 
+    pub mod item_configs;
+
     /// Configuration of npcs.
     pub mod npc_configs;
 
@@ -106,6 +110,10 @@ pub mod definitions {
     pub mod overlays;
     /// Images displayed by the game client.
     pub mod sprites;
+    
+
+    pub mod structs;
+
     /// Describes the properties of game surface tiles.
     pub mod tiles;
     /// Describes the ground colours of tiles.

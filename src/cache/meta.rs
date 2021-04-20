@@ -126,6 +126,7 @@ impl Metadata {
 }
 
 /// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
+#[pyclass]
 pub struct IndexMetadata {
     metadatas: HashMap<u32, Metadata>,
 }
@@ -279,6 +280,11 @@ impl IndexMetadata {
     #[inline(always)]
     pub fn iter(&self) -> hash_map::Iter<'_, u32, Metadata> {
         self.metadatas.iter()
+    }
+
+    /// Get a reference to the index metadata's metadatas.
+    pub fn metadatas(&self) -> &HashMap<u32, Metadata> {
+        &self.metadatas
     }
 }
 

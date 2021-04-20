@@ -20,6 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "location_configs_each" => definitions::location_configs::export_each()?,
             "locations" => definitions::locations::export()?,
             "npc_configs" => definitions::npc_configs::export()?,
+            "item_configs" => definitions::item_configs::export()?,
             "maplabels" => definitions::maplabel_configs::export()?,
             "sprites" => definitions::sprites::save_all()?,
             "worldmaps" => {
@@ -29,6 +30,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 definitions::worldmaps::export_zones()?;
             }
             "varbit_configs" => definitions::varbit_configs::export()?,
+            "structs" => definitions::structs::export()?,
 
             "all" => {
                 {
@@ -37,6 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 definitions::locations::export()?;
                 definitions::npc_configs::export()?;
+                definitions::item_configs::export()?;
                 definitions::maplabel_configs::export()?;
                 definitions::sprites::save_all()?;
                 {
@@ -46,6 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     definitions::worldmaps::export_zones()?;
                 }
                 definitions::varbit_configs::export()?;
+                definitions::structs::export()?;
             }
             _ => unreachable!(),
         }

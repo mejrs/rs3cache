@@ -167,7 +167,10 @@ impl MapLabelConfig {
                 5 => maplabel.label_colour_2 = Some(buffer.read_rgb()),
                 6 => maplabel.font_size = Some(buffer.read_unsigned_byte()),
                 7 => maplabel.unknown_7 = Some(buffer.read_unsigned_byte()),
-                8 => maplabel.unknown_8 = Some(buffer.read_unsigned_byte()),
+                8 => {
+                    assert_eq!(maplabel.unknown_8, None, "{:?}", maplabel);
+                    maplabel.unknown_8 = Some(buffer.read_unsigned_byte());
+                }
                 9 => maplabel.toggle_1 = Some(Toggle::deserialize(&mut buffer)),
                 10 => maplabel.rightclick_1 = Some(buffer.read_string()),
                 15 => maplabel.polygon = Some(Polygon::deserialize(&mut buffer)),

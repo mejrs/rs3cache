@@ -36,7 +36,7 @@ use crate::{
         meta::Metadata,
     },
     definitions::{
-        location_configs::LocationConfig, locations::Location, mapsquares::MapSquare, npc_configs::NpcConfig, tiles::Tile,
+        location_configs::LocationConfig, locations::Location, mapsquares::MapSquare, npc_configs::NpcConfig, item_configs::ItemConfig,tiles::Tile,
         varbit_configs::VarbitConfig,
     },
 };
@@ -47,6 +47,7 @@ use std::collections::{BTreeMap, HashMap};
 fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_item_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_varbit_configs, m)?)?;
     m.add_class::<PyMapSquares>()?;
     m.add_class::<PyCacheIndex>()?;
@@ -63,6 +64,12 @@ pub fn get_location_configs() -> PyResult<BTreeMap<u32, LocationConfig>> {
 #[pyfunction]
 pub fn get_npc_configs() -> PyResult<BTreeMap<u32, NpcConfig>> {
     Ok(NpcConfig::dump_all()?.into_iter().collect())
+}
+
+/// Wrapper for [`NpcConfig::dump_all`]
+#[pyfunction]
+pub fn get_item_configs() -> PyResult<BTreeMap<u32, ItemConfig>> {
+    Ok(ItemConfig::dump_all()?.into_iter().collect())
 }
 
 /// Wrapper for [`VarbitConfig::dump_all`]
@@ -187,6 +194,11 @@ impl PyCacheIndex {
     /// Raises `ValueError` if the archive cannot be found.
     pub fn archive(&self, archive_id: u32) -> PyResult<Archive> {
         Ok(self.inner.archive(archive_id)?)
+    }
+
+    /// Returns the [`Metadata`] of all archives in `self`.
+    pub fn metadatas(&self) -> PyResult<HashMap<u32, Metadata>>{
+        Ok(self.inner.metadatas().metadatas().clone())
     }
 }
 

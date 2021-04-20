@@ -5,11 +5,12 @@ use crate::{
 };
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
+use serde_with::skip_serializing_none;
 use std::collections::HashMap;
-
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
 #[pyclass]
 #[allow(missing_docs)]
+#[skip_serializing_none]
 #[derive(Serialize, Debug, Default, Clone)]
 pub struct NpcConfig {
     /// Its id.
@@ -17,243 +18,191 @@ pub struct NpcConfig {
     pub id: u32,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub models: Option<NpcModels>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<u8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub actions: Option<[Option<String>; 5]>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub texture_replacements: Option<Textures>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub recolour_palette: Option<RecolourPalette>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub recolour_indices: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub retexture_indices: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub head_models: Option<HeadModels>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub draw_map_dot: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub combat: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub scale_xz: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub scale_y: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_99: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ambience: Option<i8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub model_contract: Option<i8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub head_icon_data: Option<Vec<(Option<u32>, Option<u32>)>>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_103: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub morphs_1: Option<NpcMorphTable>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_107: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub slow_walk: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub animate_idle: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub shadow: Option<Shadow>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub shadow_alpha_intensity: Option<ShadowIntensity>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub morphs_2: Option<ExtendedNpcMorphTable>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub movement_capabilities: Option<i8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(flatten)]
     pub translations: Option<Translations>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_height: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub respawn_direction: Option<i8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub animation_group: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub movement_type: Option<i8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub ambient_sound: Option<AmbientSounds>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub old_cursor: Option<OldCursors>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub old_cursor_2: Option<OldCursors>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub attack_cursor: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub army_icon: Option<u32>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_140: Option<u8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_141: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub mapfunction: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_143: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub member_actions: Option<[Option<String>; 5]>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub unknown_155: Option<Unknown155>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_158: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_159: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(flatten)]
     pub quests: Option<Quests>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_162: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_163: Option<u8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub unknown_164: Option<Unknown164>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_165: Option<u8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_168: Option<u8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_169: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub action_cursors: Option<[Option<u16>; 6]>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_178: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub unknown_179: Option<Unknown179>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_180: Option<u8>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
     pub unknown_181: Option<Unknown181>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_182: Option<bool>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_184: Option<u16>,
 
     #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
 
@@ -528,16 +477,16 @@ pub mod npc_config_fields {
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
         #[pyo3(get)]
-        pub colours: Vec<(u16, u16)>,
+        pub colour_replacements: Vec<(u16, u16)>,
     }
 
     impl ColourReplacements {
         pub fn deserialize(buffer: &mut Buffer) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
-            let colours = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
+            let colour_replacements = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
                 .collect::<Vec<_>>();
-            Self { colours }
+            Self { colour_replacements }
         }
     }
 
@@ -619,15 +568,15 @@ pub mod npc_config_fields {
     #[derive(Debug, Serialize, Clone)]
     pub struct RecolourPalette {
         #[pyo3(get)]
-        pub palette: Vec<i8>,
+        pub recolour_palette: Vec<i8>,
     }
 
     impl RecolourPalette {
         pub fn deserialize(buffer: &mut Buffer) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
 
-            let palette = iter::repeat_with(|| buffer.read_byte()).take(count).collect::<Vec<_>>();
-            Self { palette }
+            let recolour_palette = iter::repeat_with(|| buffer.read_byte()).take(count).collect::<Vec<_>>();
+            Self { recolour_palette }
         }
     }
 
