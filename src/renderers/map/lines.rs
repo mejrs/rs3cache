@@ -15,7 +15,7 @@ pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location
             .iter()
             .map(|loc| (loc, &(location_config[&(loc.id)])))
             .filter(|(location, properties)| unsafe {
-                (location.ty == 0 || location.ty == 2 || location.ty == 9)
+                (location.r#type == 0 || location.r#type == 2 || location.r#type == 9)
                     && properties.mapscene.is_none()
                     && ((location.plane.matches(&0) && plane == 0)
                         || location.plane.contains(&(plane as u8))
@@ -36,7 +36,7 @@ pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location
                     Rgba(Color::WHITE)
                 };
 
-                for (a, b) in LineShape::new(location.ty, location.rotation, TILESIZE) {
+                for (a, b) in LineShape::new(location.r#type, location.rotation, TILESIZE) {
                     unsafe {
                         debug_assert!(
                             (TILESIZE * location.x as u32 + a) < img.width() && (TILESIZE * (63u32 - location.y as u32) + b) < img.height(),

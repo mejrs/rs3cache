@@ -113,7 +113,7 @@ pub struct Location {
     /// The type of this location. The [`models`](crate::definitions::location_config::LocationConfig.models) field of its
     /// [`LocationConfig`](crate::definitions::location_configs::LocationConfig) maps models to its type.
     // #[pyo3(get)]
-    pub ty: u8,
+    pub r#type: u8,
     /// Its rotation, also known as "orientation".
     #[pyo3(get)]
     pub rotation: u8,
@@ -150,7 +150,7 @@ impl Location {
                                 let y = (location & 0x3F) as u8;
 
                                 let data = buffer.read_unsigned_byte();
-                                let ty = data >> 2 & 0x1F;
+                                let r#type = data >> 2 & 0x1F;
                                 let rotation = data & 0x3;
 
                                 // some objects have offsets; not using this data atm
@@ -199,7 +199,7 @@ impl Location {
                                     x,
                                     y,
                                     id: id as u32,
-                                    ty,
+                                    r#type,
                                     rotation,
                                 };
                                 locations.push(loc);
@@ -266,18 +266,58 @@ pub fn export() -> CacheResult<()> {
     Ok(())
 }
 
+/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+pub fn _export() -> CacheResult<()> {
+    fs::create_dir_all("out/data/rs3/locations")?;
+
+    let last_id = {
+        let squares = MapSquareIterator::new()?;
+        squares
+            .filter_map(|sq| sq.take_locations().ok())
+            .filter(|locs| !locs.is_empty())
+            .map(|locs| locs.last().expect("locations stopped existing").id)
+            .max()?
+    };
+
+    let squares = MapSquareIterator::new()?;
+    let mut locs: Vec<_> = squares
+        .filter_map(|sq| sq.take_locations().ok())
+        .map(|locs| locs.into_iter().peekable())
+        .collect();
+
+    (0..=last_id)
+        .map(|id| {
+            (
+                id,
+                locs.iter_mut()
+                    .flat_map(|iterator| std::iter::repeat_with(move || iterator.next_if(|loc| loc.id == id)).take_while(|item| item.is_some()))
+                    .flatten()
+                    .collect::<Vec<Location>>(),
+            )
+        })
+        .par_apply(|(id, id_locs)| {
+            if !id_locs.is_empty() && id != 83 {
+                let mut file = File::create(format!("out/data/rs3/locations/{}.json", id)).unwrap();
+                let data = serde_json::to_string_pretty(&id_locs).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
+            }
+        });
+
+    Ok(())
+}
+
 #[pymethods]
 impl Location {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!(
             "Location(plane = {:?}, i = {}, j = {}, x = {}, y = {}, id = {}, type = {}, rotation = {})",
-            self.plane, self.i, self.j, self.x, self.y, self.id, self.ty, self.rotation
+            self.plane, self.i, self.j, self.x, self.y, self.id, self.r#type, self.rotation
         ))
     }
     fn __str__(&self) -> PyResult<String> {
         Ok(format!(
             "Location(plane = {:?}, i = {}, j = {}, x = {}, y = {}, id = {}, type = {}, rotation = {})",
-            self.plane, self.i, self.j, self.x, self.y, self.id, self.ty, self.rotation
+            self.plane, self.i, self.j, self.x, self.y, self.id, self.r#type, self.rotation
         ))
     }
 }
