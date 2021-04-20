@@ -24,6 +24,7 @@ impl WorldMapType {
     pub const ZONES: u32 = 0;
     pub const PASTES: u32 = 1;
 
+    /// Used to draw the minimap in the top left of the ingame world map interface.
     pub const SMALL: u32 = 2;
 
     pub const UNKNOWN_3: u32 = 3;
