@@ -12,6 +12,7 @@ Tools and api for reading and interpreting the [RuneScape 3](https://www.runesca
 - `git clone https://github.com/mejrs/rs3cache`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
 - Configure rustup to use the nightly version: `rustup default nightly`.
+- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
 - Navigate to this repository
 - Compile the executable with `cargo build --release`.
 - Either:
@@ -34,7 +35,7 @@ This exports them as small tiles, formatted as `<layer>/<zoom>/<plane>_<x>_<y>.p
 The following instructions are only tested on **windows**. If you run into issues on other platforms, try following [here](https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux "setuptools-rust") or build with [maturin](https://pypi.org/project/maturin/ "maturin") instead.
 
 - `git clone https://github.com/mejrs/rs3cache`.
-- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.6 or newer.
+- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
     - Check that pip is installed (`python -m pip --version`).
     - Install setuptools: `pip install setuptools`.
     - Install setuptools-rust: `pip install setuptools-rust`.

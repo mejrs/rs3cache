@@ -6,7 +6,7 @@
 //! If you run into issues on other platforms, please follow [here](https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux) or try [maturin](https://pypi.org/project/maturin/) instead.
 //!
 //! - `git clone https://github.com/mejrs/rs3cache`.
-//! - Install [Python](https://www.python.org/downloads/), version 3.6 or newer.
+//! - Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
 //!     - Check that pip is installed (`python -m pip --version`).
 //!     - Install setuptools: `pip install setuptools`.
 //!     - Install setuptools-rust: `pip install setuptools-rust`.
