@@ -1,7 +1,8 @@
 //! The [`Coordinate`] type.
 
-use serde::Serialize;
 use std::convert::TryFrom;
+
+use serde::Serialize;
 
 /// A coordinate.
 #[allow(missing_docs)]

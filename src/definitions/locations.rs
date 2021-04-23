@@ -1,3 +1,12 @@
+use std::{
+    fs::{self, File},
+    io::Write,
+};
+
+#[cfg(feature = "pyo3")]
+use pyo3::{prelude::*, PyObjectProtocol};
+use serde::{Serialize, Serializer};
+
 use crate::{
     cache::buf::Buffer,
     definitions::{
@@ -6,15 +15,6 @@ use crate::{
     },
     utils::{error::CacheResult, par::ParApply},
 };
-
-use serde::{Serialize, Serializer};
-
-use std::{
-    fs::{self, File},
-    io::Write,
-};
-
-use pyo3::{prelude::*, PyObjectProtocol};
 
 /// Describes whether this location is on the contained plane.
 #[derive(Copy, Clone, Debug)]
@@ -63,6 +63,7 @@ impl Serialize for Watery {
     }
 }
 
+#[cfg(feature = "pyo3")]
 impl IntoPy<PyObject> for Watery {
     fn into_py(self, py: Python) -> PyObject {
         match self {
@@ -73,49 +74,42 @@ impl IntoPy<PyObject> for Watery {
 }
 
 /// A location, also referred to as an "object".
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Clone, Debug, Serialize)]
 pub struct Location {
     /// The plane a.k.a elevation.
     ///
     /// It can have any value in the range `0..=3`.
-    #[pyo3(get)]
     pub plane: Watery,
     /// The horizontal [`MapSquare`](crate::definitions::mapsquares::MapSquare) coordinate.
     ///
     /// It can have any value in the range `0..=100`.
     ///
     /// All operations on this value should use explicit wrapping arithmetic.
-    #[pyo3(get)]
     pub i: u8,
     /// The vertical [`MapSquare`](crate::definitions::mapsquares::MapSquare) coordinate.
     ///
     /// It can have any value in the range `0..=200`.
     ///
     /// All operations on this value should use explicit wrapping arithmetic.
-    #[pyo3(get)]
     pub j: u8,
     /// The horizontal coordinate inside its [`MapSquare`](crate::definitions::mapsquares::MapSquare).
     ///
     /// It can have any value in the range `0..=63`.
     /// Locations that are not 1x1 have their most western tile as this coordinate.
-    #[pyo3(get)]
     pub x: u8,
     /// The vertical coordinate inside its [`MapSquare`](crate::definitions::mapsquares::MapSquare).
     ///
     /// It can have any value in the range `0..=63`.
     /// Locations that are not 1x1 have their most southern tile as this coordinate.
-    #[pyo3(get)]
     pub y: u8,
     /// The id corresponding to its [`LocationConfig`](crate::definitions::location_configs::LocationConfig).
-    #[pyo3(get)]
     pub id: u32,
     /// The type of this location. The [`models`](crate::definitions::location_config::LocationConfig.models) field of its
     /// [`LocationConfig`](crate::definitions::location_configs::LocationConfig) maps models to its type.
-    // #[pyo3(get)]
+    // #[cfg_attr(feature ="pyo3", pyo3(get))]
     pub r#type: u8,
     /// Its rotation, also known as "orientation".
-    #[pyo3(get)]
     pub rotation: u8,
 }
 
@@ -215,17 +209,6 @@ impl Location {
     }
 }
 
-#[pyproto]
-impl PyObjectProtocol for Location {
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
-    }
-
-    fn __str__(&self) -> PyResult<String> {
-        Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
-    }
-}
-
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
 pub fn export() -> CacheResult<()> {
     fs::create_dir_all("out/data/rs3/locations")?;
@@ -306,18 +289,51 @@ pub fn _export() -> CacheResult<()> {
     Ok(())
 }
 
+#[cfg(feature = "pyo3")]
 #[pymethods]
 impl Location {
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!(
-            "Location(plane = {:?}, i = {}, j = {}, x = {}, y = {}, id = {}, type = {}, rotation = {})",
-            self.plane, self.i, self.j, self.x, self.y, self.id, self.r#type, self.rotation
-        ))
+    #[getter]
+    fn plane(&self) -> PyResult<Watery> {
+        Ok(self.plane)
     }
+    #[getter]
+    fn i(&self) -> PyResult<u8> {
+        Ok(self.i)
+    }
+    #[getter]
+    fn j(&self) -> PyResult<u8> {
+        Ok(self.j)
+    }
+    #[getter]
+    fn x(&self) -> PyResult<u8> {
+        Ok(self.x)
+    }
+    #[getter]
+    fn y(&self) -> PyResult<u8> {
+        Ok(self.y)
+    }
+    #[getter]
+    fn id(&self) -> PyResult<u32> {
+        Ok(self.id)
+    }
+    #[getter]
+    fn r#type(&self) -> PyResult<u8> {
+        Ok(self.r#type)
+    }
+    #[getter]
+    fn rotation(&self) -> PyResult<u8> {
+        Ok(self.rotation)
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pyproto]
+impl PyObjectProtocol for Location {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
+    }
+
     fn __str__(&self) -> PyResult<String> {
-        Ok(format!(
-            "Location(plane = {:?}, i = {}, j = {}, x = {}, y = {}, id = {}, type = {}, rotation = {})",
-            self.plane, self.i, self.j, self.x, self.y, self.id, self.r#type, self.rotation
-        ))
+        Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
     }
 }

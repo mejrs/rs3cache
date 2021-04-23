@@ -1,3 +1,14 @@
+use std::{
+    collections::HashMap,
+    fs::{self, File},
+    io::Write,
+};
+
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
+use serde::Serialize;
+use serde_with::skip_serializing_none;
+
 use crate::{
     cache::{
         buf::Buffer,
@@ -8,125 +19,55 @@ use crate::{
     utils::error::CacheResult,
 };
 
-use serde::Serialize;
-use std::{
-    collections::HashMap,
-    fs::{self, File},
-    io::Write,
-};
-
-use pyo3::prelude::*;
-
 /// Map element on the ingame world map.
 ///
 /// This can be a text label, sprite, polygon or interactive.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[skip_serializing_none]
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct MapLabelConfig {
     /// File id of the [`MapLabelConfig`].
-    #[pyo3(get)]
     pub id: u32,
-
     /// Text shown when the label is rightclicked.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rightclick_1: Option<String>,
-
     /// Text shown when the label is rightclicked.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rightclick_2: Option<String>,
-
     /// A toggle that controls whether the label is shown.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub toggle_1: Option<Toggle>,
-
     /// Contains another toggle that controls whether the label is shown.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub toggle_2: Option<Toggle>,
-
     /// If present, the label is text on the map, with the given `String`.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
-
     /// Text colour.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_colour_1: Option<(u8, u8, u8)>,
-
     /// Text colour 2.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_colour_2: Option<(u8, u8, u8)>,
-
     /// Font size ( any of 0, 1, 2, 3), if the label is text.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub font_size: Option<u8>,
-
     /// The sprite shown on the map.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sprite: Option<u32>,
-
     /// The sprite shown on the map on mouseover.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hover_sprite: Option<u32>,
-
     /// The sprite shown on the map behind the main sprite.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub background_sprite: Option<u32>,
-
     /// Unknown field.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_7: Option<u8>,
-
     /// Unknown field.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_8: Option<u8>,
-
     /// Customizes label creation in script 7590.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub category: Option<u16>,
-
     /// Describes the polygon drawn on the map, if present.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub polygon: Option<Polygon>,
-
     /// Unknown field.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_21: Option<Vec<u8>>,
-
     /// Unknown field.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_22: Option<Vec<u8>>,
-
     /// Unknown field.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_28: Option<u8>,
-
     /// Unknown field.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_30: Option<u8>,
-
     /// Switch between the "new" and "legacy" icons.
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_switch: Option<LegacySwitch>,
-
     /// Contains additional options:
     /// # Possible param keys (non-exhaustive)
     /// | key | type | description |
@@ -134,9 +75,120 @@ pub struct MapLabelConfig {
     /// | 4147 | `u32` | Corresponds to a field of enum 2252|
     /// | 4148 | `u32` | Coordinate that the map pans to, if the label is clicked|
     /// | 4149 | `String` | Tooltip |
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub params: Option<ParamTable>,
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl MapLabelConfig {
+    #[getter]
+    fn id(&self) -> PyResult<u32> {
+        Ok(self.id)
+    }
+
+    #[getter]
+    fn rightclick_1(&self) -> PyResult<Option<String>> {
+        Ok(self.rightclick_1.clone())
+    }
+
+    #[getter]
+    fn rightclick_2(&self) -> PyResult<Option<String>> {
+        Ok(self.rightclick_2.clone())
+    }
+    #[getter]
+    fn toggle_1(&self) -> PyResult<Option<Toggle>> {
+        Ok(self.toggle_1)
+    }
+
+    #[getter]
+    fn toggle_2(&self) -> PyResult<Option<Toggle>> {
+        Ok(self.toggle_2)
+    }
+
+    #[getter]
+    fn text(&self) -> PyResult<Option<String>> {
+        Ok(self.text.clone())
+    }
+
+    #[getter]
+    fn label_colour_1(&self) -> PyResult<Option<(u8, u8, u8)>> {
+        Ok(self.label_colour_1)
+    }
+
+    #[getter]
+    fn label_colour_2(&self) -> PyResult<Option<(u8, u8, u8)>> {
+        Ok(self.label_colour_2)
+    }
+
+    #[getter]
+    fn font_size(&self) -> PyResult<Option<u8>> {
+        Ok(self.font_size)
+    }
+
+    #[getter]
+    fn sprite(&self) -> PyResult<Option<u32>> {
+        Ok(self.sprite)
+    }
+
+    #[getter]
+    fn hover_sprite(&self) -> PyResult<Option<u32>> {
+        Ok(self.hover_sprite)
+    }
+
+    #[getter]
+    fn background_sprite(&self) -> PyResult<Option<u32>> {
+        Ok(self.background_sprite)
+    }
+
+    #[getter]
+    fn unknown_7(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_7)
+    }
+    #[getter]
+    fn unknown_8(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_8)
+    }
+
+    #[getter]
+    fn category(&self) -> PyResult<Option<u16>> {
+        Ok(self.category)
+    }
+
+    #[getter]
+    fn polygon(&self) -> PyResult<Option<Polygon>> {
+        Ok(self.polygon.clone())
+    }
+
+    #[getter]
+    fn unknown_21(&self) -> PyResult<Option<Vec<u8>>> {
+        Ok(self.unknown_21.clone())
+    }
+
+    #[getter]
+    fn unknown_22(&self) -> PyResult<Option<Vec<u8>>> {
+        Ok(self.unknown_22.clone())
+    }
+
+    #[getter]
+    fn unknown_28(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_28)
+    }
+
+    #[getter]
+    fn unknown_30(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_30)
+    }
+
+    #[getter]
+    fn legacy_switch(&self) -> PyResult<Option<LegacySwitch>> {
+        Ok(self.legacy_switch)
+    }
+
+    #[getter]
+    fn params(&self) -> PyResult<Option<ParamTable>> {
+        Ok(self.params.clone())
+    }
 }
 
 impl MapLabelConfig {
@@ -202,30 +254,30 @@ pub fn export() -> CacheResult<()> {
 /// Defines the structs used as fields of [`MapLabelConfig`],
 pub mod maplabel_config_fields {
     #![allow(missing_docs)]
+    use std::iter;
+
+    use itertools::izip;
+    #[cfg(feature = "pyo3")]
+    use pyo3::prelude::*;
+    use serde::Serialize;
+
     use crate::{
         cache::buf::Buffer,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
-    use itertools::izip;
-    use pyo3::prelude::*;
-    use serde::Serialize;
-    use std::iter;
     /// A polygon
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Clone, Default, Serialize)]
     pub struct Polygon {
         /// Colour of the polygon.
-        #[pyo3(get)]
         pub colour: [u8; 4],
 
         /// Fill colour of the polygon.
         /// # Notes
         /// A value of `[255, 0, 255, 255]` indicates transparency.
-        #[pyo3(get)]
         pub background_colour: [u8; 4],
 
         /// The coordinates spanning the `Polygon`.
-        #[pyo3(get)]
         pub points: Vec<PolygonPoint>,
     }
 
@@ -263,20 +315,18 @@ pub mod maplabel_config_fields {
     }
 
     /// Controls whether the [`MapLabelConfig`](super::MapLabelConfig) is shown.
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Clone, Copy, Serialize)]
     pub struct Toggle {
         /// The [`Varp`] or [`Varbit`] controlling the toggle.
-        #[pyo3(get)]
+
         #[serde(flatten)]
         pub var: VarpOrVarbit,
 
         /// Lower bound of showing the [`MapLabelConfig`](super::MapLabelConfig).
-        #[pyo3(get)]
         pub lower: u32,
 
         /// Upper bound of showing the [`MapLabelConfig`](super::MapLabelConfig).
-        #[pyo3(get)]
         pub upper: u32,
     }
 
@@ -294,24 +344,21 @@ pub mod maplabel_config_fields {
     }
 
     /// Whether to show "new" or "legacy" map icon.
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Clone, Copy, Serialize)]
     pub struct LegacySwitch {
         /// The [`Varp`] or [`Varbit`] controlling legacy toggle.
-        #[pyo3(get)]
+
         #[serde(flatten)]
         pub var: VarpOrVarbit,
 
         /// Switch for the [`Varp`] or [`Varbit`].
-        #[pyo3(get)]
         pub value: u8,
 
         /// A reference pointing to the default [`MapLabelConfig`](super::MapLabelConfig).
-        #[pyo3(get)]
         pub default_reference: u16,
 
         /// A reference pointing to the legacy [`MapLabelConfig`](super::MapLabelConfig).
-        #[pyo3(get)]
         pub legacy_reference: u16,
     }
 
@@ -336,19 +383,16 @@ pub mod maplabel_config_fields {
     }
 
     /// Points that span a [`Polygon`].
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Clone, Copy, Serialize)]
     pub struct PolygonPoint {
         /// Plane. Always zero.
-        #[pyo3(get)]
         pub plane: u8,
 
         /// X-coordinate offset from the [`MapLabelConfig`](super::MapLabelConfig) position.
-        #[pyo3(get)]
         pub dx: i16,
 
         /// Y-coordinate offset from the [`MapLabelConfig`](super::MapLabelConfig) position.
-        #[pyo3(get)]
         pub dy: i16,
     }
 }

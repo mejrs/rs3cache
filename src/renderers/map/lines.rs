@@ -1,11 +1,12 @@
+use std::collections::HashMap;
+
+use image::{GenericImage, Rgba, RgbaImage};
+
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare},
     renderers::map::{lineshape::LineShape, mapcore::TILESIZE},
     utils::color::Color,
 };
-
-use image::{GenericImage, Rgba, RgbaImage};
-use std::collections::HashMap;
 
 /// Applies lines of doors, fences, walls and so on to the base image.
 pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location_config: &HashMap<u32, LocationConfig>) {

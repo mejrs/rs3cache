@@ -1,5 +1,6 @@
-use crate::cache::buf::Buffer;
 use serde::Serialize;
+
+use crate::cache::buf::Buffer;
 
 /// A non player character.
 #[derive(Copy, Clone, Debug, Serialize)]

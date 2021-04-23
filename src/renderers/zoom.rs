@@ -1,14 +1,13 @@
-use crate::utils::{error::CacheResult, par::ParApply};
+use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Range, sync::Mutex};
+
 use async_std::{fs::File, prelude::*, task};
 use futures::future::join_all;
 use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageFormat, Rgba, RgbaImage};
 use itertools::{iproduct, izip};
 use progress_bar::progress_bar::ProgressBar;
-
-use std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, sync::Mutex};
-
 use regex::Regex;
-use std::lazy::SyncLazy;
+
+use crate::utils::{error::CacheResult, par::ParApply};
 
 static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 

@@ -2,11 +2,12 @@
 //!
 //! This module provides various reads used to decode the cache data
 
-use bytes::Buf;
 use std::{
     io::{prelude::*, Cursor, SeekFrom},
     iter,
 };
+
+use bytes::Buf;
 
 /// Contains a buffer, exposing various reads on it.
 ///

@@ -1,9 +1,8 @@
-#[allow(unused_imports)]
-use rs3cache::{cache::index, definitions, renderers::map};
+use std::time::Instant;
 
 use clap::{load_yaml, App};
-
-use std::time::Instant;
+#[allow(unused_imports)]
+use rs3cache::{cache::index, definitions, renderers::map};
 
 /// Entry point for the program. Run the executable with `--help` for a list of commands.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,17 +30,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             "varbit_configs" => definitions::varbit_configs::export()?,
             "structs" => definitions::structs::export()?,
+            "enums" => definitions::enums::export()?,
 
             "all" => {
-                {
-                    definitions::location_configs::export()?;
-                    definitions::location_configs::export_each()?;
-                }
                 definitions::locations::export()?;
                 definitions::npc_configs::export()?;
                 definitions::item_configs::export()?;
                 definitions::maplabel_configs::export()?;
-                definitions::sprites::save_all()?;
                 {
                     definitions::worldmaps::dump_big()?;
                     definitions::worldmaps::dump_small()?;
@@ -50,6 +45,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 definitions::varbit_configs::export()?;
                 definitions::structs::export()?;
+                definitions::enums::export()?;
+
+                {
+                    definitions::location_configs::export()?;
+                    definitions::location_configs::export_each()?;
+                }
+                definitions::sprites::save_all()?;
             }
             _ => unreachable!(),
         }

@@ -1,18 +1,20 @@
 //! Describes the properties of enums.
 #![allow(non_camel_case_types, missing_docs)]
 
-use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    utils::error::CacheResult,
-};
-//use pyo3::{prelude::*, PyObjectProtocol};
-use serde::Serialize;
 use std::{
-    collections::{HashMap, BTreeMap},
+    collections::{BTreeMap, HashMap},
     convert::{TryFrom, TryInto},
     fs::{self, File},
     io::Write,
     iter,
+};
+
+//use pyo3::{prelude::*, PyObjectProtocol};
+use serde::Serialize;
+
+use crate::{
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    utils::error::CacheResult,
 };
 
 #[derive(Debug, PartialEq, Eq, Hash, Serialize)]

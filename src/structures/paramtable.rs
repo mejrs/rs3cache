@@ -1,12 +1,15 @@
-use crate::cache::buf::Buffer;
+use std::{collections::HashMap, iter};
+
+#[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use serde::Serialize;
-use std::{collections::HashMap, iter};
+
+use crate::cache::buf::Buffer;
 
 /// [`LocationConfig`](crate::definitions::location_configs::LocationConfig)s,
 /// items and
 /// [`NpcConfig`](crate::definitions::npc_configs::NpcConfig)s can have additional mapping of keys to properties.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Serialize, Debug, Clone)]
 pub struct ParamTable {
     /// Key:Value pairs of additional properties.
@@ -22,11 +25,11 @@ impl ParamTable {
     }
 
     fn sub_deserialize(buffer: &mut Buffer) -> (u32, Param) {
-        let ty = buffer.read_unsigned_byte();
+        let r#type = buffer.read_unsigned_byte();
 
         let key = buffer.read_3_unsigned_bytes();
 
-        let value = match ty {
+        let value = match r#type {
             0 => Param::Integer(buffer.read_int()),
             1 => Param::String(buffer.read_string()),
             other => unimplemented!("Cannot decode unknown type {}", other),
@@ -35,6 +38,7 @@ impl ParamTable {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pymethods]
 impl ParamTable {
     fn get(&self, id: u32) -> PyResult<Option<&Param>> {
@@ -52,6 +56,7 @@ pub enum Param {
     String(String),
 }
 
+#[cfg(feature = "pyo3")]
 impl IntoPy<PyObject> for &Param {
     fn into_py(self, py: Python) -> PyObject {
         match self {

@@ -1,30 +1,47 @@
 //! Describes the properties of structs.
 
-use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    structures::paramtable::ParamTable,
-    utils::error::CacheResult,
-};
-use pyo3::{prelude::*, PyObjectProtocol};
-use serde::Serialize;
 use std::{
     collections::HashMap,
     fs::{self, File},
     io::Write,
 };
 
+#[cfg(feature = "pyo3")]
+use pyo3::{prelude::*, PyObjectProtocol};
+use serde::Serialize;
+use serde_with::skip_serializing_none;
+
+use crate::{
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    structures::paramtable::ParamTable,
+    utils::error::CacheResult,
+};
+
 /// Describes the properties of a given item.
 #[allow(missing_docs)]
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[skip_serializing_none]
 #[derive(Serialize, Debug, Default)]
 pub struct Struct {
     /// Its id.
-    #[pyo3(get)]
     pub id: u32,
 
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(flatten)]
     pub params: Option<ParamTable>,
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl Struct {
+    #[getter]
+    fn id(&self) -> PyResult<u32> {
+        Ok(self.id)
+    }
+
+    #[getter]
+    fn params(&self) -> PyResult<Option<ParamTable>> {
+        Ok(self.params.clone())
+    }
 }
 
 impl Struct {
@@ -70,6 +87,7 @@ impl Display for Struct {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pyproto]
 impl PyObjectProtocol for Struct {
     fn __repr__(&self) -> PyResult<String> {

@@ -1,11 +1,13 @@
-use crate::cache::{
-    buf::Buffer,
-    index::CacheIndex,
-    indextype::{ConfigType, IndexType},
-};
 use std::collections::HashMap;
 
-use crate::utils::error::CacheResult;
+use crate::{
+    cache::{
+        buf::Buffer,
+        index::CacheIndex,
+        indextype::{ConfigType, IndexType},
+    },
+    utils::error::CacheResult,
+};
 /// Describes (part of) ground colour.
 #[derive(Debug, Default)]
 pub struct Overlay {

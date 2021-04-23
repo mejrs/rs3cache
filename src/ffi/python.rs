@@ -28,6 +28,10 @@
 //!
 //!
 //!
+use std::collections::{BTreeMap, HashMap};
+
+use pyo3::{prelude::*, wrap_pyfunction, PyIterProtocol, PyObjectProtocol};
+
 use crate::{
     cache::{
         arc::Archive,
@@ -36,12 +40,10 @@ use crate::{
         meta::Metadata,
     },
     definitions::{
-        location_configs::LocationConfig, locations::Location, mapsquares::MapSquare, npc_configs::NpcConfig, item_configs::ItemConfig,tiles::Tile,
+        item_configs::ItemConfig, location_configs::LocationConfig, locations::Location, mapsquares::MapSquare, npc_configs::NpcConfig, tiles::Tile,
         varbit_configs::VarbitConfig,
     },
 };
-use pyo3::{prelude::*, wrap_pyfunction, PyIterProtocol, PyObjectProtocol};
-use std::collections::{BTreeMap, HashMap};
 
 #[pymodule]
 fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -197,7 +199,7 @@ impl PyCacheIndex {
     }
 
     /// Returns the [`Metadata`] of all archives in `self`.
-    pub fn metadatas(&self) -> PyResult<HashMap<u32, Metadata>>{
+    pub fn metadatas(&self) -> PyResult<HashMap<u32, Metadata>> {
         Ok(self.inner.metadatas().metadatas().clone())
     }
 }

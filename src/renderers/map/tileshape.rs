@@ -166,8 +166,9 @@ impl Iterator for UnderlayShape {
 
 #[cfg(test)]
 mod shape_tests {
-    use super::*;
     use std::collections::HashSet;
+
+    use super::*;
 
     // Unsafe code in renderers/map.rs depends on this invariant
     #[test]

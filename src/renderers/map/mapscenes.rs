@@ -1,12 +1,13 @@
+use std::collections::HashMap;
+
+use image::{GenericImage, GenericImageView, RgbaImage};
+use itertools::iproduct;
+
 use crate::{
     definitions::{location_configs::LocationConfig, mapscenes::MapScene, mapsquares::GroupMapSquare, sprites::Sprite},
     renderers::map::mapcore::TILESIZE,
     utils::rangeclamp::RangeClamp,
 };
-use image::{GenericImage, GenericImageView, RgbaImage};
-use itertools::iproduct;
-
-use std::collections::HashMap;
 
 /// Applies [`MapScene`]s to the base image.
 pub fn put(

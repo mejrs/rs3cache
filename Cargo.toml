@@ -12,12 +12,6 @@ name = "rs3cache"
 # dual types make it work both for compiling as package and python lib
 crate-type = ["lib", "cdylib"]
 
-[features]
-singlethreaded = []
-mockdata = []
-save_mockdata = []
-web = []
-dont_save = []
 
 [dependencies]
 sqlite = "0.26.0"
@@ -38,7 +32,15 @@ static_assertions = "1.1.0"
 chrono = "0.4.19"
 progress_bar = "0.1.3"
 path-absolutize = "3.0.7"
-pyo3 = "0.13.2"
+pyo3 = { version = "0.13.2", optional = true}
+
+
+[features]
+singlethreaded = []
+mockdata = []
+save_mockdata = []
+web = []
+dont_save = []
 
 [dependencies.clap]
 version = "2.33.3"

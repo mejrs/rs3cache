@@ -3,6 +3,16 @@
 //!
 //! See also [`Varp`](crate::types::variables::Varp) and [`Varbit`](crate::types::variables::Varbit).
 
+use std::{
+    collections::HashMap,
+    fs::{self, File},
+    io::Write,
+};
+
+#[cfg(feature = "pyo3")]
+use pyo3::{prelude::*, PyObjectProtocol};
+use serde::Serialize;
+
 use crate::{
     cache::{
         buf::Buffer,
@@ -11,37 +21,19 @@ use crate::{
     },
     utils::error::CacheResult,
 };
-
-use std::{
-    collections::HashMap,
-    fs::{self, File},
-    io::Write,
-};
-
-use pyo3::{prelude::*, PyObjectProtocol};
-use serde::Serialize;
-
 /// A varbit configuration.
 ///
 /// The varbit is the bits of Varp `index` from `least_significant_bit` to `most_significant_bit` inclusive.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[allow(missing_docs)]
 #[derive(Debug, Serialize)]
 pub struct VarbitConfig {
     /// Id of the [`Varbit`](crate::types::variables::Varbit).
-    #[pyo3(get)]
     pub id: u32,
-
     pub unknown_1: u8,
-
     /// The Varp that this varbit maps to.
-    #[pyo3(get)]
     pub index: u16,
-
-    #[pyo3(get)]
     pub least_significant_bit: u8,
-
-    #[pyo3(get)]
     pub most_significant_bit: u8,
 }
 
@@ -90,17 +82,6 @@ impl VarbitConfig {
     }
 }
 
-#[pyproto]
-impl PyObjectProtocol for VarbitConfig {
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
-    }
-
-    fn __str__(&self) -> PyResult<String> {
-        Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
-    }
-}
-
 /// Save the varbit configs as `varbit_configs.json`. Exposed as `--dump varbit_configs`.
 pub fn export() -> CacheResult<()> {
     fs::create_dir_all("out")?;
@@ -112,4 +93,41 @@ pub fn export() -> CacheResult<()> {
     file.write_all(data.as_bytes())?;
 
     Ok(())
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl VarbitConfig {
+    #[getter]
+    fn id(&self) -> PyResult<u32> {
+        Ok(self.id)
+    }
+    #[getter]
+    fn unknown_1(&self) -> PyResult<u8> {
+        Ok(self.unknown_1)
+    }
+    #[getter]
+    fn index(&self) -> PyResult<u16> {
+        Ok(self.index)
+    }
+    #[getter]
+    fn least_significant_bit(&self) -> PyResult<u8> {
+        Ok(self.most_significant_bit)
+    }
+    #[getter]
+    fn most_significant_bit(&self) -> PyResult<u8> {
+        Ok(self.most_significant_bit)
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pyproto]
+impl PyObjectProtocol for VarbitConfig {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
+    }
 }

@@ -1,13 +1,12 @@
-use crate::definitions::{mapsquares::GroupMapSquare, overlays::Overlay, underlays::Underlay};
+use std::{collections::HashMap, convert::TryInto};
+
+use image::{GenericImage, Rgba, RgbaImage};
 
 use super::{
     mapcore::{INTERP, TILESIZE},
     tileshape::{OverlayShape, UnderlayShape},
 };
-
-use image::{GenericImage, Rgba, RgbaImage};
-
-use std::{collections::HashMap, convert::TryInto};
+use crate::definitions::{mapsquares::GroupMapSquare, overlays::Overlay, underlays::Underlay};
 
 /// Applies ground colouring to the base image.
 pub fn put(

@@ -1,8 +1,10 @@
 //! Functions to decompress cache data.
 
-use crate::utils::error::{CacheError, CacheResult};
-use libflate::{gzip, zlib};
 use std::io::Read;
+
+use libflate::{gzip, zlib};
+
+use crate::utils::error::{CacheError, CacheResult};
 
 /// Enumeration of different compression types.
 pub struct Compression;

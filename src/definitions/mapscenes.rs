@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     cache::{
         buf::Buffer,
@@ -6,7 +8,6 @@ use crate::{
     },
     utils::error::CacheResult,
 };
-use std::collections::HashMap;
 /// A configuration of a sprite that can be drawn on the world map.
 #[derive(Debug, Default, Copy, Clone)]
 pub struct MapScene {

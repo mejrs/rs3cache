@@ -1,33 +1,55 @@
-use crate::cache::buf::Buffer;
 use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
+#[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+
+use crate::cache::buf::Buffer;
 
 /// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 
 /// Describes the properties of a tile in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Default, Debug, Copy, Clone)]
 pub struct Tile {
     /// Reference to an [`OverlayShape`](crate::renderers::map::tileshape::OverlayShape).
-    #[pyo3(get)]
     pub shape: Option<u8>,
 
     /// Reference to an [`Overlay`](crate::definitions::overlays::Overlay).
-    #[pyo3(get)]
     pub overlay_id: Option<u16>,
 
     /// This tile's settings.
-    #[pyo3(get)]
     pub settings: Option<u8>,
 
     /// Reference to an [`Underlay`](crate::definitions::underlays::Underlay).
-    #[pyo3(get)]
     pub underlay_id: Option<u16>,
 
     /// The height of the tile.
-    #[pyo3(get)]
     pub height: Option<u8>,
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl Tile {
+    #[getter]
+    fn shape(&self) -> PyResult<Option<u8>> {
+        Ok(self.shape)
+    }
+    #[getter]
+    fn overlay_id(&self) -> PyResult<Option<u16>> {
+        Ok(self.overlay_id)
+    }
+    #[getter]
+    fn settings(&self) -> PyResult<Option<u8>> {
+        Ok(self.settings)
+    }
+    #[getter]
+    fn underlay_id(&self) -> PyResult<Option<u16>> {
+        Ok(self.underlay_id)
+    }
+    #[getter]
+    fn height(&self) -> PyResult<Option<u8>> {
+        Ok(self.height)
+    }
 }
 
 impl Tile {

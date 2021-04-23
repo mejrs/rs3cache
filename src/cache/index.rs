@@ -5,6 +5,18 @@
 #[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
 compile_error!("mockdata and save_mockdata are incompatible");
 
+use std::{
+    collections::HashSet,
+    env::{self, VarError},
+    fs::{self, File},
+    io::{Read, Write},
+    marker::PhantomData,
+    ops::RangeInclusive,
+    path::Path,
+};
+
+use itertools::iproduct;
+
 use crate::{
     cache::{
         arc::{Archive, ArchiveGroup},
@@ -14,18 +26,6 @@ use crate::{
         meta::{IndexMetadata, Metadata},
     },
     utils::error::{CacheError, CacheResult},
-};
-
-use itertools::iproduct;
-
-use std::{
-    collections::HashSet,
-    env::{self, VarError},
-    fs::{self, File},
-    io::{Read, Write},
-    marker::PhantomData,
-    ops::RangeInclusive,
-    path::Path,
 };
 
 /// System variable for the location of the cache folder.

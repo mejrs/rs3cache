@@ -1,11 +1,12 @@
+#[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use serde::Serialize;
+
 /// A bitmapping of a [`Varp`]
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Varbit {
     ///The value of the `Varbit`. Cannot be `Some(u16::MAX)`.
-    #[pyo3(get)]
     pub val: Option<u16>,
 }
 
@@ -20,20 +21,25 @@ impl Varbit {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pymethods]
 impl Varbit {
     #[classattr]
     fn r#type() -> String {
         "varbit".to_string()
     }
+
+    #[getter]
+    fn val(&self) -> PyResult<Option<u16>> {
+        Ok(self.val)
+    }
 }
 
 /// A player variable
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Varp {
     ///The value of the `Varp`. Cannot be `Some(u16::MAX)`.
-    #[pyo3(get)]
     pub val: Option<u16>,
 }
 
@@ -48,11 +54,17 @@ impl Varp {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pymethods]
 impl Varp {
     #[classattr]
     fn r#type() -> String {
         "varp".to_string()
+    }
+
+    #[getter]
+    fn val(&self) -> PyResult<Option<u16>> {
+        Ok(self.val)
     }
 }
 
@@ -81,6 +93,7 @@ impl VarpOrVarbit {
     }
 }
 
+#[cfg(feature = "pyo3")]
 impl IntoPy<PyObject> for VarpOrVarbit {
     fn into_py(self, py: Python) -> PyObject {
         match self {

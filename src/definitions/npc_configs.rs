@@ -1,207 +1,88 @@
+use std::collections::HashMap;
+
+#[cfg(feature = "pyo3")]
+use pyo3::{prelude::*, PyObjectProtocol};
+use serde::Serialize;
+use serde_with::skip_serializing_none;
+
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::error::CacheResult,
 };
-use pyo3::{prelude::*, PyObjectProtocol};
-use serde::Serialize;
-use serde_with::skip_serializing_none;
-use std::collections::HashMap;
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[allow(missing_docs)]
 #[skip_serializing_none]
 #[derive(Serialize, Debug, Default, Clone)]
 pub struct NpcConfig {
     /// Its id.
-    #[pyo3(get)]
     pub id: u32,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub models: Option<NpcModels>,
-
-    #[pyo3(get)]
     pub name: Option<String>,
-
-    #[pyo3(get)]
     pub size: Option<u8>,
-
-    #[pyo3(get)]
     pub actions: Option<[Option<String>; 5]>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub texture_replacements: Option<Textures>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub recolour_palette: Option<RecolourPalette>,
-
-    #[pyo3(get)]
     pub recolour_indices: Option<u16>,
-
-    #[pyo3(get)]
     pub retexture_indices: Option<u16>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub head_models: Option<HeadModels>,
-
-    #[pyo3(get)]
     pub draw_map_dot: Option<bool>,
-
-    #[pyo3(get)]
     pub combat: Option<u16>,
-
-    #[pyo3(get)]
     pub scale_xz: Option<u16>,
-
-    #[pyo3(get)]
     pub scale_y: Option<u16>,
-
-    #[pyo3(get)]
     pub unknown_99: Option<bool>,
-
-    #[pyo3(get)]
     pub ambience: Option<i8>,
-
-    #[pyo3(get)]
     pub model_contract: Option<i8>,
-
-    #[pyo3(get)]
     pub head_icon_data: Option<Vec<(Option<u32>, Option<u32>)>>,
-
-    #[pyo3(get)]
     pub unknown_103: Option<u16>,
-
-    #[pyo3(get)]
     pub morphs_1: Option<NpcMorphTable>,
-
-    #[pyo3(get)]
     pub unknown_107: Option<bool>,
-
-    #[pyo3(get)]
     pub slow_walk: Option<bool>,
-
-    #[pyo3(get)]
     pub animate_idle: Option<bool>,
-
-    #[pyo3(get)]
     pub shadow: Option<Shadow>,
-
-    #[pyo3(get)]
     pub shadow_alpha_intensity: Option<ShadowIntensity>,
-
-    #[pyo3(get)]
     pub morphs_2: Option<ExtendedNpcMorphTable>,
-
-    #[pyo3(get)]
     pub movement_capabilities: Option<i8>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub translations: Option<Translations>,
-
-    #[pyo3(get)]
     pub icon_height: Option<u16>,
-
-    #[pyo3(get)]
     pub respawn_direction: Option<i8>,
-
-    #[pyo3(get)]
     pub animation_group: Option<u16>,
-
-    #[pyo3(get)]
     pub movement_type: Option<i8>,
-
-    #[pyo3(get)]
     pub ambient_sound: Option<AmbientSounds>,
-
-    #[pyo3(get)]
     pub old_cursor: Option<OldCursors>,
-
-    #[pyo3(get)]
     pub old_cursor_2: Option<OldCursors>,
-
-    #[pyo3(get)]
     pub attack_cursor: Option<u16>,
-
-    #[pyo3(get)]
     pub army_icon: Option<u32>,
-
-    #[pyo3(get)]
     pub unknown_140: Option<u8>,
-
-    #[pyo3(get)]
     pub unknown_141: Option<bool>,
-
-    #[pyo3(get)]
     pub mapfunction: Option<u16>,
-
-    #[pyo3(get)]
     pub unknown_143: Option<bool>,
-
-    #[pyo3(get)]
     pub member_actions: Option<[Option<String>; 5]>,
-
-    #[pyo3(get)]
     pub unknown_155: Option<Unknown155>,
-
-    #[pyo3(get)]
     pub unknown_158: Option<bool>,
-
-    #[pyo3(get)]
     pub unknown_159: Option<bool>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub quests: Option<Quests>,
-
-    #[pyo3(get)]
     pub unknown_162: Option<bool>,
-
-    #[pyo3(get)]
     pub unknown_163: Option<u8>,
-
-    #[pyo3(get)]
     pub unknown_164: Option<Unknown164>,
-
-    #[pyo3(get)]
     pub unknown_165: Option<u8>,
-
-    #[pyo3(get)]
     pub unknown_168: Option<u8>,
-
-    #[pyo3(get)]
     pub unknown_169: Option<bool>,
-
-    #[pyo3(get)]
     pub action_cursors: Option<[Option<u16>; 6]>,
-
-    #[pyo3(get)]
     pub unknown_178: Option<bool>,
-
-    #[pyo3(get)]
     pub unknown_179: Option<Unknown179>,
-
-    #[pyo3(get)]
     pub unknown_180: Option<u8>,
-
-    #[pyo3(get)]
-    pub unknown_181: Option<Unknown181>,
-
-    #[pyo3(get)]
     pub unknown_182: Option<bool>,
-
-    #[pyo3(get)]
     pub unknown_184: Option<u16>,
-
-    #[pyo3(get)]
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -310,6 +191,7 @@ impl NpcConfig {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pyproto]
 impl PyObjectProtocol for NpcConfig {
     fn __repr__(&self) -> PyResult<String> {
@@ -333,23 +215,24 @@ impl Display for NpcConfig {
 pub mod npc_config_fields {
     #![allow(missing_docs)]
 
+    use std::{collections::HashMap, iter};
+
+    #[cfg(feature = "pyo3")]
+    use pyo3::prelude::*;
+    use serde::Serialize;
+
     use crate::{
         cache::buf::Buffer,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
-    use pyo3::prelude::*;
-    use serde::Serialize;
-    use std::{collections::HashMap, iter};
 
     /// Contains an array of possible ids this npc can morph into, controlled by either a varbit or varp.
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct NpcMorphTable {
-        #[pyo3(get)]
         #[serde(flatten)]
         pub var: VarpOrVarbit,
 
-        #[pyo3(get)]
         pub ids: Vec<Option<u32>>,
     }
 
@@ -372,16 +255,13 @@ pub mod npc_config_fields {
         }
     }
     /// Like [`NpcMorphTable`], but with a default value.
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ExtendedNpcMorphTable {
-        #[pyo3(get)]
         pub var: VarpOrVarbit,
 
-        #[pyo3(get)]
         pub ids: Vec<Option<u32>>,
 
-        #[pyo3(get)]
         pub default_id: Option<u32>,
     }
 
@@ -408,10 +288,9 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct NpcModels {
-        #[pyo3(get)]
         pub models: Vec<Option<u32>>,
     }
 
@@ -424,12 +303,11 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Serialize, Debug, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Serialize, Debug, Clone, Copy)]
     pub struct ShadowIntensity {
-        #[pyo3(get)]
         pub src_colour: i8,
-        #[pyo3(get)]
+
         pub dst_colour: i8,
     }
 
@@ -441,12 +319,11 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Serialize, Debug, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Shadow {
-        #[pyo3(get)]
         pub src_colour: u16,
-        #[pyo3(get)]
+
         pub dst_colour: u16,
     }
 
@@ -458,10 +335,9 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
-        #[pyo3(get)]
         pub headmodels: Vec<Option<u32>>,
     }
 
@@ -473,10 +349,9 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
-        #[pyo3(get)]
         pub colour_replacements: Vec<(u16, u16)>,
     }
 
@@ -490,10 +365,9 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
-        #[pyo3(get)]
         pub textures: HashMap<u16, u16>,
     }
 
@@ -507,18 +381,17 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Debug, Serialize, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
     pub struct AmbientSounds {
-        #[pyo3(get)]
         pub unknown_1: u16,
-        #[pyo3(get)]
+
         pub unknown_2: u16,
-        #[pyo3(get)]
+
         pub unknown_3: u16,
-        #[pyo3(get)]
+
         pub unknown_4: u16,
-        #[pyo3(get)]
+
         pub unknown_5: u8,
     }
 
@@ -539,10 +412,9 @@ pub mod npc_config_fields {
             }
         }
     }
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Serialize, Clone)]
     pub struct Translations {
-        #[pyo3(get)]
         pub translations: Vec<[u8; 4]>,
     }
 
@@ -564,10 +436,9 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Serialize, Clone)]
     pub struct RecolourPalette {
-        #[pyo3(get)]
         pub recolour_palette: Vec<i8>,
     }
 
@@ -580,12 +451,11 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Debug, Serialize, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
     pub struct OldCursors {
-        #[pyo3(get)]
         pub op: u8,
-        #[pyo3(get)]
+
         pub cursor: u16,
     }
 
@@ -597,12 +467,8 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Debug, Serialize, Clone)]
-    pub struct Unknown181 {}
-
-    #[pyclass]
-    #[derive(Debug, Serialize, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
     pub struct Unknown155 {
         pub unknown_1: i8,
         pub unknown_2: i8,
@@ -626,8 +492,8 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Debug, Serialize, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
     pub struct Unknown179 {
         pub unknown_1: u16,
         pub unknown_2: u16,
@@ -657,8 +523,8 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
-    #[derive(Debug, Serialize, Clone)]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
     pub struct Unknown164 {
         pub unknown_1: u16,
         pub unknown_2: u16,
@@ -673,7 +539,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[pyclass]
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Serialize, Clone)]
     pub struct Quests {
         pub quests: Vec<u16>,
@@ -706,6 +572,252 @@ pub fn export() -> CacheResult<()> {
     file.write_all(data.as_bytes())?;
 
     Ok(())
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl NpcConfig {
+    #[getter]
+    fn id(&self) -> PyResult<u32> {
+        Ok(self.id)
+    }
+    #[getter]
+    fn models(&self) -> PyResult<Option<NpcModels>> {
+        Ok(self.models.clone())
+    }
+    #[getter]
+    fn name(&self) -> PyResult<Option<String>> {
+        Ok(self.name.clone())
+    }
+    #[getter]
+    fn size(&self) -> PyResult<Option<u8>> {
+        Ok(self.size)
+    }
+    #[getter]
+    fn actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
+        Ok(self.actions.clone())
+    }
+    #[getter]
+    fn colour_replacements(&self) -> PyResult<Option<ColourReplacements>> {
+        Ok(self.colour_replacements.clone())
+    }
+    #[getter]
+    fn texture_replacements(&self) -> PyResult<Option<Textures>> {
+        Ok(self.texture_replacements.clone())
+    }
+    #[getter]
+    fn recolour_palette(&self) -> PyResult<Option<RecolourPalette>> {
+        Ok(self.recolour_palette.clone())
+    }
+    #[getter]
+    fn recolour_indices(&self) -> PyResult<Option<u16>> {
+        Ok(self.recolour_indices)
+    }
+    #[getter]
+    fn retexture_indices(&self) -> PyResult<Option<u16>> {
+        Ok(self.retexture_indices)
+    }
+    #[getter]
+    fn head_models(&self) -> PyResult<Option<HeadModels>> {
+        Ok(self.head_models.clone())
+    }
+    #[getter]
+    fn draw_map_dot(&self) -> PyResult<Option<bool>> {
+        Ok(self.draw_map_dot)
+    }
+    #[getter]
+    fn combat(&self) -> PyResult<Option<u16>> {
+        Ok(self.combat)
+    }
+    #[getter]
+    fn scale_xz(&self) -> PyResult<Option<u16>> {
+        Ok(self.scale_xz)
+    }
+    #[getter]
+    fn scale_y(&self) -> PyResult<Option<u16>> {
+        Ok(self.scale_y)
+    }
+    #[getter]
+    fn unknown_99(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_99)
+    }
+    #[getter]
+    fn ambience(&self) -> PyResult<Option<i8>> {
+        Ok(self.ambience)
+    }
+    #[getter]
+    fn model_contract(&self) -> PyResult<Option<i8>> {
+        Ok(self.model_contract)
+    }
+    #[getter]
+    fn head_icon_data(&self) -> PyResult<Option<Vec<(Option<u32>, Option<u32>)>>> {
+        Ok(self.head_icon_data.clone())
+    }
+    #[getter]
+    fn unknown_103(&self) -> PyResult<Option<u16>> {
+        Ok(self.unknown_103)
+    }
+    #[getter]
+    fn morphs_1(&self) -> PyResult<Option<NpcMorphTable>> {
+        Ok(self.morphs_1.clone())
+    }
+    #[getter]
+    fn unknown_107(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_107)
+    }
+    #[getter]
+    fn slow_walk(&self) -> PyResult<Option<bool>> {
+        Ok(self.slow_walk)
+    }
+    #[getter]
+    fn animate_idle(&self) -> PyResult<Option<bool>> {
+        Ok(self.animate_idle)
+    }
+    #[getter]
+    fn shadow(&self) -> PyResult<Option<Shadow>> {
+        Ok(self.shadow)
+    }
+    #[getter]
+    fn shadow_alpha_intensity(&self) -> PyResult<Option<ShadowIntensity>> {
+        Ok(self.shadow_alpha_intensity)
+    }
+    #[getter]
+    fn morphs_2(&self) -> PyResult<Option<ExtendedNpcMorphTable>> {
+        Ok(self.morphs_2.clone())
+    }
+    #[getter]
+    fn movement_capabilities(&self) -> PyResult<Option<i8>> {
+        Ok(self.movement_capabilities)
+    }
+    #[getter]
+    fn translations(&self) -> PyResult<Option<Translations>> {
+        Ok(self.translations.clone())
+    }
+    #[getter]
+    fn icon_height(&self) -> PyResult<Option<u16>> {
+        Ok(self.icon_height)
+    }
+    #[getter]
+    fn respawn_direction(&self) -> PyResult<Option<i8>> {
+        Ok(self.respawn_direction)
+    }
+    #[getter]
+    fn animation_group(&self) -> PyResult<Option<u16>> {
+        Ok(self.animation_group)
+    }
+    #[getter]
+    fn movement_type(&self) -> PyResult<Option<i8>> {
+        Ok(self.movement_type)
+    }
+    #[getter]
+    fn ambient_sound(&self) -> PyResult<Option<AmbientSounds>> {
+        Ok(self.ambient_sound)
+    }
+    #[getter]
+    fn old_cursor(&self) -> PyResult<Option<OldCursors>> {
+        Ok(self.old_cursor)
+    }
+    #[getter]
+    fn old_cursor_2(&self) -> PyResult<Option<OldCursors>> {
+        Ok(self.old_cursor_2)
+    }
+    #[getter]
+    fn attack_cursor(&self) -> PyResult<Option<u16>> {
+        Ok(self.attack_cursor)
+    }
+    #[getter]
+    fn army_icon(&self) -> PyResult<Option<u32>> {
+        Ok(self.army_icon)
+    }
+    #[getter]
+    fn unknown_140(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_140)
+    }
+    #[getter]
+    fn unknown_141(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_141)
+    }
+    #[getter]
+    fn mapfunction(&self) -> PyResult<Option<u16>> {
+        Ok(self.mapfunction)
+    }
+    #[getter]
+    fn unknown_143(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_143)
+    }
+    #[getter]
+    fn member_actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
+        Ok(self.member_actions.clone())
+    }
+    #[getter]
+    fn unknown_155(&self) -> PyResult<Option<Unknown155>> {
+        Ok(self.unknown_155)
+    }
+    #[getter]
+    fn unknown_158(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_158)
+    }
+    #[getter]
+    fn unknown_159(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_159)
+    }
+    #[getter]
+    fn quests(&self) -> PyResult<Option<Quests>> {
+        Ok(self.quests.clone())
+    }
+    #[getter]
+    fn unknown_162(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_162)
+    }
+    #[getter]
+    fn unknown_163(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_163)
+    }
+    #[getter]
+    fn unknown_164(&self) -> PyResult<Option<Unknown164>> {
+        Ok(self.unknown_164)
+    }
+    #[getter]
+    fn unknown_165(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_165)
+    }
+    #[getter]
+    fn unknown_168(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_168)
+    }
+    #[getter]
+    fn unknown_169(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_169)
+    }
+    #[getter]
+    fn action_cursors(&self) -> PyResult<Option<[Option<u16>; 6]>> {
+        Ok(self.action_cursors)
+    }
+    #[getter]
+    fn unknown_178(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_178)
+    }
+    #[getter]
+    fn unknown_179(&self) -> PyResult<Option<Unknown179>> {
+        Ok(self.unknown_179)
+    }
+    #[getter]
+    fn unknown_180(&self) -> PyResult<Option<u8>> {
+        Ok(self.unknown_180)
+    }
+    #[getter]
+    fn unknown_182(&self) -> PyResult<Option<bool>> {
+        Ok(self.unknown_182)
+    }
+    #[getter]
+    fn unknown_184(&self) -> PyResult<Option<u16>> {
+        Ok(self.unknown_184)
+    }
+
+    #[getter]
+    fn params(&self) -> PyResult<Option<ParamTable>> {
+        Ok(self.params.clone())
+    }
 }
 
 #[cfg(test)]

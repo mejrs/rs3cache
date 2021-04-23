@@ -110,8 +110,8 @@ pub mod definitions {
     pub mod overlays;
     /// Images displayed by the game client.
     pub mod sprites;
-    
 
+    pub mod enums;
     pub mod structs;
 
     /// Describes the properties of game surface tiles.
@@ -156,5 +156,6 @@ pub mod structures {
 
 /// Foreign function interfaces to `rs3cache`.
 pub mod ffi {
+    #[cfg(feature = "pyo3")]
     pub mod python;
 }

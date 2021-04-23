@@ -148,7 +148,7 @@ impl ConfigType {
     /// Unimplemented.
     pub const UNKNOWN_48: u32 = 48;
     /// Unimplemented.
-    pub const UNKNOWN_49: u32 = 59;
+    pub const UNKNOWN_49: u32 = 49;
     /// Unimplemented.
     pub const PLAYER: u32 = 60;
     /// Unimplemented.

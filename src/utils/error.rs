@@ -1,12 +1,13 @@
 //use std::fmt::Display;
-use crate::{
-    cache::{index::SYS_VAR, indextype::IndexType},
-    definitions::mapsquares::MapFileType,
-};
 use std::{
     backtrace::Backtrace,
     env::{self, VarError},
     path::Path,
+};
+
+use crate::{
+    cache::{index::SYS_VAR, indextype::IndexType},
+    definitions::mapsquares::MapFileType,
 };
 
 /// Result wrapper for [`CacheError`].
@@ -179,10 +180,11 @@ impl std::error::Error for CacheError {
     }
 }
 
+#[cfg(feature = "pyo3")]
 mod py_error_impl {
-    use super::CacheError;
-
     use pyo3::{exceptions, PyErr};
+
+    use super::CacheError;
 
     impl From<CacheError> for PyErr {
         fn from(err: CacheError) -> PyErr {
@@ -205,4 +207,5 @@ mod py_error_impl {
     }
 }
 
+#[cfg(feature = "pyo3")]
 pub use py_error_impl::*;

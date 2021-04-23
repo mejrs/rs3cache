@@ -8,6 +8,12 @@
 //! and use its [`IntoIterator`] implementation or its [`archive`](crate::cache::index::CacheIndex::archive())
 //! method instead.
 
+use std::collections::{HashMap, HashSet};
+
+use itertools::izip;
+#[cfg(feature = "pyo3")]
+use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol};
+
 use crate::{
     cache::{buf::Buffer, meta::Metadata},
     utils::{
@@ -16,14 +22,9 @@ use crate::{
     },
 };
 
-use itertools::izip;
-use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol};
-use std::collections::{BTreeMap, HashMap, HashSet};
-
 /// A group of archives.
 pub struct ArchiveGroup {
     core_id: u32,
-
     archives: Vec<Archive>,
 }
 
@@ -52,11 +53,11 @@ impl IntoIterator for ArchiveGroup {
 }
 
 /// A collection of files.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 pub struct Archive {
-    #[pyo3(get)]
+    #[cfg_attr(feature = " pyo3", pyo3(get))]
     index_id: u32,
-    #[pyo3(get)]
+    #[cfg_attr(feature = " pyo3", pyo3(get))]
     archive_id: u32,
     files: HashMap<u32, File>,
     poison_state: HashSet<u32>,
@@ -154,6 +155,7 @@ impl Archive {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pymethods]
 impl Archive {
     fn file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyBytes> {
@@ -164,11 +166,12 @@ impl Archive {
         }
     }
 
-    fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
+    fn files<'p>(&self, py: Python<'p>) -> PyResult<std::collections::BTreeMap<u32, &'p PyBytes>> {
         Ok(self.files.iter().map(|(&id, file)| (id, PyBytes::new(py, file))).collect())
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pyproto]
 impl PyObjectProtocol for Archive {
     fn __repr__(&self) -> PyResult<String> {

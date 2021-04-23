@@ -1,19 +1,19 @@
 //!
 
-use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    types::coordinate::Coordinate,
-    utils::error::CacheResult,
-};
-
-use serde::Serialize;
-
 use std::{
     collections::HashMap,
     convert::TryInto,
     fs::{self, File},
     io::Write,
     iter,
+};
+
+use serde::Serialize;
+
+use crate::{
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    types::coordinate::Coordinate,
+    utils::error::CacheResult,
 };
 
 /// Enumeration of the archives in the [WORLDMAP](IndexType::WORLDMAP) index.
@@ -129,8 +129,9 @@ impl MapZone {
 
 mod mapzone_fields_impl {
     #![allow(missing_docs)]
-    use crate::cache::buf::Buffer;
     use serde::Serialize;
+
+    use crate::cache::buf::Buffer;
 
     #[derive(Debug, Serialize)]
     pub struct BoundDef {
@@ -218,8 +219,9 @@ impl MapPastes {
 
 mod mappaste_fields_impl {
     #![allow(missing_docs)]
-    use crate::cache::buf::Buffer;
     use serde::Serialize;
+
+    use crate::cache::buf::Buffer;
 
     #[derive(Debug, Serialize)]
     pub struct Paste {

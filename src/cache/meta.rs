@@ -1,58 +1,102 @@
 //! Metadata about the cache itself.
 
-use crate::{
-    cache::buf::Buffer,
-    utils::{adapters::Accumulator, error::CacheResult},
-};
-use itertools::izip;
-use pyo3::{prelude::*, PyObjectProtocol};
-use serde::Serialize;
 use std::{
     collections::{hash_map, HashMap},
     iter,
     ops::Add,
 };
 
+use itertools::izip;
+#[cfg(feature = "pyo3")]
+use pyo3::{prelude::*, PyObjectProtocol};
+use serde::Serialize;
+use serde_with::skip_serializing_none;
+
+use crate::{
+    cache::buf::Buffer,
+    utils::{adapters::Accumulator, error::CacheResult},
+};
+
 /// Metadata about [`Archive`](crate::cache::arc::Archive)s.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[skip_serializing_none]
 #[derive(Debug, Clone, Serialize)]
 pub struct Metadata {
-    #[pyo3(get)]
     index_id: u32,
 
-    #[pyo3(get)]
     archive_id: u32,
 
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<u32>,
 
-    #[pyo3(get)]
     crc: i32,
 
-    #[pyo3(get)]
     version: i32,
 
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     unknown: Option<i32>,
 
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     compressed_size: Option<u32>,
 
-    #[pyo3(get)]
     size: Option<u32>,
 
-    #[pyo3(get)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     digest: Option<Vec<u8>>,
 
-    #[pyo3(get)]
     child_count: u32,
 
-    #[pyo3(get)]
     child_indices: Vec<u32>,
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl Metadata {
+    #[getter(index_id)]
+    fn _index_id(&self) -> PyResult<u32> {
+        Ok(self.index_id)
+    }
+
+    #[getter(archive_id)]
+    fn _archive_id(&self) -> PyResult<u32> {
+        Ok(self.archive_id)
+    }
+
+    #[getter(name)]
+    fn _name(&self) -> PyResult<Option<u32>> {
+        Ok(self.name)
+    }
+    #[getter(crc)]
+    fn _crc(&self) -> PyResult<i32> {
+        Ok(self.crc)
+    }
+
+    #[getter(version)]
+    fn _version(&self) -> PyResult<i32> {
+        Ok(self.version)
+    }
+
+    #[getter(unknown)]
+    fn _unknown(&self) -> PyResult<Option<i32>> {
+        Ok(self.unknown)
+    }
+    #[getter(compressed_size)]
+    fn _compressed_size(&self) -> PyResult<Option<u32>> {
+        Ok(self.compressed_size)
+    }
+    #[getter(size)]
+    fn _size(&self) -> PyResult<Option<u32>> {
+        Ok(self.size)
+    }
+    #[getter(digest)]
+    fn _digest(&self) -> PyResult<Option<Vec<u8>>> {
+        Ok(self.digest.clone())
+    }
+    #[getter(child_count)]
+    fn _child_count(&self) -> PyResult<u32> {
+        Ok(self.child_count)
+    }
+
+    #[getter(child_indices)]
+    fn _child_indices(&self) -> PyResult<Vec<u32>> {
+        Ok(self.child_indices.clone())
+    }
 }
 
 impl Metadata {
@@ -126,7 +170,7 @@ impl Metadata {
 }
 
 /// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 pub struct IndexMetadata {
     metadatas: HashMap<u32, Metadata>,
 }
@@ -139,7 +183,6 @@ impl IndexMetadata {
     }
 
     /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](crate::cache::indextype::IndexType).
-    ///
     pub(crate) fn deserialize(index_id: u32, mut buffer: Buffer) -> CacheResult<Self> {
         let format = buffer.read_byte();
         let _index_utc_stamp = if format > 5 { Some(buffer.read_int()) } else { None };
@@ -298,6 +341,7 @@ impl IntoIterator for IndexMetadata {
     }
 }
 
+#[cfg(feature = "pyo3")]
 #[pyproto]
 impl PyObjectProtocol for Metadata {
     fn __repr__(&self) -> PyResult<String> {

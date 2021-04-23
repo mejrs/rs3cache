@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     cache::{
         buf::Buffer,
@@ -6,7 +8,6 @@ use crate::{
     },
     utils::error::CacheResult,
 };
-use std::collections::HashMap;
 
 #[derive(Debug, Default, Copy, Clone)]
 /// Describes the general ground colour. This colour is blended with surrounding tiles.

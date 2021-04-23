@@ -8,6 +8,15 @@
 //! These coordinates are referred to as `x` and `y`.
 //! They have four elevations, referred to as `p` or `plane`.
 
+use core::ops::{Range, RangeInclusive};
+use std::{
+    collections::{hash_map, HashMap},
+    iter::Zip,
+};
+
+use itertools::{iproduct, Product};
+use ndarray::{iter::LanesIter, s, Axis, Dim};
+
 use crate::{
     cache::{
         arc::Archive,
@@ -22,13 +31,6 @@ use crate::{
         error::{CacheError, CacheResult},
         rangeclamp::RangeClamp,
     },
-};
-use core::ops::{Range, RangeInclusive};
-use itertools::{iproduct, Product};
-use ndarray::{iter::LanesIter, s, Axis, Dim};
-use std::{
-    collections::{hash_map, HashMap},
-    iter::Zip,
 };
 
 /// Represents a section of the game map

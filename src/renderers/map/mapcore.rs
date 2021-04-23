@@ -1,3 +1,14 @@
+use std::{
+    collections::HashMap,
+    fs,
+    sync::{Arc, Mutex},
+};
+
+use image::{imageops, GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
+use itertools::iproduct;
+use progress_bar::progress_bar::ProgressBar;
+use static_assertions::const_assert;
+
 use crate::{
     definitions::{
         location_configs::LocationConfig,
@@ -9,15 +20,6 @@ use crate::{
     },
     renderers::{map::*, zoom},
     utils::{color::Color, error::CacheResult, par::ParApply},
-};
-use image::{imageops, GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
-use itertools::iproduct;
-use progress_bar::progress_bar::ProgressBar;
-use static_assertions::const_assert;
-use std::{
-    collections::HashMap,
-    fs,
-    sync::{Arc, Mutex},
 };
 
 /// Where to export the base tiles.

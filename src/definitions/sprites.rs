@@ -1,10 +1,12 @@
+use std::{collections::HashMap, io::SeekFrom, iter};
+
+use image::{imageops, ImageBuffer, Rgba, RgbaImage};
+use itertools::izip;
+
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     utils::{error::CacheResult, par::ParApply},
 };
-use image::{imageops, ImageBuffer, Rgba, RgbaImage};
-use itertools::izip;
-use std::{collections::HashMap, io::SeekFrom, iter};
 /// Output directory for [save_all()]
 const DIR: &str = "out/sprites";
 
