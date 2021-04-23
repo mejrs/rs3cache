@@ -12,7 +12,6 @@ Tools and api for reading and interpreting the [RuneScape 3](https://www.runesca
 - `git clone https://github.com/mejrs/rs3cache`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
 - Configure rustup to use the nightly version: `rustup default nightly`.
-- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
 - Navigate to this repository
 - Compile the executable with `cargo build --release`.
 - Either:
