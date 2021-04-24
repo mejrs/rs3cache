@@ -11,7 +11,6 @@ loc_configs = get_location_configs()
 # We could also use its .get(i,j) method
 # to get the mapsquare at position i, j.
 for mapsquare in MapSquares():
-	print(mapsquare.i, mapsquare.j)
 	try:
 		locations = mapsquare.locations()
 	except FileNotFoundError:
