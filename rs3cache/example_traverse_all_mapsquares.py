@@ -14,7 +14,7 @@ for mapsquare in MapSquares():
 	try:
 		locations = mapsquare.locations()
 	except FileNotFoundError:
-		# not all mapsquares contain locations
+		# not all mapsquares contain locations.
 		pass
 	else:
 		for loc in locations:
