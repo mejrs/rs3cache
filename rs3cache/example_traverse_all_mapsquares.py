@@ -7,7 +7,7 @@ from rs3cache import *
 loc_configs = get_location_configs()
 
 # MapSquares implements the iterator protocol,
-# so we can do for .. in ...to traverse all mapsquares.
+# so we can do for .. in .. to traverse all mapsquares.
 # We could also use its .get(i,j) method
 # to get the mapsquare at position i, j.
 for mapsquare in MapSquares():
