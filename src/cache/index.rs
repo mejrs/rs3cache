@@ -487,6 +487,13 @@ pub struct IntoIter {
     feed: std::vec::IntoIter<u32>,
 }
 
+impl IntoIter{
+    /// Returns a view of the [`IndexMetadata`] of the contained [`CacheIndex`].
+    pub fn metadatas(&self) -> &IndexMetadata{
+        self.index.metadatas()
+    }
+}
+
 impl Iterator for IntoIter {
     type Item = Archive;
 

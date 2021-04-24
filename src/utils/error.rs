@@ -175,8 +175,17 @@ impl Debug for CacheError {
 }
 
 impl std::error::Error for CacheError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        unimplemented!()
+    fn backtrace(&self) -> Option<&Backtrace> {
+        match self {
+            Self::SqliteError(_, trace) => Some(&trace),
+            Self::IoError(_, trace) => Some(&trace),
+            Self::SerdeError(_, trace) => Some(&trace),
+            Self::ImageError(_, trace) => Some(&trace),
+            Self::ParseIntError(_, trace) => Some(&trace),
+            Self::NoneError(trace) => Some(&trace),
+            Self::BZip2Error(_, trace) => Some(&trace),
+            _ => None,
+        }
     }
 }
 
@@ -189,9 +198,10 @@ mod py_error_impl {
     impl From<CacheError> for PyErr {
         fn from(err: CacheError) -> PyErr {
             match err {
-                e @ CacheError::ArchiveNotFoundError(_, _) => exceptions::PyValueError::new_err(e.to_string()),
-                e @ CacheError::CacheNotFoundError(_, _) => exceptions::PyFileNotFoundError::new_err(e.to_string()),
-                e => exceptions::PyOSError::new_err(e.to_string()),
+                e @ CacheError::ArchiveNotFoundError(..) => exceptions::PyValueError::new_err(e.to_string()),
+                e @ CacheError::CacheNotFoundError(..) => exceptions::PyFileNotFoundError::new_err(e.to_string()),
+                e @ CacheError::FileNotFoundError(..) => exceptions::PyFileNotFoundError::new_err(e.to_string()),
+                e => exceptions::PyRuntimeError::new_err(e.to_string()),
             }
         }
     }
@@ -199,9 +209,10 @@ mod py_error_impl {
     impl From<&CacheError> for PyErr {
         fn from(err: &CacheError) -> PyErr {
             match err {
-                e @ CacheError::ArchiveNotFoundError(_, _) => exceptions::PyValueError::new_err(e.to_string()),
-                e @ CacheError::CacheNotFoundError(_, _) => exceptions::PyFileNotFoundError::new_err(e.to_string()),
-                e => exceptions::PyOSError::new_err(e.to_string()),
+                e @ CacheError::ArchiveNotFoundError(..) => exceptions::PyValueError::new_err(e.to_string()),
+                e @ CacheError::CacheNotFoundError(..) => exceptions::PyFileNotFoundError::new_err(e.to_string()),
+                e @ CacheError::FileNotFoundError(..) => exceptions::PyFileNotFoundError::new_err(e.to_string()),
+                e => exceptions::PyRuntimeError::new_err(e.to_string()),
             }
         }
     }

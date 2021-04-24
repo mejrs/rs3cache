@@ -9,8 +9,10 @@ use std::{
     iter,
 };
 
-//use pyo3::{prelude::*, PyObjectProtocol};
+#[cfg(feature = "pyo3")]
+use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
+use serde_with::skip_serializing_none;
 
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
@@ -188,23 +190,21 @@ pub enum Value {
     String(String),
 }
 
-/// Describes the properties of a given item.
+/// Describes the properties of a given enum.
 #[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[skip_serializing_none]
 #[derive(Serialize, Debug, Default)]
 pub struct Enum {
     /// Its id.
     pub id: u32,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unknown_131: Option<bool>,
-
     #[serde(skip_serializing_if = "KeyType::is_init")]
     key_type: KeyType,
     #[serde(skip_serializing_if = "ValueType::is_init")]
     value_type: ValueType,
-
     #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub variants: BTreeMap<i32, Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub default: Option<Value>,
 }
 
@@ -282,6 +282,18 @@ use std::fmt::{self, Display, Formatter};
 impl Display for Enum {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "{}", serde_json::to_string_pretty(&self).unwrap())
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pyproto]
+impl PyObjectProtocol for Enum {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("Enum({})", serde_json::to_string(self).unwrap()))
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!("Enum({})", serde_json::to_string(self).unwrap()))
     }
 }
 

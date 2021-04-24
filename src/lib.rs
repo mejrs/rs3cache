@@ -156,6 +156,5 @@ pub mod structures {
 
 /// Foreign function interfaces to `rs3cache`.
 pub mod ffi {
-    #[cfg(feature = "pyo3")]
     pub mod python;
 }
