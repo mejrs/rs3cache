@@ -159,7 +159,7 @@ pub mod python_impl {
             Ok(PyMapSquare { inner: sq, metadata })
         }
     }
-    
+
     #[pyproto]
     impl PyIterProtocol for PyMapSquares {
         fn __iter__(slf: PyRef<Self>) -> PyResult<Py<PyMapSquaresIter>> {
@@ -191,8 +191,6 @@ pub mod python_impl {
         }
     }
 
-
-
     /// Obtained from [`PyMapSquares`]'s [`get`](PyMapSquares::get) method.
     #[pyclass(name = "MapSquare")]
     pub struct PyMapSquare {
@@ -203,6 +201,22 @@ pub mod python_impl {
 
     #[pymethods]
     impl PyMapSquare {
+        /// The horizontal [`MapSquare`] coordinate.
+        ///
+        /// It can have any value in the range `0..=100`.
+        #[getter]
+        pub fn i(&self) -> u8 {
+            self.inner.i
+        }
+        
+        /// The vertical [`MapSquare`] coordinate.
+        ///
+        /// It can have any value in the range `0..=200`.
+        #[getter]
+        pub fn j(&self) -> u8 {
+            self.inner.j
+        }
+
         /// The [`Location`]s in a mapsquare.
         pub fn locations(&self) -> PyResult<Vec<Location>> {
             let locs = self.inner.get_locations()?.clone();
