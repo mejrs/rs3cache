@@ -50,7 +50,12 @@
 pub mod python_impl {
     use std::collections::{BTreeMap, HashMap};
 
-    use pyo3::{exceptions::PyIndexError, prelude::*, types::PyInt, wrap_pyfunction, PyIterProtocol, PyObjectProtocol};
+    use pyo3::{
+        exceptions::{PyIndexError, PyTypeError},
+        prelude::*,
+        types::PyInt,
+        wrap_pyfunction, PyIterProtocol, PyObjectProtocol,
+    };
 
     use crate::{
         cache::{
@@ -140,9 +145,9 @@ pub mod python_impl {
         /// Get a specific mapsquare.
         ///
         /// # Exceptions
-        /// Raises `ValueError` if `i` or `j` is not between 0 and 200.
-        ///
-        /// Raises `ValueError` if there is not a mapsquare at `(i,j)`.
+        /// Raises `TypeError` if `i` and `j` are not integers.
+        /// Raises `IndexError` if not(0 <= i <= 100 and 0 <= j <= 200)
+        /// Raises `ValueError` if there is not a mapsquare at i, j.
         ///
         /// # Example
         /// ```python
@@ -151,11 +156,16 @@ pub mod python_impl {
         /// mapsquares = MapSquares()
         /// lumbridge = mapsquares.get(50, 50)
         ///```
-        pub fn get(&self, i: &PyInt, j: &PyInt) -> PyResult<PyMapSquare> {
+        #[text_signature = "($self, i, j)"]
+        pub fn get(&self, i: &PyAny, j: &PyAny) -> PyResult<PyMapSquare> {
             let rust_i = i
+                .downcast::<PyInt>()
+                .map_err(|_| PyTypeError::new_err(format!("i was of type {}. i must be an integer.", i.get_type())))?
                 .extract::<u32>()
                 .map_err(|_| PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))?;
             let rust_j = j
+                .downcast::<PyInt>()
+                .map_err(|_| PyTypeError::new_err(format!("j was of type {}. j must be an integer.", j.get_type())))?
                 .extract::<u32>()
                 .map_err(|_| PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))?;
 
@@ -252,12 +262,12 @@ pub mod python_impl {
 
     #[pyproto]
     impl PyObjectProtocol for PyMapSquare {
-        fn __repr__(&self) -> PyResult<String> {
-            Ok(format!("MapSquare({},{})", self.inner.i, self.inner.j))
+        fn __repr__(&self) -> String {
+            format!("MapSquare({},{})", self.inner.i, self.inner.j)
         }
 
-        fn __str__(&self) -> PyResult<String> {
-            Ok(format!("MapSquare({},{})", self.inner.i, self.inner.j))
+        fn __str__(&self) -> String {
+            format!("MapSquare({},{})", self.inner.i, self.inner.j)
         }
     }
 
@@ -301,12 +311,12 @@ pub mod python_impl {
 
     #[pyproto]
     impl PyObjectProtocol for PyCacheIndex {
-        fn __repr__(&self) -> PyResult<String> {
-            Ok(format!("Index({})", self.inner.index_id()))
+        fn __repr__(&self) -> String {
+            format!("Index({})", self.inner.index_id())
         }
 
-        fn __str__(&self) -> PyResult<String> {
-            Ok(format!("Index({})", self.inner.index_id()))
+        fn __str__(&self) -> String {
+            format!("Index({})", self.inner.index_id())
         }
     }
 
