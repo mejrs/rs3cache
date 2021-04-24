@@ -50,7 +50,7 @@
 pub mod python_impl {
     use std::collections::{BTreeMap, HashMap};
 
-    use pyo3::{prelude::*, wrap_pyfunction, PyIterProtocol, PyObjectProtocol};
+    use pyo3::{exceptions::PyIndexError, prelude::*, types::PyInt, wrap_pyfunction, PyIterProtocol, PyObjectProtocol};
 
     use crate::{
         cache::{
@@ -140,7 +140,7 @@ pub mod python_impl {
         /// Get a specific mapsquare.
         ///
         /// # Exceptions
-        /// Raises `OverflowError` if `i` or `j` is not between 0 and 255.
+        /// Raises `ValueError` if `i` or `j` is not between 0 and 200.
         ///
         /// Raises `ValueError` if there is not a mapsquare at `(i,j)`.
         ///
@@ -151,12 +151,25 @@ pub mod python_impl {
         /// mapsquares = MapSquares()
         /// lumbridge = mapsquares.get(50, 50)
         ///```
-        pub fn get(&self, i: u8, j: u8) -> PyResult<PyMapSquare> {
-            let archive_id = (i as u32) | (j as u32) << 7;
-            let archive = self.index.archive(archive_id)?;
-            let sq = MapSquare::from_archive(archive);
-            let metadata = self.index.metadatas().get(&archive_id).cloned();
-            Ok(PyMapSquare { inner: sq, metadata })
+        pub fn get(&self, i: &PyInt, j: &PyInt) -> PyResult<PyMapSquare> {
+            let rust_i = i
+                .extract::<u32>()
+                .map_err(|_| PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))?;
+            let rust_j = j
+                .extract::<u32>()
+                .map_err(|_| PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))?;
+
+            if rust_i >= 100 {
+                Err(PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))
+            } else if rust_j >= 200 {
+                Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
+            } else {
+                let archive_id = rust_i | rust_j << 7;
+                let archive = self.index.archive(archive_id)?;
+                let sq = MapSquare::from_archive(archive);
+                let metadata = self.index.metadatas().get(&archive_id).cloned();
+                Ok(PyMapSquare { inner: sq, metadata })
+            }
         }
     }
 
@@ -208,7 +221,7 @@ pub mod python_impl {
         pub fn i(&self) -> u8 {
             self.inner.i
         }
-        
+
         /// The vertical [`MapSquare`] coordinate.
         ///
         /// It can have any value in the range `0..=200`.
