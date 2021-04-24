@@ -1,4 +1,4 @@
-# This locates all locations(a.k.a. objects) that are named "[ph]".
+# This locates all locations (a.k.a. objects) that are named "[ph]".
 
 # Imports the library. You must have built python wheels to make this work.
 from rs3cache import *
