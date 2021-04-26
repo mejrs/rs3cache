@@ -17,10 +17,10 @@ pub trait ParApply: Iterator {
 
     /// Calculates `value`s of a `!Sync` iterator and assigns the computation of `func(value)` to the threadpool.
     #[cfg(not(feature = "singlethreaded"))]
-    fn par_apply<F>(self, func: F)
+    fn par_apply<'f, F>(self, func: F)
     where
         Self: Sized + Send,
-        F: Fn(Self::Item) + Sync + Send,
+        F: Fn(Self::Item) + Sync + Send + 'f,
     {
         let pool_size = num_cpus::get();
         let feed = Arc::new(Mutex::new(self));
@@ -44,18 +44,17 @@ pub trait ParApply: Iterator {
                             None => break,
                         };
                     })
-                    .unwrap()
+                    .unwrap_or_else(|_| std::process::abort())
             };
             pool.push(handle);
         }
 
         // SAFETY: ...which is smaller than the enclosing scope as it's joined here...
         for handle in pool {
-            handle.join().unwrap();
+            handle.join().unwrap_or_else(|_| std::process::abort());
         }
 
-        // SAFETY: ...and the references dropped here.
-        drop(feed);
+        // SAFETY: ...and the references valid until dropped here.
         drop(func);
     }
 }
