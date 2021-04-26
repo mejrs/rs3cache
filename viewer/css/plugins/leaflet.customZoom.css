@@ -1,0 +1,24 @@
+.leaflet-container .leaflet-control-zoom {
+  background: #fff;
+background-clip: padding-box;
+
+  margin-left: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  color: #333;
+  font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  float:left;
+  width: initial !important;
+
+}
+
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}

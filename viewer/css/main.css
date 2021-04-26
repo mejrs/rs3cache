@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+	background-color: black;
+}
+
+#selection {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.leaflet-control-message-container{
+	position: relative;
+	top: 5px;
+	pointer-events: none;
+	z-index:1337;
+}
+
+.leaflet-control-message-box {
+	float:top;
+	position: relative;
+	left: 50%;
+	display: table;
+	transform: translate(-50%, 0%);
+	background: #fff;
+	background-clip: padding-box;
+	padding: 5px 5px;
+	margin-left: 10px;
+	margin-top: 10px;
+	border-radius: 5px;
+	font: 20px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.leaflet-control-message-content{
+	position: relative;
+	display: inline-block;
+	
+}
+
+.leaflet-control-message-clear{
+	position: relative;
+	margin-left: 5px;
+	color: grey;
+	display: inline-block;
+	pointer-events: auto;
+}
+
+.leaflet-tile-loaded {
+	visibility: inherit;
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+}
+	
