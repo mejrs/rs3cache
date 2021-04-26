@@ -27,34 +27,39 @@ pub trait ParApply: Iterator {
 
         let mut pool = Vec::with_capacity(pool_size);
 
-        for id in 0..pool_size {
+        for _ in 0..pool_size {
             // SAFETY: No reference may outlive the new thread scope...
             let handle = unsafe {
-                thread::Builder::new()
-                    .name(id.to_string())
-                    .spawn_unchecked(|| loop {
-                        let item = {
-                            match feed.lock() {
-                                Ok(mut i) => i.next(),
-                                Err(_) => break,
-                            }
-                        };
-                        match item {
-                            Some(n) => func(n),
-                            None => break,
-                        };
-                    })
-                    .unwrap_or_else(|_| std::process::abort())
+                thread::Builder::new().spawn_unchecked(|| loop {
+                    let item = {
+                        match feed.lock() {
+                            Ok(mut i) => i.next(),
+                            Err(_) => break,
+                        }
+                    };
+                    match item {
+                        Some(n) => func(n),
+                        None => break,
+                    };
+                })
             };
-            pool.push(handle);
+            // avoid panicking
+            if let Ok(h) = handle {
+                pool.push(h);
+            } else {
+                println!("Error creating thread");
+            }
         }
 
         // SAFETY: ...which is smaller than the enclosing scope as it's joined here...
-        for handle in pool {
-            handle.join().unwrap_or_else(|_| std::process::abort());
+        let joined = pool.into_iter().map(|h| h.join()).collect::<Vec<_>>();
+
+        for join in joined {
+            // now it's fine to panic if necessary
+            join.unwrap();
         }
 
-        // SAFETY: ...and the references valid until dropped here.
+        drop(feed);
         drop(func);
     }
 }
