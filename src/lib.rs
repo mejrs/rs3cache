@@ -39,11 +39,9 @@
 //!
 
 #![feature(
-    const_fn,
     option_result_contains,
     option_get_or_insert_default,
     option_result_unwrap_unchecked,
-    map_into_keys_values,
     try_trait,
     backtrace,
     thread_spawn_unchecked,

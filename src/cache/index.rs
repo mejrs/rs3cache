@@ -85,13 +85,13 @@ where
     /// The [index id](crate::cache::indextype::IndexType) of `self`,
     /// corresponding to the `raw/js5-{index_id}.jcache` file being held.
     #[inline(always)]
-    pub const fn index_id(&self) -> u32 {
+    pub fn index_id(&self) -> u32 {
         self.index_id
     }
 
     /// Returns a view over the [`IndexMetadata`] of `self`.
     #[inline(always)]
-    pub const fn metadatas(&self) -> &IndexMetadata {
+    pub fn metadatas(&self) -> &IndexMetadata {
         &(self.metadatas)
     }
 
