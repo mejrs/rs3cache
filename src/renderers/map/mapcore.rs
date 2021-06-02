@@ -75,7 +75,7 @@ fn inner_render(iter: GroupMapSquareIterator) -> CacheResult<()> {
     let sprite_ids = mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>();
     let sprites = sprites::dumps(SCALE, sprite_ids)?;
 
-    let length = iter.size_hint().1?;
+    let length = iter.size_hint().1.unwrap();
     let mut progress_bar = ProgressBar::new(length);
     progress_bar.print_info(
         "Creating",

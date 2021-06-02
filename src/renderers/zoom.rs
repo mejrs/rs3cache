@@ -20,7 +20,7 @@ pub fn render_zoom_levels(folder: &str, mapid: i32, range: Range<i8>, backfill: 
 
         let new_tile_coordinates = get_future_filenames(folder, mapid, zoom_level)?.into_iter();
 
-        let length = new_tile_coordinates.size_hint().1?;
+        let length = new_tile_coordinates.size_hint().1.unwrap();
 
         let mut progress_bar = ProgressBar::new(length);
         progress_bar.print_info(
@@ -58,10 +58,10 @@ pub fn render_zoom_levels(folder: &str, mapid: i32, range: Range<i8>, backfill: 
 }
 
 fn to_coordinates(text: OsString) -> CacheResult<(usize, usize, usize)> {
-    let caps = RE.captures(text.to_str()?)?;
-    let p = caps.name("p")?.as_str().parse::<usize>()?;
-    let i = caps.name("i")?.as_str().parse::<usize>()?;
-    let j = caps.name("j")?.as_str().parse::<usize>()?;
+    let caps = RE.captures(text.to_str().unwrap()).unwrap();
+    let p = caps.name("p").unwrap().as_str().parse::<usize>()?;
+    let i = caps.name("i").unwrap().as_str().parse::<usize>()?;
+    let j = caps.name("j").unwrap().as_str().parse::<usize>()?;
     Ok((p, i, j))
 }
 

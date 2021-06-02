@@ -18,7 +18,5 @@ for mapsquare in MapSquares():
 		pass
 	else:
 		for loc in locations:
-			loc_config = loc_configs[loc.id]
-			if loc_config.name == "[ph]":
-				plane, x , y = loc.plane, loc.i << 6 | loc.x, loc.j << 6 | loc.y
-				print("Found [ph] at", plane, x, y, loc_config)
+			if loc.id == 106208:
+				print("hi")

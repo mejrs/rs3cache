@@ -219,7 +219,7 @@ pub fn export() -> CacheResult<()> {
             .filter_map(|sq| sq.take_locations().ok())
             .filter(|locs| !locs.is_empty())
             .map(|locs| locs.last().expect("locations stopped existing").id)
-            .max()?
+            .max().unwrap()
     };
 
     let squares = MapSquareIterator::new()?;
@@ -259,7 +259,7 @@ pub fn _export() -> CacheResult<()> {
             .filter_map(|sq| sq.take_locations().ok())
             .filter(|locs| !locs.is_empty())
             .map(|locs| locs.last().expect("locations stopped existing").id)
-            .max()?
+            .max().unwrap()
     };
 
     let squares = MapSquareIterator::new()?;

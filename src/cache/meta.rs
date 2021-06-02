@@ -188,7 +188,7 @@ impl IndexMetadata {
         let _index_utc_stamp = if format > 5 { Some(buffer.read_int()) } else { None };
         let [named, hashed, unk4, ..] = buffer.read_bitflags();
         let entry_count = if format >= 7 {
-            buffer.read_smart32()? as usize
+            buffer.read_smart32().unwrap() as usize
         } else {
             buffer.read_unsigned_short() as usize
         };
@@ -196,7 +196,7 @@ impl IndexMetadata {
         let archive_ids = iter::repeat_with(|| {
             Ok({
                 if format >= 7 {
-                    buffer.read_smart32()?
+                    buffer.read_smart32().unwrap()
                 } else {
                     buffer.read_unsigned_short() as u32
                 }
@@ -245,7 +245,7 @@ impl IndexMetadata {
         let child_counts = iter::repeat_with(|| {
             Ok({
                 if format >= 7 {
-                    buffer.read_smart32()?
+                    buffer.read_smart32().unwrap()
                 } else {
                     buffer.read_unsigned_short() as u32
                 }
@@ -261,7 +261,7 @@ impl IndexMetadata {
                     iter::repeat_with(|| {
                         Ok({
                             if format >= 7 {
-                                buffer.read_smart32()?
+                                buffer.read_smart32().unwrap()
                             } else {
                                 buffer.read_unsigned_short() as u32
                             }

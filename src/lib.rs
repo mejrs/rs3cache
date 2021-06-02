@@ -42,7 +42,6 @@
     option_result_contains,
     option_get_or_insert_default,
     option_result_unwrap_unchecked,
-    try_trait,
     backtrace,
     thread_spawn_unchecked,
     once_cell

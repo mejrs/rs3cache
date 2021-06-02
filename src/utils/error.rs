@@ -64,12 +64,6 @@ impl From<std::io::Error> for CacheError {
     }
 }
 
-impl From<std::option::NoneError> for CacheError {
-    fn from(_: std::option::NoneError) -> Self {
-        Self::NoneError(Backtrace::capture())
-    }
-}
-
 impl From<std::num::ParseIntError> for CacheError {
     fn from(cause: std::num::ParseIntError) -> Self {
         Self::ParseIntError(cause, Backtrace::capture())
