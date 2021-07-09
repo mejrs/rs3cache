@@ -1,4 +1,3 @@
-#[cfg(not(feature = "singlethreaded"))]
 use std::{
     sync::{Arc, Mutex},
     thread,
@@ -6,17 +5,7 @@ use std::{
 
 /// Enables the [par_apply()](ParApply::par_apply) iterator adapter.
 pub trait ParApply: Iterator {
-    #[cfg(feature = "singlethreaded")]
-    fn par_apply<F>(self, func: F)
-    where
-        Self: Sized + Send,
-        F: Fn(Self::Item) + Sync + Send,
-    {
-        self.for_each(func);
-    }
-
     /// Calculates `value`s of a `!Sync` iterator and assigns the computation of `func(value)` to the threadpool.
-    #[cfg(not(feature = "singlethreaded"))]
     fn par_apply<'f, F>(self, func: F)
     where
         Self: Sized + Send,

@@ -4,12 +4,16 @@ use image::{GenericImage, GenericImageView, RgbaImage};
 use itertools::iproduct;
 
 use crate::{
-    definitions::{location_configs::LocationConfig, mapscenes::MapScene, mapsquares::GroupMapSquare, sprites::Sprite},
+    definitions::{location_configs::LocationConfig,  mapsquares::GroupMapSquare, sprites::Sprite},
     renderers::map::mapcore::TILESIZE,
     utils::rangeclamp::RangeClamp,
 };
 
+#[cfg(feature = "rs3")]
+use crate::definitions::mapscenes::MapScene;
+
 /// Applies [`MapScene`]s to the base image.
+#[cfg(feature = "rs3")]
 pub fn put(
     plane: usize,
     img: &mut RgbaImage,

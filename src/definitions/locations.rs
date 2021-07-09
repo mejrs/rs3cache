@@ -8,7 +8,7 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::{Serialize, Serializer};
 
 use crate::{
-    cache::buf::Buffer,
+    cache::buf::  Buffer,
     definitions::{
         mapsquares::MapSquareIterator,
         tiles::{Tile, TileArray},
@@ -115,6 +115,7 @@ pub struct Location {
 
 impl Location {
     // todo: fix this with water tiles
+    #[cfg(feature = "rs3")]
     pub(crate) fn dump_water_locations(i: u8, j: u8, file: Vec<u8>) -> Vec<Self> {
         let blanks = TileArray::from_elem((4, 64, 64), Tile::default());
         Self::dump(i, j, &blanks, file)
@@ -122,20 +123,21 @@ impl Location {
 
     /// Constructor for [`Location`].
     pub fn dump(i: u8, j: u8, tiles: &TileArray, file: Vec<u8>) -> Vec<Self> {
-        let mut buffer = Buffer::new(file);
+        let mut buffer =  Buffer::new(file);
         let mut locations = Vec::new();
 
         let mut id: i32 = -1;
+
         loop {
             match buffer.read_smarts() as i32 {
-                0 => break,
+                0 => break locations,
                 id_increment => {
                     id += id_increment;
 
                     let mut location = 0;
                     loop {
                         match buffer.read_unsigned_smart() {
-                            0 => break,
+                            0 => break ,
                             location_increment => {
                                 location += location_increment - 1;
 
@@ -148,6 +150,7 @@ impl Location {
                                 let rotation = data & 0x3;
 
                                 // some objects have offsets; not using this data atm
+                                #[cfg(feature = "rs3")]
                                 if data >= 0x80 {
                                     let sub_data = buffer.read_unsigned_byte();
                                     if sub_data != 0 {
@@ -202,10 +205,7 @@ impl Location {
                     }
                 }
             }
-        }
-        debug_assert_eq!(buffer.remaining(), 0);
-
-        locations
+        }       
     }
 }
 

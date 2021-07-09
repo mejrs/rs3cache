@@ -156,7 +156,7 @@ pub mod python_impl {
         /// mapsquares = MapSquares()
         /// lumbridge = mapsquares.get(50, 50)
         ///```
-        #[text_signature = "($self, i, j)"]
+        #[pyo3(text_signature = "($self, i, j)")]
         pub fn get(&self, i: &PyAny, j: &PyAny) -> PyResult<PyMapSquare> {
             let rust_i = i
                 .downcast::<PyInt>()

@@ -147,19 +147,24 @@ impl Debug for CacheError {
             Self::ArchiveNotFoundError(5, archive) => write!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7),
             Self::ArchiveNotFoundError(index, archive) => write!(f, "Index {} does not contain archive {}", index, archive),
 
+            #[cfg(feature = "rs3")]
             Self::FileNotFoundError(IndexType::MAPSV2, archive, MapFileType::LOCATIONS) => {
                 write!(f, "Mapsquare ({}, {}) does not contain locations.", archive & 0x7F, archive >> 7)
             }
+            #[cfg(feature = "rs3")]
             Self::FileNotFoundError(IndexType::MAPSV2, archive, MapFileType::WATER_LOCATIONS) => {
                 write!(f, "Mapsquare ({}, {}) does not contain water locations.", archive & 0x7F, archive >> 7)
             }
+            #[cfg(feature = "rs3")]
             Self::FileNotFoundError(IndexType::MAPSV2, archive, MapFileType::TILES) => {
                 write!(f, "Mapsquare ({}, {}) does not contain tiles.", archive & 0x7F, archive >> 7)
             }
+            #[cfg(feature = "rs3")]
             Self::FileNotFoundError(IndexType::MAPSV2, archive, MapFileType::WATER_TILES) => {
                 write!(f, "Mapsquare ({}, {}) does not contain water tiles.", archive & 0x7F, archive >> 7)
             }
 
+            #[cfg(feature = "rs3")]
             Self::FileNotFoundError(IndexType::MAPSV2, archive, file) => {
                 write!(f, "Mapsquare ({}, {}) does not contain file {}", archive & 0x3F, archive >> 7, file)
             }

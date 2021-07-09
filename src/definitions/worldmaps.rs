@@ -11,7 +11,7 @@ use std::{
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     types::coordinate::Coordinate,
     utils::error::CacheResult,
 };
@@ -56,7 +56,7 @@ impl MapZone {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buf = Buffer::new(file);
+        let mut buf =  Buffer::new(file);
         let internal_name = buf.read_string();
         let name = buf.read_string();
         let center = buf.read_unsigned_int().try_into().unwrap();
@@ -131,7 +131,7 @@ mod mapzone_fields_impl {
     #![allow(missing_docs)]
     use serde::Serialize;
 
-    use crate::cache::buf::Buffer;
+    use crate::cache::buf::  Buffer;
 
     #[derive(Debug, Serialize)]
     pub struct BoundDef {
@@ -141,7 +141,7 @@ mod mapzone_fields_impl {
     }
 
     impl BoundDef {
-        pub fn deserialize(buf: &mut Buffer) -> Self {
+        pub fn deserialize(buf: &mut  Buffer<Vec<u8>>) -> Self {
             let plane = buf.read_unsigned_byte();
             let src = Bound::deserialize(buf);
             let dst = Bound::deserialize(buf);
@@ -159,7 +159,7 @@ mod mapzone_fields_impl {
     }
 
     impl Bound {
-        pub fn deserialize(buf: &mut Buffer) -> Self {
+        pub fn deserialize(buf: &mut  Buffer<Vec<u8>>) -> Self {
             let west = buf.read_unsigned_short();
             let south = buf.read_unsigned_short();
             let east = buf.read_unsigned_short();
@@ -199,7 +199,7 @@ impl MapPastes {
 
     /// Constructor for [`MapPastes`].
     pub fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buf = Buffer::new(file);
+        let mut buf =  Buffer::new(file);
         let mut pastes = Vec::new();
 
         let square_count = buf.read_unsigned_short() as usize;
@@ -221,7 +221,7 @@ mod mappaste_fields_impl {
     #![allow(missing_docs)]
     use serde::Serialize;
 
-    use crate::cache::buf::Buffer;
+    use crate::cache::buf::  Buffer;
 
     #[derive(Debug, Serialize)]
     pub struct Paste {
@@ -239,7 +239,7 @@ mod mappaste_fields_impl {
     }
 
     impl Paste {
-        pub fn deserialize_square(buf: &mut Buffer) -> Self {
+        pub fn deserialize_square(buf: &mut  Buffer<Vec<u8>>) -> Self {
             let src_plane = buf.read_unsigned_byte();
             let n_planes = buf.read_unsigned_byte();
             let src_i = buf.read_unsigned_short();
@@ -264,7 +264,7 @@ mod mappaste_fields_impl {
             }
         }
 
-        pub fn deserialize_chunk(buf: &mut Buffer) -> Self {
+        pub fn deserialize_chunk(buf: &mut  Buffer<Vec<u8>>) -> Self {
             let src_plane = buf.read_unsigned_byte();
             let n_planes = buf.read_unsigned_byte();
             let src_i = buf.read_unsigned_short();
@@ -299,7 +299,7 @@ mod mappaste_fields_impl {
     }
 
     impl Chunk {
-        pub fn deserialize(buf: &mut Buffer) -> Self {
+        pub fn deserialize(buf: &mut  Buffer<Vec<u8>>) -> Self {
             let x = buf.read_unsigned_byte();
             let y = buf.read_unsigned_byte();
             Self { x, y }
@@ -355,7 +355,7 @@ pub fn dump_big() -> CacheResult<()> {
     let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapType::BIG)?.take_files();
 
     for (id, data) in files {
-        let mut buf = Buffer::new(data);
+        let mut buf =  Buffer::new(data);
         let size = buf.read_unsigned_int() as usize;
         let img = buf.read_n_bytes(size);
 

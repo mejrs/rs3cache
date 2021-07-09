@@ -54,6 +54,7 @@ impl Tile {
 
 impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
+    #[cfg(feature = "rs3")]
     pub fn dump(file: Vec<u8>) -> TileArray {
         let mut buffer = Buffer::new(file);
 
@@ -80,6 +81,33 @@ impl Tile {
             }
 
             tile
+        });
+
+        if buffer.remaining() != 0 {
+            //println!("{}", buffer.remaining());
+        }
+        tiles
+    }
+
+    #[cfg(feature = "osrs")]
+    pub fn dump(file: Vec<u8>) -> TileArray {
+        let mut buffer = Buffer::new(file);
+
+        let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
+            let mut tile = Tile::default();
+
+            loop {
+                match buffer.read_unsigned_byte() {
+                    0 => break tile,
+                    1 => {
+                        tile.height = Some(buffer.read_unsigned_byte());
+                        break tile;
+                    }
+                    opcode if opcode <= 49 => tile.overlay_id = Some(buffer.read_unsigned_byte() as u16),
+                    opcode if opcode <= 81 => tile.settings = Some(opcode - 49),
+                    opcode => tile.underlay_id = Some((opcode - 81) as u16),
+                }
+            }
         });
 
         if buffer.remaining() != 0 {

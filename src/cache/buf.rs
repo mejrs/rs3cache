@@ -14,13 +14,19 @@ use bytes::Buf;
 /// # Panics
 ///
 /// In general, these methods will panic if they attempt to read beyond end of file.
-pub struct Buffer {
-    buf: Cursor<Vec<u8>>,
+pub struct Buffer<T>
+where
+    T: AsRef<[u8]>,
+{
+    buf: Cursor<T>,
 }
 
-impl Buffer {
+impl<T> Buffer<T>
+where
+    T: AsRef<[u8]>,
+{
     /// Constructor for [`Buffer`].
-    pub fn new(file: Vec<u8>) -> Buffer {
+    pub fn new(file: T) -> Self {
         Buffer { buf: Cursor::new(file) }
     }
 

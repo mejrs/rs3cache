@@ -46,13 +46,14 @@
     thread_spawn_unchecked,
     once_cell
 )]
+#![allow(unused_variables, unused_imports)]
 #![warn(
-    unused_imports,
+    //unused_imports,
     unused_qualifications,
     unused_import_braces,
     unused_extern_crates,
     broken_intra_doc_links,
-    missing_docs,
+    //missing_docs,
     missing_crate_level_docs,
     trivial_casts,
     trivial_numeric_casts,
@@ -68,6 +69,7 @@ pub mod cache {
     pub mod index;
     pub mod indextype;
     pub mod meta;
+    pub mod hash;
 }
 
 /// Various data types
@@ -109,6 +111,8 @@ pub mod definitions {
 
     pub mod enums;
     pub mod structs;
+    #[cfg(feature = "osrs")]
+    pub mod textures;
 
     /// Describes the properties of game surface tiles.
     pub mod tiles;

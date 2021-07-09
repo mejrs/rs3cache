@@ -8,7 +8,9 @@
 //! and use its [`IntoIterator`] implementation or its [`archive`](crate::cache::index::CacheIndex::archive())
 //! method instead.
 
-use std::collections::{HashMap, HashSet};
+use std::
+    collections::{HashMap, HashSet, BTreeMap}
+;
 
 use itertools::izip;
 #[cfg(feature = "pyo3")]
@@ -55,11 +57,9 @@ impl IntoIterator for ArchiveGroup {
 /// A collection of files.
 #[cfg_attr(feature = "pyo3", pyclass)]
 pub struct Archive {
-    #[cfg_attr(feature = " pyo3", pyo3(get))]
     index_id: u32,
-    #[cfg_attr(feature = " pyo3", pyo3(get))]
     archive_id: u32,
-    files: HashMap<u32, File>,
+    files: BTreeMap<u32, File>,
     poison_state: HashSet<u32>,
 }
 
@@ -90,25 +90,53 @@ impl Archive {
         let files = match metadata.child_count() {
             0 => unreachable!(),
             1 => {
-                let mut files = HashMap::new();
+                let mut files = BTreeMap::new();
                 files.insert(metadata.child_indices()[0], data);
                 files
             }
+
+            #[cfg(feature = "rs3")]
             child_count => {
-                let mut buffer = Buffer::new(data);
+                let mut buffer = Buffer::new(&data);
 
                 let first = buffer.read_unsigned_byte();
                 assert_eq!(first, 1);
-                let offsets = std::iter::repeat_with(|| buffer.read_unsigned_int())
+
+                let offsets = std::iter::repeat_with(|| buffer.read_int())
                     .take(child_count as usize + 1)
                     .pairwise()
                     .collect::<Vec<_>>();
 
                 let files = izip!(metadata.child_indices(), offsets)
                     .map(|(i, (start, end))| (*i, buffer.read_n_bytes((end - start) as usize)))
-                    .collect::<HashMap<_, _>>();
+                    .collect::<BTreeMap<_, _>>();
 
                 assert_eq!(buffer.remaining(), 0);
+                files
+            }
+
+            #[cfg(feature = "osrs")]
+            child_count => {
+                use std::{convert::TryInto, io::SeekFrom::*};
+                use crate::utils::adapters::Accumulator;
+
+                let mut buffer = Buffer::new(&data);
+
+                buffer.seek(End(-1)).unwrap();
+                let n_chunks = buffer.read_unsigned_byte() as i64;
+                let seek = -1 - (4 * n_chunks * (child_count as i64));
+                buffer.seek(Current(seek)).unwrap();
+
+                let offsets = std::iter::repeat_with(|| buffer.read_int())
+                    .take(child_count as usize)
+                    .accumulate(|x, y| x + y)
+                    .collect::<Vec<_>>();
+
+                buffer.seek(Start(0)).unwrap();
+
+                let files = izip!(metadata.child_indices(), offsets)
+                    .map(|(i, n)| (*i, buffer.read_n_bytes(n.try_into().unwrap())))
+                    .collect::<BTreeMap<_, _>>();
                 files
             }
         };
@@ -141,7 +169,7 @@ impl Archive {
     /// # Panics
     ///
     /// This function will panic if [`take_file`](Archive::take_file) has been called prior.
-    pub fn take_files(self) -> HashMap<u32, File> {
+    pub fn take_files(self) -> BTreeMap<u32, File> {
         if self.poison_state.is_empty() {
             self.files
         } else {

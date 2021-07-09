@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::cache::buf::Buffer;
+use crate::cache::buf::  Buffer;
 
 /// A non player character.
 #[derive(Copy, Clone, Debug, Serialize)]
@@ -29,7 +29,7 @@ impl Npc {
     pub fn deserialize(i: u8, j: u8, file: Vec<u8>) -> Vec<Npc> {
         let length = file.len();
 
-        let mut buffer = Buffer::new(file);
+        let mut buffer =  Buffer::new(file);
         let mut npcs = Vec::with_capacity(length / 4);
 
         for _ in 0..(length / 4) {

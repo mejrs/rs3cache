@@ -18,6 +18,9 @@ impl IndexType {
     /// Contains [`Sprite`](crate::definitions::sprites::Sprite) definitions.
     pub const SPRITES: u32 = 8;
     /// Unimplemented.
+    #[cfg(feature = "osrs")]
+    pub const TEXTURES: u32 = 9;
+    /// Unimplemented.
     pub const BINARY: u32 = 10;
     /// Contains client side scripts in a bytecode-like format (cs2). Unimplemented.
     pub const SCRIPTS: u32 = 12;
@@ -26,10 +29,12 @@ impl IndexType {
     /// Unimplemented.
     pub const VORBIS: u32 = 14;
     /// Contains the [`LocationConfig`](crate::definitions::location_configs::LocationConfig) definitions.
+    #[cfg(feature = "rs3")]
     pub const LOC_CONFIG: u32 = 16;
     /// Unimplemented.
     pub const ENUM_CONFIG: u32 = 17;
     /// Contains the [`NpcConfig`](crate::definitions::npc_configs::NpcConfig) definitions.
+    //#[cfg(feature = "rs3")]
     pub const NPC_CONFIG: u32 = 18;
     /// Unimplemented.
     pub const OBJ_CONFIG: u32 = 19;
@@ -80,6 +85,7 @@ impl IndexType {
     /// Unimplemented.
     pub const DBTABLEINDEX: u32 = 49;
     /// Unimplemented.
+    #[cfg(feature = "rs3")]
     pub const TEXTURES: u32 = 52;
     /// Unimplemented.
     pub const TEXTURES_PNG: u32 = 53;
@@ -117,9 +123,15 @@ impl ConfigType {
     pub const OVERLAYS: u32 = 4;
     /// Unimplemented.
     pub const INVENTORY: u32 = 5;
+    
+    #[cfg(feature = "osrs")]
+    pub const LOC_CONFIG: u32 = 6;
     /// Unimplemented.
     pub const UNKNOWN_7: u32 = 7;
     /// Unimplemented.
+    #[cfg(feature = "osrs")]
+    pub const NPC_CONFIG: u32 = 9;
+
     pub const TOOLTIPS: u32 = 11;
     /// Unimplemented.
     pub const AREA: u32 = 18;
@@ -132,10 +144,15 @@ impl ConfigType {
     /// Unimplemented.
     pub const CURSORS: u32 = 33;
     /// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).
-    pub const MAPSCENES: u32 = 34;
+    #[cfg(feature = "rs3")]
+    pub const MAPSCENES: u32 = 34;  
+    #[cfg(feature = "osrs")]
+    pub const MAPLABELS: u32 = 35;  
     /// Unimplemented.
+    #[cfg(feature = "rs3")]
     pub const QUESTS: u32 = 35;
-    /// Unimplemented.
+    /// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).
+    #[cfg(feature = "rs3")]
     pub const MAPLABELS: u32 = 36;
     /// Unimplemented.
     pub const DBTABLE: u32 = 40;

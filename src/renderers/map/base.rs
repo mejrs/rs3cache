@@ -1,12 +1,13 @@
 use std::{collections::HashMap, convert::TryInto};
 
 use image::{GenericImage, Rgba, RgbaImage};
+use ndarray::{ArrayBase, Dim, ViewRepr};
 
 use super::{
     mapcore::{INTERP, TILESIZE},
     tileshape::{OverlayShape, UnderlayShape},
 };
-use crate::definitions::{mapsquares::GroupMapSquare, overlays::Overlay, underlays::Underlay};
+use crate::definitions::{mapsquares::GroupMapSquare, overlays::Overlay, tiles::Tile, underlays::Underlay};
 
 /// Applies ground colouring to the base image.
 pub fn put(
@@ -27,9 +28,9 @@ pub fn put(
                         || (plane == 0 && column.uget(p).settings.unwrap_or(0) & 0x8 != 0)
                 };
 
-                if condition {
+                if true {
                     // Underlays
-                    if let Some((red, green, blue)) = get_underlay_colour(underlay_definitions, &squares, p, x as usize, y as usize) {
+                    if let Some((red, green, blue)) = get_underlay_colour(column, underlay_definitions, &squares, p, x as usize, y as usize) {
                         let fill = Rgba([red, green, blue, 255u8]);
 
                         for (a, b) in UnderlayShape::new(column[p].shape, TILESIZE) {
@@ -67,6 +68,43 @@ pub fn put(
                             }
                         }
                     }
+
+                    // textures??
+                    #[cfg(feature = "osrs")]
+                    if let Some(id) = column[p].overlay_id {
+                        if let Some(texture_id) =
+                            &overlay_definitions[&(id.checked_sub(1).expect("Not 100% sure about this invariant.") as u32)].texture
+                        {
+                            let (red, green, blue) = match texture_id {
+                                1 => (87, 108, 157),
+                                2=> (70, 67, 63),
+                                3 => (74, 45, 23),
+                                11 => (64, 60, 56),
+                                15 => (91, 87, 98),
+                                23 => (50, 43, 28),
+                                25 => (44, 103, 84),
+                                31 => (213, 120, 8),
+                                35 => (127, 110, 70),
+                                43 => (87, 87, 78),
+                                46 => (83, 77, 74),
+                                51 => (118, 80, 37),
+                                unknown => unimplemented!("unimplemented texture id {}", unknown),
+
+                            };
+                            let fill = Rgba([87, 108, 157, 255]);
+
+                            for (a, b) in OverlayShape::new(column[p].shape.unwrap_or(0), TILESIZE) {
+                                unsafe {
+                                    debug_assert!(
+                                        (TILESIZE * x + a) < img.width() && (TILESIZE * (63u32 - y) + b) < img.height(),
+                                        "Index out of range."
+                                    );
+
+                                    img.unsafe_put_pixel(TILESIZE * x + a, TILESIZE * (63u32 - y) + b, fill)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         })
@@ -75,6 +113,7 @@ pub fn put(
 
 /// Averages out the [`Underlay`] colours, with a range specified by [`INTERP`].
 fn get_underlay_colour(
+    column: ArrayBase<ViewRepr<&Tile>, Dim<[usize; 1]>>,
     underlay_definitions: &HashMap<u32, Underlay>,
     squares: &GroupMapSquare,
     plane: usize,
@@ -82,7 +121,7 @@ fn get_underlay_colour(
     y: usize,
 ) -> Option<(u8, u8, u8)> {
     // only compute a colour average if the tile has a underlay
-    squares.core().get_tiles().unwrap()[(plane, x, y)].underlay_id.map(|_| {
+    column[plane].underlay_id.map(|_| {
         let tiles = squares.tiles_iter(plane, x, y, INTERP);
 
         let underlays = tiles.filter_map(|elem| elem.underlay_id);

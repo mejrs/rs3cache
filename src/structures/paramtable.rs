@@ -18,13 +18,13 @@ pub struct ParamTable {
 
 impl ParamTable {
     /// Constructor for [`ParamTable`]
-    pub fn deserialize(buffer: &mut Buffer) -> Self {
+    pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
         let count = buffer.read_unsigned_byte().into();
         let params = iter::repeat_with(|| Self::sub_deserialize(buffer)).take(count).collect();
         Self { params }
     }
 
-    fn sub_deserialize(buffer: &mut Buffer) -> (u32, Param) {
+    fn sub_deserialize(buffer: &mut Buffer<Vec<u8>>) -> (u32, Param) {
         let r#type = buffer.read_unsigned_byte();
 
         let key = buffer.read_3_unsigned_bytes();

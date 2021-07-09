@@ -1,5 +1,5 @@
 'use strict';
-const template = '../out/renders/{source}/-1/{zoom}/{plane}_{x}_{y}.png';
+const template = '../out/{source}/-1/{zoom}/{plane}_{x}_{y}.png';
 
 void function (global) {
     let runescape_map = global.runescape_map = L.gameMap('map', {
@@ -23,18 +23,28 @@ void function (global) {
         enableUrlLocation: true
     });
 
-    let main = L.tileLayer.main(template, {
-        source: 'map_squares',
+    let rs3 = L.tileLayer.main(template, {
+        source: 'rs3/map_squares',
         minZoom: -4,
         maxNativeZoom: 4,
         maxZoom: 6,
     }).addTo(runescape_map);
+	
+	let osrs = L.tileLayer.main(template, {
+        source: 'osrs/map_squares',
+        minZoom: -4,
+        maxNativeZoom: 4,
+        maxZoom: 6,
+    });
 
     let grid = L.grid({
         bounds: [[0, 0], [12800, 6400]],
     });
 
-    L.control.layers.urlParam({}, {
+    L.control.layers.urlParam({
+		"rs3": rs3,
+		"osrs": osrs,
+	}, {
         "grid": grid
     }, {
         collapsed: true,
@@ -44,8 +54,8 @@ void function (global) {
     // Check to see if the lumbridge tile is present
     let void_image = new Image;
     void_image.onerror = function () {
-        runescape_map.addMessage("Could not load tiles. Please render maptiles first.", 60000)
+        runescape_map.addMessage("Could not load rs3 tiles. Please render maptiles first.", 60000)
     }
-    void_image.src = '../out/renders/map_squares/-1/1/0_25_25.png';
+    void_image.src = '../out/rs3/map_squares/-1/1/0_25_25.png';
 }
 (this || window);

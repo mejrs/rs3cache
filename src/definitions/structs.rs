@@ -12,7 +12,7 @@ use serde::Serialize;
 use serde_with::skip_serializing_none;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::error::CacheResult,
 };
@@ -63,7 +63,7 @@ impl Struct {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+        let mut buffer =  Buffer::new(file);
         let mut r#struct = Self { id, ..Default::default() };
 
         loop {

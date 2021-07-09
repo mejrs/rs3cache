@@ -5,11 +5,14 @@
 #[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
 compile_error!("mockdata and save_mockdata are incompatible");
 
+#[cfg(all(feature = "rs3", feature = "osrs"))]
+compile_error!("rs3 and osrs are incompatible");
+
 use std::{
     collections::HashSet,
     env::{self, VarError},
     fs::{self, File},
-    io::{Read, Write},
+    io::{Read, SeekFrom, Write},
     marker::PhantomData,
     ops::RangeInclusive,
     path::Path,
@@ -69,12 +72,15 @@ pub struct CacheIndex<S: IndexState> {
     metadatas: IndexMetadata,
     state: S,
 
-    #[cfg(not(feature = "mockdata"))]
+    #[cfg(all(feature = "rs3", not(feature = "mockdata")))]
     connection: sqlite::Connection,
 
     // correctly derive things like !Sync
-    #[cfg(feature = "mockdata")]
+    #[cfg(all(feature = "rs3", feature = "mockdata"))]
     connection: PhantomData<sqlite::Connection>,
+
+    #[cfg(feature = "osrs")]
+    file: Box<[u8]>,
 }
 
 // methods valid in any state
@@ -95,6 +101,102 @@ where
         &(self.metadatas)
     }
 
+    /// Get an [`Archive`] from `self`.
+    ///
+    /// # Errors
+    ///
+    /// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.
+    pub fn archive(&self, archive_id: u32) -> CacheResult<Archive> {
+        let metadata = self
+            .metadatas()
+            .get(&archive_id)
+            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
+        let data = self.get_file(&metadata)?;
+
+        Ok(Archive::deserialize(metadata, data))
+    }
+}
+
+impl CacheIndex<Initial> {
+    /// Retain only those archives that are in `ids`.
+    /// Advances `self` to the `Truncated` state.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any of `ids` is not in `self`.
+    pub fn retain(self, ids: Vec<u32>) -> CacheIndex<Truncated> {
+        let all_ids = self.metadatas().keys().copied().collect::<HashSet<_>>();
+
+        if let Some(missing_id) = ids.iter().find(|id| !all_ids.contains(id)) {
+            panic!("Attempted to retain missing archive id {},", missing_id)
+        }
+        let Self {
+            #[cfg(feature = "rs3")]
+            connection,
+            #[cfg(feature = "osrs")]
+            file,
+            index_id,
+            metadatas,
+            ..
+        } = self;
+
+        CacheIndex {
+            #[cfg(feature = "rs3")]
+            connection,
+            #[cfg(feature = "osrs")]
+            file,
+            index_id,
+            metadatas,
+            state: Truncated { feed: ids },
+        }
+    }
+
+    /// Groups archives according to their surface proximity.
+    /// Only valid for the `MAPSV2` index.
+    /// Advances `self` to the `Grouped` state.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `self.index_id() != IndexType::MAPSV2`.
+    pub fn grouped(self, dim_i: RangeInclusive<i32>, dim_j: RangeInclusive<i32>) -> CacheIndex<Grouped> {
+        assert_eq!(
+            self.index_id(),
+            IndexType::MAPSV2,
+            "Grouped archives are only valid for IndexType::MAPSV2."
+        );
+
+        let Self {
+            #[cfg(feature = "rs3")]
+            connection,
+            #[cfg(feature = "osrs")]
+            file,
+            index_id,
+            metadatas,
+            ..
+        } = self;
+
+        CacheIndex {
+            #[cfg(feature = "rs3")]
+            connection,
+            #[cfg(feature = "osrs")]
+            file,
+            index_id,
+            metadatas,
+            state: Grouped { dim_i, dim_j },
+        }
+    }
+
+    /// Attempt to clone `self`.
+    pub fn try_clone(&self) -> CacheResult<Self> {
+        Self::new(self.index_id())
+    }
+}
+
+#[cfg(feature = "rs3")]
+impl<S> CacheIndex<S>
+where
+    S: IndexState,
+{
     /// Loads the [`Metadata`] of `self`.
     #[allow(unused_variables)]
     #[cfg(not(feature = "mockdata"))]
@@ -186,20 +288,6 @@ where
         decoder::decompress(encoded_data, metadata.size())
     }
 
-    /// Get an [`Archive`] from `self`.
-    ///
-    /// # Errors
-    ///
-    /// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.
-    pub fn archive(&self, archive_id: u32) -> CacheResult<Archive> {
-        let metadata = self
-            .metadatas()
-            .get(&archive_id)
-            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
-        let data = self.get_file(&metadata)?;
-        Ok(Archive::deserialize(metadata, data))
-    }
-
     /// Assert whether the cache held by `self` is in a coherent state.
     ///
     /// # Errors
@@ -248,6 +336,7 @@ where
     }
 }
 
+#[cfg(feature = "rs3")]
 impl CacheIndex<Initial> {
     /// Constructor for [`CacheIndex`].
     ///
@@ -293,66 +382,113 @@ impl CacheIndex<Initial> {
             state: Initial {},
         })
     }
+}
 
-    /// Retain only those archives that are in `ids`.
-    /// Advances `self` to the `Truncated` state.
-    ///
-    /// # Panics
-    ///
-    /// Panics if any of `ids` is not in `self`.
-    pub fn retain(self, ids: Vec<u32>) -> CacheIndex<Truncated> {
-        let all_ids = self.metadatas().keys().copied().collect::<HashSet<_>>();
+#[cfg(feature = "osrs")]
+impl<S> CacheIndex<S>
+where
+    S: IndexState,
+{
+    fn get_entry(a: u32, b: u32) -> CacheResult<(u32, u32)> {
+        let file = match env::var(SYS_VAR) {
+            Ok(var) => format!("{}/cache/main_file_cache.idx{}", var, a),
+            Err(VarError::NotPresent) => format!("raw/cache/main_file_cache.idx{}", a),
+            Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
+        };
 
-        if let Some(missing_id) = ids.iter().find(|id| !all_ids.contains(id)) {
-            panic!("Attempted to retain missing archive id {},", missing_id)
-        }
-        let Self {
-            connection,
-            index_id,
-            metadatas,
-            ..
-        } = self;
-
-        CacheIndex {
-            connection,
-            index_id,
-            metadatas,
-            state: Truncated { feed: ids },
-        }
+        let entry_data = fs::read(file)?;
+        let mut buf = Buffer::new(entry_data);
+        buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
+        Ok((buf.read_3_unsigned_bytes(), buf.read_3_unsigned_bytes()))
     }
 
-    /// Groups archives according to their surface proximity.
-    /// Only valid for the `MAPSV2` index.
-    /// Advances `self` to the `Grouped` state.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `self.index_id() != IndexType::MAPSV2`.
-    pub fn grouped(self, dim_i: RangeInclusive<i32>, dim_j: RangeInclusive<i32>) -> CacheIndex<Grouped> {
-        assert_eq!(
-            self.index_id(),
-            IndexType::MAPSV2,
-            "Grouped archives are only valid for IndexType::MAPSV2."
-        );
+    fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {
+        let mut buffer = Buffer::new(&self.file);
 
-        let Self {
-            connection,
-            index_id,
-            metadatas,
-            ..
-        } = self;
+        let (length, mut sector) = Self::get_entry(a, b)?;
 
-        CacheIndex {
-            connection,
-            index_id,
-            metadatas,
-            state: Grouped { dim_i, dim_j },
+        let mut read_count = 0;
+        let mut part = 0;
+        let mut data = Vec::with_capacity(length as _);
+
+        while sector != 0 {
+            buffer.seek(SeekFrom::Start((sector * 520) as _))?;
+            let (header_size, current_archive, block_size) = if b >= 0xFFFF {
+                (10, buffer.read_int(), 510.min(length - read_count))
+            } else {
+                (8, buffer.read_unsigned_short() as _, 512.min(length - read_count))
+            };
+
+            let current_part = buffer.read_unsigned_short();
+            let new_sector = buffer.read_3_unsigned_bytes();
+            let current_index = buffer.read_unsigned_byte();
+
+            assert_eq!(a, current_index as u32);
+            assert_eq!(b, current_archive as u32);
+            assert_eq!(part, current_part as u32);
+
+            part += 1;
+            read_count += block_size;
+            sector = new_sector;
+
+            data.extend(buffer.read_n_bytes(block_size as _));
         }
+        Ok(decoder::decompress(data, None)?)
     }
 
-    /// Attempt to clone `self`.
-    pub fn try_clone(&self) -> CacheResult<Self> {
-        Self::new(self.index_id())
+    fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
+        self.read_index(metadata.index_id(), metadata.archive_id())
+    }
+
+    pub fn archive_by_name(&self, name: String) -> CacheResult<Vec<u8>>{
+        
+        let hash = crate::cache::hash::hash_djb2(&name);
+        for (_,  m) in self.metadatas.iter(){
+            if m.name() == Some(hash){
+                return self.get_file(m);
+            }
+            
+        }
+        Err(CacheError::ArchiveNotFoundError(0,0))
+    }
+}
+
+#[cfg(feature = "osrs")]
+impl CacheIndex<Initial> {
+    /// Constructor for [`CacheIndex`].
+    ///
+    /// # Errors
+    ///
+    /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
+    pub fn new(index_id: u32) -> CacheResult<CacheIndex<Initial>> {
+        let path = match env::var(SYS_VAR) {
+            Ok(var) => format!("{}/cache/main_file_cache.dat2", var),
+            Err(VarError::NotPresent) => String::from("raw/cache/main_file_cache.dat2"),
+            Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
+        };
+
+        let file = fs::read(path)?.into_boxed_slice();
+
+        // `s` is in a partially initialized state here
+        let mut s = Self {
+            index_id,
+            metadatas: IndexMetadata::empty(),
+            #[cfg(feature = "rs3")]
+            connection,
+            #[cfg(feature = "osrs")]
+            file,
+            state: Initial {},
+        };
+
+        let metadatas = {
+            let data = s.read_index(255, index_id)?;
+            IndexMetadata::deserialize(index_id, Buffer::new(data))?
+        };
+
+        s.metadatas = metadatas;
+        // `s` is now fully initialized
+
+        Ok(s)
     }
 }
 
@@ -372,14 +508,20 @@ impl CacheIndex<Truncated> {
         );
 
         let Self {
+            #[cfg(feature = "rs3")]
             connection,
+            #[cfg(feature = "osrs")]
+            file,
             index_id,
             metadatas,
             state,
         } = self;
 
         CacheIndex {
+            #[cfg(feature = "rs3")]
             connection,
+            #[cfg(feature = "osrs")]
+            file,
             index_id,
             metadatas,
             state: TruncatedGrouped {
@@ -410,14 +552,20 @@ impl IntoIterator for CacheIndex<Truncated> {
 
     fn into_iter(self) -> Self::IntoIter {
         let Self {
+            #[cfg(feature = "rs3")]
             connection,
+            #[cfg(feature = "osrs")]
+            file,
             index_id,
             metadatas,
             state,
         } = self;
 
         let index = CacheIndex {
+            #[cfg(feature = "rs3")]
             connection,
+            #[cfg(feature = "osrs")]
+            file,
             index_id,
             metadatas,
             state: Initial {},
@@ -455,14 +603,20 @@ impl IntoIterator for CacheIndex<TruncatedGrouped> {
 
     fn into_iter(self) -> Self::IntoIter {
         let Self {
+            #[cfg(feature = "rs3")]
             connection,
+            #[cfg(feature = "osrs")]
+            file,
             index_id,
             metadatas,
             state,
         } = self;
         let TruncatedGrouped { dim_i, dim_j, feed } = state;
         let index = CacheIndex {
+            #[cfg(feature = "rs3")]
             connection,
+            #[cfg(feature = "osrs")]
+            file,
             index_id,
             metadatas,
             state: Grouped {
@@ -552,7 +706,7 @@ impl Iterator for IntoIterGrouped {
 ///
 /// # Panics
 /// Panics if compiled with feature `mockdata`.
-#[cfg(not(any(feature = "mockdata", feature = "save_mockdata")))]
+#[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
 pub fn assert_coherence() -> CacheResult<()> {
     for index_id in IndexType::iterator() {
         match CacheIndex::new(index_id)?.assert_coherence() {

@@ -15,7 +15,7 @@ use serde::Serialize;
 use serde_with::skip_serializing_none;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     utils::error::CacheResult,
 };
 
@@ -226,8 +226,8 @@ impl Enum {
         Ok(enums)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, file: Vec<u8>) -> Self { 
+        let mut buffer =  Buffer::new(file);
         let mut r#enum = Self { id, ..Default::default() };
 
         loop {

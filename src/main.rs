@@ -4,6 +4,12 @@ use clap::{load_yaml, App};
 #[allow(unused_imports)]
 use rs3cache::{cache::index, definitions, renderers::map};
 
+#[cfg(feature = "rs3")]
+const BASE: &str = "out/rs3";
+
+#[cfg(feature = "osrs")]
+const BASE: &str = "out/osrs";
+
 /// Entry point for the program. Run the executable with `--help` for a list of commands.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let yaml = load_yaml!("cli.yml");
@@ -15,13 +21,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for archive in archives {
         match archive {
-            "location_configs" => definitions::location_configs::export()?,
-            "location_configs_each" => definitions::location_configs::export_each()?,
+            "location_configs" => definitions::location_configs::export(format!("{}/location_configs", BASE))?,
+            "location_configs_each" =>  definitions::location_configs::export_each(format!("{}/location_configs", BASE))?,
             "locations" => definitions::locations::export()?,
             "npc_configs" => definitions::npc_configs::export()?,
             "item_configs" => definitions::item_configs::export()?,
             "maplabels" => definitions::maplabel_configs::export()?,
+            "overlays" => definitions::overlays::export()?,
             "sprites" => definitions::sprites::save_all()?,
+            #[cfg(feature = "osrs")]
+            "textures" => definitions::textures::export(format!("{}/textures", BASE))?,
             "worldmaps" => {
                 definitions::worldmaps::dump_big()?;
                 definitions::worldmaps::dump_small()?;
@@ -37,6 +46,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 definitions::npc_configs::export()?;
                 definitions::item_configs::export()?;
                 definitions::maplabel_configs::export()?;
+                definitions::overlays::export()?;
                 {
                     definitions::worldmaps::dump_big()?;
                     definitions::worldmaps::dump_small()?;
@@ -46,10 +56,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 definitions::varbit_configs::export()?;
                 definitions::structs::export()?;
                 definitions::enums::export()?;
+                #[cfg(feature = "osrs")]
+                definitions::textures::export(format!("{}/textures", BASE))?;
 
                 {
-                    definitions::location_configs::export()?;
-                    definitions::location_configs::export_each()?;
+                    definitions::location_configs::export(format!("{}/location_configs", BASE))?;
+                    definitions::location_configs::export_each(format!("{}/location_configs", BASE))?;
                 }
                 definitions::sprites::save_all()?;
             }
@@ -60,17 +72,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if matches.is_present("layer") {
         match matches.value_of("layer") {
             Some("all") => {
-                map::render()?;
+                map::render(format!("{}/map_squares", BASE))?;
             }
             Some("map") => {
-                map::render()?;
+                map::render(format!("{}/map_squares", BASE))?;
             }
             _ => unreachable!(),
         }
     };
 
     if matches.is_present("assertion") {
-        #[cfg(not(any(feature = "mockdata", feature = "save_mockdata")))]
+        #[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
         match matches.value_of("assertion") {
             Some("cache_coherence") => {
                 index::assert_coherence()?;

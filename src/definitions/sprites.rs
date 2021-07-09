@@ -4,13 +4,13 @@ use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     utils::{error::CacheResult, par::ParApply},
 };
 /// Output directory for [save_all()]
 const DIR: &str = "out/sprites";
 
-/// Type alias for a rgba image.
+/// Type alias for a rgba image. 
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
 /// Saves an image of every sprite to disk.
@@ -67,7 +67,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>) -> CacheResult<HashMap<(u32, u32), Sprit
 }
 
 fn deserialize(file: Vec<u8>) -> CacheResult<HashMap<usize, Sprite>> {
-    let mut buffer = Buffer::new(file);
+    let mut buffer =  Buffer::new(file);
     buffer.seek(SeekFrom::End(-2))?;
 
     let data = buffer.read_unsigned_short();
@@ -185,8 +185,8 @@ mod sprite_tests {
             let mut archive = CacheIndex::new(IndexType::SPRITES)?.archive(id)?;
             let file = archive.take_file(&0)?;
             assert!(file.len() != 0, "{:?}", file);
-            let mut images = deserialize(file)?;
-            Ok(images.remove(&(frame as usize))?)
+            let mut images = deserialize(file).unwrap();
+            Ok(images.remove(&(frame as usize)).unwrap())
         }
 
         std::fs::create_dir_all("tests/sprites/method_0".to_string())?;

@@ -1,8 +1,10 @@
+#![cfg(feature = "rs3")]
+
 use std::collections::HashMap;
 
 use crate::{
     cache::{
-        buf::Buffer,
+        buf::  Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
@@ -36,8 +38,9 @@ impl MapScene {
             .collect())
     }
 
+   
     fn deserialize(id: u32, file: Vec<u8>) -> MapScene {
-        let mut buffer = Buffer::new(file);
+        let mut buffer =  Buffer::new(file);
         let mut mapscene = MapScene { id, ..Default::default() };
 
         loop {

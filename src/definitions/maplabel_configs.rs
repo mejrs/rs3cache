@@ -11,7 +11,7 @@ use serde_with::skip_serializing_none;
 
 use crate::{
     cache::{
-        buf::Buffer,
+        buf::  Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
@@ -203,7 +203,7 @@ impl MapLabelConfig {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> MapLabelConfig {
-        let mut buffer = Buffer::new(file);
+        let mut buffer =  Buffer::new(file);
         let mut maplabel = MapLabelConfig { id, ..Default::default() };
 
         loop {
@@ -262,7 +262,7 @@ pub mod maplabel_config_fields {
     use serde::Serialize;
 
     use crate::{
-        cache::buf::Buffer,
+        cache::buf::  Buffer,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
     /// A polygon
@@ -282,7 +282,7 @@ pub mod maplabel_config_fields {
     }
 
     impl Polygon {
-        pub fn deserialize(buffer: &mut Buffer) -> Polygon {
+        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Polygon {
             let point_count = buffer.read_unsigned_byte() as usize;
             let xy = iter::repeat_with(|| (buffer.read_short(), buffer.read_short()))
                 .take(point_count)
@@ -331,7 +331,7 @@ pub mod maplabel_config_fields {
     }
 
     impl Toggle {
-        pub fn deserialize(buffer: &mut Buffer) -> Self {
+        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
             let varbit = Varbit::new(buffer.read_unsigned_short());
             let varp = Varp::new(buffer.read_unsigned_short());
             let var = VarpOrVarbit::new(varp, varbit);
@@ -363,7 +363,7 @@ pub mod maplabel_config_fields {
     }
 
     impl LegacySwitch {
-        pub fn deserialize(buffer: &mut Buffer) -> Self {
+        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
             let varbit = Varbit::new(buffer.read_unsigned_short());
             let varp = Varp::new(buffer.read_unsigned_short());
             let var = VarpOrVarbit::new(varp, varbit);

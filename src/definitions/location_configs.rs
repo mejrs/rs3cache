@@ -3,12 +3,15 @@ use std::{
     fs::{self, File},
     io::Write,
 };
+use std::path::Path;
 
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
+#[cfg(feature = "osrs")]
+use crate::cache::indextype::ConfigType;
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
@@ -28,6 +31,10 @@ pub struct LocationConfig {
     pub models: Option<Models>,
     /// Its name, if present.
     pub name: Option<String>,
+
+    #[cfg(feature = "osrs")]
+    pub models_2: Option<Models2>,
+
     /// Its west-east dimension, defaulting to 1 if not present.
     ///
     /// Code using this value must account for the location's rotation.
@@ -57,6 +64,8 @@ pub struct LocationConfig {
     pub recolour_palette: Option<Vec<(u16, u16)>>,
     pub unknown_44: Option<u16>,
     pub unknown_45: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub category: Option<u16>,
     pub mirror: Option<bool>,
     pub model: Option<bool>,
     pub scale_x: Option<u16>,
@@ -75,7 +84,10 @@ pub struct LocationConfig {
     pub unknown_78: Option<Unknown78>,
     pub unknown_79: Option<Unknown79>,
     pub unknown_81: Option<u8>,
+    #[cfg(feature = "rs3")]
     pub unknown_82: Option<bool>,
+    #[cfg(feature = "osrs")]
+    pub maparea_id: Option<u16>,
     pub unknown_88: Option<bool>,
     pub unknown_89: Option<bool>,
     pub is_members: Option<bool>,
@@ -130,9 +142,9 @@ pub struct LocationConfig {
 
 impl LocationConfig {
     /// Returns a mapping of all [location configurations](LocationConfig)
+    #[cfg(feature = "rs3")]
     pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
         let archives = CacheIndex::new(IndexType::LOC_CONFIG)?.into_iter();
-
         let locations = archives
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
@@ -146,18 +158,30 @@ impl LocationConfig {
         Ok(locations)
     }
 
+    #[cfg(feature = "osrs")]
+    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
+        Ok(CacheIndex::new(IndexType::CONFIG)?
+            .archive(ConfigType::LOC_CONFIG)?
+            .take_files()
+            .into_iter()
+            .map(|(file_id, file)| (file_id, Self::deserialize(file_id, file)))
+            .collect())
+    }
+
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
         let mut buffer = Buffer::new(file);
         let mut loc = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match  buffer.read_unsigned_byte() {
                 0 => {
                     debug_assert_eq!(buffer.remaining(), 0);
                     break loc;
                 }
                 1 => loc.models = Some(Models::deserialize(&mut buffer)),
                 2 => loc.name = Some(buffer.read_string()),
+                #[cfg(feature = "osrs")]
+                5 => loc.models_2 = Some(Models2::deserialize(&mut buffer)),
                 14 => loc.dim_x = Some(buffer.read_unsigned_byte()),
                 15 => loc.dim_y = Some(buffer.read_unsigned_byte()),
                 17 => loc.unknown_17 = Some(false),
@@ -179,11 +203,15 @@ impl LocationConfig {
                 41 => loc.textures = Some(Textures::deserialize(&mut buffer)),
                 44 => loc.unknown_44 = Some(buffer.read_masked_index()),
                 45 => loc.unknown_45 = Some(buffer.read_masked_index()),
+                #[cfg(feature = "osrs")]
+                61 => loc.category = Some(buffer.read_unsigned_short()),
                 62 => loc.mirror = Some(true),
                 64 => loc.model = Some(false),
                 65 => loc.scale_x = Some(buffer.read_unsigned_short()),
                 66 => loc.scale_y = Some(buffer.read_unsigned_short()),
                 67 => loc.scale_z = Some(buffer.read_unsigned_short()),
+                #[cfg(feature = "osrs")]
+                68 => loc.mapscene = Some(buffer.read_unsigned_short()),
                 69 => loc.unknown_69 = Some(buffer.read_unsigned_byte()),
                 70 => loc.translate_x = Some(buffer.read_unsigned_short()),
                 71 => loc.translate_y = Some(buffer.read_unsigned_short()),
@@ -195,7 +223,10 @@ impl LocationConfig {
                 78 => loc.unknown_78 = Some(Unknown78::deserialize(&mut buffer)),
                 79 => loc.unknown_79 = Some(Unknown79::deserialize(&mut buffer)),
                 81 => loc.unknown_81 = Some(buffer.read_unsigned_byte()),
+                #[cfg(feature = "rs3")]
                 82 => loc.unknown_82 = Some(true),
+                #[cfg(feature = "osrs")]
+                82 => loc.maparea_id = Some(buffer.read_unsigned_short()),
                 88 => loc.unknown_88 = Some(false),
                 89 => loc.unknown_89 = Some(false),
                 91 => loc.is_members = Some(true),
@@ -205,6 +236,7 @@ impl LocationConfig {
                 95 => loc.unknown_95 = Some(buffer.read_unsigned_short()),
                 97 => loc.unknown_97 = Some(true),
                 98 => loc.unknown_98 = Some(true),
+                #[cfg(feature = "rs3")]
                 102 => loc.mapscene = Some(buffer.read_unsigned_short()),
                 104 => loc.unknown_104 = Some(buffer.read_unsigned_byte()),
                 106 => loc.headmodels = Some(HeadModels::deserialize(&mut buffer)),
@@ -266,18 +298,43 @@ pub mod location_config_fields {
         pub var: VarpOrVarbit,
 
         /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
+        #[cfg(feature = "rs3")]
         pub ids: Vec<Option<u32>>,
+
+        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
+        #[cfg(feature = "osrs")]
+        pub ids: Vec<Option<u16>>,
     }
 
     impl LocationMorphTable {
         /// Constructor for [`LocationMorphTable`]
-        pub fn deserialize(buffer: &mut Buffer) -> Self {
+        #[cfg(feature = "rs3")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let varbit = Varbit::new(buffer.read_unsigned_short());
             let varp = Varp::new(buffer.read_unsigned_short());
             let var = VarpOrVarbit::new(varp, varbit);
 
             let count = buffer.read_unsigned_smart() as usize;
+
             let ids = iter::repeat_with(|| buffer.read_smart32()).take(count + 1).collect::<Vec<_>>();
+
+            Self { var, ids }
+        }
+
+        #[cfg(feature = "osrs")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
+            let varbit = Varbit::new(buffer.read_unsigned_short());
+            let varp = Varp::new(buffer.read_unsigned_short());
+            let var = VarpOrVarbit::new(varp, varbit);
+
+            let count = buffer.read_unsigned_byte() as usize;
+
+            let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
+                0xFFFF => None,
+                id => Some(id),
+            })
+            .take(count + 1)
+            .collect::<Vec<_>>();
 
             Self { var, ids }
         }
@@ -292,15 +349,26 @@ pub mod location_config_fields {
         pub var: VarpOrVarbit,
 
         /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
+        #[cfg(feature = "rs3")]
         pub ids: Vec<Option<u32>>,
 
         /// This [`LocationConfig`](super::LocationConfig)'s default id.
+        #[cfg(feature = "rs3")]
         pub default: Option<u32>,
+
+         /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
+         #[cfg(feature = "osrs")]
+         pub ids: Vec<Option<u16>>,
+ 
+         /// This [`LocationConfig`](super::LocationConfig)'s default id.
+         #[cfg(feature = "osrs")]
+         pub default: Option<u16>,
     }
 
     impl ExtendedLocationMorphTable {
         /// Constructor for [`ExtendedLocationMorphTable`]
-        pub fn deserialize(buffer: &mut Buffer) -> Self {
+        #[cfg(feature = "rs3")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let varbit = Varbit::new(buffer.read_unsigned_short());
             let varp = Varp::new(buffer.read_unsigned_short());
 
@@ -313,6 +381,27 @@ pub mod location_config_fields {
             let ids = iter::repeat_with(|| buffer.read_smart32()).take(count + 1).collect::<Vec<_>>();
             Self { var, ids, default }
         }
+
+        #[cfg(feature = "osrs")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
+            let varbit = Varbit::new(buffer.read_unsigned_short());
+            let varp = Varp::new(buffer.read_unsigned_short());
+
+            let var = VarpOrVarbit::new(varp, varbit);
+
+            let default =match buffer.read_unsigned_short() {
+                0xFFFF => None,
+                id => Some(id),
+            };
+
+            let count = buffer.read_unsigned_byte() as usize;
+
+            let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
+                0xFFFF => None,
+                id => Some(id),
+            }).take(count + 1).collect::<Vec<_>>();
+            Self { var, ids, default }
+        }
     }
 
     #[cfg_attr(feature = "pyo3", pyclass)]
@@ -322,7 +411,7 @@ pub mod location_config_fields {
     }
 
     impl ColourReplacements {
-        pub fn deserialize(buffer: &mut Buffer) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let colours = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
@@ -334,11 +423,15 @@ pub mod location_config_fields {
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
+        #[cfg(feature = "rs3")]
         pub models: HashMap<i8, Vec<Option<u32>>>,
+        #[cfg(feature = "osrs")]
+        pub models: Vec<(u8, u16)>,
     }
 
     impl Models {
-        pub fn deserialize(buffer: &mut Buffer) -> Models {
+        #[cfg(feature = "rs3")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Models {
             let count = buffer.read_unsigned_byte() as usize;
 
             let models = iter::repeat_with(|| Models::sub_deserialize(buffer))
@@ -347,11 +440,43 @@ pub mod location_config_fields {
             Models { models }
         }
 
-        fn sub_deserialize(buffer: &mut Buffer) -> (i8, Vec<Option<u32>>) {
+        #[cfg(feature = "osrs")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Models {
+            let count = buffer.read_unsigned_byte() as usize;
+
+            let models = iter::repeat_with(|| {
+                let model = buffer.read_unsigned_short();
+                let r#type = buffer.read_unsigned_byte();
+                (r#type, model)
+            })
+            .take(count)
+            .collect::<Vec<_>>();
+            Models { models }
+        }
+
+        #[cfg(feature = "rs3")]
+        fn sub_deserialize(buffer: &mut Buffer<Vec<u8>>) -> (i8, Vec<Option<u32>>) {
             let ty = buffer.read_byte();
             let count = buffer.read_unsigned_byte() as usize;
             let values = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
             (ty, values)
+        }
+    }
+
+    #[cfg(feature = "osrs")]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct Models2 {
+        pub models: Vec<u16>,
+    }
+
+    #[cfg(feature = "osrs")]
+    impl Models2 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
+            let count = buffer.read_unsigned_byte() as usize;
+
+            let models = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect();
+            Self { models }
         }
     }
 
@@ -362,7 +487,7 @@ pub mod location_config_fields {
     }
 
     impl Textures {
-        pub fn deserialize(buffer: &mut Buffer) -> Textures {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Textures {
             let count = buffer.read_unsigned_byte() as usize;
             let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
@@ -384,7 +509,7 @@ pub mod location_config_fields {
     }
 
     impl Unknown79 {
-        pub fn deserialize(buffer: &mut Buffer) -> Unknown79 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown79 {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_short();
             let unknown_3 = buffer.read_unsigned_byte();
@@ -411,7 +536,7 @@ pub mod location_config_fields {
     }
 
     impl Unknown173 {
-        pub fn deserialize(buffer: &mut Buffer) -> Unknown173 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown173 {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_short();
 
@@ -432,7 +557,7 @@ pub mod location_config_fields {
     }
 
     impl Unknown163 {
-        pub fn deserialize(buffer: &mut Buffer) -> Unknown163 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown163 {
             let unknown_1 = buffer.read_byte();
             let unknown_2 = buffer.read_byte();
             let unknown_3 = buffer.read_byte();
@@ -456,7 +581,7 @@ pub mod location_config_fields {
     }
 
     impl Unknown78 {
-        pub fn deserialize(buffer: &mut Buffer) -> Unknown78 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown78 {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_byte();
 
@@ -471,7 +596,7 @@ pub mod location_config_fields {
     }
 
     impl Unknown160 {
-        pub fn deserialize(buffer: &mut Buffer) -> Unknown160 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown160 {
             let count = buffer.read_unsigned_byte() as usize;
             let values = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
             Unknown160 { values }
@@ -495,7 +620,7 @@ pub mod location_config_fields {
     }
 
     impl Unknown201 {
-        pub fn deserialize(buffer: &mut Buffer) -> Unknown201 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown201 {
             let unknown_1 = buffer.read_unsigned_smart();
             let unknown_2 = buffer.read_unsigned_smart();
             let unknown_3 = buffer.read_unsigned_smart();
@@ -521,7 +646,7 @@ pub mod location_config_fields {
     }
 
     impl HeadModels {
-        pub fn deserialize(buffer: &mut Buffer) -> HeadModels {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> HeadModels {
             let count = buffer.read_unsigned_byte() as usize;
             let headmodels = iter::repeat_with(|| (buffer.read_smart32(), buffer.read_unsigned_byte()))
                 .take(count)
@@ -534,12 +659,14 @@ pub mod location_config_fields {
 use location_config_fields::*;
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
+pub fn export(path: impl AsRef<Path>) -> CacheResult<()> {
+    let path = path.as_ref();
+
+    fs::create_dir_all(path)?;
     let mut loc_configs = LocationConfig::dump_all()?.into_values().collect::<Vec<_>>();
     loc_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/location_configs.json")?;
+    let mut file = File::create(format!("{}.json", path.to_str().unwrap()))?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
     file.write_all(data.as_bytes())?;
 
@@ -547,11 +674,12 @@ pub fn export() -> CacheResult<()> {
 }
 
 ///Save the location configs as individual `json` files.
-pub fn export_each() -> CacheResult<()> {
-    fs::create_dir_all("out/data/rs3/location_configs")?;
+pub fn export_each(path: impl AsRef<Path>) -> CacheResult<()> {
+    let path = path.as_ref();
+    fs::create_dir_all(path)?;
     let configs = LocationConfig::dump_all()?;
     configs.into_iter().par_apply(|(id, config)| {
-        let mut file = File::create(format!("out/data/rs3/location_configs/{}.json", id)).unwrap();
+        let mut file = File::create(format!("{}/{}.json", path.to_str().unwrap(), id)).unwrap();
         let data = serde_json::to_string_pretty(&config).unwrap();
         file.write_all(data.as_bytes()).unwrap();
     });
@@ -915,8 +1043,8 @@ mod map_tests {
     #[test]
     fn id_36687_is_trapdoor() -> CacheResult<()> {
         let loc_config = LocationConfig::dump_all()?;
-        let trapdoor = loc_config.get(&36687)?;
-        let name = trapdoor.name.as_ref()?;
+        let trapdoor = loc_config.get(&36687).unwrap();
+        let name = trapdoor.name.as_ref().unwrap();
         assert_eq!(name, "Trapdoor", "{:?}", trapdoor);
         Ok(())
     }
@@ -926,8 +1054,8 @@ mod map_tests {
         use crate::structures::paramtable::Param;
 
         let loc_config = LocationConfig::dump_all()?;
-        let bookcase = loc_config.get(&118445)?;
-        let paramtable = bookcase.params.as_ref()?;
+        let bookcase = loc_config.get(&118445).unwrap();
+        let paramtable = bookcase.params.as_ref().unwrap();
         let value = &paramtable.params[&8178];
         assert_eq!(*value, Param::Integer(50923), "{:?}", paramtable);
         Ok(())

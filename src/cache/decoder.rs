@@ -23,6 +23,7 @@ impl Compression {
 /// Decompresses index files.
 ///
 /// Used internally by [`CacheIndex`](crate::cache::index::CacheIndex).
+#[cfg(feature = "rs3")]
 pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<Vec<u8>> {
     if &encoded_data[0..3] == Compression::ZLIB {
         let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
@@ -45,6 +46,44 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
 
         decoder.decompress_vec(&temp, &mut decoded_data)?;
 
+        Ok(decoded_data)
+    } else if encoded_data[0] == Compression::GZIP {
+        let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
+        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+        decoder.read_to_end(&mut decoded_data)?;
+        Ok(decoded_data)
+    } else {
+        Err(CacheError::DecompressionError(
+            format!("Unknown compression format: {:?}", &encoded_data[0..10]),
+            std::backtrace::Backtrace::capture(),
+        ))
+    }
+}
+
+#[cfg(feature = "osrs")]
+pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<Vec<u8>> {
+    use crate::cache::buf::Buffer;
+
+    if &encoded_data[0..3] == Compression::ZLIB {
+        let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
+        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+        decoder.read_to_end(&mut decoded_data)?;
+        Ok(decoded_data)
+    } else if encoded_data[0] == Compression::NONE {
+        // length is encoded_data[1..5] as u32 + 7
+        Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec())
+    } else if encoded_data[0] == Compression::BZIP {
+        
+        let mut temp = b"BZh1".to_vec();
+        let mut length = Buffer::new(&encoded_data[5..9]);
+        let length = length.read_int();
+        temp.extend(&encoded_data[9..]);
+
+        let mut decoded_data = Vec::with_capacity(length as _);
+
+        let mut decoder = bzip2::Decompress::new(false);
+
+        decoder.decompress_vec(&temp, &mut decoded_data)?;
         Ok(decoded_data)
     } else if encoded_data[0] == Compression::GZIP {
         let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;

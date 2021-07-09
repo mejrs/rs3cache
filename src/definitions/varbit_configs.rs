@@ -15,7 +15,7 @@ use serde::Serialize;
 
 use crate::{
     cache::{
-        buf::Buffer,
+        buf::  Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
@@ -49,7 +49,7 @@ impl VarbitConfig {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+        let mut buffer =  Buffer::new(file);
 
         let mut unknown_1 = None;
         let mut index = None;

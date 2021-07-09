@@ -12,10 +12,7 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-use crate::{
-    cache::buf::Buffer,
-    utils::{adapters::Accumulator, error::CacheResult},
-};
+use crate::{cache::buf::Buffer, utils::{adapters::Accumulator, error::CacheResult}};
 
 /// Metadata about [`Archive`](crate::cache::arc::Archive)s.
 #[cfg_attr(feature = "pyo3", pyclass)]
@@ -26,7 +23,7 @@ pub struct Metadata {
 
     archive_id: u32,
 
-    name: Option<u32>,
+    name: Option<i32>,
 
     crc: i32,
 
@@ -49,52 +46,52 @@ pub struct Metadata {
 #[pymethods]
 impl Metadata {
     #[getter(index_id)]
-    fn _index_id(&self) -> PyResult<u32> {
+    fn Py_index_id(&self) -> PyResult<u32> {
         Ok(self.index_id)
     }
 
     #[getter(archive_id)]
-    fn _archive_id(&self) -> PyResult<u32> {
+    fn Py_archive_id(&self) -> PyResult<u32> {
         Ok(self.archive_id)
     }
 
     #[getter(name)]
-    fn _name(&self) -> PyResult<Option<u32>> {
+    fn Py_name(&self) -> PyResult<Option<u32>> {
         Ok(self.name)
     }
     #[getter(crc)]
-    fn _crc(&self) -> PyResult<i32> {
+    fn Py_crc(&self) -> PyResult<i32> {
         Ok(self.crc)
     }
 
     #[getter(version)]
-    fn _version(&self) -> PyResult<i32> {
+    fn Py_version(&self) -> PyResult<i32> {
         Ok(self.version)
     }
 
     #[getter(unknown)]
-    fn _unknown(&self) -> PyResult<Option<i32>> {
+    fn Py_unknown(&self) -> PyResult<Option<i32>> {
         Ok(self.unknown)
     }
     #[getter(compressed_size)]
-    fn _compressed_size(&self) -> PyResult<Option<u32>> {
+    fn Py_compressed_size(&self) -> PyResult<Option<u32>> {
         Ok(self.compressed_size)
     }
     #[getter(size)]
-    fn _size(&self) -> PyResult<Option<u32>> {
+    fn Py_size(&self) -> PyResult<Option<u32>> {
         Ok(self.size)
     }
     #[getter(digest)]
-    fn _digest(&self) -> PyResult<Option<Vec<u8>>> {
+    fn Py_digest(&self) -> PyResult<Option<Vec<u8>>> {
         Ok(self.digest.clone())
     }
     #[getter(child_count)]
-    fn _child_count(&self) -> PyResult<u32> {
+    fn Py_child_count(&self) -> PyResult<u32> {
         Ok(self.child_count)
     }
 
     #[getter(child_indices)]
-    fn _child_indices(&self) -> PyResult<Vec<u32>> {
+    fn Py_child_indices(&self) -> PyResult<Vec<u32>> {
         Ok(self.child_indices.clone())
     }
 }
@@ -114,7 +111,7 @@ impl Metadata {
 
     /// The hashed name of the [`Archive`](crate::cache::arc::Archive), if present.
     #[inline(always)]
-    pub const fn name(&self) -> Option<u32> {
+    pub const fn name(&self) -> Option<i32> {
         self.name
     }
 
@@ -171,11 +168,18 @@ impl Metadata {
 
 /// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
 #[cfg_attr(feature = "pyo3", pyclass)]
+#[derive(Debug)]
 pub struct IndexMetadata {
     metadatas: HashMap<u32, Metadata>,
 }
 
 impl IndexMetadata {
+    #[cfg(feature = "osrs")]
+    pub (crate) fn empty() -> Self{
+        Self{
+            metadatas: HashMap::default()
+        }
+    }
     /// Returns the ids of the archives in the index.
     #[inline(always)]
     pub fn keys(&self) -> hash_map::Keys<'_, u32, Metadata> {
@@ -183,10 +187,13 @@ impl IndexMetadata {
     }
 
     /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](crate::cache::indextype::IndexType).
-    pub(crate) fn deserialize(index_id: u32, mut buffer: Buffer) -> CacheResult<Self> {
+    pub(crate) fn deserialize(index_id: u32, mut buffer: Buffer<Vec<u8>>) -> CacheResult<Self> {
         let format = buffer.read_byte();
+
         let _index_utc_stamp = if format > 5 { Some(buffer.read_int()) } else { None };
+
         let [named, hashed, unk4, ..] = buffer.read_bitflags();
+
         let entry_count = if format >= 7 {
             buffer.read_smart32().unwrap() as usize
         } else {
@@ -209,9 +216,9 @@ impl IndexMetadata {
         .collect::<Vec<u32>>();
 
         let names = if named {
-            iter::repeat_with(|| Some(buffer.read_unsigned_int()))
+            iter::repeat_with(|| Some(buffer.read_int()))
                 .take(entry_count)
-                .collect::<Vec<Option<u32>>>()
+                .collect::<Vec<Option<i32>>>()
         } else {
             vec![None; entry_count]
         };
