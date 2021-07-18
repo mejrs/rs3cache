@@ -323,7 +323,7 @@ impl IndexMetadata {
     /// View a specific [`Metadata`] of `self`.
     #[inline(always)]
     pub fn get(&self, archive_id: &u32) -> Option<&Metadata> {
-        self.metadatas.get(&archive_id)
+        self.metadatas.get(archive_id)
     }
 
     /// An iterator visiting all key-value pairs in arbitrary order. The iterator element type is `(&'a u32, &'a Metadata)`.

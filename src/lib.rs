@@ -66,10 +66,12 @@ pub mod cache {
     pub mod arc;
     pub mod buf;
     pub mod decoder;
+    pub mod hash;
     pub mod index;
     pub mod indextype;
     pub mod meta;
-    pub mod hash;
+    #[cfg(feature = "osrs")]
+    pub mod xtea;
 }
 
 /// Various data types
@@ -146,6 +148,8 @@ pub mod utils {
     pub mod par;
     /// Clamps a [`Range`](std::ops::Range) to a certain interval.
     pub mod rangeclamp;
+
+    pub mod slice;
 }
 
 /// Contains structures that are used in multiple different configs.

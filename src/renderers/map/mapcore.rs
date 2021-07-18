@@ -6,8 +6,8 @@ use std::{
 };
 
 use image::{imageops, GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
+use indicatif::ProgressIterator;
 use itertools::iproduct;
-use progress_bar::progress_bar::ProgressBar;
 use static_assertions::const_assert;
 
 #[cfg(feature = "rs3")]
@@ -24,38 +24,57 @@ use crate::{
     utils::{color::Color, error::CacheResult, par::ParApply},
 };
 
-/// Where to export the base tiles.
+pub struct RenderConfig {
+    /// -1 is the "real" world map.
+    pub map_id: i32,
+    /// Scale factor, this cannot be zero.
+    pub scale: u32,
+    /// The height and width of a [`Tile`](crate::definitions::tiles::Tile) in pixels.
+    pub tile_size: u32,
+    /// The highest zoom level.
+    pub initial_zoom: i8,
+    /// The range at which underlays are blended.
+    pub interp: isize,
+    /// The height and width of a full [`MapSquare`](crate::definitions::mapsquares::MapSquare) in pixels.
+    pub dim: u32,
+}
 
-/// -1 is the "real" world map.
-const MAPID: i32 = -1;
+impl RenderConfig {
+    pub const fn fast() -> Self {
+        Self {
+            map_id: -1,
+            scale: 4,
+            tile_size: 16,
+            interp: 5,
+            dim: 1024,
+            initial_zoom: 2,
+        }
+    }
 
-/// Scale factor.
-///
-/// Cannot be zero.
-pub const SCALE: u32 = 4;
-const_assert!(SCALE != 0);
+    pub const fn detailed() -> Self {
+        Self {
+            map_id: -1,
+            scale: 4,
+            tile_size: 16,
+            interp: 5,
+            dim: 1024,
+            initial_zoom: 4,
+        }
+    }
+}
 
-/// The height and width of a [`Tile`](crate::definitions::tiles::Tile) in pixels.
-pub const TILESIZE: u32 = 4 * SCALE;
+#[cfg(feature = "fast")]
+pub static CONFIG: RenderConfig = RenderConfig::fast();
 
-/// The range at which underlays are blended.
-pub const INTERP: isize = 5;
-const_assert!(INTERP >= 0);
-
-/// The height and width of a full [`MapSquare`](crate::definitions::mapsquares::MapSquare) in pixels.
-pub const DIM: u32 = TILESIZE * 64;
-
-/// The highest zoom level.
-pub const INIT_ZOOM: i8 = 2;
-
-const_assert!(INIT_ZOOM == 4 || INIT_ZOOM == 3 || INIT_ZOOM == 2);
+#[cfg(not(feature = "fast"))]
+pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
 pub fn render(path: impl AsRef<Path>) -> CacheResult<()> {
     let path = path.as_ref().to_str().unwrap();
 
     for zoom in 2..=4 {
-        let folder = format!("{}/{}/{}", path, MAPID, zoom);
+        let folder = format!("{}/{}/{}", path, CONFIG.map_id, zoom);
         fs::create_dir_all(folder)?;
     }
 
@@ -63,7 +82,7 @@ pub fn render(path: impl AsRef<Path>) -> CacheResult<()> {
 
     inner_render(path, iter)?;
 
-    zoom::render_zoom_levels(path, MAPID, -4..2, Color::ALPHA)?;
+    zoom::render_zoom_levels(path, CONFIG.map_id, -4..2, Color::ALPHA)?;
     Ok(())
 }
 
@@ -76,35 +95,14 @@ fn inner_render(path: &str, iter: GroupMapSquareIterator) -> CacheResult<()> {
 
     #[cfg(feature = "rs3")]
     let mapscenes = MapScene::dump_all()?;
+
     #[cfg(feature = "rs3")]
-    let sprite_ids = mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>();
-    #[cfg(feature = "rs3")]
-    let sprites = sprites::dumps(SCALE, sprite_ids)?;
+    let sprites = sprites::dumps(CONFIG.scale, mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>())?;
 
     #[cfg(feature = "osrs")]
-    let sprites = HashMap::new();
+    let sprites = sprites::dumps(CONFIG.scale, vec![317])?; // 317 is the sprite named "mapscene"
 
-    #[cfg(feature = "rs3")]
-    let prog = {
-        let length = iter.size_hint().1.unwrap();
-        let mut progress_bar = ProgressBar::new(length);
-        progress_bar.print_info(
-            "Creating",
-            "map tiles",
-            progress_bar::color::Color::LightGreen,
-            progress_bar::color::Style::Bold,
-        );
-        progress_bar.set_action("Rendering..", progress_bar::color::Color::Cyan, progress_bar::color::Style::Bold);
-        let prog = Arc::new(Mutex::new(progress_bar));
-        prog
-    };
-
-    iter.par_apply(|gsq| {
-        #[cfg(feature = "rs3")]
-        {
-            prog.lock().unwrap().inc();
-        }
-
+    iter.progress().par_apply(|gsq| {
         render_tile(
             path,
             gsq,
@@ -129,13 +127,20 @@ pub fn render_tile(
     #[cfg(feature = "rs3")] mapscenes: &HashMap<u32, MapScene>,
     sprites: &HashMap<(u32, u32), Sprite>,
 ) {
-
     let func = |plane| {
-        let mut img = RgbaImage::from_pixel(DIM, DIM, Rgba(Color::ALPHA));
+        let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, Rgba(Color::ALPHA));
 
         base::put(plane, &mut img, &squares, underlay_definitions, overlay_definitions);
-        //lines::put(plane, &mut img, &squares, location_config);
-        //mapscenes::put(plane, &mut img, &squares, location_config, mapscenes, sprites);
+        lines::put(plane, &mut img, &squares, location_config);
+        mapscenes::put(
+            plane,
+            &mut img,
+            &squares,
+            location_config,
+            #[cfg(feature = "rs3")]
+            mapscenes,
+            sprites,
+        );
         img
     };
 
@@ -156,13 +161,13 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
     // SAFETY (2) these checks assure that...
-    assert_eq!(DIM % 4, 0);
+    assert_eq!(CONFIG.dim % 4, 0);
     for img in &imgs {
-        assert_eq!(img.dimensions(), (DIM, DIM));
+        assert_eq!(img.dimensions(), (CONFIG.dim, CONFIG.dim));
     }
 
     for plane in 0..=3 {
-        let base = RgbaImage::from_fn(DIM, DIM, |x, y| {
+        let base = RgbaImage::from_fn(CONFIG.dim, CONFIG.dim, |x, y| {
             let mut i = (0..=plane).rev();
 
             loop {
@@ -183,11 +188,11 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
             }
         });
 
-        if INIT_ZOOM >= 4 {
+        if CONFIG.initial_zoom >= 4 {
             let base_i = i as u32 * 4;
             let base_j = j as u32 * 4;
             for (x, y) in iproduct!(0..4u32, 0..4u32) {
-                let sub_image = base.view((DIM / 4) * x, DIM - (DIM / 4) * (y + 1), DIM / 4, DIM / 4);
+                let sub_image = base.view((CONFIG.dim / 4) * x, CONFIG.dim - (CONFIG.dim / 4) * (y + 1), CONFIG.dim / 4, CONFIG.dim / 4);
                 debug_assert_eq!(sub_image.width(), 256);
                 debug_assert_eq!(sub_image.height(), 256);
 
@@ -195,18 +200,18 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
-                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path, MAPID, 4, plane, base_i + x, base_j + y);
+                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path, CONFIG.map_id, 4, plane, base_i + x, base_j + y);
 
                     sub_image.to_image().save(filename).unwrap();
                 }
             }
         }
 
-        if INIT_ZOOM >= 3 {
+        if CONFIG.initial_zoom >= 3 {
             let base_i = i as u32 * 2;
             let base_j = j as u32 * 2;
             for (x, y) in iproduct!(0..2u32, 0..2u32) {
-                let sub_image = base.view((DIM / 2) * x, DIM - (DIM / 2) * (y + 1), DIM / 2, DIM / 2);
+                let sub_image = base.view((CONFIG.dim / 2) * x, CONFIG.dim - (CONFIG.dim / 2) * (y + 1), CONFIG.dim / 2, CONFIG.dim / 2);
 
                 #[cfg(not(test))]
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
@@ -216,13 +221,13 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
 
                     debug_assert_eq!(resized.width(), 256);
                     debug_assert_eq!(resized.height(), 256);
-                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path, MAPID, 3, plane, base_i + x, base_j + y);
+                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path, CONFIG.map_id, 3, plane, base_i + x, base_j + y);
                     resized.save(filename).unwrap();
                 }
             }
         }
 
-        if INIT_ZOOM >= 2 {
+        if CONFIG.initial_zoom >= 2 {
             let base_i = i as u32;
             let base_j = j as u32;
 
@@ -235,7 +240,7 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
             if resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
-                let filename = format!("{}/{}/{}/{}_{}_{}.png", path, MAPID, 2, plane, base_i, base_j);
+                let filename = format!("{}/{}/{}/{}_{}_{}.png", path, CONFIG.map_id, 2, plane, base_i, base_j);
                 resized.save(filename).unwrap();
             }
         }
@@ -255,19 +260,7 @@ pub fn render_bench() -> CacheResult<()> {
     Ok(())
 }
 
-#[doc(hidden)]
-#[cfg(feature = "osrs")]
-pub fn render_bench() -> CacheResult<()> {
-    let path = "tests/tiles";
-    fs::create_dir_all(path)?;
-    let coordinates: Vec<(u8, u8)> = iproduct!(45..55, 45..55).collect();
-
-    todo!();
-
-    Ok(())
-}
-
-#[cfg(test)]
+#[cfg(all(test, feature = "rs3"))]
 mod map_tests {
     use super::*;
 

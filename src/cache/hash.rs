@@ -4,5 +4,5 @@ pub fn hash_djb2(s: impl AsRef<[u8]>) -> i32 {
         let x = *x as i32;
         n = x .wrapping_add(n.wrapping_shl(5)).wrapping_sub(n);
     }
-    return n;
+    n
 }

@@ -3,8 +3,8 @@ use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Rang
 use async_std::{fs::File, prelude::*, task};
 use futures::future::join_all;
 use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageFormat, Rgba, RgbaImage};
+use indicatif::ProgressIterator;
 use itertools::{iproduct, izip};
-use progress_bar::progress_bar::ProgressBar;
 use regex::Regex;
 
 use crate::utils::{error::CacheResult, par::ParApply};
@@ -20,40 +20,16 @@ pub fn render_zoom_levels(folder: &str, mapid: i32, range: Range<i8>, backfill: 
 
         let new_tile_coordinates = get_future_filenames(folder, mapid, zoom_level)?.into_iter();
 
-        let length = new_tile_coordinates.size_hint().1.unwrap();
 
-        let mut progress_bar = ProgressBar::new(length);
-        progress_bar.print_info(
-            "Creating",
-            &format!("tiles for zoom level {}", zoom_level),
-            progress_bar::color::Color::LightGreen,
-            progress_bar::color::Style::Bold,
-        );
-        progress_bar.set_action("Rendering..", progress_bar::color::Color::Cyan, progress_bar::color::Style::Bold);
-        let prog = Mutex::new(progress_bar);
-
-        let func = |(p, i, j)| {
+    let func = |(p, i, j)| {
             let img = make_tile(folder, mapid, zoom_level, p, i, j, backfill).unwrap();
             let filename = format!("{}/{}/{}/{}_{}_{}.png", folder, mapid, zoom_level, p, i, j);
             img.save(filename).unwrap();
         };
 
-        new_tile_coordinates.par_apply(|coords| {
-            {
-                prog.lock().unwrap().inc();
-            }
-            func(coords);
-        });
+        new_tile_coordinates.progress().par_apply(func);
 
-        if zoom_level == final_zoom {
-            prog.lock().unwrap().print_final_info(
-                "Completed",
-                "tiles for all zoom levels",
-                progress_bar::color::Color::LightGreen,
-                progress_bar::color::Style::Bold,
-            );
-        }
-    }
+   }
     Ok(())
 }
 

@@ -4,7 +4,7 @@ use image::{GenericImage, Rgba, RgbaImage};
 use ndarray::{ArrayBase, Dim, ViewRepr};
 
 use super::{
-    mapcore::{INTERP, TILESIZE},
+    mapcore::CONFIG,
     tileshape::{OverlayShape, UnderlayShape},
 };
 use crate::definitions::{mapsquares::GroupMapSquare, overlays::Overlay, tiles::Tile, underlays::Underlay};
@@ -28,18 +28,18 @@ pub fn put(
                         || (plane == 0 && column.uget(p).settings.unwrap_or(0) & 0x8 != 0)
                 };
 
-                if true {
+                if condition {
                     // Underlays
-                    if let Some((red, green, blue)) = get_underlay_colour(column, underlay_definitions, &squares, p, x as usize, y as usize) {
+                    if let Some((red, green, blue)) = get_underlay_colour(column, underlay_definitions, squares, p, x as usize, y as usize) {
                         let fill = Rgba([red, green, blue, 255u8]);
 
-                        for (a, b) in UnderlayShape::new(column[p].shape, TILESIZE) {
+                        for (a, b) in UnderlayShape::new(column[p].shape, CONFIG.tile_size) {
                             unsafe {
                                 debug_assert!(
-                                    (TILESIZE * x + a) < img.width() && (TILESIZE * (63u32 - y) + b) < img.height(),
+                                    (CONFIG.tile_size * x + a) < img.width() && (CONFIG.tile_size * (63u32 - y) + b) < img.height(),
                                     "Index out of range."
                                 );
-                                img.unsafe_put_pixel(TILESIZE * x + a, TILESIZE * (63u32 - y) + b, fill)
+                                img.unsafe_put_pixel(CONFIG.tile_size * x + a, CONFIG.tile_size * (63u32 - y) + b, fill)
                             }
                         }
                     }
@@ -48,28 +48,33 @@ pub fn put(
                     if let Some(id) = column[p].overlay_id {
                         let ov = &overlay_definitions[&(id.checked_sub(1).expect("Not 100% sure about this invariant.") as u32)];
                         for colour in &[ov.primary_colour, ov.secondary_colour] {
-                            match *colour {
-                                Some((255, 0, 255)) => {}
-                                Some((red, green, blue)) => {
+                            if Some((255, 0, 255)) != *colour {
+                                if let Some((red, green, blue)) = *colour {
                                     let fill = Rgba([red, green, blue, 255]);
-
-                                    for (a, b) in OverlayShape::new(column[p].shape.unwrap_or(0), TILESIZE) {
+                                    if column[p].shape.unwrap_or(0) != 0{
+                                        //dbg!(column[p]);
+                                    }
+                                    for (a, b) in OverlayShape::new(column[p].shape.unwrap_or(0), CONFIG.tile_size) {
                                         unsafe {
                                             debug_assert!(
-                                                (TILESIZE * x + a) < img.width() && (TILESIZE * (63u32 - y) + b) < img.height(),
+                                                (CONFIG.tile_size * x + a) < img.width() && (CONFIG.tile_size * (63u32 - y) + b) < img.height(),
                                                 "Index out of range."
                                             );
-
-                                            img.unsafe_put_pixel(TILESIZE * x + a, TILESIZE * (63u32 - y) + b, fill)
+                                            img.unsafe_put_pixel(CONFIG.tile_size * x + a, CONFIG.tile_size * (63u32 - y) + b, fill)
                                         }
                                     }
                                 }
-                                None => {}
                             }
                         }
                     }
 
-                    // textures??
+                    // The osrs client gets the average colour of textures here.
+                    //
+                    // The map has tiles, whose overlay_id points to an overlay config whose texture property points to a texture whose
+                    // id points to a texture that has a field that refers to an index in a palette.
+                    //
+                    // To simplify the implementation, we simply hardcode these values.
+                    // They don't change much, so this should be OK.
                     #[cfg(feature = "osrs")]
                     if let Some(id) = column[p].overlay_id {
                         if let Some(texture_id) =
@@ -77,7 +82,7 @@ pub fn put(
                         {
                             let (red, green, blue) = match texture_id {
                                 1 => (87, 108, 157),
-                                2=> (70, 67, 63),
+                                2 => (70, 67, 63),
                                 3 => (74, 45, 23),
                                 11 => (64, 60, 56),
                                 15 => (91, 87, 98),
@@ -89,18 +94,17 @@ pub fn put(
                                 46 => (83, 77, 74),
                                 51 => (118, 80, 37),
                                 unknown => unimplemented!("unimplemented texture id {}", unknown),
-
                             };
-                            let fill = Rgba([87, 108, 157, 255]);
+                            let fill = Rgba([red, green, blue, 255]);
 
-                            for (a, b) in OverlayShape::new(column[p].shape.unwrap_or(0), TILESIZE) {
+                            for (a, b) in OverlayShape::new(column[p].shape.unwrap_or(0), CONFIG.tile_size) {
                                 unsafe {
                                     debug_assert!(
-                                        (TILESIZE * x + a) < img.width() && (TILESIZE * (63u32 - y) + b) < img.height(),
+                                        (CONFIG.tile_size * x + a) < img.width() && (CONFIG.tile_size * (63u32 - y) + b) < img.height(),
                                         "Index out of range."
                                     );
 
-                                    img.unsafe_put_pixel(TILESIZE * x + a, TILESIZE * (63u32 - y) + b, fill)
+                                    img.unsafe_put_pixel(CONFIG.tile_size * x + a, CONFIG.tile_size * (63u32 - y) + b, fill)
                                 }
                             }
                         }
@@ -122,7 +126,7 @@ fn get_underlay_colour(
 ) -> Option<(u8, u8, u8)> {
     // only compute a colour average if the tile has a underlay
     column[plane].underlay_id.map(|_| {
-        let tiles = squares.tiles_iter(plane, x, y, INTERP);
+        let tiles = squares.tiles_iter(plane, x, y, CONFIG.interp);
 
         let underlays = tiles.filter_map(|elem| elem.underlay_id);
 

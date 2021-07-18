@@ -1,4 +1,7 @@
 use std::collections::HashMap;
+use std::path::Path;
+use std::fs::{self, File};
+use std::io::Write;
 
 use crate::{
     cache::{
@@ -8,9 +11,14 @@ use crate::{
     },
     utils::error::CacheResult,
 };
+use serde::Serialize;
+use serde_with::skip_serializing_none;
 
-#[derive(Debug, Default, Copy, Clone)]
 /// Describes the general ground colour. This colour is blended with surrounding tiles.
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Copy, Clone, Serialize)]
+
 pub struct Underlay {
     /// Id of the underlay configuration.
     pub id: u32,
@@ -62,4 +70,19 @@ impl Underlay {
             }
         }
     }
+}
+
+/// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
+pub fn export(path: impl AsRef<Path>) -> CacheResult<()> {
+    let path = path.as_ref();
+
+    fs::create_dir_all(path)?;
+    let mut underlay = Underlay::dump_all()?.into_values().collect::<Vec<_>>();
+    underlay.sort_unstable_by_key(|loc| loc.id);
+
+    let mut file = File::create(format!("{}.json", path.to_str().unwrap()))?;
+    let data = serde_json::to_string_pretty(&underlay).unwrap();
+    file.write_all(data.as_bytes())?;
+
+    Ok(())
 }

@@ -1,68 +1,53 @@
 /// An iterator that given a shape and tilesize, yields which pixels should be coloured.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 pub struct OverlayShape {
-    inner: Vec<(u32, u32)>,
+    inner: Box<dyn Iterator<Item = (u32, u32)>>,
 }
 
 impl OverlayShape {
     /// Constructor for [`OverlayShape`].
     pub fn new(shape: u8, size: u32) -> Self {
-        debug_assert!(size.is_power_of_two(), "{} is an invalid size Only 2^n values are allowed.", size);
+        debug_assert!(size.is_power_of_two(), "{} is an invalid size, only 2^n values are allowed.", size);
 
-        let points: Vec<(u32, u32)> = match shape {
-            0 => (0..size).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
+        let points: Box<dyn Iterator<Item = (u32, u32)>> = match shape {
+            0 => Box::new((0..size).flat_map(move |x| (0..size).map(move |y| (x, y)))),
 
-            4 | 39 | 41 => (0..size).flat_map(|x| (x..size).map(move |y| (x, y))).collect(),
-            5 | 36 | 42 => (0..size).flat_map(|x| (0..(size - x)).map(move |y| (x, y))).collect(),
-            6 | 37 | 43 => (0..size).flat_map(|x| (0..x).map(move |y| (x, y))).collect(),
-            7 | 38 | 40 => (0..size).flat_map(|x| ((size - x)..size).map(move |y| (x, y))).collect(),
+            4 | 39 | 41 => Box::new((0..size).flat_map(move |x| (x..size).map(move |y| (x, y)))),
+            5 | 36 | 42 => Box::new((0..size).flat_map(move |x| (0..(size - x)).map(move |y| (x, y)))),
+            6 | 37 | 43 => Box::new((0..size).flat_map(move |x| (0..x).map(move |y| (x, y)))),
+            7 | 38 | 40 => Box::new((0..size).flat_map(move |x| ((size - x)..size).map(move |y| (x, y)))),
 
-            8 => (0..(size / 2)).flat_map(|x| (0..(size - 2 * x)).map(move |y| (x, y))).collect(),
-            9 => (0..size).flat_map(|x| (0..(x / 2)).map(move |y| (x, y))).collect(),
-            10 => ((size / 2)..size)
-                .flat_map(|x| ((size - 2 * (x - size / 2))..size).map(move |y| (x, y)))
-                .collect(),
-            11 => (0..size).flat_map(|x| (((x + size) / 2)..size).map(move |y| (x, y))).collect(),
-            12 => ((size / 2)..size).flat_map(|x| (0..(2 * x - size)).map(move |y| (x, y))).collect(),
-            13 => (0..size).flat_map(|x| ((size - 1 - (x / 2))..size).map(move |y| (x, y))).collect(),
-            14 => (0..(size / 2)).flat_map(|x| ((2 * x)..size).map(move |y| (x, y))).collect(),
-            15 => (0..size).flat_map(|x| (0..((size - x) / 2)).map(move |y| (x, y))).collect(),
+            8 => Box::new((0..(size / 2)).flat_map(move |x| (0..(size - 2 * x)).map(move |y| (x, y)))),
+            9 => Box::new((0..size).flat_map(move |x| (0..(x / 2)).map(move |y| (x, y)))),
+            10 => Box::new(((size / 2)..size).flat_map(move |x| ((size - 2 * (x - size / 2))..size).map(move |y| (x, y)))),
+            11 => Box::new((0..size).flat_map(move |x| (((x + size) / 2)..size).map(move |y| (x, y)))),
+            12 => Box::new(((size / 2)..size).flat_map(move |x| (0..(2 * x - size)).map(move |y| (x, y)))),
+            13 => Box::new((0..size).flat_map(move |x| ((size - 1 - (x / 2))..size).map(move |y| (x, y)))),
+            14 => Box::new((0..(size / 2)).flat_map(move |x| ((2 * x)..size).map(move |y| (x, y)))),
+            15 => Box::new((0..size).flat_map(move |x| (0..((size - x) / 2)).map(move |y| (x, y)))),
 
-            16 => (0..size)
-                .flat_map(|x| ((size.saturating_sub(2 * x))..size).map(move |y| (x, y)))
-                .collect(),
-            17 => (0..size).flat_map(|x| ((x / 2)..size).map(move |y| (x, y))).collect(),
-            18 => (0..size)
-                .flat_map(|x| (0..(2 * (size - x)).clamp(0, size)).map(move |y| (x, y)))
-                .collect(),
-            19 => (0..size).flat_map(|x| (0..((x + size) / 2)).map(move |y| (x, y))).collect(),
-            20 => (0..size)
-                .flat_map(|x| ((2 * x).saturating_sub(size)..size).map(move |y| (x, y)))
-                .collect(),
-            21 => (0..size).flat_map(|x| (0..(size - 1 - (x / 2))).map(move |y| (x, y))).collect(),
-            22 => (0..size).flat_map(|x| (0..(2 * x).clamp(0, size)).map(move |y| (x, y))).collect(),
-            23 => (0..size).flat_map(|x| (((size - x) / 2)..size).map(move |y| (x, y))).collect(),
+            16 => Box::new((0..size).flat_map(move |x| ((size.saturating_sub(2 * x))..size).map(move |y| (x, y)))),
+            17 => Box::new((0..size).flat_map(move |x| ((x / 2)..size).map(move |y| (x, y)))),
+            18 => Box::new((0..size).flat_map(move |x| (0..(2 * (size - x)).clamp(0, size)).map(move |y| (x, y)))),
+            19 => Box::new((0..size).flat_map(move |x| (0..((x + size) / 2)).map(move |y| (x, y)))),
+            20 => Box::new((0..size).flat_map(move |x| ((2 * x).saturating_sub(size)..size).map(move |y| (x, y)))),
+            21 => Box::new((0..size).flat_map(move |x| (0..(size - 1 - (x / 2))).map(move |y| (x, y)))),
+            22 => Box::new((0..size).flat_map(move |x| (0..(2 * x).clamp(0, size)).map(move |y| (x, y)))),
+            23 => Box::new((0..size).flat_map(move |x| (((size - x) / 2)..size).map(move |y| (x, y)))),
 
-            24 => (0..size / 2).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            25 => (0..size).flat_map(|x| (0..size / 2).map(move |y| (x, y))).collect(),
-            26 => (size / 2..size).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            27 => (0..size).flat_map(|x| (size / 2..size).map(move |y| (x, y))).collect(),
+            24 => Box::new((0..size / 2).flat_map(move |x| (0..size).map(move |y| (x, y)))),
+            25 => Box::new((0..size).flat_map(move |x| (0..size / 2).map(move |y| (x, y)))),
+            26 => Box::new((size / 2..size).flat_map(move |x| (0..size).map(move |y| (x, y)))),
+            27 => Box::new((0..size).flat_map(move |x| (size / 2..size).map(move |y| (x, y)))),
 
-            28 => (0..size / 2).flat_map(|x| ((size / 2 + x)..size).map(move |y| (x, y))).collect(),
-            29 => (0..size / 2).flat_map(|x| (0..(size / 2 - x)).map(move |y| (x, y))).collect(),
-            30 => (size / 2..size).flat_map(|x| (0..(x - size / 2)).map(move |y| (x, y))).collect(),
-            31 => (size / 2..size)
-                .flat_map(|x| ((size + size / 2 - x)..size).map(move |y| (x, y)))
-                .collect(),
-
-            32 | 45 => (0..size).flat_map(|x| (0..(size / 2 + x).clamp(0, size)).map(move |y| (x, y))).collect(),
-            33 | 46 => (0..size)
-                .flat_map(|x| ((size / 2).saturating_sub(x)..size).map(move |y| (x, y)))
-                .collect(),
-            34 | 47 => (0..size).flat_map(|x| (x.saturating_sub(size / 2)..size).map(move |y| (x, y))).collect(),
-            35 | 44 => (0..size)
-                .flat_map(|x| (0..(size + size / 2 - x).clamp(0, size)).map(move |y| (x, y)))
-                .collect(),
+            28 => Box::new((0..size / 2).flat_map(move |x| ((size / 2 + x)..size).map(move |y| (x, y)))),
+            29 => Box::new((0..size / 2).flat_map(move |x| (0..(size / 2 - x)).map(move |y| (x, y)))),
+            30 => Box::new((size / 2..size).flat_map(move |x| (0..(x - size / 2)).map(move |y| (x, y)))),
+            31 => Box::new((size / 2..size).flat_map(move |x| ((size + size / 2 - x)..size).map(move |y| (x, y)))),
+            32 | 45 => Box::new((0..size).flat_map(move |x| (0..(size / 2 + x).clamp(0, size)).map(move |y| (x, y)))),
+            33 | 46 => Box::new((0..size).flat_map(move |x| ((size / 2).saturating_sub(x)..size).map(move |y| (x, y)))),
+            34 | 47 => Box::new((0..size).flat_map(move |x| (x.saturating_sub(size / 2)..size).map(move |y| (x, y)))),
+            35 | 44 => Box::new((0..size).flat_map(move |x| (0..(size + size / 2 - x).clamp(0, size)).map(move |y| (x, y)))),
             other => unimplemented!("Shape {} is not implemented.", other),
         };
 
@@ -70,13 +55,11 @@ impl OverlayShape {
     }
 }
 
-impl IntoIterator for OverlayShape {
+impl Iterator for OverlayShape {
     type Item = (u32, u32);
 
-    type IntoIter = std::vec::IntoIter<Self::Item>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.inner.into_iter()
+    fn next(&mut self) -> Option<Self::Item> {
+        self.inner.next()
     }
 }
 
@@ -85,74 +68,58 @@ impl IntoIterator for OverlayShape {
 /// Complements [`OverlayShape`].
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 pub struct UnderlayShape {
-    inner: std::vec::IntoIter<(u32, u32)>,
+    inner: Box<dyn Iterator<Item = (u32, u32)>>,
 }
 
 impl UnderlayShape {
     /// Constructor for UnderlayShape.
     pub fn new(shape: Option<u8>, size: u32) -> Self {
-        assert!(size.is_power_of_two(), "{} is an invalid size Only 2^n values are allowed.", size);
+        debug_assert!(size.is_power_of_two(), "{} is an invalid size, only 2^n values are allowed.", size);
 
-        let points: Vec<(u32, u32)> = match shape {
-            None => (0..size).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            Some(0) => vec![],
+        let points: Box<dyn Iterator<Item = (u32, u32)>> = match shape {
+            None => Box::new((0..size).flat_map(move |x| (0..size).map(move |y| (x, y)))),
+            Some(0) => Box::new(std::iter::empty()),
 
-            Some(4) | Some(39) | Some(41) => (0..size).flat_map(|x| (0..x).map(move |y| (x, y))).collect(),
-            Some(5) | Some(36) | Some(42) => (0..size).flat_map(|x| ((size - x)..size).map(move |y| (x, y))).collect(),
-            Some(6) | Some(37) | Some(43) => (0..size).flat_map(|x| (x..size).map(move |y| (x, y))).collect(),
-            Some(7) | Some(38) | Some(40) => (0..size).flat_map(|x| (0..(size - x)).map(move |y| (x, y))).collect(),
+            Some(4) | Some(39) | Some(41) => Box::new((0..size).flat_map(move |x| (0..x).map(move |y| (x, y)))),
+            Some(5) | Some(36) | Some(42) => Box::new((0..size).flat_map(move |x| ((size - x)..size).map(move |y| (x, y)))),
+            Some(6) | Some(37) | Some(43) => Box::new((0..size).flat_map(move |x| (x..size).map(move |y| (x, y)))),
+            Some(7) | Some(38) | Some(40) => Box::new((0..size).flat_map(move |x| (0..(size - x)).map(move |y| (x, y)))),
 
-            Some(8) => (0..size)
-                .flat_map(|x| ((size.saturating_sub(2 * x))..size).map(move |y| (x, y)))
-                .collect(),
-            Some(9) => (0..size).flat_map(|x| ((x / 2)..size).map(move |y| (x, y))).collect(),
-            Some(10) => (0..size)
-                .flat_map(|x| (0..(2 * (size - x)).clamp(0, size)).map(move |y| (x, y)))
-                .collect(),
+            Some(8) => Box::new((0..size).flat_map(move |x| ((size.saturating_sub(2 * x))..size).map(move |y| (x, y)))),
+            Some(9) => Box::new((0..size).flat_map(move |x| ((x / 2)..size).map(move |y| (x, y)))),
+            Some(10) => Box::new((0..size).flat_map(move |x| (0..(2 * (size - x)).clamp(0, size)).map(move |y| (x, y)))),
+            Some(11) => Box::new((0..size).flat_map(move |x| (0..((x + size) / 2)).map(move |y| (x, y)))),
+            Some(12) => Box::new((0..size).flat_map(move |x| ((2 * x).saturating_sub(size)..size).map(move |y| (x, y)))),
+            Some(13) => Box::new((0..size).flat_map(move |x| (0..(size - 1 - (x / 2))).map(move |y| (x, y)))),
+            Some(14) => Box::new((0..size).flat_map(move |x| (0..(2 * x).clamp(0, size)).map(move |y| (x, y)))),
+            Some(15) => Box::new((0..size).flat_map(move |x| (((size - x) / 2)..size).map(move |y| (x, y)))),
 
-            Some(11) => (0..size).flat_map(|x| (0..((x + size) / 2)).map(move |y| (x, y))).collect(),
-            Some(12) => (0..size)
-                .flat_map(|x| ((2 * x).saturating_sub(size)..size).map(move |y| (x, y)))
-                .collect(),
-            Some(13) => (0..size).flat_map(|x| (0..(size - 1 - (x / 2))).map(move |y| (x, y))).collect(),
-            Some(14) => (0..size).flat_map(|x| (0..(2 * x).clamp(0, size)).map(move |y| (x, y))).collect(),
-            Some(15) => (0..size).flat_map(|x| (((size - x) / 2)..size).map(move |y| (x, y))).collect(),
+            Some(16) => Box::new((0..(size / 2)).flat_map(move |x| (0..(size - 2 * x)).map(move |y| (x, y)))),
+            Some(17) => Box::new((0..size).flat_map(move |x| (0..(x / 2)).map(move |y| (x, y)))),
+            Some(18) => Box::new(((size / 2)..size).flat_map(move |x| ((size - 2 * (x - size / 2))..size).map(move |y| (x, y)))),
+            Some(19) => Box::new((0..size).flat_map(move |x| (((x + size) / 2)..size).map(move |y| (x, y)))),
+            Some(20) => Box::new(((size / 2)..size).flat_map(move |x| (0..(2 * x - size)).map(move |y| (x, y)))),
+            Some(21) => Box::new((0..size).flat_map(move |x| ((size - 1 - (x / 2))..size).map(move |y| (x, y)))),
+            Some(22) => Box::new((0..(size / 2)).flat_map(move |x| ((2 * x)..size).map(move |y| (x, y)))),
+            Some(23) => Box::new((0..size).flat_map(move |x| (0..((size - x) / 2)).map(move |y| (x, y)))),
 
-            Some(16) => (0..(size / 2)).flat_map(|x| (0..(size - 2 * x)).map(move |y| (x, y))).collect(),
-            Some(17) => (0..size).flat_map(|x| (0..(x / 2)).map(move |y| (x, y))).collect(),
-            Some(18) => ((size / 2)..size)
-                .flat_map(|x| ((size - 2 * (x - size / 2))..size).map(move |y| (x, y)))
-                .collect(),
-            Some(19) => (0..size).flat_map(|x| (((x + size) / 2)..size).map(move |y| (x, y))).collect(),
-            Some(20) => ((size / 2)..size).flat_map(|x| (0..(2 * x - size)).map(move |y| (x, y))).collect(),
-            Some(21) => (0..size).flat_map(|x| ((size - 1 - (x / 2))..size).map(move |y| (x, y))).collect(),
-            Some(22) => (0..(size / 2)).flat_map(|x| ((2 * x)..size).map(move |y| (x, y))).collect(),
-            Some(23) => (0..size).flat_map(|x| (0..((size - x) / 2)).map(move |y| (x, y))).collect(),
+            Some(24) => Box::new((size / 2..size).flat_map(move |x| (0..size).map(move |y| (x, y)))),
+            Some(25) => Box::new((0..size).flat_map(move |x| (size / 2..size).map(move |y| (x, y)))),
+            Some(26) => Box::new((0..size / 2).flat_map(move |x| (0..size).map(move |y| (x, y)))),
+            Some(27) => Box::new((0..size).flat_map(move |x| (0..size / 2).map(move |y| (x, y)))),
 
-            Some(24) => (size / 2..size).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            Some(25) => (0..size).flat_map(|x| (size / 2..size).map(move |y| (x, y))).collect(),
-            Some(26) => (0..size / 2).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            Some(27) => (0..size).flat_map(|x| (0..size / 2).map(move |y| (x, y))).collect(),
-
-            Some(28) => (0..size).flat_map(|x| (0..(size / 2 + x).clamp(0, size)).map(move |y| (x, y))).collect(),
-            Some(29) => (0..size)
-                .flat_map(|x| ((size / 2).saturating_sub(x)..size).map(move |y| (x, y)))
-                .collect(),
-            Some(30) => (0..size).flat_map(|x| (x.saturating_sub(size / 2)..size).map(move |y| (x, y))).collect(),
-            Some(31) => (0..size)
-                .flat_map(|x| (0..(size + size / 2 - x).clamp(0, size)).map(move |y| (x, y)))
-                .collect(),
-
-            Some(32) | Some(45) => (0..size / 2).flat_map(|x| ((size / 2 + x)..size).map(move |y| (x, y))).collect(),
-            Some(33) | Some(46) => (0..size / 2).flat_map(|x| (0..(size / 2 - x)).map(move |y| (x, y))).collect(),
-            Some(34) | Some(47) => (size / 2..size).flat_map(|x| (0..(x - size / 2)).map(move |y| (x, y))).collect(),
-            Some(35) | Some(44) => (size / 2..size)
-                .flat_map(|x| ((size + size / 2 - x)..size).map(move |y| (x, y)))
-                .collect(),
+            Some(28) => Box::new((0..size).flat_map(move |x| (0..(size / 2 + x).clamp(0, size)).map(move |y| (x, y)))),
+            Some(29) => Box::new((0..size).flat_map(move |x| ((size / 2).saturating_sub(x)..size).map(move |y| (x, y)))),
+            Some(30) => Box::new((0..size).flat_map(move |x| (x.saturating_sub(size / 2)..size).map(move |y| (x, y)))),
+            Some(31) => Box::new((0..size).flat_map(move |x| (0..(size + size / 2 - x).clamp(0, size)).map(move |y| (x, y)))),
+            Some(32) | Some(45) => Box::new((0..size / 2).flat_map(move |x| ((size / 2 + x)..size).map(move |y| (x, y)))),
+            Some(33) | Some(46) => Box::new((0..size / 2).flat_map(move |x| (0..(size / 2 - x)).map(move |y| (x, y)))),
+            Some(34) | Some(47) => Box::new((size / 2..size).flat_map(move |x| (0..(x - size / 2)).map(move |y| (x, y)))),
+            Some(35) | Some(44) => Box::new((size / 2..size).flat_map(move |x| ((size + size / 2 - x)..size).map(move |y| (x, y)))),
             Some(other) => unimplemented!("Shape {} is not implemented.", other),
         };
 
-        Self { inner: points.into_iter() }
+        Self { inner: points }
     }
 }
 
@@ -204,14 +171,13 @@ mod shape_tests {
         ];
         let sizes = [2, 4, 8, 16, 32, 64];
         for size in &sizes {
-            let def: Option<u8> = None;
-            for (x, y) in UnderlayShape::new(def, *size) {
+            for (x, y) in UnderlayShape::new(None, *size) {
                 if !(x < *size && y < *size) {
-                    panic!("{} {} {:?} {}", x, y, def, size)
+                    panic!("{} {} {}", x, y, size)
                 }
             }
             for shape in &shapes {
-                for (x, y) in UnderlayShape::new(def, *size) {
+                for (x, y) in UnderlayShape::new(Some(*shape), *size) {
                     if !(x < *size && y < *size) {
                         panic!("{} {} {} {}", x, y, shape, size)
                     }

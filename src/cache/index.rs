@@ -9,7 +9,7 @@ compile_error!("mockdata and save_mockdata are incompatible");
 compile_error!("rs3 and osrs are incompatible");
 
 use std::{
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     env::{self, VarError},
     fs::{self, File},
     io::{Read, SeekFrom, Write},
@@ -20,6 +20,8 @@ use std::{
 
 use itertools::iproduct;
 
+#[cfg(feature = "osrs")]
+use crate::cache::xtea::Xtea;
 use crate::{
     cache::{
         arc::{Archive, ArchiveGroup},
@@ -81,6 +83,9 @@ pub struct CacheIndex<S: IndexState> {
 
     #[cfg(feature = "osrs")]
     file: Box<[u8]>,
+
+    #[cfg(feature = "osrs")]
+    xteas: Option<HashMap<u32, Xtea>>,
 }
 
 // methods valid in any state
@@ -111,7 +116,7 @@ where
             .metadatas()
             .get(&archive_id)
             .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
-        let data = self.get_file(&metadata)?;
+        let data = self.get_file(metadata)?;
 
         Ok(Archive::deserialize(metadata, data))
     }
@@ -137,6 +142,8 @@ impl CacheIndex<Initial> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             ..
         } = self;
 
@@ -147,6 +154,8 @@ impl CacheIndex<Initial> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state: Truncated { feed: ids },
         }
     }
@@ -172,6 +181,8 @@ impl CacheIndex<Initial> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             ..
         } = self;
 
@@ -182,6 +193,8 @@ impl CacheIndex<Initial> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state: Grouped { dim_i, dim_j },
         }
     }
@@ -388,6 +401,7 @@ impl CacheIndex<Initial> {
 impl<S> CacheIndex<S>
 where
     S: IndexState,
+
 {
     fn get_entry(a: u32, b: u32) -> CacheResult<(u32, u32)> {
         let file = match env::var(SYS_VAR) {
@@ -433,23 +447,36 @@ where
 
             data.extend(buffer.read_n_bytes(block_size as _));
         }
-        Ok(decoder::decompress(data, None)?)
+        Ok(data)
     }
 
-    fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
-        self.read_index(metadata.index_id(), metadata.archive_id())
+    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
+        let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
+        decoder::decompress(data, None, None)
     }
 
-    pub fn archive_by_name(&self, name: String) -> CacheResult<Vec<u8>>{
-        
+    pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>>{
+        &self.xteas
+    }
+
+    pub fn archive_with_xtea(&self, archive_id: u32, xtea: Option<Xtea>) -> CacheResult<Archive> {
+        let metadata = self
+            .metadatas()
+            .get(&archive_id)
+            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
+        let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
+        let data = decoder::decompress(data, None, xtea)?;
+        Ok(Archive::deserialize(metadata, data))
+    }
+
+    pub fn archive_by_name(&self, name: String) -> CacheResult<Vec<u8>> {
         let hash = crate::cache::hash::hash_djb2(&name);
-        for (_,  m) in self.metadatas.iter(){
-            if m.name() == Some(hash){
+        for (_, m) in self.metadatas.iter() {
+            if m.name() == Some(hash) {
                 return self.get_file(m);
             }
-            
         }
-        Err(CacheError::ArchiveNotFoundError(0,0))
+        Err(CacheError::ArchiveNotFoundError(0, 0))
     }
 }
 
@@ -468,6 +495,18 @@ impl CacheIndex<Initial> {
         };
 
         let file = fs::read(path)?.into_boxed_slice();
+        let xteas = if index_id == 5 {
+            let path = match env::var(SYS_VAR) {
+                Ok(var) => format!("{}/xteas.json", var),
+                Err(VarError::NotPresent) => String::from("raw/xteas.json"),
+                Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
+            };
+
+            Some(Xtea::load(path)?)
+        } else {
+            None
+        };
+       
 
         // `s` is in a partially initialized state here
         let mut s = Self {
@@ -477,11 +516,14 @@ impl CacheIndex<Initial> {
             connection,
             #[cfg(feature = "osrs")]
             file,
+            #[cfg(feature = "osrs")]
+            xteas,
             state: Initial {},
         };
 
         let metadatas = {
             let data = s.read_index(255, index_id)?;
+            let data = decoder::decompress(data, None, None)?;
             IndexMetadata::deserialize(index_id, Buffer::new(data))?
         };
 
@@ -514,6 +556,8 @@ impl CacheIndex<Truncated> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state,
         } = self;
 
@@ -524,6 +568,8 @@ impl CacheIndex<Truncated> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state: TruncatedGrouped {
                 feed: state.feed,
                 dim_i,
@@ -558,6 +604,8 @@ impl IntoIterator for CacheIndex<Truncated> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state,
         } = self;
 
@@ -568,6 +616,8 @@ impl IntoIterator for CacheIndex<Truncated> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state: Initial {},
         };
 
@@ -609,6 +659,8 @@ impl IntoIterator for CacheIndex<TruncatedGrouped> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state,
         } = self;
         let TruncatedGrouped { dim_i, dim_j, feed } = state;
@@ -619,6 +671,8 @@ impl IntoIterator for CacheIndex<TruncatedGrouped> {
             file,
             index_id,
             metadatas,
+            #[cfg(feature = "osrs")]
+            xteas,
             state: Grouped {
                 dim_i: dim_i.clone(),
                 dim_j: dim_j.clone(),

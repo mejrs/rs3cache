@@ -61,7 +61,10 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
 }
 
 #[cfg(feature = "osrs")]
-pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<Vec<u8>> {
+use crate::cache::xtea::Xtea;
+
+#[cfg(feature = "osrs")]
+pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<Xtea>) -> CacheResult<Vec<u8>> {
     use crate::cache::buf::Buffer;
 
     if &encoded_data[0..3] == Compression::ZLIB {
@@ -73,7 +76,6 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
         // length is encoded_data[1..5] as u32 + 7
         Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec())
     } else if encoded_data[0] == Compression::BZIP {
-        
         let mut temp = b"BZh1".to_vec();
         let mut length = Buffer::new(&encoded_data[5..9]);
         let length = length.read_int();
@@ -85,6 +87,18 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
 
         decoder.decompress_vec(&temp, &mut decoded_data)?;
         Ok(decoded_data)
+    } else if xtea.is_some() && encoded_data[0] == Compression::GZIP {
+        let length = u32::from_be_bytes([encoded_data[1],encoded_data[2],encoded_data[3],encoded_data[4]]) as usize;
+
+        let xtea = xtea.unwrap();
+        let decrypted = Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
+
+        let mut decoder = gzip::Decoder::new(&decrypted[4..]).expect("woops");
+        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+        decoder.read_to_end(&mut decoded_data).expect("oops");
+
+        Ok(decoded_data)
+
     } else if encoded_data[0] == Compression::GZIP {
         let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
         let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);

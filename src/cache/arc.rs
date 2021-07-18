@@ -21,6 +21,7 @@ use crate::{
     utils::{
         adapters::Pairwisor,
         error::{CacheError, CacheResult},
+        slice::SharedSlice
     },
 };
 

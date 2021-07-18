@@ -3,23 +3,21 @@ use std::collections::HashMap;
 use image::{GenericImage, GenericImageView, RgbaImage};
 use itertools::iproduct;
 
+#[cfg(feature = "rs3")]
+use crate::definitions::mapscenes::MapScene;
 use crate::{
-    definitions::{location_configs::LocationConfig,  mapsquares::GroupMapSquare, sprites::Sprite},
-    renderers::map::mapcore::TILESIZE,
+    definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare, sprites::Sprite},
+    renderers::map::mapcore::CONFIG,
     utils::rangeclamp::RangeClamp,
 };
 
-#[cfg(feature = "rs3")]
-use crate::definitions::mapscenes::MapScene;
-
 /// Applies [`MapScene`]s to the base image.
-#[cfg(feature = "rs3")]
 pub fn put(
     plane: usize,
     img: &mut RgbaImage,
     squares: &GroupMapSquare,
     location_config: &HashMap<u32, LocationConfig>,
-    mapscenes: &HashMap<u32, MapScene>,
+    #[cfg(feature = "rs3")] mapscenes: &HashMap<u32, MapScene>,
     sprites: &HashMap<(u32, u32), Sprite>,
 ) {
     squares
@@ -27,19 +25,29 @@ pub fn put(
         .filter_map(|loc| {
             if loc.plane.matches(&(plane as u8)) {
                 location_config[&(loc.id)].mapscene.and_then(|mapscene_id| {
-                    mapscenes[&(mapscene_id as u32)]
-                        .sprite_id
-                        // sprites is constructed with ids from
-                        // mapscenes so it should always be in the map.
-                        .map(|sprite_id| (loc, &sprites[&(sprite_id, 0)]))
+                    #[cfg(feature = "rs3")]
+                    {
+                        mapscenes[&(mapscene_id as u32)]
+                            .sprite_id
+                            // sprites is constructed with ids from
+                            // mapscenes so it should always be in the map.
+                            .map(|sprite_id| (loc, &sprites[&(sprite_id, 0)]))
+                    }
+
+                    #[cfg(feature = "osrs")]
+                    {
+                        // 317 is the sprite named "mapscene", whose frames form all the mapscenes.
+                        // 22 is missing and indicates the empty mapscene, which is why this does not index
+                       sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
+                    }
                 })
             } else {
                 None
             }
         })
         .for_each(|(loc, sprite)| {
-            let offset_a = TILESIZE as i32 * ((loc.i as i32 - squares.core_i() as i32) * 64 + loc.x as i32);
-            let offset_b = TILESIZE as i32 * (63 - (loc.j as i32 - squares.core_j() as i32) * 64 - loc.y as i32);
+            let offset_a = CONFIG.tile_size as i32 * ((loc.i as i32 - squares.core_i() as i32) * 64 + loc.x as i32);
+            let offset_b = CONFIG.tile_size as i32 * (63 - (loc.j as i32 - squares.core_j() as i32) * 64 - loc.y as i32);
 
             let dim_a = sprite.width() as i32;
             let dim_b = sprite.height() as i32;

@@ -22,12 +22,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for archive in archives {
         match archive {
             "location_configs" => definitions::location_configs::export(format!("{}/location_configs", BASE))?,
-            "location_configs_each" =>  definitions::location_configs::export_each(format!("{}/location_configs", BASE))?,
+            "location_configs_each" => definitions::location_configs::export_each(format!("{}/location_configs", BASE))?,
             "locations" => definitions::locations::export()?,
             "npc_configs" => definitions::npc_configs::export()?,
             "item_configs" => definitions::item_configs::export()?,
             "maplabels" => definitions::maplabel_configs::export()?,
             "overlays" => definitions::overlays::export()?,
+            "underlays" => definitions::underlays::export(format!("{}/underlays", BASE))?,
             "sprites" => definitions::sprites::save_all()?,
             #[cfg(feature = "osrs")]
             "textures" => definitions::textures::export(format!("{}/textures", BASE))?,
@@ -47,6 +48,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 definitions::item_configs::export()?;
                 definitions::maplabel_configs::export()?;
                 definitions::overlays::export()?;
+                definitions::underlays::export(format!("{}/underlays", BASE))?;
+
                 {
                     definitions::worldmaps::dump_big()?;
                     definitions::worldmaps::dump_small()?;

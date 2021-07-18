@@ -176,13 +176,13 @@ impl Debug for CacheError {
 impl std::error::Error for CacheError {
     fn backtrace(&self) -> Option<&Backtrace> {
         match self {
-            Self::SqliteError(_, trace) => Some(&trace),
-            Self::IoError(_, trace) => Some(&trace),
-            Self::SerdeError(_, trace) => Some(&trace),
-            Self::ImageError(_, trace) => Some(&trace),
-            Self::ParseIntError(_, trace) => Some(&trace),
-            Self::NoneError(trace) => Some(&trace),
-            Self::BZip2Error(_, trace) => Some(&trace),
+            Self::SqliteError(_, trace) => Some(trace),
+            Self::IoError(_, trace) => Some(trace),
+            Self::SerdeError(_, trace) => Some(trace),
+            Self::ImageError(_, trace) => Some(trace),
+            Self::ParseIntError(_, trace) => Some(trace),
+            Self::NoneError(trace) => Some(trace),
+            Self::BZip2Error(_, trace) => Some(trace),
             _ => None,
         }
     }

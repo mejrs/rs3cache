@@ -10,14 +10,15 @@
 #![allow(unused_imports)]
 use core::ops::{Range, RangeInclusive};
 use std::{
-    collections::{hash_map, HashMap},
+    collections::{hash_map, BTreeMap, HashMap},
     iter::Zip,
 };
-use std::collections::BTreeMap;
 
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 
+#[cfg(feature = "osrs")]
+use crate::cache::xtea::Xtea;
 use crate::{
     cache::{
         arc::Archive,
@@ -66,8 +67,7 @@ pub struct MapSquare {
 pub type ColumnIter<'c> = Zip<LanesIter<'c, Tile, Dim<[usize; 2]>>, Product<Range<u32>, Range<u32>>>;
 
 impl MapSquare {
-    #[cfg(test)]
-    #[cfg(feature = "rs3")]
+    #[cfg(all(test, feature = "rs3"))]
     pub fn new(i: u8, j: u8) -> CacheResult<MapSquare> {
         assert!(i < 0x7F, "Index out of range.");
         let archive_id = (i as u32) | (j as u32) << 7;
@@ -76,20 +76,23 @@ impl MapSquare {
     }
 
     #[cfg(feature = "osrs")]
-    fn new(index: &CacheIndex<index::Initial>, land: u32, tiles: u32, env: u32, i: u8, j: u8) -> CacheResult<MapSquare> {
-        //let land = index.archive(land).unwrap().take_file(&0).unwrap();
+    fn new(index: &CacheIndex<index::Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: u32, i: u8, j: u8) -> CacheResult<MapSquare> {
+        let land = index.archive_with_xtea(land, xtea).and_then(|mut arch| arch.take_file(&0));
         let tiles = index.archive(tiles).unwrap().take_file(&0).unwrap();
         let env = index.archive(env).unwrap();
 
-        
         let tiles = Tile::dump(tiles);
-        //let locations = Location::dump(i, j, &tiles, land);
+        let locations = if let Ok(ok_land) = land{
+            Ok(Location::dump(i, j, &tiles, ok_land))
+        } else{
+            Err(CacheError::ArchiveNotFoundError(5, 0))
+        };
 
         Ok(MapSquare {
             i,
             j,
             tiles: Ok(tiles),
-            locations: Err(CacheError::ArchiveNotFoundError(i.into(),j.into())),
+            locations,
         })
     }
 
@@ -99,7 +102,7 @@ impl MapSquare {
         let j = (archive.archive_id() >> 7) as u8;
         let tiles = archive.take_file(&MapFileType::TILES).map(Tile::dump);
         let locations = match tiles {
-            Ok(ref t) => archive.take_file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, &t, file)),
+            Ok(ref t) => archive.take_file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
             // can't generally clone or copy error
             Err(CacheError::FileNotFoundError(i, a, f)) => Err(CacheError::FileNotFoundError(i, a, f)),
             _ => unreachable!(),
@@ -182,14 +185,62 @@ impl Iterator for MapSquareIterator {
 /// Iterates over all [`MapSquare`]s in arbitrary order.
 #[cfg(feature = "osrs")]
 pub struct MapSquareIterator {
-    inner: index::IntoIter,
+    inner: CacheIndex<index::Initial>,
+    range_i: RangeInclusive<i32>,
+    range_j: RangeInclusive<i32>,
+    mapping: BTreeMap<(u8, u8), (u32, u32, u32)>,
+    state: std::vec::IntoIter<(u8, u8)>,
 }
 
 #[cfg(feature = "osrs")]
 impl MapSquareIterator {
     /// Constructor for MapSquareIterator.
-    pub fn new() -> CacheResult<MapSquareIterator> {
-        todo!()
+    pub fn new() -> CacheResult<Self> {
+        let inner = CacheIndex::new(IndexType::MAPSV2)?;
+        let mut mapping: BTreeMap<(u8, u8), (u32, u32, u32)> = BTreeMap::new();
+
+        for (i, j) in iproduct!(0..100, 0..200) {
+            let land = format!("l{}_{}", i, j);
+            let tiles = format!("m{}_{}", i, j);
+            let environment = format!("e{}_{}", i, j);
+
+            let land_hash = crate::cache::hash::hash_djb2(land);
+            let tiles_hash = crate::cache::hash::hash_djb2(tiles);
+            let environment_hash = crate::cache::hash::hash_djb2(environment);
+
+            let mut land = None;
+            let mut tiles = None;
+            let mut env = None;
+
+            for (_, m) in inner.metadatas().iter() {
+                if m.name() == Some(land_hash) {
+                    land = Some(m.archive_id())
+                }
+
+                if m.name() == Some(tiles_hash) {
+                    tiles = Some(m.archive_id())
+                }
+
+                if m.name() == Some(environment_hash) {
+                    env = Some(m.archive_id())
+                }
+            }
+
+            match (land, tiles, env) {
+                (None, None, None) => {}
+                (Some(l), Some(t), Some(e)) => {
+                    mapping.insert((i, j), (l, t, e));
+                }
+                v => unimplemented!("{:?}", v),
+            };
+        }
+        let state = mapping.keys().copied().collect::<Vec<_>>().into_iter();
+
+        Ok(GroupMapSquareIterator {
+            inner,
+            mapping,
+            state,
+        })
     }
 }
 
@@ -302,6 +353,7 @@ impl GroupMapSquareIterator {
             };
         }
         let state = mapping.keys().copied().collect::<Vec<_>>().into_iter();
+        //let state = vec![(50, 50)].into_iter();
 
         Ok(GroupMapSquareIterator {
             inner,
@@ -325,7 +377,8 @@ impl Iterator for GroupMapSquareIterator {
             let mapsquares: HashMap<(u8, u8), MapSquare> = coordinates
                 .filter_map(|(i, j)| {
                     if let Some((land, tiles, env)) = self.mapping.get(&(i, j)) {
-                        MapSquare::new(&self.inner, *land, *tiles, *env, i, j).ok()
+                        let xtea = self.inner.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
+                        MapSquare::new(&self.inner, xtea.copied(), *land, *tiles, *env, i, j).ok()
                     } else {
                         None
                     }
@@ -335,10 +388,15 @@ impl Iterator for GroupMapSquareIterator {
             assert!(mapsquares.contains_key(&(core_i, core_j)));
 
             GroupMapSquare { core_i, core_j, mapsquares }
-
         })
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>){
+        self.state.size_hint()
+    }
 }
+
+impl ExactSizeIterator for GroupMapSquareIterator{}
 
 /// A group of adjacent [`MapSquare`]s.
 ///
@@ -454,7 +512,7 @@ impl MapFileType {
     pub const UNKNOWN_9: u32 = 9;
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "rs3"))]
 mod map_tests {
     use super::*;
 
