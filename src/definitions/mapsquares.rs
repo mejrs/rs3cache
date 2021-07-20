@@ -82,9 +82,9 @@ impl MapSquare {
         let env = index.archive(env).unwrap();
 
         let tiles = Tile::dump(tiles);
-        let locations = if let Ok(ok_land) = land{
+        let locations = if let Ok(ok_land) = land {
             Ok(Location::dump(i, j, &tiles, ok_land))
-        } else{
+        } else {
             Err(CacheError::ArchiveNotFoundError(5, 0))
         };
 
@@ -186,9 +186,7 @@ impl Iterator for MapSquareIterator {
 #[cfg(feature = "osrs")]
 pub struct MapSquareIterator {
     inner: CacheIndex<index::Initial>,
-    range_i: RangeInclusive<i32>,
-    range_j: RangeInclusive<i32>,
-    mapping: BTreeMap<(u8, u8), (u32, u32, u32)>,
+    mapping: BTreeMap<(&'static str, u8, u8), u32>,
     state: std::vec::IntoIter<(u8, u8)>,
 }
 
@@ -197,50 +195,42 @@ impl MapSquareIterator {
     /// Constructor for MapSquareIterator.
     pub fn new() -> CacheResult<Self> {
         let inner = CacheIndex::new(IndexType::MAPSV2)?;
-        let mut mapping: BTreeMap<(u8, u8), (u32, u32, u32)> = BTreeMap::new();
 
-        for (i, j) in iproduct!(0..100, 0..200) {
-            let land = format!("l{}_{}", i, j);
-            let tiles = format!("m{}_{}", i, j);
-            let environment = format!("e{}_{}", i, j);
+        let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))
+            .collect();
+        let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{}_{}", i, j)), (i, j)))
+            .collect();
+        let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{}_{}", i, j)), (i, j)))
+            .collect();
 
-            let land_hash = crate::cache::hash::hash_djb2(land);
-            let tiles_hash = crate::cache::hash::hash_djb2(tiles);
-            let environment_hash = crate::cache::hash::hash_djb2(environment);
+        let mapping: BTreeMap<(&'static str, u8, u8), u32> = inner
+            .metadatas()
+            .iter()
+            .map(|(_, m)| {
+                let name_hash = m.name().unwrap();
 
-            let mut land = None;
-            let mut tiles = None;
-            let mut env = None;
-
-            for (_, m) in inner.metadatas().iter() {
-                if m.name() == Some(land_hash) {
-                    land = Some(m.archive_id())
+                if let Some((i, j)) = land_hashes.get(&name_hash) {
+                    (("l", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = map_hashes.get(&name_hash) {
+                    (("m", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = env_hashes.get(&name_hash) {
+                    (("e", *i, *j), m.archive_id())
+                } else {
+                    unreachable!()
                 }
+            })
+            .collect();
 
-                if m.name() == Some(tiles_hash) {
-                    tiles = Some(m.archive_id())
-                }
+        let state = mapping
+            .keys()
+            .filter_map(|(ty, i, j)| if *ty == "m" { Some((*i, *j)) } else { None })
+            .collect::<Vec<_>>()
+            .into_iter();
 
-                if m.name() == Some(environment_hash) {
-                    env = Some(m.archive_id())
-                }
-            }
-
-            match (land, tiles, env) {
-                (None, None, None) => {}
-                (Some(l), Some(t), Some(e)) => {
-                    mapping.insert((i, j), (l, t, e));
-                }
-                v => unimplemented!("{:?}", v),
-            };
-        }
-        let state = mapping.keys().copied().collect::<Vec<_>>().into_iter();
-
-        Ok(GroupMapSquareIterator {
-            inner,
-            mapping,
-            state,
-        })
+        Ok(MapSquareIterator { inner, mapping, state })
     }
 }
 
@@ -249,11 +239,18 @@ impl Iterator for MapSquareIterator {
     type Item = MapSquare;
 
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        self.state.next().map(|(i, j)| {
+            let land = self.mapping.get(&("l", i, j)).unwrap();
+            let map = self.mapping.get(&("m", i, j)).unwrap();
+            let env = self.mapping.get(&("e", i, j)).unwrap();
+            let xtea = self.inner.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
+
+            MapSquare::new(&self.inner, xtea.copied(), *land, *map, *env, i, j).unwrap()
+        })
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        todo!()
+        self.state.size_hint()
     }
 }
 
@@ -353,8 +350,6 @@ impl GroupMapSquareIterator {
             };
         }
         let state = mapping.keys().copied().collect::<Vec<_>>().into_iter();
-        //let state = vec![(50, 50)].into_iter();
-
         Ok(GroupMapSquareIterator {
             inner,
             range_i,
@@ -391,12 +386,12 @@ impl Iterator for GroupMapSquareIterator {
         })
     }
 
-    fn size_hint(&self) -> (usize, Option<usize>){
+    fn size_hint(&self) -> (usize, Option<usize>) {
         self.state.size_hint()
     }
 }
 
-impl ExactSizeIterator for GroupMapSquareIterator{}
+impl ExactSizeIterator for GroupMapSquareIterator {}
 
 /// A group of adjacent [`MapSquare`]s.
 ///
