@@ -39,6 +39,7 @@
 //!
 
 #![feature(
+    cfg_eval,
     option_result_contains,
     option_get_or_insert_default,
     option_result_unwrap_unchecked,
@@ -46,7 +47,7 @@
     thread_spawn_unchecked,
     once_cell
 )]
-#![allow(unused_variables, unused_imports)]
+#![allow(non_snake_case, unused_variables, unused_imports)]
 #![warn(
     //unused_imports,
     unused_qualifications,

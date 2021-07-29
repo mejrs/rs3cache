@@ -1,0 +1,12 @@
+[package]
+name = "macro_utils"
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.28"
+syn = "1.0.74"
+quote = "1.0.9"

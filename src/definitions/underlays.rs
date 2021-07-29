@@ -3,6 +3,9 @@ use std::path::Path;
 use std::fs::{self, File};
 use std::io::Write;
 
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
+
 use crate::{
     cache::{
         buf::  Buffer,

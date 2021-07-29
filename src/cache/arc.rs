@@ -195,7 +195,7 @@ impl Archive {
         }
     }
 
-    fn files<'p>(&self, py: Python<'p>) -> PyResult<std::collections::BTreeMap<u32, &'p PyBytes>> {
+    fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
         Ok(self.files.iter().map(|(&id, file)| (id, PyBytes::new(py, file))).collect())
     }
 }

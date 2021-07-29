@@ -2,13 +2,12 @@ use std::{
     collections::HashMap,
     fs::{self, File},
     io::Write,
+    path::Path,
 };
-use std::path::Path;
 
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 #[cfg(feature = "osrs")]
 use crate::cache::indextype::ConfigType;
@@ -19,16 +18,20 @@ use crate::{
 };
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
+#[cfg_eval]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[skip_serializing_none]
-#[derive(Serialize, Debug, Default)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct LocationConfig {
     /// Its id.
     pub id: u32,
+
     /// A mapping of possible types to models.
     #[serde(flatten)]
     pub models: Option<Models>,
+
     /// Its name, if present.
     pub name: Option<String>,
 
@@ -39,103 +42,184 @@ pub struct LocationConfig {
     ///
     /// Code using this value must account for the location's rotation.
     pub dim_x: Option<u8>,
+
     /// Its south-north dimension, defaulting to 1 if not present.
     ///
     /// Code using this value must account for the location's rotation.
     pub dim_y: Option<u8>,
+
     pub unknown_17: Option<bool>,
+
     pub is_transparent: Option<bool>,
+
     /// Flag for whether this object has a red rather than a white line on the map.
     pub unknown_19: Option<u8>,
+
     pub unknown_21: Option<bool>,
+
     pub unknown_22: Option<bool>,
+
     pub occludes_1: Option<bool>,
+
     pub unknown_24: Option<u32>,
+
     pub unknown_27: Option<bool>,
+
     pub unknown_28: Option<u8>,
+
     pub ambient: Option<i8>,
+
     /// What rightclick options this location has, if any.
     pub actions: Option<[Option<String>; 5]>,
+
     pub contrast: Option<i8>,
+
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
+
     #[serde(flatten)]
     pub textures: Option<Textures>,
+
     pub recolour_palette: Option<Vec<(u16, u16)>>,
+
     pub unknown_44: Option<u16>,
+
     pub unknown_45: Option<u16>,
+
     #[cfg(feature = "osrs")]
     pub category: Option<u16>,
+
     pub mirror: Option<bool>,
+
     pub model: Option<bool>,
+
     pub scale_x: Option<u16>,
+
     pub scale_y: Option<u16>,
+
     pub scale_z: Option<u16>,
+
     pub unknown_69: Option<u8>,
+
     pub translate_x: Option<u16>,
+
     pub translate_y: Option<u16>,
+
     pub translate_z: Option<u16>,
+
     pub unknown_73: Option<bool>,
+
     /// Whether this location can be interacted through with e.g. ranged/magic combat, telegrab etc.
     pub blocks_ranged: Option<bool>,
+
     pub unknown_75: Option<u8>,
+
     /// This location can have different appearances depending on a player's varp/varbits.
     pub morphs_1: Option<LocationMorphTable>,
+
     pub unknown_78: Option<Unknown78>,
+
     pub unknown_79: Option<Unknown79>,
+
     pub unknown_81: Option<u8>,
+
     #[cfg(feature = "rs3")]
     pub unknown_82: Option<bool>,
+
     #[cfg(feature = "osrs")]
     pub maparea_id: Option<u16>,
+
     pub unknown_88: Option<bool>,
+
     pub unknown_89: Option<bool>,
+
     pub is_members: Option<bool>,
+
     /// This location can have different appearances depending on a players varbits,
     /// like the [morphs_1](LocationConfig::morphs_1) field, but with a default value.
     pub morphs_2: Option<ExtendedLocationMorphTable>,
+
     pub unknown_93: Option<u16>,
+
     pub unknown_94: Option<bool>,
+
     pub unknown_95: Option<u16>,
+
     pub unknown_96: Option<bool>,
+
     pub unknown_97: Option<bool>,
+
     pub unknown_98: Option<bool>,
+
     pub unknown_99: Option<()>,
+
     pub unknown_101: Option<u8>,
+
     /// Reference to a [`MapScene`](super::mapscenes::MapScene) that is drawn on the map.
     pub mapscene: Option<u16>,
+
     pub occludes_2: Option<bool>,
+
     pub unknown_104: Option<u8>,
+
     pub headmodels: Option<HeadModels>,
+
     pub mapfunction: Option<u16>,
+
     pub member_actions: Option<[Option<String>; 5]>,
+
     pub unknown_160: Option<Unknown160>,
+
     pub unknown_162: Option<i32>,
+
     pub unknown_163: Option<Unknown163>,
+
     pub unknown_164: Option<u16>,
+
     pub unknown_165: Option<u16>,
+
     pub unknown_166: Option<u16>,
+
     pub unknown_167: Option<u16>,
+
     pub unknown_168: Option<bool>,
+
     pub unknown_169: Option<bool>,
+
     pub unknown_170: Option<u16>,
+
     pub unknown_171: Option<u16>,
+
     #[serde(flatten)]
     pub unknown_173: Option<Unknown173>,
+
     pub unknown_177: Option<bool>,
+
     pub unknown_178: Option<u8>,
+
     pub unknown_186: Option<u8>,
+
     pub unknown_188: Option<bool>,
+
     pub unknown_189: Option<bool>,
+
     pub cursors: Option<[Option<u16>; 6]>,
+
     pub unknown_196: Option<u8>,
+
     pub unknown_197: Option<u8>,
+
     pub unknown_198: Option<bool>,
+
     pub unknown_199: Option<bool>,
+
     pub unknown_200: Option<bool>,
+
     #[serde(flatten)]
     pub unknown_201: Option<Unknown201>,
+
     pub unknown_202: Option<u16>,
+
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -173,7 +257,7 @@ impl LocationConfig {
         let mut loc = Self { id, ..Default::default() };
 
         loop {
-            match  buffer.read_unsigned_byte() {
+            match buffer.read_unsigned_byte() {
                 0 => {
                     debug_assert_eq!(buffer.remaining(), 0);
                     break loc;
@@ -291,6 +375,7 @@ pub mod location_config_fields {
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
@@ -341,6 +426,7 @@ pub mod location_config_fields {
     }
 
     /// Like [`LocationMorphTable`], but with a default value.
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
@@ -356,13 +442,13 @@ pub mod location_config_fields {
         #[cfg(feature = "rs3")]
         pub default: Option<u32>,
 
-         /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
-         #[cfg(feature = "osrs")]
-         pub ids: Vec<Option<u16>>,
- 
-         /// This [`LocationConfig`](super::LocationConfig)'s default id.
-         #[cfg(feature = "osrs")]
-         pub default: Option<u16>,
+        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
+        #[cfg(feature = "osrs")]
+        pub ids: Vec<Option<u16>>,
+
+        /// This [`LocationConfig`](super::LocationConfig)'s default id.
+        #[cfg(feature = "osrs")]
+        pub default: Option<u16>,
     }
 
     impl ExtendedLocationMorphTable {
@@ -389,7 +475,7 @@ pub mod location_config_fields {
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default =match buffer.read_unsigned_short() {
+            let default = match buffer.read_unsigned_short() {
                 0xFFFF => None,
                 id => Some(id),
             };
@@ -399,11 +485,14 @@ pub mod location_config_fields {
             let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
                 0xFFFF => None,
                 id => Some(id),
-            }).take(count + 1).collect::<Vec<_>>();
+            })
+            .take(count + 1)
+            .collect::<Vec<_>>();
             Self { var, ids, default }
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
@@ -420,6 +509,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
@@ -463,6 +553,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg(feature = "osrs")]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
@@ -480,6 +571,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
@@ -496,6 +588,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown79 {
@@ -527,6 +620,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown173 {
@@ -544,6 +638,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown163 {
@@ -572,6 +667,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown78 {
@@ -581,14 +677,15 @@ pub mod location_config_fields {
     }
 
     impl Unknown78 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown78 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_byte();
 
-            Unknown78 { unknown_1, unknown_2 }
+            Self { unknown_1, unknown_2 }
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown160 {
@@ -596,13 +693,14 @@ pub mod location_config_fields {
     }
 
     impl Unknown160 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown160 {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let values = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
-            Unknown160 { values }
+            Self { values }
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown201 {
@@ -639,6 +737,7 @@ pub mod location_config_fields {
         }
     }
 
+    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
@@ -685,343 +784,6 @@ pub fn export_each(path: impl AsRef<Path>) -> CacheResult<()> {
     });
 
     Ok(())
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl LocationConfig {
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-    #[getter]
-    fn models(&self) -> PyResult<Option<Models>> {
-        Ok(self.models.clone())
-    }
-    #[getter]
-    fn name(&self) -> PyResult<Option<String>> {
-        Ok(self.name.clone())
-    }
-    #[getter]
-    fn dim_x(&self) -> PyResult<Option<u8>> {
-        Ok(self.dim_x)
-    }
-    #[getter]
-    fn dim_y(&self) -> PyResult<Option<u8>> {
-        Ok(self.dim_y)
-    }
-    #[getter]
-    fn unknown_17(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_17)
-    }
-    #[getter]
-    fn is_transparent(&self) -> PyResult<Option<bool>> {
-        Ok(self.is_transparent)
-    }
-    #[getter]
-    fn unknown_19(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_19)
-    }
-    #[getter]
-    fn unknown_21(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_21)
-    }
-    #[getter]
-    fn unknown_22(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_22)
-    }
-    #[getter]
-    fn occludes_1(&self) -> PyResult<Option<bool>> {
-        Ok(self.occludes_1)
-    }
-    #[getter]
-    fn unknown_24(&self) -> PyResult<Option<u32>> {
-        Ok(self.unknown_24)
-    }
-    #[getter]
-    fn unknown_27(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_27)
-    }
-    #[getter]
-    fn unknown_28(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_28)
-    }
-    #[getter]
-    fn ambient(&self) -> PyResult<Option<i8>> {
-        Ok(self.ambient)
-    }
-    #[getter]
-    fn actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
-        Ok(self.actions.clone())
-    }
-    #[getter]
-    fn contrast(&self) -> PyResult<Option<i8>> {
-        Ok(self.contrast)
-    }
-    #[getter]
-    fn colour_replacements(&self) -> PyResult<Option<ColourReplacements>> {
-        Ok(self.colour_replacements.clone())
-    }
-    #[getter]
-    fn textures(&self) -> PyResult<Option<Textures>> {
-        Ok(self.textures.clone())
-    }
-    #[getter]
-    fn recolour_palette(&self) -> PyResult<Option<Vec<(u16, u16)>>> {
-        Ok(self.recolour_palette.clone())
-    }
-    #[getter]
-    fn unknown_44(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_44)
-    }
-    #[getter]
-    fn unknown_45(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_45)
-    }
-    #[getter]
-    fn mirror(&self) -> PyResult<Option<bool>> {
-        Ok(self.mirror)
-    }
-    #[getter]
-    fn model(&self) -> PyResult<Option<bool>> {
-        Ok(self.model)
-    }
-    #[getter]
-    fn scale_x(&self) -> PyResult<Option<u16>> {
-        Ok(self.scale_x)
-    }
-    #[getter]
-    fn scale_y(&self) -> PyResult<Option<u16>> {
-        Ok(self.scale_y)
-    }
-    #[getter]
-    fn scale_z(&self) -> PyResult<Option<u16>> {
-        Ok(self.scale_z)
-    }
-    #[getter]
-    fn unknown_69(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_69)
-    }
-    #[getter]
-    fn translate_x(&self) -> PyResult<Option<u16>> {
-        Ok(self.translate_x)
-    }
-    #[getter]
-    fn translate_y(&self) -> PyResult<Option<u16>> {
-        Ok(self.translate_y)
-    }
-    #[getter]
-    fn translate_z(&self) -> PyResult<Option<u16>> {
-        Ok(self.translate_z)
-    }
-    #[getter]
-    fn unknown_73(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_73)
-    }
-    #[getter]
-    fn blocks_ranged(&self) -> PyResult<Option<bool>> {
-        Ok(self.blocks_ranged)
-    }
-    #[getter]
-    fn unknown_75(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_75)
-    }
-    #[getter]
-    fn morphs_1(&self) -> PyResult<Option<LocationMorphTable>> {
-        Ok(self.morphs_1.clone())
-    }
-    #[getter]
-    fn unknown_78(&self) -> PyResult<Option<Unknown78>> {
-        Ok(self.unknown_78)
-    }
-    #[getter]
-    fn unknown_79(&self) -> PyResult<Option<Unknown79>> {
-        Ok(self.unknown_79.clone())
-    }
-    #[getter]
-    fn unknown_81(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_81)
-    }
-    #[getter]
-    fn unknown_82(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_82)
-    }
-    #[getter]
-    fn unknown_88(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_88)
-    }
-    #[getter]
-    fn unknown_89(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_89)
-    }
-    #[getter]
-    fn is_members(&self) -> PyResult<Option<bool>> {
-        Ok(self.is_members)
-    }
-    #[getter]
-    fn morphs_2(&self) -> PyResult<Option<ExtendedLocationMorphTable>> {
-        Ok(self.morphs_2.clone())
-    }
-    #[getter]
-    fn unknown_93(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_93)
-    }
-    #[getter]
-    fn unknown_94(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_94)
-    }
-    #[getter]
-    fn unknown_95(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_95)
-    }
-    #[getter]
-    fn unknown_96(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_96)
-    }
-    #[getter]
-    fn unknown_97(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_97)
-    }
-    #[getter]
-    fn unknown_98(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_98)
-    }
-    #[getter]
-    fn unknown_99(&self) -> PyResult<Option<()>> {
-        Ok(self.unknown_99)
-    }
-    #[getter]
-    fn unknown_101(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_101)
-    }
-    #[getter]
-    fn mapscene(&self) -> PyResult<Option<u16>> {
-        Ok(self.mapscene)
-    }
-    #[getter]
-    fn occludes_2(&self) -> PyResult<Option<bool>> {
-        Ok(self.occludes_2)
-    }
-    #[getter]
-    fn unknown_104(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_104)
-    }
-    #[getter]
-    fn headmodels(&self) -> PyResult<Option<HeadModels>> {
-        Ok(self.headmodels.clone())
-    }
-    #[getter]
-    fn mapfunction(&self) -> PyResult<Option<u16>> {
-        Ok(self.mapfunction)
-    }
-    #[getter]
-    fn member_actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
-        Ok(self.member_actions.clone())
-    }
-    #[getter]
-    fn unknown_160(&self) -> PyResult<Option<Unknown160>> {
-        Ok(self.unknown_160.clone())
-    }
-    #[getter]
-    fn unknown_162(&self) -> PyResult<Option<i32>> {
-        Ok(self.unknown_162)
-    }
-    #[getter]
-    fn unknown_163(&self) -> PyResult<Option<Unknown163>> {
-        Ok(self.unknown_163)
-    }
-    #[getter]
-    fn unknown_164(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_164)
-    }
-    #[getter]
-    fn unknown_165(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_165)
-    }
-    #[getter]
-    fn unknown_166(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_166)
-    }
-    #[getter]
-    fn unknown_167(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_167)
-    }
-    #[getter]
-    fn unknown_168(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_168)
-    }
-    #[getter]
-    fn unknown_169(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_169)
-    }
-    #[getter]
-    fn unknown_170(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_170)
-    }
-    #[getter]
-    fn unknown_171(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_171)
-    }
-    #[getter]
-    fn unknown_173(&self) -> PyResult<Option<Unknown173>> {
-        Ok(self.unknown_173)
-    }
-    #[getter]
-    fn unknown_177(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_177)
-    }
-    #[getter]
-    fn unknown_178(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_178)
-    }
-    #[getter]
-    fn unknown_186(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_186)
-    }
-    #[getter]
-    fn unknown_188(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_188)
-    }
-    #[getter]
-    fn unknown_189(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_189)
-    }
-    #[getter]
-    fn cursors(&self) -> PyResult<Option<[Option<u16>; 6]>> {
-        Ok(self.cursors)
-    }
-    #[getter]
-    fn unknown_196(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_196)
-    }
-    #[getter]
-    fn unknown_197(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_197)
-    }
-    #[getter]
-    fn unknown_198(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_198)
-    }
-    #[getter]
-    fn unknown_199(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_199)
-    }
-    #[getter]
-    fn unknown_200(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_200)
-    }
-    #[getter]
-    fn unknown_201(&self) -> PyResult<Option<Unknown201>> {
-        Ok(self.unknown_201)
-    }
-    #[getter]
-    fn unknown_202(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_202)
-    }
-    #[getter]
-    fn params(&self) -> PyResult<Option<ParamTable>> {
-        Ok(self.params.clone())
-    }
 }
 
 #[cfg(feature = "pyo3")]

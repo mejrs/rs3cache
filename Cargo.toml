@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["mejrs"]
 edition = "2018"
 
+[workspace]
+members = ["macro_utils",]
+
+
 [profile.release]
 lto = "thin"
 
@@ -13,6 +17,7 @@ name = "rs3cache"
 crate-type = ["lib", "cdylib"]
 
 [dependencies]
+macro_utils = { path = "macro_utils", version = "0.1.0" }
 sqlite = "0.26.0"
 libflate = "1.0.4"
 bytes = "1.0.1"

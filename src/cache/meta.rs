@@ -56,7 +56,7 @@ impl Metadata {
     }
 
     #[getter(name)]
-    fn Py_name(&self) -> PyResult<Option<u32>> {
+    fn Py_name(&self) -> PyResult<Option<i32>> {
         Ok(self.name)
     }
     #[getter(crc)]
