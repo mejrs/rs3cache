@@ -9,7 +9,6 @@ use std::{
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 use crate::{
     cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
@@ -18,10 +17,12 @@ use crate::{
 };
 
 /// Describes the properties of a given item.
+#[cfg_eval]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[skip_serializing_none]
-#[derive(Serialize, Debug, Default)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct ItemConfig {
     /// Its id.
     pub id: u32,
@@ -85,243 +86,6 @@ pub struct ItemConfig {
     pub unknown_168: Option<bool>,
     #[serde(flatten)]
     pub params: Option<ParamTable>,
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl ItemConfig {
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-    #[getter]
-    fn base_model(&self) -> PyResult<Option<u32>> {
-        Ok(self.base_model)
-    }
-    #[getter]
-    fn name(&self) -> PyResult<Option<String>> {
-        Ok(self.name.clone())
-    }
-    #[getter]
-    fn buff_effect(&self) -> PyResult<Option<String>> {
-        Ok(self.buff_effect.clone())
-    }
-    #[getter]
-    fn rotation(&self) -> PyResult<Option<Rotation>> {
-        Ok(self.rotation)
-    }
-    #[getter]
-    fn translation(&self) -> PyResult<Option<Translation>> {
-        Ok(self.translation)
-    }
-    #[getter]
-    fn stackable(&self) -> PyResult<Option<bool>> {
-        Ok(self.stackable)
-    }
-    #[getter]
-    fn value(&self) -> PyResult<Option<i32>> {
-        Ok(self.value)
-    }
-    #[getter]
-    fn equipslot_id(&self) -> PyResult<Option<u8>> {
-        Ok(self.equipslot_id)
-    }
-    #[getter]
-    fn equip_id(&self) -> PyResult<Option<u8>> {
-        Ok(self.equip_id)
-    }
-    #[getter]
-    fn unknown_15(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_15)
-    }
-    #[getter]
-    fn is_members(&self) -> PyResult<Option<bool>> {
-        Ok(self.is_members)
-    }
-    #[getter]
-    fn multi_stack_size(&self) -> PyResult<Option<u16>> {
-        Ok(self.multi_stack_size)
-    }
-    #[getter]
-    fn male_models(&self) -> PyResult<Option<[Option<u32>; 3]>> {
-        Ok(self.male_models)
-    }
-    #[getter]
-    fn female_models(&self) -> PyResult<Option<[Option<u32>; 3]>> {
-        Ok(self.female_models)
-    }
-    #[getter]
-    fn unknown_27(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_27)
-    }
-    #[getter]
-    fn ground_actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
-        Ok(self.ground_actions.clone())
-    }
-    #[getter]
-    fn widget_actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
-        Ok(self.widget_actions.clone())
-    }
-    #[getter]
-    fn colour_replacements(&self) -> PyResult<Option<ColourReplacements>> {
-        Ok(self.colour_replacements.clone())
-    }
-    #[getter]
-    fn textures(&self) -> PyResult<Option<Textures>> {
-        Ok(self.textures.clone())
-    }
-    #[getter]
-    fn recolour_palette(&self) -> PyResult<Option<RecolourPalette>> {
-        Ok(self.recolour_palette.clone())
-    }
-    #[getter]
-    fn name_color(&self) -> PyResult<Option<i32>> {
-        Ok(self.name_color)
-    }
-    #[getter]
-    fn recolour_indices(&self) -> PyResult<Option<u16>> {
-        Ok(self.recolour_indices)
-    }
-    #[getter]
-    fn retexture_indices(&self) -> PyResult<Option<u16>> {
-        Ok(self.retexture_indices)
-    }
-    #[getter]
-    fn is_tradeable(&self) -> PyResult<Option<bool>> {
-        Ok(self.is_tradeable)
-    }
-    #[getter]
-    fn ge_buy_limit(&self) -> PyResult<Option<i32>> {
-        Ok(self.ge_buy_limit)
-    }
-    #[getter]
-    fn male_head_models(&self) -> PyResult<Option<[Option<u32>; 2]>> {
-        Ok(self.male_head_models)
-    }
-    #[getter]
-    fn female_head_models(&self) -> PyResult<Option<[Option<u32>; 2]>> {
-        Ok(self.female_head_models)
-    }
-    #[getter]
-    fn category(&self) -> PyResult<Option<u16>> {
-        Ok(self.category)
-    }
-    #[getter]
-    fn model_yaw(&self) -> PyResult<Option<u16>> {
-        Ok(self.model_yaw)
-    }
-    #[getter]
-    fn dummy_item(&self) -> PyResult<Option<u8>> {
-        Ok(self.dummy_item)
-    }
-    #[getter]
-    fn note_data(&self) -> PyResult<Option<u16>> {
-        Ok(self.note_data)
-    }
-    #[getter]
-    fn note_template(&self) -> PyResult<Option<u16>> {
-        Ok(self.note_template)
-    }
-    #[getter]
-    fn stack_info(&self) -> PyResult<Option<[Option<(u16, u16)>; 10]>> {
-        Ok(self.stack_info)
-    }
-    #[getter]
-    fn scale(&self) -> PyResult<Option<[Option<u16>; 3]>> {
-        Ok(self.scale)
-    }
-    #[getter]
-    fn contrast(&self) -> PyResult<Option<i8>> {
-        Ok(self.contrast)
-    }
-    #[getter]
-    fn team(&self) -> PyResult<Option<u8>> {
-        Ok(self.team)
-    }
-    #[getter]
-    fn ambiance(&self) -> PyResult<Option<i8>> {
-        Ok(self.ambiance)
-    }
-    #[getter]
-    fn loan_id(&self) -> PyResult<Option<u16>> {
-        Ok(self.loan_id)
-    }
-    #[getter]
-    fn loan_template(&self) -> PyResult<Option<u16>> {
-        Ok(self.loan_template)
-    }
-    #[getter]
-    fn male_translate(&self) -> PyResult<Option<u32>> {
-        Ok(self.male_translate)
-    }
-    #[getter]
-    fn female_translate(&self) -> PyResult<Option<u32>> {
-        Ok(self.female_translate)
-    }
-    #[getter]
-    fn quests(&self) -> PyResult<Option<Quests>> {
-        Ok(self.quests.clone())
-    }
-    #[getter]
-    fn pick_size_shift(&self) -> PyResult<Option<u8>> {
-        Ok(self.pick_size_shift)
-    }
-    #[getter]
-    fn unknown_bind_link(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_bind_link)
-    }
-    #[getter]
-    fn bind_template(&self) -> PyResult<Option<u16>> {
-        Ok(self.bind_template)
-    }
-    #[getter]
-    fn ground_action_cursor(&self) -> PyResult<Option<[Option<u16>; 5]>> {
-        Ok(self.ground_action_cursor)
-    }
-    #[getter]
-    fn widget_action_cursor(&self) -> PyResult<Option<[Option<u16>; 5]>> {
-        Ok(self.widget_action_cursor)
-    }
-    #[getter]
-    fn dummy(&self) -> PyResult<Option<bool>> {
-        Ok(self.dummy)
-    }
-    #[getter]
-    fn randomize_ground_pos(&self) -> PyResult<Option<bool>> {
-        Ok(self.randomize_ground_pos)
-    }
-    #[getter]
-    fn combine_info(&self) -> PyResult<Option<u16>> {
-        Ok(self.combine_info)
-    }
-    #[getter]
-    fn combine_template(&self) -> PyResult<Option<u16>> {
-        Ok(self.combine_template)
-    }
-    #[getter]
-    fn combine_num_required(&self) -> PyResult<Option<u16>> {
-        Ok(self.combine_num_required)
-    }
-    #[getter]
-    fn combine_shard_name(&self) -> PyResult<Option<String>> {
-        Ok(self.combine_shard_name.clone())
-    }
-    #[getter]
-    fn never_stackable(&self) -> PyResult<Option<bool>> {
-        Ok(self.never_stackable)
-    }
-    #[getter]
-    fn unknown_167(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_167)
-    }
-    #[getter]
-    fn unknown_168(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_168)
-    }
-    #[getter]
-    fn params(&self) -> PyResult<Option<ParamTable>> {
-        Ok(self.params.clone())
-    }
 }
 
 impl ItemConfig {

@@ -16,7 +16,7 @@ pub fn pyo3_get_all(_args: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 fn is_std_option(path: &Path) -> bool {
-    (path.leading_colon.is_none() && path.segments.len() == 1)
+    path.leading_colon.is_none() && path.segments.len() == 1
 }
 
 fn field_has_attribute(field: &Field, namespace: &str, name: &str) -> bool {
