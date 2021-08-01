@@ -11,6 +11,15 @@ members = ["macro_utils",]
 [profile.release]
 lto = "thin"
 
+[[bin]]
+path = "src/main.rs"
+name = "rs3cache"
+
+[[bin]]
+path = "src/main.rs"
+name = "osrscache"
+required-features = ["no-default-features", "osrs"]
+
 [lib]
 name = "rs3cache"
 # dual types make it work both for compiling as package and python lib
