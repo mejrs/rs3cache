@@ -9,11 +9,10 @@ Tools and api for reading and interpreting the [RuneScape 3](https://www.runesca
 
 ## Setup
 
-- `git clone https://github.com/mejrs/rs3cache`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
 - Configure rustup to use the nightly version: `rustup default nightly`.
 - Navigate to this repository
-- Compile the executable with `cargo build --release`.
+- Install the tool by running 
 - Either:
     - Create a system variable named `RUNESCAPE_CACHE_FOLDER` and set its value to where your cache is located.
     Typically, this is `%ProgramData%\Jagex\RuneScape`.

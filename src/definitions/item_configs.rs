@@ -1,7 +1,7 @@
 //! Describes the properties of items.
 
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs::{self, File},
     io::Write,
 };
@@ -9,6 +9,7 @@ use std::{
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
+use path_macro::path;
 
 use crate::{
     cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
@@ -90,8 +91,9 @@ pub struct ItemConfig {
 
 impl ItemConfig {
     /// Returns a mapping of all [`ItemConfig`]s.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::OBJ_CONFIG)?.into_iter();
+    pub fn dump_all(config: &crate::cli::Config
+    ) -> CacheResult<BTreeMap<u32, Self>> {
+        let archives = CacheIndex::new(IndexType::OBJ_CONFIG, &config)?.into_iter();
 
         let locations = archives
             .flat_map(|archive| {
@@ -102,7 +104,7 @@ impl ItemConfig {
                     .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
-            .collect::<HashMap<u32, Self>>();
+            .collect::<BTreeMap<u32, Self>>();
         Ok(locations)
     }
 
@@ -216,7 +218,7 @@ impl PyObjectProtocol for ItemConfig {
 /// Defines the structs used as fields of [`ItemConfig`],
 pub mod item_config_fields {
     #![allow(missing_docs)]
-    use std::{collections::HashMap, iter};
+    use std::{collections::BTreeMap, iter};
 
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
@@ -267,14 +269,14 @@ pub mod item_config_fields {
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
-        pub textures: HashMap<u16, u16>,
+        pub textures: BTreeMap<u16, u16>,
     }
 
     #[cfg(feature = "pyo3")]
     #[pymethods]
     impl Textures {
         #[getter]
-        fn textures(&self) -> PyResult<HashMap<u16, u16>> {
+        fn textures(&self) -> PyResult<BTreeMap<u16, u16>> {
             Ok(self.textures.clone())
         }
     }
@@ -284,7 +286,7 @@ pub mod item_config_fields {
             let count = buffer.read_unsigned_byte() as usize;
             let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
-                .collect::<HashMap<_, _>>();
+                .collect::<BTreeMap<_, _>>();
             Textures { textures }
         }
     }
@@ -359,12 +361,12 @@ pub mod item_config_fields {
 use item_config_fields::*;
 
 /// Save the item configs as `item_configs.json`. Exposed as `--dump item_configs`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut item_configs = ItemConfig::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut item_configs = ItemConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     item_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/item_configs.json")?;
+    let mut file = File::create(path!(config.output / "item_configs.json"))?;
     let data = serde_json::to_string_pretty(&item_configs).unwrap();
     file.write_all(data.as_bytes())?;
 

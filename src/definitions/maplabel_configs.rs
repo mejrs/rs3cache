@@ -1,5 +1,5 @@
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs::{self, File},
     io::Write,
 };
@@ -7,7 +7,7 @@ use std::{
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use serde::Serialize;
-use serde_with::skip_serializing_none;
+use path_macro::path;
 
 use crate::{
     cache::{
@@ -22,9 +22,11 @@ use crate::{
 /// Map element on the ingame world map.
 ///
 /// This can be a text label, sprite, polygon or interactive.
+#[cfg_eval]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[skip_serializing_none]
-#[derive(Debug, Clone, Default, Serialize)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct MapLabelConfig {
     /// File id of the [`MapLabelConfig`].
     pub id: u32,
@@ -79,122 +81,10 @@ pub struct MapLabelConfig {
     pub params: Option<ParamTable>,
 }
 
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl MapLabelConfig {
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-
-    #[getter]
-    fn rightclick_1(&self) -> PyResult<Option<String>> {
-        Ok(self.rightclick_1.clone())
-    }
-
-    #[getter]
-    fn rightclick_2(&self) -> PyResult<Option<String>> {
-        Ok(self.rightclick_2.clone())
-    }
-    #[getter]
-    fn toggle_1(&self) -> PyResult<Option<Toggle>> {
-        Ok(self.toggle_1)
-    }
-
-    #[getter]
-    fn toggle_2(&self) -> PyResult<Option<Toggle>> {
-        Ok(self.toggle_2)
-    }
-
-    #[getter]
-    fn text(&self) -> PyResult<Option<String>> {
-        Ok(self.text.clone())
-    }
-
-    #[getter]
-    fn label_colour_1(&self) -> PyResult<Option<(u8, u8, u8)>> {
-        Ok(self.label_colour_1)
-    }
-
-    #[getter]
-    fn label_colour_2(&self) -> PyResult<Option<(u8, u8, u8)>> {
-        Ok(self.label_colour_2)
-    }
-
-    #[getter]
-    fn font_size(&self) -> PyResult<Option<u8>> {
-        Ok(self.font_size)
-    }
-
-    #[getter]
-    fn sprite(&self) -> PyResult<Option<u32>> {
-        Ok(self.sprite)
-    }
-
-    #[getter]
-    fn hover_sprite(&self) -> PyResult<Option<u32>> {
-        Ok(self.hover_sprite)
-    }
-
-    #[getter]
-    fn background_sprite(&self) -> PyResult<Option<u32>> {
-        Ok(self.background_sprite)
-    }
-
-    #[getter]
-    fn unknown_7(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_7)
-    }
-    #[getter]
-    fn unknown_8(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_8)
-    }
-
-    #[getter]
-    fn category(&self) -> PyResult<Option<u16>> {
-        Ok(self.category)
-    }
-
-    #[getter]
-    fn polygon(&self) -> PyResult<Option<Polygon>> {
-        Ok(self.polygon.clone())
-    }
-
-    #[getter]
-    fn unknown_21(&self) -> PyResult<Option<Vec<u8>>> {
-        Ok(self.unknown_21.clone())
-    }
-
-    #[getter]
-    fn unknown_22(&self) -> PyResult<Option<Vec<u8>>> {
-        Ok(self.unknown_22.clone())
-    }
-
-    #[getter]
-    fn unknown_28(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_28)
-    }
-
-    #[getter]
-    fn unknown_30(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_30)
-    }
-
-    #[getter]
-    fn legacy_switch(&self) -> PyResult<Option<LegacySwitch>> {
-        Ok(self.legacy_switch)
-    }
-
-    #[getter]
-    fn params(&self) -> PyResult<Option<ParamTable>> {
-        Ok(self.params.clone())
-    }
-}
-
 impl MapLabelConfig {
     /// Returns a mapping of all [`MapLabelConfig`]s.
-    pub fn dump_all() -> CacheResult<HashMap<u32, MapLabelConfig>> {
-        Ok(CacheIndex::new(IndexType::CONFIG)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, MapLabelConfig>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, &config)?
             .archive(ConfigType::MAPLABELS)?
             .take_files()
             .into_iter()
@@ -240,12 +130,12 @@ impl MapLabelConfig {
 }
 
 ///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut labels = MapLabelConfig::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut labels = MapLabelConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     labels.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/maplabels.json")?;
+    let mut file = File::create(path!(config.output / "map_labels.json"))?;
     let data = serde_json::to_string_pretty(&labels)?;
     file.write_all(data.as_bytes())?;
     Ok(())
@@ -405,7 +295,9 @@ mod tests {
 
     #[test]
     fn dump_maplabels() -> CacheResult<()> {
-        MapLabelConfig::dump_all()?;
+        let config = crate::cli::Config::default();
+
+        MapLabelConfig::dump_all(&config)?;
         Ok(())
     }
 }

@@ -1,7 +1,7 @@
 //! Describes the properties of structs.
 
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs::{self, File},
     io::Write,
 };
@@ -9,7 +9,6 @@ use std::{
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 use crate::{
     cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
@@ -18,10 +17,12 @@ use crate::{
 };
 
 /// Describes the properties of a given item.
+#[cfg_eval]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[skip_serializing_none]
-#[derive(Serialize, Debug, Default)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct Struct {
     /// Its id.
     pub id: u32,
@@ -30,24 +31,10 @@ pub struct Struct {
     pub params: Option<ParamTable>,
 }
 
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl Struct {
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-
-    #[getter]
-    fn params(&self) -> PyResult<Option<ParamTable>> {
-        Ok(self.params.clone())
-    }
-}
-
 impl Struct {
     /// Returns a mapping of all [`Struct`]s.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::STRUCT_CONFIG)?.into_iter();
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        let archives = CacheIndex::new(IndexType::STRUCT_CONFIG, config)?.into_iter();
 
         let locations = archives
             .flat_map(|archive| {
@@ -58,7 +45,7 @@ impl Struct {
                     .map(move |(file_id, file)| (archive_id << 5 | file_id, file))
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
-            .collect::<HashMap<u32, Self>>();
+            .collect::<BTreeMap<u32, Self>>();
         Ok(locations)
     }
 
@@ -100,9 +87,9 @@ impl PyObjectProtocol for Struct {
 }
 
 /// Save the item configs as `structs.json`. Exposed as `--dump structs`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut structs = Struct::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut structs = Struct::dump_all(config)?.into_values().collect::<Vec<_>>();
     structs.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create("out/structs.json")?;

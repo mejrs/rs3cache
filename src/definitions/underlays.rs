@@ -1,21 +1,24 @@
-use std::collections::HashMap;
-use std::path::Path;
-use std::fs::{self, File};
-use std::io::Write;
+use std::{
+    collections::BTreeMap,
+    fs::{self, File},
+    io::Write,
+};
 
+
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use serde::Serialize;
+use serde_with::skip_serializing_none;
 
 use crate::{
     cache::{
-        buf::  Buffer,
+        buf::Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
     utils::error::CacheResult,
 };
-use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 /// Describes the general ground colour. This colour is blended with surrounding tiles.
 #[cfg_attr(feature = "pyo3", pyclass)]
@@ -39,8 +42,8 @@ pub struct Underlay {
 
 impl Underlay {
     /// Returns a mapping of all [`Underlay`] configurations.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Underlay>> {
-        Ok(CacheIndex::new(IndexType::CONFIG)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Underlay>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, config)?
             .archive(ConfigType::UNDERLAYS)?
             .take_files()
             .into_iter()
@@ -49,7 +52,7 @@ impl Underlay {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Underlay {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         let mut underlay = Underlay { id, ..Default::default() };
 
         loop {
@@ -76,14 +79,12 @@ impl Underlay {
 }
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
-pub fn export(path: impl AsRef<Path>) -> CacheResult<()> {
-    let path = path.as_ref();
-
-    fs::create_dir_all(path)?;
-    let mut underlay = Underlay::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut underlay = Underlay::dump_all(config)?.into_values().collect::<Vec<_>>();
     underlay.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create(format!("{}.json", path.to_str().unwrap()))?;
+    let mut file = File::create(path!(config.output / "underlays.json"))?;
     let data = serde_json::to_string_pretty(&underlay).unwrap();
     file.write_all(data.as_bytes())?;
 

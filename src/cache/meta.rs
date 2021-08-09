@@ -1,7 +1,7 @@
 //! Metadata about the cache itself.
 
 use std::{
-    collections::{hash_map, HashMap},
+    collections::{btree_map::{IntoIter, Keys, Iter}, BTreeMap},
     iter,
     ops::Add,
 };
@@ -10,90 +10,29 @@ use itertools::izip;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 use crate::{cache::buf::Buffer, utils::{adapters::Accumulator, error::CacheResult}};
 
 /// Metadata about [`Archive`](crate::cache::arc::Archive)s.
+
+#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[skip_serializing_none]
-#[derive(Debug, Clone, Serialize)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct Metadata {
     index_id: u32,
-
     archive_id: u32,
-
     name: Option<i32>,
-
     crc: i32,
-
     version: i32,
-
     unknown: Option<i32>,
-
     compressed_size: Option<u32>,
-
     size: Option<u32>,
-
     digest: Option<Vec<u8>>,
-
     child_count: u32,
-
     child_indices: Vec<u32>,
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl Metadata {
-    #[getter(index_id)]
-    fn Py_index_id(&self) -> PyResult<u32> {
-        Ok(self.index_id)
-    }
-
-    #[getter(archive_id)]
-    fn Py_archive_id(&self) -> PyResult<u32> {
-        Ok(self.archive_id)
-    }
-
-    #[getter(name)]
-    fn Py_name(&self) -> PyResult<Option<i32>> {
-        Ok(self.name)
-    }
-    #[getter(crc)]
-    fn Py_crc(&self) -> PyResult<i32> {
-        Ok(self.crc)
-    }
-
-    #[getter(version)]
-    fn Py_version(&self) -> PyResult<i32> {
-        Ok(self.version)
-    }
-
-    #[getter(unknown)]
-    fn Py_unknown(&self) -> PyResult<Option<i32>> {
-        Ok(self.unknown)
-    }
-    #[getter(compressed_size)]
-    fn Py_compressed_size(&self) -> PyResult<Option<u32>> {
-        Ok(self.compressed_size)
-    }
-    #[getter(size)]
-    fn Py_size(&self) -> PyResult<Option<u32>> {
-        Ok(self.size)
-    }
-    #[getter(digest)]
-    fn Py_digest(&self) -> PyResult<Option<Vec<u8>>> {
-        Ok(self.digest.clone())
-    }
-    #[getter(child_count)]
-    fn Py_child_count(&self) -> PyResult<u32> {
-        Ok(self.child_count)
-    }
-
-    #[getter(child_indices)]
-    fn Py_child_indices(&self) -> PyResult<Vec<u32>> {
-        Ok(self.child_indices.clone())
-    }
 }
 
 impl Metadata {
@@ -168,21 +107,21 @@ impl Metadata {
 
 /// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct IndexMetadata {
-    metadatas: HashMap<u32, Metadata>,
+    metadatas: BTreeMap<u32, Metadata>,
 }
 
 impl IndexMetadata {
     #[cfg(feature = "osrs")]
     pub (crate) fn empty() -> Self{
         Self{
-            metadatas: HashMap::default()
+            metadatas: BTreeMap::default()
         }
     }
     /// Returns the ids of the archives in the index.
     #[inline(always)]
-    pub fn keys(&self) -> hash_map::Keys<'_, u32, Metadata> {
+    pub fn keys(&self) -> Keys<'_, u32, Metadata> {
         self.metadatas.keys()
     }
 
@@ -315,7 +254,7 @@ impl IndexMetadata {
                 )
             },
         )
-        .collect::<HashMap<_, _>>();
+        .collect::<BTreeMap<_, _>>();
 
         Ok(Self { metadatas })
     }
@@ -328,12 +267,12 @@ impl IndexMetadata {
 
     /// An iterator visiting all key-value pairs in arbitrary order. The iterator element type is `(&'a u32, &'a Metadata)`.
     #[inline(always)]
-    pub fn iter(&self) -> hash_map::Iter<'_, u32, Metadata> {
+    pub fn iter(&self) -> Iter<'_, u32, Metadata> {
         self.metadatas.iter()
     }
 
     /// Get a reference to the index metadata's metadatas.
-    pub fn metadatas(&self) -> &HashMap<u32, Metadata> {
+    pub fn metadatas(&self) -> &BTreeMap<u32, Metadata> {
         &self.metadatas
     }
 }
@@ -341,7 +280,7 @@ impl IndexMetadata {
 impl IntoIterator for IndexMetadata {
     type Item = (u32, Metadata);
 
-    type IntoIter = hash_map::IntoIter<u32, Metadata>;
+    type IntoIter = IntoIter<u32, Metadata>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.metadatas.into_iter()

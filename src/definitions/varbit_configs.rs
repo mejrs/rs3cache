@@ -4,18 +4,19 @@
 //! See also [`Varp`](crate::types::variables::Varp) and [`Varbit`](crate::types::variables::Varbit).
 
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs::{self, File},
     io::Write,
 };
 
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::{
     cache::{
-        buf::  Buffer,
+        buf::Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
@@ -24,9 +25,12 @@ use crate::{
 /// A varbit configuration.
 ///
 /// The varbit is the bits of Varp `index` from `least_significant_bit` to `most_significant_bit` inclusive.
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_eval]
 #[allow(missing_docs)]
-#[derive(Debug, Serialize)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct VarbitConfig {
     /// Id of the [`Varbit`](crate::types::variables::Varbit).
     pub id: u32,
@@ -39,8 +43,8 @@ pub struct VarbitConfig {
 
 impl VarbitConfig {
     /// Returns a mapping of all [`VarbitConfig`]s.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::CONFIG)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, config)?
             .archive(ConfigType::VARBITS)?
             .take_files()
             .into_iter()
@@ -49,7 +53,7 @@ impl VarbitConfig {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
 
         let mut unknown_1 = None;
         let mut index = None;
@@ -83,41 +87,16 @@ impl VarbitConfig {
 }
 
 /// Save the varbit configs as `varbit_configs.json`. Exposed as `--dump varbit_configs`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut vb_configs = VarbitConfig::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut vb_configs = VarbitConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     vb_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/varbit_configs.json")?;
+    let mut file = File::create(path!(config.output / "varbit_configs.json"))?;
     let data = serde_json::to_string_pretty(&vb_configs).unwrap();
     file.write_all(data.as_bytes())?;
 
     Ok(())
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl VarbitConfig {
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-    #[getter]
-    fn unknown_1(&self) -> PyResult<u8> {
-        Ok(self.unknown_1)
-    }
-    #[getter]
-    fn index(&self) -> PyResult<u16> {
-        Ok(self.index)
-    }
-    #[getter]
-    fn least_significant_bit(&self) -> PyResult<u8> {
-        Ok(self.most_significant_bit)
-    }
-    #[getter]
-    fn most_significant_bit(&self) -> PyResult<u8> {
-        Ok(self.most_significant_bit)
-    }
 }
 
 #[cfg(feature = "pyo3")]

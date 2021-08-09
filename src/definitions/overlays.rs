@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::{
     fs::{self, File},
     io::Write,
@@ -66,8 +66,8 @@ pub struct Overlay {
 
 impl Overlay {
     /// Returns a mapping of all [`Overlay`] configurations.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Overlay>> {
-        Ok(CacheIndex::new(IndexType::CONFIG)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Overlay>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, &config)?
             .archive(ConfigType::OVERLAYS)?
             .take_files()
             .into_iter()
@@ -116,9 +116,9 @@ impl Overlay {
 }
 
 ///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut labels = Overlay::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut labels = Overlay::dump_all(config)?.into_values().collect::<Vec<_>>();
     labels.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create("out/overlays.json")?;

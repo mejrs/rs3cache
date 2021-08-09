@@ -1,14 +1,14 @@
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs,
     path::Path,
-    sync::{Arc, Mutex},
 };
 
 use image::{imageops, GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::iproduct;
-use static_assertions::const_assert;
+use path_macro::path;
+use fstrings::{f, format_args_f};
 
 #[cfg(feature = "rs3")]
 use crate::definitions::mapscenes::MapScene;
@@ -70,41 +70,43 @@ pub static CONFIG: RenderConfig = RenderConfig::fast();
 pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
-pub fn render(path: impl AsRef<Path>) -> CacheResult<()> {
-    let path = path.as_ref().to_str().unwrap();
+pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+
 
     for zoom in 2..=4 {
-        let folder = format!("{}/{}/{}", path, CONFIG.map_id, zoom);
+        let folder = path!(config.output / f!("{CONFIG.map_id}/{zoom}"));
+
         fs::create_dir_all(folder)?;
     }
 
-    let iter = GroupMapSquareIterator::new(-1_i32..=1_i32, -1_i32..=1_i32)?;
+    let iter = GroupMapSquareIterator::new(-1_i32..=1_i32, -1_i32..=1_i32, config)?;
 
-    inner_render(path, iter)?;
+    inner_render(config, iter)?;
 
-    zoom::render_zoom_levels(path, CONFIG.map_id, -4..2, Color::ALPHA)?;
+    zoom::render_zoom_levels(&config.output, CONFIG.map_id, -4..2, Color::ALPHA)?;
     Ok(())
 }
 
 // Separated for use in tests.
 
-fn inner_render(path: &str, iter: GroupMapSquareIterator) -> CacheResult<()> {
-    let location_definitions = LocationConfig::dump_all()?;
-    let overlay_definitions = Overlay::dump_all()?;
-    let underlay_definitions = Underlay::dump_all()?;
+fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> CacheResult<()> {
+    let location_definitions = LocationConfig::dump_all(config)?;
+    let overlay_definitions = Overlay::dump_all(config)?;
+    let underlay_definitions = Underlay::dump_all(config)?;
 
     #[cfg(feature = "rs3")]
-    let mapscenes = MapScene::dump_all()?;
+    let mapscenes = MapScene::dump_all(config)?;
 
     #[cfg(feature = "rs3")]
-    let sprites = sprites::dumps(CONFIG.scale, mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>())?;
+    let sprites = sprites::dumps(CONFIG.scale, mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>(), config)?;
 
     #[cfg(feature = "osrs")]
-    let sprites = sprites::dumps(CONFIG.scale, vec![317])?; // 317 is the sprite named "mapscene"
+    let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
     iter.progress().par_apply(|gsq| {
         render_tile(
-            path,
+            &config.output,
             gsq,
             &location_definitions,
             &overlay_definitions,
@@ -119,16 +121,16 @@ fn inner_render(path: &str, iter: GroupMapSquareIterator) -> CacheResult<()> {
 
 /// Responsible for rendering a single [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub fn render_tile(
-    path: &str,
+    path: impl AsRef<Path>,
     squares: GroupMapSquare,
-    location_config: &HashMap<u32, LocationConfig>,
-    overlay_definitions: &HashMap<u32, Overlay>,
-    underlay_definitions: &HashMap<u32, Underlay>,
-    #[cfg(feature = "rs3")] mapscenes: &HashMap<u32, MapScene>,
-    sprites: &HashMap<(u32, u32), Sprite>,
+    location_config: &BTreeMap<u32, LocationConfig>,
+    overlay_definitions: &BTreeMap<u32, Overlay>,
+    underlay_definitions: &BTreeMap<u32, Underlay>,
+    #[cfg(feature = "rs3")] mapscenes: &BTreeMap<u32, MapScene>,
+    sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     let func = |plane| {
-        let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, Rgba(Color::ALPHA));
+        let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, Rgba(Color::BLACK));
 
         base::put(plane, &mut img, &squares, underlay_definitions, overlay_definitions);
         lines::put(plane, &mut img, &squares, location_config);
@@ -157,7 +159,7 @@ pub fn render_tile(
 
 type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
-fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
+fn save_smallest(path: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
     // SAFETY (2) these checks assure that...
@@ -200,7 +202,7 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
-                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path, CONFIG.map_id, 4, plane, base_i + x, base_j + y);
+                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path.as_ref().to_str().unwrap(), CONFIG.map_id, 4, plane, base_i + x, base_j + y);
 
                     sub_image.to_image().save(filename).unwrap();
                 }
@@ -221,7 +223,7 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
 
                     debug_assert_eq!(resized.width(), 256);
                     debug_assert_eq!(resized.height(), 256);
-                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path, CONFIG.map_id, 3, plane, base_i + x, base_j + y);
+                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path.as_ref().to_str().unwrap(), CONFIG.map_id, 3, plane, base_i + x, base_j + y);
                     resized.save(filename).unwrap();
                 }
             }
@@ -240,7 +242,7 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
             if resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
-                let filename = format!("{}/{}/{}/{}_{}_{}.png", path, CONFIG.map_id, 2, plane, base_i, base_j);
+                let filename = format!("{}/{}/{}/{}_{}_{}.png", path.as_ref().to_str().unwrap(), CONFIG.map_id, 2, plane, base_i, base_j);
                 resized.save(filename).unwrap();
             }
         }
@@ -250,12 +252,13 @@ fn save_smallest(path: &str, i: u8, j: u8, imgs: [Img; 4]) {
 #[doc(hidden)]
 #[cfg(feature = "rs3")]
 pub fn render_bench() -> CacheResult<()> {
+    let config = crate::cli::Config::default();
     let path = "tests/tiles";
     fs::create_dir_all(path)?;
     let coordinates: Vec<(u8, u8)> = iproduct!(45..55, 45..55).collect();
 
-    let iter = GroupMapSquareIterator::new_only(-1_i32..=1_i32, -1_i32..=1_i32, coordinates)?;
-    inner_render(path, iter)?;
+    let iter = GroupMapSquareIterator::new_only(-1_i32..=1_i32, -1_i32..=1_i32, coordinates, &config)?;
+    inner_render(&config, iter)?;
 
     Ok(())
 }
@@ -267,11 +270,13 @@ mod map_tests {
     #[test]
     #[ignore]
     fn render_some() -> CacheResult<()> {
+        let config = crate::cli::Config::default();
+        
         let path = "tests/tiles";
         fs::create_dir_all(path)?;
         let coordinates: Vec<(u8, u8)> = vec![(50, 50), (41, 63), (47, 50), (56, 49), (34, 66), (33, 72), (49, 108), (43, 46)];
 
-        let iter = GroupMapSquareIterator::new_only(-1_i32..=1_i32, -1_i32..=1_i32, coordinates)?;
-        inner_render(path, iter)
+        let iter = GroupMapSquareIterator::new_only(-1_i32..=1_i32, -1_i32..=1_i32, coordinates, &config)?;
+        inner_render(&config, iter)
     }
 }

@@ -11,8 +11,9 @@ except ModuleNotFoundError as e:
 setup(
     name="rs3cache",
     version="1.0",
-    rust_extensions=[RustExtension("rs3cache.rs3cache", binding=Binding.PyO3)],
+    rust_extensions=[RustExtension("rs3cache.rs3cache", features=["rs3"], binding=Binding.PyO3)],
     packages=["rs3cache"],
     # rust extensions are not zip safe, just like C-extensions.
     zip_safe=False,
+    
 )

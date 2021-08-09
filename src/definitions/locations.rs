@@ -8,11 +8,8 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::{Serialize, Serializer};
 
 use crate::{
-    cache::buf::  Buffer,
-    definitions::{
-        mapsquares::MapSquareIterator,
-        tiles::{Tile, TileArray},
-    },
+    cache::buf::Buffer,
+    definitions::{mapsquares::MapSquareIterator, tiles::TileArray},
     utils::{error::CacheResult, par::ParApply},
 };
 
@@ -117,13 +114,13 @@ impl Location {
     // todo: fix this with water tiles
     #[cfg(feature = "rs3")]
     pub(crate) fn dump_water_locations(i: u8, j: u8, file: Vec<u8>) -> Vec<Self> {
-        let blanks = TileArray::from_elem((4, 64, 64), Tile::default());
+        let blanks = TileArray::default((4, 64, 64));
         Self::dump(i, j, &blanks, file)
     }
 
     /// Constructor for [`Location`].
     pub fn dump(i: u8, j: u8, tiles: &TileArray, file: Vec<u8>) -> Vec<Self> {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         let mut locations = Vec::new();
 
         let mut id: i32 = -1;
@@ -137,7 +134,7 @@ impl Location {
                     let mut location = 0;
                     loop {
                         match buffer.read_unsigned_smart() {
-                            0 => break ,
+                            0 => break,
                             location_increment => {
                                 location += location_increment - 1;
 
@@ -205,24 +202,27 @@ impl Location {
                     }
                 }
             }
-        }       
+        }
     }
 }
 
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out/data/rs3/locations")?;
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    let out = path_macro::path!(config.output / "locations");
+
+    fs::create_dir_all(&out)?;
 
     let last_id = {
-        let squares = MapSquareIterator::new()?;
+        let squares = MapSquareIterator::new(config)?;
         squares
             .filter_map(|sq| sq.take_locations().ok())
             .filter(|locs| !locs.is_empty())
             .map(|locs| locs.last().expect("locations stopped existing").id)
-            .max().unwrap()
+            .max()
+            .unwrap()
     };
 
-    let squares = MapSquareIterator::new()?;
+    let squares = MapSquareIterator::new(config)?;
     let mut locs: Vec<_> = squares
         .filter_map(|sq| sq.take_locations().ok())
         .map(|locs| locs.into_iter().peekable())
@@ -240,7 +240,7 @@ pub fn export() -> CacheResult<()> {
         })
         .par_apply(|(id, id_locs)| {
             if !id_locs.is_empty() && id != 83 {
-                let mut file = File::create(format!("out/data/rs3/locations/{}.json", id)).unwrap();
+                let mut file = File::create(path_macro::path!(&out / format!("{}.json", id))).unwrap();
                 let data = serde_json::to_string_pretty(&id_locs).unwrap();
                 file.write_all(data.as_bytes()).unwrap();
             }
@@ -250,19 +250,20 @@ pub fn export() -> CacheResult<()> {
 }
 
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
-pub fn _export() -> CacheResult<()> {
+pub fn _export(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all("out/data/rs3/locations")?;
 
     let last_id = {
-        let squares = MapSquareIterator::new()?;
+        let squares = MapSquareIterator::new(config)?;
         squares
             .filter_map(|sq| sq.take_locations().ok())
             .filter(|locs| !locs.is_empty())
             .map(|locs| locs.last().expect("locations stopped existing").id)
-            .max().unwrap()
+            .max()
+            .unwrap()
     };
 
-    let squares = MapSquareIterator::new()?;
+    let squares = MapSquareIterator::new(config)?;
     let mut locs: Vec<_> = squares
         .filter_map(|sq| sq.take_locations().ok())
         .map(|locs| locs.into_iter().peekable())

@@ -33,7 +33,7 @@ void function (global) {
 	let osrs = L.tileLayer.main(template, {
         source: 'osrs/map_squares',
         minZoom: -4,
-        maxNativeZoom: 4,
+        maxNativeZoom: 2,
         maxZoom: 6,
     });
 

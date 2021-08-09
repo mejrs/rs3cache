@@ -1,20 +1,27 @@
-use std::collections::HashMap;
+use std::{
+    collections::BTreeMap,
+    fs::{self, File},
+    io::Write,
+};
 
+
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 use crate::{
-    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::error::CacheResult,
 };
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_eval]
 #[allow(missing_docs)]
-#[skip_serializing_none]
-#[derive(Serialize, Debug, Default, Clone)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct NpcConfig {
     /// Its id.
     pub id: u32,
@@ -89,8 +96,8 @@ pub struct NpcConfig {
 
 impl NpcConfig {
     /// Returns a mapping of all [npc configurations](NpcConfig)
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::NPC_CONFIG)?.into_iter();
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        let archives = CacheIndex::new(IndexType::NPC_CONFIG, &config)?.into_iter();
 
         let npc_configs = archives
             .flat_map(|archive| {
@@ -101,13 +108,13 @@ impl NpcConfig {
                     .map(move |(file_id, file)| (archive_id << 7 | file_id, file))
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
-            .collect::<HashMap<u32, Self>>();
+            .collect::<BTreeMap<u32, Self>>();
         Ok(npc_configs)
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
         let mut npc = Self { id, ..Default::default() };
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         loop {
             match buffer.read_unsigned_byte() {
                 0 => {
@@ -215,14 +222,14 @@ impl Display for NpcConfig {
 pub mod npc_config_fields {
     #![allow(missing_docs)]
 
-    use std::{collections::HashMap, iter};
+    use std::{collections::BTreeMap, iter};
 
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
 
     use crate::{
-        cache::buf::  Buffer,
+        cache::buf::Buffer,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
 
@@ -238,7 +245,7 @@ pub mod npc_config_fields {
 
     impl NpcMorphTable {
         /// Constructor for [`NpcMorphTable`]
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let varbit = Varbit::new(buffer.read_unsigned_short());
             let varp = Varp::new(buffer.read_unsigned_short());
             let var = VarpOrVarbit::new(varp, varbit);
@@ -267,7 +274,7 @@ pub mod npc_config_fields {
 
     impl ExtendedNpcMorphTable {
         /// Constructor for [`ExtendedNpcMorphTable`]
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let varbit = Varbit::new(buffer.read_unsigned_short());
             let varp = Varp::new(buffer.read_unsigned_short());
 
@@ -295,7 +302,7 @@ pub mod npc_config_fields {
     }
 
     impl NpcModels {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_byte() as usize;
 
             let models = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
@@ -312,7 +319,7 @@ pub mod npc_config_fields {
     }
 
     impl ShadowIntensity {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let src_colour = buffer.read_byte();
             let dst_colour = buffer.read_byte();
             Self { src_colour, dst_colour }
@@ -328,7 +335,7 @@ pub mod npc_config_fields {
     }
 
     impl Shadow {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let src_colour = buffer.read_unsigned_short();
             let dst_colour = buffer.read_unsigned_short();
             Self { src_colour, dst_colour }
@@ -342,7 +349,7 @@ pub mod npc_config_fields {
     }
 
     impl HeadModels {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let headmodels = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
             Self { headmodels }
@@ -356,7 +363,7 @@ pub mod npc_config_fields {
     }
 
     impl ColourReplacements {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let colour_replacements = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
@@ -368,15 +375,15 @@ pub mod npc_config_fields {
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
-        pub textures: HashMap<u16, u16>,
+        pub textures: BTreeMap<u16, u16>,
     }
 
     impl Textures {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
-                .collect::<HashMap<_, _>>();
+                .collect::<BTreeMap<_, _>>();
             Self { textures }
         }
     }
@@ -396,7 +403,7 @@ pub mod npc_config_fields {
     }
 
     impl AmbientSounds {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_short();
             let unknown_3 = buffer.read_unsigned_short();
@@ -419,7 +426,7 @@ pub mod npc_config_fields {
     }
 
     impl Translations {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let translations = iter::repeat_with(|| {
                 [
@@ -443,7 +450,7 @@ pub mod npc_config_fields {
     }
 
     impl RecolourPalette {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
 
             let recolour_palette = iter::repeat_with(|| buffer.read_byte()).take(count).collect::<Vec<_>>();
@@ -460,7 +467,7 @@ pub mod npc_config_fields {
     }
 
     impl OldCursors {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let op = buffer.read_unsigned_byte();
             let cursor = buffer.read_unsigned_short();
             Self { op, cursor }
@@ -477,7 +484,7 @@ pub mod npc_config_fields {
     }
 
     impl Unknown155 {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let unknown_1 = buffer.read_byte();
             let unknown_2 = buffer.read_byte();
             let unknown_3 = buffer.read_byte();
@@ -504,7 +511,7 @@ pub mod npc_config_fields {
     }
 
     impl Unknown179 {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let unknown_1 = buffer.read_unsigned_smart();
             let unknown_2 = buffer.read_unsigned_smart();
             let unknown_3 = buffer.read_unsigned_smart();
@@ -531,7 +538,7 @@ pub mod npc_config_fields {
     }
 
     impl Unknown164 {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_short();
 
@@ -546,7 +553,7 @@ pub mod npc_config_fields {
     }
 
     impl Quests {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let quests = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
             Self { quests }
@@ -557,276 +564,27 @@ pub mod npc_config_fields {
 use npc_config_fields::*;
 
 /// Save the npc configs as `npc_configs.json`. Exposed as `--dump npc_configs`.
-pub fn export() -> CacheResult<()> {
-    use std::{
-        fs::{self, File},
-        io::Write,
-    };
-
-    fs::create_dir_all("out")?;
-    let mut npc_configs = NpcConfig::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut npc_configs = NpcConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     npc_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/npc_configs.json")?;
+    let mut file = File::create(path!(config.output / "npc_configs.json"))?;
     let data = serde_json::to_string_pretty(&npc_configs).unwrap();
     file.write_all(data.as_bytes())?;
 
     Ok(())
 }
 
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl NpcConfig {
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-    #[getter]
-    fn models(&self) -> PyResult<Option<NpcModels>> {
-        Ok(self.models.clone())
-    }
-    #[getter]
-    fn name(&self) -> PyResult<Option<String>> {
-        Ok(self.name.clone())
-    }
-    #[getter]
-    fn size(&self) -> PyResult<Option<u8>> {
-        Ok(self.size)
-    }
-    #[getter]
-    fn actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
-        Ok(self.actions.clone())
-    }
-    #[getter]
-    fn colour_replacements(&self) -> PyResult<Option<ColourReplacements>> {
-        Ok(self.colour_replacements.clone())
-    }
-    #[getter]
-    fn texture_replacements(&self) -> PyResult<Option<Textures>> {
-        Ok(self.texture_replacements.clone())
-    }
-    #[getter]
-    fn recolour_palette(&self) -> PyResult<Option<RecolourPalette>> {
-        Ok(self.recolour_palette.clone())
-    }
-    #[getter]
-    fn recolour_indices(&self) -> PyResult<Option<u16>> {
-        Ok(self.recolour_indices)
-    }
-    #[getter]
-    fn retexture_indices(&self) -> PyResult<Option<u16>> {
-        Ok(self.retexture_indices)
-    }
-    #[getter]
-    fn head_models(&self) -> PyResult<Option<HeadModels>> {
-        Ok(self.head_models.clone())
-    }
-    #[getter]
-    fn draw_map_dot(&self) -> PyResult<Option<bool>> {
-        Ok(self.draw_map_dot)
-    }
-    #[getter]
-    fn combat(&self) -> PyResult<Option<u16>> {
-        Ok(self.combat)
-    }
-    #[getter]
-    fn scale_xz(&self) -> PyResult<Option<u16>> {
-        Ok(self.scale_xz)
-    }
-    #[getter]
-    fn scale_y(&self) -> PyResult<Option<u16>> {
-        Ok(self.scale_y)
-    }
-    #[getter]
-    fn unknown_99(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_99)
-    }
-    #[getter]
-    fn ambience(&self) -> PyResult<Option<i8>> {
-        Ok(self.ambience)
-    }
-    #[getter]
-    fn model_contract(&self) -> PyResult<Option<i8>> {
-        Ok(self.model_contract)
-    }
-    #[getter]
-    fn head_icon_data(&self) -> PyResult<Option<Vec<(Option<u32>, Option<u32>)>>> {
-        Ok(self.head_icon_data.clone())
-    }
-    #[getter]
-    fn unknown_103(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_103)
-    }
-    #[getter]
-    fn morphs_1(&self) -> PyResult<Option<NpcMorphTable>> {
-        Ok(self.morphs_1.clone())
-    }
-    #[getter]
-    fn unknown_107(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_107)
-    }
-    #[getter]
-    fn slow_walk(&self) -> PyResult<Option<bool>> {
-        Ok(self.slow_walk)
-    }
-    #[getter]
-    fn animate_idle(&self) -> PyResult<Option<bool>> {
-        Ok(self.animate_idle)
-    }
-    #[getter]
-    fn shadow(&self) -> PyResult<Option<Shadow>> {
-        Ok(self.shadow)
-    }
-    #[getter]
-    fn shadow_alpha_intensity(&self) -> PyResult<Option<ShadowIntensity>> {
-        Ok(self.shadow_alpha_intensity)
-    }
-    #[getter]
-    fn morphs_2(&self) -> PyResult<Option<ExtendedNpcMorphTable>> {
-        Ok(self.morphs_2.clone())
-    }
-    #[getter]
-    fn movement_capabilities(&self) -> PyResult<Option<i8>> {
-        Ok(self.movement_capabilities)
-    }
-    #[getter]
-    fn translations(&self) -> PyResult<Option<Translations>> {
-        Ok(self.translations.clone())
-    }
-    #[getter]
-    fn icon_height(&self) -> PyResult<Option<u16>> {
-        Ok(self.icon_height)
-    }
-    #[getter]
-    fn respawn_direction(&self) -> PyResult<Option<i8>> {
-        Ok(self.respawn_direction)
-    }
-    #[getter]
-    fn animation_group(&self) -> PyResult<Option<u16>> {
-        Ok(self.animation_group)
-    }
-    #[getter]
-    fn movement_type(&self) -> PyResult<Option<i8>> {
-        Ok(self.movement_type)
-    }
-    #[getter]
-    fn ambient_sound(&self) -> PyResult<Option<AmbientSounds>> {
-        Ok(self.ambient_sound)
-    }
-    #[getter]
-    fn old_cursor(&self) -> PyResult<Option<OldCursors>> {
-        Ok(self.old_cursor)
-    }
-    #[getter]
-    fn old_cursor_2(&self) -> PyResult<Option<OldCursors>> {
-        Ok(self.old_cursor_2)
-    }
-    #[getter]
-    fn attack_cursor(&self) -> PyResult<Option<u16>> {
-        Ok(self.attack_cursor)
-    }
-    #[getter]
-    fn army_icon(&self) -> PyResult<Option<u32>> {
-        Ok(self.army_icon)
-    }
-    #[getter]
-    fn unknown_140(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_140)
-    }
-    #[getter]
-    fn unknown_141(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_141)
-    }
-    #[getter]
-    fn mapfunction(&self) -> PyResult<Option<u16>> {
-        Ok(self.mapfunction)
-    }
-    #[getter]
-    fn unknown_143(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_143)
-    }
-    #[getter]
-    fn member_actions(&self) -> PyResult<Option<[Option<String>; 5]>> {
-        Ok(self.member_actions.clone())
-    }
-    #[getter]
-    fn unknown_155(&self) -> PyResult<Option<Unknown155>> {
-        Ok(self.unknown_155)
-    }
-    #[getter]
-    fn unknown_158(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_158)
-    }
-    #[getter]
-    fn unknown_159(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_159)
-    }
-    #[getter]
-    fn quests(&self) -> PyResult<Option<Quests>> {
-        Ok(self.quests.clone())
-    }
-    #[getter]
-    fn unknown_162(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_162)
-    }
-    #[getter]
-    fn unknown_163(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_163)
-    }
-    #[getter]
-    fn unknown_164(&self) -> PyResult<Option<Unknown164>> {
-        Ok(self.unknown_164)
-    }
-    #[getter]
-    fn unknown_165(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_165)
-    }
-    #[getter]
-    fn unknown_168(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_168)
-    }
-    #[getter]
-    fn unknown_169(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_169)
-    }
-    #[getter]
-    fn action_cursors(&self) -> PyResult<Option<[Option<u16>; 6]>> {
-        Ok(self.action_cursors)
-    }
-    #[getter]
-    fn unknown_178(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_178)
-    }
-    #[getter]
-    fn unknown_179(&self) -> PyResult<Option<Unknown179>> {
-        Ok(self.unknown_179)
-    }
-    #[getter]
-    fn unknown_180(&self) -> PyResult<Option<u8>> {
-        Ok(self.unknown_180)
-    }
-    #[getter]
-    fn unknown_182(&self) -> PyResult<Option<bool>> {
-        Ok(self.unknown_182)
-    }
-    #[getter]
-    fn unknown_184(&self) -> PyResult<Option<u16>> {
-        Ok(self.unknown_184)
-    }
-
-    #[getter]
-    fn params(&self) -> PyResult<Option<ParamTable>> {
-        Ok(self.params.clone())
-    }
-}
-
 #[cfg(test)]
-mod map_tests {
+mod tests {
     use super::*;
 
     #[test]
     fn zero_is_hans() -> CacheResult<()> {
-        let npc_config = NpcConfig::dump_all()?;
+        let config = crate::cli::Config::default();
+
+        let npc_config = NpcConfig::dump_all(&config)?;
         let npc = npc_config.get(&0).unwrap();
         let name = npc.name.as_ref().unwrap();
         assert_eq!(name, "Hans", "{:?}", npc);

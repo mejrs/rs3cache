@@ -1,28 +1,15 @@
-use core::ops::{Range, RangeInclusive};
-use std::{
-    collections::{hash_map, BTreeMap, HashMap},
-    iter::Zip,
-};
+use core::ops::RangeInclusive;
+use std::collections::{BTreeMap, HashMap};
 
-use itertools::{iproduct, Product};
-use ndarray::{iter::LanesIter, s, Axis, Dim};
+use itertools::iproduct;
 
 use crate::{
     cache::{
-        arc::Archive,
         index::{self, CacheIndex},
         indextype::IndexType,
-        xtea::Xtea,
     },
-    definitions::{
-        locations::Location,
-        mapsquares::{GroupMapSquare, MapSquare},
-        tiles::{Tile, TileArray},
-    },
-    utils::{
-        error::{CacheError, CacheResult},
-        rangeclamp::RangeClamp,
-    },
+    definitions::mapsquares::{GroupMapSquare, MapSquare},
+    utils::error::CacheResult,
 };
 
 /// Iterates over all [`MapSquare`]s in arbitrary order.
@@ -35,8 +22,8 @@ pub struct MapSquareIterator {
 
 impl MapSquareIterator {
     /// Constructor for MapSquareIterator.
-    pub fn new() -> CacheResult<Self> {
-        let inner = CacheIndex::new(IndexType::MAPSV2)?;
+    pub fn new(config: &crate::cli::Config) -> CacheResult<Self> {
+        let inner = CacheIndex::new(IndexType::MAPSV2, config)?;
 
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))
@@ -83,10 +70,10 @@ impl Iterator for MapSquareIterator {
         self.state.next().map(|(i, j)| {
             let land = self.mapping.get(&("l", i, j)).unwrap();
             let map = self.mapping.get(&("m", i, j)).unwrap();
-            let env = self.mapping.get(&("e", i, j)).unwrap();
+            let env = self.mapping.get(&("e", i, j)).copied();
             let xtea = self.inner.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
 
-            MapSquare::new(&self.inner, xtea.copied(), *land, *map, *env, i, j).unwrap()
+            MapSquare::new(&self.inner, xtea.copied(), *land, *map, env, i, j).unwrap()
         })
     }
 
@@ -107,8 +94,8 @@ pub struct GroupMapSquareIterator {
 
 impl GroupMapSquareIterator {
     /// Constructor for [`GroupMapSquareIterator`].
-    pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>) -> CacheResult<GroupMapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2)?;
+    pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
+        let inner = CacheIndex::new(IndexType::MAPSV2, config)?;
 
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))
@@ -166,9 +153,9 @@ impl Iterator for GroupMapSquareIterator {
                 .filter_map(|(i, j)| {
                     if let Some(land) = self.mapping.get(&("l", i, j)) {
                         let map = self.mapping.get(&("m", i, j)).unwrap();
-                        let env = self.mapping.get(&("e", i, j)).unwrap();
+                        let env = self.mapping.get(&("e", i, j)).copied();
                         let xtea = self.inner.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
-                        MapSquare::new(&self.inner, xtea.copied(), *land, *map, *env, i, j).ok()
+                        MapSquare::new(&self.inner, xtea.copied(), *land, *map, env, i, j).ok()
                     } else {
                         None
                     }

@@ -9,7 +9,7 @@ compile_error!("mockdata and save_mockdata are incompatible");
 compile_error!("rs3 and osrs are incompatible");
 
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
     fs::{self, File},
     io::{Read, SeekFrom, Write},
@@ -17,8 +17,10 @@ use std::{
     ops::RangeInclusive,
     path::Path,
 };
-
+use std::path::PathBuf;
 use itertools::iproduct;
+use path_macro::path;
+use fstrings::{f, format_args_f};
 
 #[cfg(feature = "osrs")]
 use crate::cache::xtea::Xtea;
@@ -32,9 +34,6 @@ use crate::{
     },
     utils::error::{CacheError, CacheResult},
 };
-
-/// System variable for the location of the cache folder.
-pub const SYS_VAR: &str = "RUNESCAPE_CACHE_FOLDER";
 
 mod states {
     use std::ops::RangeInclusive;
@@ -73,6 +72,7 @@ pub struct CacheIndex<S: IndexState> {
     index_id: u32,
     metadatas: IndexMetadata,
     state: S,
+    path: PathBuf,
 
     #[cfg(all(feature = "rs3", not(feature = "mockdata")))]
     connection: sqlite::Connection,
@@ -130,12 +130,13 @@ impl CacheIndex<Initial> {
     ///
     /// Panics if any of `ids` is not in `self`.
     pub fn retain(self, ids: Vec<u32>) -> CacheIndex<Truncated> {
-        let all_ids = self.metadatas().keys().copied().collect::<HashSet<_>>();
+        let all_ids = self.metadatas().keys().copied().collect::<BTreeSet<_>>();
 
         if let Some(missing_id) = ids.iter().find(|id| !all_ids.contains(id)) {
             panic!("Attempted to retain missing archive id {},", missing_id)
         }
         let Self {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -148,6 +149,7 @@ impl CacheIndex<Initial> {
         } = self;
 
         CacheIndex {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -175,6 +177,7 @@ impl CacheIndex<Initial> {
         );
 
         let Self {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -187,6 +190,7 @@ impl CacheIndex<Initial> {
         } = self;
 
         CacheIndex {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -197,11 +201,6 @@ impl CacheIndex<Initial> {
             xteas,
             state: Grouped { dim_i, dim_j },
         }
-    }
-
-    /// Attempt to clone `self`.
-    pub fn try_clone(&self) -> CacheResult<Self> {
-        Self::new(self.index_id())
     }
 }
 
@@ -357,12 +356,8 @@ impl CacheIndex<Initial> {
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
     #[cfg(not(feature = "mockdata"))]
-    pub fn new(index_id: u32) -> CacheResult<CacheIndex<Initial>> {
-        let file = match env::var(SYS_VAR) {
-            Ok(var) => format!("{}/js5-{}.jcache", var, index_id),
-            Err(VarError::NotPresent) => format!("raw/js5-{}.jcache", index_id),
-            Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
-        };
+    pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(config.input / f!("js5-{index_id}.jcache"));
 
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
@@ -375,10 +370,12 @@ impl CacheIndex<Initial> {
                     index_id,
                     metadatas,
                     connection,
+                    path: config.input.clone(),
                     state: Initial {},
                 })
             }
-            Err(e) => Err(CacheError::CacheNotFoundError(e, file)),
+            //_ => panic!(),
+            Err(e) => Err(CacheError::CacheNotFoundError(e, file.to_string_lossy().to_string())),
         }
     }
 
@@ -401,16 +398,10 @@ impl CacheIndex<Initial> {
 impl<S> CacheIndex<S>
 where
     S: IndexState,
-
 {
-    fn get_entry(a: u32, b: u32) -> CacheResult<(u32, u32)> {
-        let file = match env::var(SYS_VAR) {
-            Ok(var) => format!("{}/cache/main_file_cache.idx{}", var, a),
-            Err(VarError::NotPresent) => format!("raw/cache/main_file_cache.idx{}", a),
-            Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
-        };
-
-        let entry_data = fs::read(file)?;
+    fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
+        let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
+         let entry_data = fs::read(file)?;
         let mut buf = Buffer::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((buf.read_3_unsigned_bytes(), buf.read_3_unsigned_bytes()))
@@ -419,7 +410,7 @@ where
     fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {
         let mut buffer = Buffer::new(&self.file);
 
-        let (length, mut sector) = Self::get_entry(a, b)?;
+        let (length, mut sector) = Self::get_entry(a, b, &self.path)?;
 
         let mut read_count = 0;
         let mut part = 0;
@@ -427,7 +418,7 @@ where
 
         while sector != 0 {
             buffer.seek(SeekFrom::Start((sector * 520) as _))?;
-            let (header_size, current_archive, block_size) = if b >= 0xFFFF {
+            let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
                 (10, buffer.read_int(), 510.min(length - read_count))
             } else {
                 (8, buffer.read_unsigned_short() as _, 512.min(length - read_count))
@@ -455,7 +446,7 @@ where
         decoder::decompress(data, None, None)
     }
 
-    pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>>{
+    pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>> {
         &self.xteas
     }
 
@@ -487,29 +478,21 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32) -> CacheResult<CacheIndex<Initial>> {
-        let path = match env::var(SYS_VAR) {
-            Ok(var) => format!("{}/cache/main_file_cache.dat2", var),
-            Err(VarError::NotPresent) => String::from("raw/cache/main_file_cache.dat2"),
-            Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
-        };
+    pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
+        let path = path!(config.input / "cache" / "main_file_cache.dat2");
 
         let file = fs::read(path)?.into_boxed_slice();
         let xteas = if index_id == 5 {
-            let path = match env::var(SYS_VAR) {
-                Ok(var) => format!("{}/xteas.json", var),
-                Err(VarError::NotPresent) => String::from("raw/xteas.json"),
-                Err(VarError::NotUnicode(os_str)) => panic!("Unable to parse system variable {}: {:?} as valid unicode.", SYS_VAR, os_str),
-            };
+            let path = path!(config.input / "xteas.json");
 
             Some(Xtea::load(path)?)
         } else {
             None
         };
-       
 
         // `s` is in a partially initialized state here
         let mut s = Self {
+            path: config.input.clone(),
             index_id,
             metadatas: IndexMetadata::empty(),
             #[cfg(feature = "rs3")]
@@ -550,6 +533,7 @@ impl CacheIndex<Truncated> {
         );
 
         let Self {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -562,6 +546,7 @@ impl CacheIndex<Truncated> {
         } = self;
 
         CacheIndex {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -598,6 +583,7 @@ impl IntoIterator for CacheIndex<Truncated> {
 
     fn into_iter(self) -> Self::IntoIter {
         let Self {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -610,6 +596,7 @@ impl IntoIterator for CacheIndex<Truncated> {
         } = self;
 
         let index = CacheIndex {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -653,6 +640,7 @@ impl IntoIterator for CacheIndex<TruncatedGrouped> {
 
     fn into_iter(self) -> Self::IntoIter {
         let Self {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -665,6 +653,7 @@ impl IntoIterator for CacheIndex<TruncatedGrouped> {
         } = self;
         let TruncatedGrouped { dim_i, dim_j, feed } = state;
         let index = CacheIndex {
+            path,
             #[cfg(feature = "rs3")]
             connection,
             #[cfg(feature = "osrs")]
@@ -763,7 +752,7 @@ impl Iterator for IntoIterGrouped {
 #[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
 pub fn assert_coherence() -> CacheResult<()> {
     for index_id in IndexType::iterator() {
-        match CacheIndex::new(index_id)?.assert_coherence() {
+        match CacheIndex::new(index_id, &crate::cli::Config::default())?.assert_coherence() {
             Ok(_) => println!("Index {} is coherent!", index_id),
             Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
         }

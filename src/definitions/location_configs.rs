@@ -1,8 +1,7 @@
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs::{self, File},
     io::Write,
-    path::Path,
 };
 
 #[cfg(feature = "pyo3")]
@@ -16,6 +15,8 @@ use crate::{
     structures::paramtable::ParamTable,
     utils::{error::CacheResult, par::ParApply},
 };
+use path_macro::path;
+use fstrings::{f, format_args_f};
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 #[cfg_eval]
@@ -27,199 +28,114 @@ use crate::{
 pub struct LocationConfig {
     /// Its id.
     pub id: u32,
-
     /// A mapping of possible types to models.
     #[serde(flatten)]
     pub models: Option<Models>,
-
     /// Its name, if present.
     pub name: Option<String>,
-
     #[cfg(feature = "osrs")]
     pub models_2: Option<Models2>,
-
     /// Its west-east dimension, defaulting to 1 if not present.
     ///
     /// Code using this value must account for the location's rotation.
     pub dim_x: Option<u8>,
-
     /// Its south-north dimension, defaulting to 1 if not present.
     ///
     /// Code using this value must account for the location's rotation.
     pub dim_y: Option<u8>,
-
     pub unknown_17: Option<bool>,
-
     pub is_transparent: Option<bool>,
-
     /// Flag for whether this object has a red rather than a white line on the map.
     pub unknown_19: Option<u8>,
-
     pub unknown_21: Option<bool>,
-
     pub unknown_22: Option<bool>,
-
     pub occludes_1: Option<bool>,
-
     pub unknown_24: Option<u32>,
-
     pub unknown_27: Option<bool>,
-
     pub unknown_28: Option<u8>,
-
     pub ambient: Option<i8>,
-
     /// What rightclick options this location has, if any.
     pub actions: Option<[Option<String>; 5]>,
-
     pub contrast: Option<i8>,
-
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
-
     #[serde(flatten)]
     pub textures: Option<Textures>,
-
     pub recolour_palette: Option<Vec<(u16, u16)>>,
-
     pub unknown_44: Option<u16>,
-
     pub unknown_45: Option<u16>,
-
     #[cfg(feature = "osrs")]
     pub category: Option<u16>,
-
     pub mirror: Option<bool>,
-
     pub model: Option<bool>,
-
     pub scale_x: Option<u16>,
-
     pub scale_y: Option<u16>,
-
     pub scale_z: Option<u16>,
-
     pub unknown_69: Option<u8>,
-
     pub translate_x: Option<u16>,
-
     pub translate_y: Option<u16>,
-
     pub translate_z: Option<u16>,
-
     pub unknown_73: Option<bool>,
-
     /// Whether this location can be interacted through with e.g. ranged/magic combat, telegrab etc.
     pub blocks_ranged: Option<bool>,
-
     pub unknown_75: Option<u8>,
-
     /// This location can have different appearances depending on a player's varp/varbits.
     pub morphs_1: Option<LocationMorphTable>,
-
     pub unknown_78: Option<Unknown78>,
-
     pub unknown_79: Option<Unknown79>,
-
     pub unknown_81: Option<u8>,
-
     #[cfg(feature = "rs3")]
     pub unknown_82: Option<bool>,
-
     #[cfg(feature = "osrs")]
     pub maparea_id: Option<u16>,
-
     pub unknown_88: Option<bool>,
-
     pub unknown_89: Option<bool>,
-
     pub is_members: Option<bool>,
-
     /// This location can have different appearances depending on a players varbits,
     /// like the [morphs_1](LocationConfig::morphs_1) field, but with a default value.
     pub morphs_2: Option<ExtendedLocationMorphTable>,
-
     pub unknown_93: Option<u16>,
-
     pub unknown_94: Option<bool>,
-
     pub unknown_95: Option<u16>,
-
     pub unknown_96: Option<bool>,
-
     pub unknown_97: Option<bool>,
-
     pub unknown_98: Option<bool>,
-
     pub unknown_99: Option<()>,
-
     pub unknown_101: Option<u8>,
-
     /// Reference to a [`MapScene`](super::mapscenes::MapScene) that is drawn on the map.
     pub mapscene: Option<u16>,
-
     pub occludes_2: Option<bool>,
-
     pub unknown_104: Option<u8>,
-
     pub headmodels: Option<HeadModels>,
-
     pub mapfunction: Option<u16>,
-
     pub member_actions: Option<[Option<String>; 5]>,
-
     pub unknown_160: Option<Unknown160>,
-
     pub unknown_162: Option<i32>,
-
     pub unknown_163: Option<Unknown163>,
-
     pub unknown_164: Option<u16>,
-
     pub unknown_165: Option<u16>,
-
     pub unknown_166: Option<u16>,
-
     pub unknown_167: Option<u16>,
-
     pub unknown_168: Option<bool>,
-
     pub unknown_169: Option<bool>,
-
     pub unknown_170: Option<u16>,
-
     pub unknown_171: Option<u16>,
-
     #[serde(flatten)]
     pub unknown_173: Option<Unknown173>,
-
     pub unknown_177: Option<bool>,
-
     pub unknown_178: Option<u8>,
-
     pub unknown_186: Option<u8>,
-
     pub unknown_188: Option<bool>,
-
     pub unknown_189: Option<bool>,
-
     pub cursors: Option<[Option<u16>; 6]>,
-
     pub unknown_196: Option<u8>,
-
     pub unknown_197: Option<u8>,
-
     pub unknown_198: Option<bool>,
-
     pub unknown_199: Option<bool>,
-
     pub unknown_200: Option<bool>,
-
     #[serde(flatten)]
     pub unknown_201: Option<Unknown201>,
-
     pub unknown_202: Option<u16>,
-
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -227,8 +143,8 @@ pub struct LocationConfig {
 impl LocationConfig {
     /// Returns a mapping of all [location configurations](LocationConfig)
     #[cfg(feature = "rs3")]
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::LOC_CONFIG)?.into_iter();
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        let archives = CacheIndex::new(IndexType::LOC_CONFIG, config)?.into_iter();
         let locations = archives
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
@@ -238,13 +154,13 @@ impl LocationConfig {
                     .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
-            .collect::<HashMap<u32, Self>>();
+            .collect::<BTreeMap<u32, Self>>();
         Ok(locations)
     }
 
     #[cfg(feature = "osrs")]
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::CONFIG)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, config)?
             .archive(ConfigType::LOC_CONFIG)?
             .take_files()
             .into_iter()
@@ -287,6 +203,9 @@ impl LocationConfig {
                 41 => loc.textures = Some(Textures::deserialize(&mut buffer)),
                 44 => loc.unknown_44 = Some(buffer.read_masked_index()),
                 45 => loc.unknown_45 = Some(buffer.read_masked_index()),
+                // changed at some point after 2015
+                #[cfg(feature = "osrs")]
+                60 => {Some(buffer.read_unsigned_short());},
                 #[cfg(feature = "osrs")]
                 61 => loc.category = Some(buffer.read_unsigned_short()),
                 62 => loc.mirror = Some(true),
@@ -364,7 +283,7 @@ impl LocationConfig {
 /// Defines the structs used as fields of [`LocationConfig`],
 pub mod location_config_fields {
     #![allow(missing_docs)]
-    use std::{collections::HashMap, iter};
+    use std::{collections::BTreeMap, iter};
 
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
@@ -514,7 +433,7 @@ pub mod location_config_fields {
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
         #[cfg(feature = "rs3")]
-        pub models: HashMap<i8, Vec<Option<u32>>>,
+        pub models: BTreeMap<i8, Vec<Option<u32>>>,
         #[cfg(feature = "osrs")]
         pub models: Vec<(u8, u16)>,
     }
@@ -526,7 +445,7 @@ pub mod location_config_fields {
 
             let models = iter::repeat_with(|| Models::sub_deserialize(buffer))
                 .take(count)
-                .collect::<HashMap<_, _>>();
+                .collect::<BTreeMap<_, _>>();
             Models { models }
         }
 
@@ -575,7 +494,7 @@ pub mod location_config_fields {
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
-        pub textures: HashMap<u16, u16>,
+        pub textures: BTreeMap<u16, u16>,
     }
 
     impl Textures {
@@ -583,7 +502,7 @@ pub mod location_config_fields {
             let count = buffer.read_unsigned_byte() as usize;
             let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
-                .collect::<HashMap<_, _>>();
+                .collect::<BTreeMap<_, _>>();
             Textures { textures }
         }
     }
@@ -758,14 +677,13 @@ pub mod location_config_fields {
 use location_config_fields::*;
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
-pub fn export(path: impl AsRef<Path>) -> CacheResult<()> {
-    let path = path.as_ref();
-
-    fs::create_dir_all(path)?;
-    let mut loc_configs = LocationConfig::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut loc_configs = LocationConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     loc_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create(format!("{}.json", path.to_str().unwrap()))?;
+    
+    let mut file = File::create(path!(config.output / "location_configs.json"))?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
     file.write_all(data.as_bytes())?;
 
@@ -773,13 +691,14 @@ pub fn export(path: impl AsRef<Path>) -> CacheResult<()> {
 }
 
 ///Save the location configs as individual `json` files.
-pub fn export_each(path: impl AsRef<Path>) -> CacheResult<()> {
-    let path = path.as_ref();
-    fs::create_dir_all(path)?;
-    let configs = LocationConfig::dump_all()?;
-    configs.into_iter().par_apply(|(id, config)| {
-        let mut file = File::create(format!("{}/{}.json", path.to_str().unwrap(), id)).unwrap();
-        let data = serde_json::to_string_pretty(&config).unwrap();
+pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(path!(&config.output/ "locations_each"))?;
+
+    let configs = LocationConfig::dump_all(config)?;
+    configs.into_iter().par_apply(|(id, location_config)| {
+        let mut file = File::create(path!(config.output / "locations_each" / f!("{id}.json"))).unwrap();
+
+        let data = serde_json::to_string_pretty(&location_config).unwrap();
         file.write_all(data.as_bytes()).unwrap();
     });
 
@@ -804,7 +723,9 @@ mod map_tests {
 
     #[test]
     fn id_36687_is_trapdoor() -> CacheResult<()> {
-        let loc_config = LocationConfig::dump_all()?;
+        let config = crate::cli::Config::default();
+
+        let loc_config = LocationConfig::dump_all(&config)?;
         let trapdoor = loc_config.get(&36687).unwrap();
         let name = trapdoor.name.as_ref().unwrap();
         assert_eq!(name, "Trapdoor", "{:?}", trapdoor);
@@ -815,7 +736,9 @@ mod map_tests {
     fn check_paramtable() -> CacheResult<()> {
         use crate::structures::paramtable::Param;
 
-        let loc_config = LocationConfig::dump_all()?;
+        let config = crate::cli::Config::default();
+
+        let loc_config = LocationConfig::dump_all(&config)?;
         let bookcase = loc_config.get(&118445).unwrap();
         let paramtable = bookcase.params.as_ref().unwrap();
         let value = &paramtable.params[&8178];

@@ -7,9 +7,10 @@ use std::{
     io::Write,
     iter,
 };
-
+use std::collections::BTreeMap;
 use serde::Serialize;
-
+use path_macro::path;
+use fstrings::{f, format_args_f};
 use crate::{
     cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     types::coordinate::Coordinate,
@@ -46,8 +47,8 @@ pub struct MapZone {
 
 impl MapZone {
     /// Returns a mapping of all [`MapZone`] configurations.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::WORLDMAP)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
+        Ok(CacheIndex::new(IndexType::WORLDMAP, config)?
             .archive(WorldMapType::ZONES)?
             .take_files()
             .into_iter()
@@ -188,8 +189,8 @@ pub struct MapPastes {
 
 impl MapPastes {
     /// Returns a mapping of all [`MapPastes`].
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::WORLDMAP)?
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
+        Ok(CacheIndex::new(IndexType::WORLDMAP, config)?
             .archive(WorldMapType::PASTES)?
             .take_files()
             .into_iter()
@@ -309,38 +310,41 @@ mod mappaste_fields_impl {
 pub use mappaste_fields_impl::*;
 
 /// Exports all world map pastes to `out/map_pastes.json`.
-pub fn export_pastes() -> CacheResult<()> {
-    use std::collections::BTreeMap;
+pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
+    
 
-    fs::create_dir_all("out")?;
+    fs::create_dir_all(&config.output)?;
     // btreemap has deterministic order
-    let map_zones: BTreeMap<u32, MapPastes> = MapPastes::dump_all()?.into_iter().collect();
+    let map_pastes: BTreeMap<u32, MapPastes> = MapPastes::dump_all(config)?.into_iter().collect();
 
-    let mut file = File::create("out/map_pastes.json")?;
-    let data = serde_json::to_string_pretty(&map_zones)?;
+    let mut file = File::create(path!(config.output / "map_pastes.json"))?;
+    let data = serde_json::to_string_pretty(&map_pastes)?;
     file.write_all(data.as_bytes())?;
     Ok(())
 }
 
 /// Exports all world map zones to `out/map_zones.json`.
-pub fn export_zones() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut map_zones = MapZone::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export_zones(config: &crate::cli::Config
+) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+
+    let mut map_zones = MapZone::dump_all(config)?.into_values().collect::<Vec<_>>();
     map_zones.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/map_zones.json")?;
+    let mut file = File::create(path!(config.output / "map_zones.json"))?;
     let data = serde_json::to_string_pretty(&map_zones)?;
     file.write_all(data.as_bytes())?;
     Ok(())
 }
 
 /// Exports small images of world maps to `out/world_map_small`.
-pub fn dump_small() -> CacheResult<()> {
-    fs::create_dir_all("out/world_map_small")?;
+pub fn dump_small(config: &crate::cli::Config
+) -> CacheResult<()> {
+    fs::create_dir_all(path!(config.output / "world_map_small"))?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapType::SMALL)?.take_files();
+    let files = CacheIndex::new(IndexType::WORLDMAP, config)?.archive(WorldMapType::SMALL)?.take_files();
     for (id, data) in files {
-        let filename = format!("out/world_map_small/{}.png", id);
+        let filename = path!(config.output / "world_map_small" / f!("{id}.png"));
         let mut file = File::create(filename)?;
         file.write_all(&data)?;
     }
@@ -349,17 +353,17 @@ pub fn dump_small() -> CacheResult<()> {
 }
 
 /// Exports big images of world maps to `out/world_map_big`.
-pub fn dump_big() -> CacheResult<()> {
-    fs::create_dir_all("out/world_map_big")?;
+pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(path!(config.output / "world_map_big"))?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP)?.archive(WorldMapType::BIG)?.take_files();
+    let files = CacheIndex::new(IndexType::WORLDMAP, config)?.archive(WorldMapType::BIG)?.take_files();
 
     for (id, data) in files {
         let mut buf =  Buffer::new(data);
         let size = buf.read_unsigned_int() as usize;
         let img = buf.read_n_bytes(size);
 
-        let filename = format!("out/world_map_big/{}.png", id);
+        let filename = path!(config.output / "world_map_big" / f!("{id}.png"));
         let mut file = File::create(filename)?;
         file.write_all(&img)?;
     }

@@ -2,24 +2,24 @@
 #![allow(non_camel_case_types, missing_docs)]
 
 use std::{
-    collections::{BTreeMap, HashMap},
+    collections::BTreeMap,
     convert::{TryFrom, TryInto},
     fs::{self, File},
     io::Write,
     iter,
 };
 
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 use crate::{
-    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     utils::error::CacheResult,
 };
 
-#[derive(Debug, PartialEq, Eq, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
 pub enum KeyType {
     Uninit,
     Int_0,
@@ -84,7 +84,7 @@ impl Default for KeyType {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
 pub enum ValueType {
     Uninit,
     Int_0,
@@ -190,11 +190,23 @@ pub enum Value {
     String(String),
 }
 
+#[cfg(feature = "pyo3")]
+impl IntoPy<Py<PyAny>> for Value {
+    fn into_py(self, py: Python) -> Py<PyAny> {
+        match self {
+            Self::Integer(val) => val.into_py(py),
+            Self::String(val) => val.into_py(py),
+        }
+   }
+}
+
 /// Describes the properties of a given enum.
+#[cfg_eval]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[skip_serializing_none]
-#[derive(Serialize, Debug, Default)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct Enum {
     /// Its id.
     pub id: u32,
@@ -210,8 +222,8 @@ pub struct Enum {
 
 impl Enum {
     /// Returns a mapping of all [`Enum`]s.
-    pub fn dump_all() -> CacheResult<HashMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::ENUM_CONFIG)?.into_iter();
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        let archives = CacheIndex::new(IndexType::ENUM_CONFIG, config)?.into_iter();
 
         let enums = archives
             .flat_map(|archive| {
@@ -222,12 +234,12 @@ impl Enum {
                     .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
-            .collect::<HashMap<u32, Self>>();
+            .collect::<BTreeMap<u32, Self>>();
         Ok(enums)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self { 
-        let mut buffer =  Buffer::new(file);
+    fn deserialize(id: u32, file: Vec<u8>) -> Self {
+        let mut buffer = Buffer::new(file);
         let mut r#enum = Self { id, ..Default::default() };
 
         loop {
@@ -298,12 +310,12 @@ impl PyObjectProtocol for Enum {
 }
 
 /// Save the item configs as `enums.json`. Exposed as `--dump enums`.
-pub fn export() -> CacheResult<()> {
-    fs::create_dir_all("out")?;
-    let mut enums = Enum::dump_all()?.into_values().collect::<Vec<_>>();
+pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
+    fs::create_dir_all(&config.output)?;
+    let mut enums = Enum::dump_all(config)?.into_values().collect::<Vec<_>>();
     enums.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/enums.json")?;
+    let mut file = File::create(path!(config.output / "enums.json"))?;
     let data = serde_json::to_string_pretty(&enums).unwrap();
     file.write_all(data.as_bytes())?;
 

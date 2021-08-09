@@ -38,6 +38,7 @@
 //! - `target/release/rs3cache.exe --help` to see a list of commands
 //!
 
+
 #![feature(
     cfg_eval,
     option_result_contains,
@@ -47,8 +48,9 @@
     thread_spawn_unchecked,
     once_cell
 )]
-#![allow(non_snake_case, unused_variables, unused_imports)]
+#![allow(non_snake_case)]
 #![warn(
+    //unused_crate_dependencies,
     //unused_imports,
     unused_qualifications,
     unused_import_braces,
@@ -62,7 +64,15 @@
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
 
+
+#[cfg(not(any(feature = "rs3", feature = "osrs", feature = "377")))]
+compile_error!("You must use one and only one of the rs3, osrs or 377 feature flags");
+
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+pub mod cli;
+
 /// Tools for decoding the cache itself.
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod cache {
     pub mod arc;
     pub mod buf;
@@ -76,6 +86,7 @@ pub mod cache {
 }
 
 /// Various data types
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod types {
     pub mod coordinate;
     /// Player variables
@@ -83,6 +94,7 @@ pub mod types {
 }
 
 /// Entities that can be deserialized from cache data.
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod definitions {
 
     /// Configuration of game locations.
@@ -124,10 +136,12 @@ pub mod definitions {
 
     pub mod varbit_configs;
 
+    #[cfg(feature = "rs3")]
     pub mod worldmaps;
 }
 
 /// Functions for rendering the map.
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod renderers {
     /// Exports map tiles.
     pub mod map;
@@ -154,12 +168,14 @@ pub mod utils {
 }
 
 /// Contains structures that are used in multiple different configs.
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod structures {
     /// A mapping of keys to properties.
     pub mod paramtable;
 }
 
 /// Foreign function interfaces to `rs3cache`.
+#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod ffi {
     pub mod python;
 }

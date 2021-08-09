@@ -1,10 +1,12 @@
-use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Range, sync::Mutex};
+use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Range, path::Path};
 
 use async_std::{fs::File, prelude::*, task};
+use fstrings::{f, format_args_f};
 use futures::future::join_all;
 use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageFormat, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::{iproduct, izip};
+use path_macro::path;
 use regex::Regex;
 
 use crate::utils::{error::CacheResult, par::ParApply};
@@ -12,24 +14,21 @@ use crate::utils::{error::CacheResult, par::ParApply};
 static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 
 /// Given a folder and a range of zoom levels, recursively creates tiles for all zoom levels.
-pub fn render_zoom_levels(folder: &str, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
-    let final_zoom = range.start;
+pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
     let zoom_levels = range.rev();
-    for zoom_level in zoom_levels {
-        fs::create_dir_all(format!("{}/{}/{}", folder, mapid, zoom_level))?;
+    for zoom in zoom_levels {
+        fs::create_dir_all(path!(folder / f!("{mapid}/{zoom}")))?;
 
-        let new_tile_coordinates = get_future_filenames(folder, mapid, zoom_level)?.into_iter();
+        let new_tile_coordinates = get_future_filenames(&folder, mapid, zoom + 1)?.into_iter();
 
-
-    let func = |(p, i, j)| {
-            let img = make_tile(folder, mapid, zoom_level, p, i, j, backfill).unwrap();
-            let filename = format!("{}/{}/{}/{}_{}_{}.png", folder, mapid, zoom_level, p, i, j);
+        let func = |(p, i, j)| {
+            let img = make_tile(&folder, mapid, zoom, p, i, j, backfill).unwrap();
+            let filename = path!(folder / f!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
             img.save(filename).unwrap();
         };
 
         new_tile_coordinates.progress().par_apply(func);
-
-   }
+    }
     Ok(())
 }
 
@@ -42,7 +41,7 @@ fn to_coordinates(text: OsString) -> CacheResult<(usize, usize, usize)> {
 }
 
 fn make_tile(
-    folder: &str,
+    folder: impl AsRef<Path>,
     mapid: i32,
     target_zoom: i8,
     target_plane: usize,
@@ -69,32 +68,35 @@ fn make_tile(
     Ok(scaled)
 }
 
-async fn get_file(filename: String) -> io::Result<Vec<u8>> {
-    let mut file = File::open(filename).await?;
+async fn get_file(filename: impl AsRef<Path>) -> io::Result<Vec<u8>> {
+    let mut file = File::open(filename.as_ref()).await?;
     let mut contents = Vec::new();
     file.read_to_end(&mut contents).await?;
     Ok(contents)
 }
 
-async fn get_files(folder: &str, mapid: i32, target_zoom: i8, target_plane: usize, target_i: usize, target_j: usize) -> Vec<io::Result<Vec<u8>>> {
+async fn get_files(
+    folder: impl AsRef<Path>,
+    mapid: i32,
+    target_zoom: i8,
+    target_plane: usize,
+    target_i: usize,
+    target_j: usize,
+) -> Vec<io::Result<Vec<u8>>> {
     let mut files = Vec::new();
     for (di, dj) in iproduct!(0..=1, 0..=1) {
-        let filename = format!(
-            "{}/{}/{}/{}_{}_{}.png",
-            folder,
-            mapid,
-            target_zoom + 1,
-            target_plane,
-            (target_i << 1) + di,
-            (target_j << 1) + dj
-        );
+        let i = (target_i << 1) + di;
+        let j = (target_j << 1) + dj;
+        let zoom = target_zoom + 1;
+        let filename = path!(folder / f!("{mapid}/{zoom}/{target_plane}_{i}_{j}.png"));
         files.push(get_file(filename));
     }
     join_all(files).await
 }
 
-fn get_future_filenames(folder: &str, mapid: i32, zoom_level: i8) -> CacheResult<HashSet<(usize, usize, usize)>> {
-    let dir = format!("{}/{}/{}", folder, mapid, zoom_level + 1);
+fn get_future_filenames(folder: impl AsRef<Path>, mapid: i32, zoom: i8) -> CacheResult<HashSet<(usize, usize, usize)>> {
+    let dir = path!(folder / f!("{mapid}/{zoom}"));
+
     let new_tiles = fs::read_dir(&dir)?
         .collect::<io::Result<Vec<_>>>()?
         .into_iter()

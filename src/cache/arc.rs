@@ -9,7 +9,7 @@
 //! method instead.
 
 use std::
-    collections::{HashMap, HashSet, BTreeMap}
+    collections::{HashSet, BTreeMap}
 ;
 
 use itertools::izip;
@@ -19,7 +19,7 @@ use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol}
 use crate::{
     cache::{buf::Buffer, meta::Metadata},
     utils::{
-        adapters::Pairwisor,
+        
         error::{CacheError, CacheResult},
         slice::SharedSlice
     },
@@ -98,6 +98,8 @@ impl Archive {
 
             #[cfg(feature = "rs3")]
             child_count => {
+                use crate::utils::adapters::Pairwisor;
+
                 let mut buffer = Buffer::new(&data);
 
                 let first = buffer.read_unsigned_byte();

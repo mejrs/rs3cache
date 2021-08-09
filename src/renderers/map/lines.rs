@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use image::{GenericImage, Rgba, RgbaImage};
 
@@ -9,7 +9,7 @@ use crate::{
 };
 
 /// Applies lines of doors, fences, walls and so on to the base image.
-pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location_config: &HashMap<u32, LocationConfig>) {
+pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location_config: &BTreeMap<u32, LocationConfig>) {
     if let Ok(locations) = squares.core().get_locations() {
         let tiles = squares.core().get_tiles().expect("always some if it has locations");
         locations

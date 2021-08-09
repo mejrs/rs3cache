@@ -1,23 +1,25 @@
-use std::{collections::HashMap, io::SeekFrom, iter};
+use std::{collections::BTreeMap, io::SeekFrom, iter};
 
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
+
+use path_macro::path;
+use fstrings::{f, format_args_f};
+
 
 use crate::{
     cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     utils::{error::CacheResult, par::ParApply},
 };
-/// Output directory for [save_all()]
-const DIR: &str = "out/sprites";
 
 /// Type alias for a rgba image. 
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
 /// Saves an image of every sprite to disk.
-pub fn save_all() -> CacheResult<()> {
-    std::fs::create_dir_all(DIR)?;
+pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
+    std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
-    CacheIndex::new(IndexType::SPRITES)?.into_iter().par_apply(|mut archive| {
+    CacheIndex::new(IndexType::SPRITES, config)?.into_iter().par_apply(|mut archive| {
         debug_assert_eq!(archive.file_count(), 1);
 
         let file = archive
@@ -25,15 +27,16 @@ pub fn save_all() -> CacheResult<()> {
             .unwrap_or_else(|error| panic!("Unable to get file for sprite {}: {} ", archive.archive_id(), error));
         let images = deserialize(file).unwrap_or_else(|error| panic!("Error decoding sprite {}: {}", archive.archive_id(), error));
         images.into_iter().for_each(|(frame, img)| {
-            let filename = format!("{}/{}-{}.png", DIR, archive.archive_id(), frame);
+            let id = archive.archive_id();
+            let filename = path!(config.output / "sprites" / f!("{id}-{frame}.png"));
             img.save(&filename)
-                .unwrap_or_else(|_| panic!("Unable to save sprite {}-{} to {}", archive.archive_id(), frame, filename));
+                .unwrap_or_else(|_| panic!("Unable to save sprite {}-{} to {}", archive.archive_id(), frame, filename.to_string_lossy()));
         })
     });
     Ok(())
 }
 
-/// Returns a [`HashMap`] holding all sprites in `ids`.
+/// Returns a [`BTreeMap`] holding all sprites in `ids`.
 ///
 /// Sprites are scaled according to `scale`, which may not be `0`.
 ///
@@ -45,28 +48,28 @@ pub fn save_all() -> CacheResult<()> {
 ///
 /// **Panics** if `scale == 0`.
 
-pub fn dumps(scale: u32, ids: Vec<u32>) -> CacheResult<HashMap<(u32, u32), Sprite>> {
+pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheResult<BTreeMap<(u32, u32), Sprite>> {
     assert_ne!(scale, 0);
 
-    let resizer = |(id, frames): (u32, HashMap<usize, Sprite>)| {
+    let resizer = |(id, frames): (u32, BTreeMap<usize, Sprite>)| {
         frames.into_iter().map(move |(frame, img)| {
             let resized_img = imageops::resize(&img, img.width() * scale, img.height() * scale, imageops::Nearest);
             ((id, frame as u32), resized_img)
         })
     };
 
-    let sprites = CacheIndex::new(IndexType::SPRITES)?
+    let sprites = CacheIndex::new(IndexType::SPRITES, config)?
         .retain(ids)
         .into_iter()
         .map(|mut archive| archive.take_file(&0).and_then(deserialize).map(|frames| (archive.archive_id(), frames)))
         .collect::<CacheResult<Vec<(u32, _)>>>()?
         .into_iter()
         .flat_map(resizer)
-        .collect::<HashMap<(u32, u32), Sprite>>();
+        .collect::<BTreeMap<(u32, u32), Sprite>>();
     Ok(sprites)
 }
 
-fn deserialize(file: Vec<u8>) -> CacheResult<HashMap<usize, Sprite>> {
+fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
     let mut buffer =  Buffer::new(file);
     buffer.seek(SeekFrom::End(-2))?;
 
@@ -135,7 +138,7 @@ fn deserialize(file: Vec<u8>) -> CacheResult<HashMap<usize, Sprite>> {
                         None
                     }
                 })
-                .collect::<HashMap<_, _>>()
+                .collect::<BTreeMap<_, _>>()
         }
         1 => {
             buffer.seek(SeekFrom::Start(0))?;
@@ -165,7 +168,7 @@ fn deserialize(file: Vec<u8>) -> CacheResult<HashMap<usize, Sprite>> {
                 pixel[3] = alpha;
             });
 
-            let mut images = HashMap::with_capacity(1);
+            let mut images = BTreeMap::new();
             images.insert(0_usize, img);
 
             images
@@ -182,7 +185,9 @@ mod sprite_tests {
     #[test]
     fn render_some_0() -> CacheResult<()> {
         fn dump(id: u32, frame: u32) -> CacheResult<Sprite> {
-            let mut archive = CacheIndex::new(IndexType::SPRITES)?.archive(id)?;
+            let config = crate::cli::Config::default();
+
+            let mut archive = CacheIndex::new(IndexType::SPRITES, &config)?.archive(id)?;
             let file = archive.take_file(&0)?;
             assert!(file.len() != 0, "{:?}", file);
             let mut images = deserialize(file).unwrap();
@@ -202,9 +207,11 @@ mod sprite_tests {
 
     #[test]
     fn render_some_1() -> CacheResult<()> {
+        let config = crate::cli::Config::default();
+
         let ids = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 14659, 3034];
 
-        let sprites = dumps(2, ids)?;
+        let sprites = dumps(2, ids, &config)?;
         println!("{:?}", sprites.keys().collect::<Vec<_>>());
 
         Ok(())
@@ -212,9 +219,11 @@ mod sprite_tests {
     #[test]
     #[should_panic]
     fn render_nonexistant() {
+        let config = crate::cli::Config::default();
+        
         let ids = vec![40000, 50000];
 
-        let sprites = dumps(2, ids).expect("should be unable to create a limited archiveiterator if the key is not in metadatas");
+        let sprites = dumps(2, ids, &config).expect("should be unable to create a limited archiveiterator if the key is not in metadatas");
 
         println!("Should have not been able to deserialize these: {:?}", sprites.keys().collect::<Vec<_>>());
     }

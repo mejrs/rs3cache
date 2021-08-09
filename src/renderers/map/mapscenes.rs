@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use image::{GenericImage, GenericImageView, RgbaImage};
 use itertools::iproduct;
@@ -16,9 +16,9 @@ pub fn put(
     plane: usize,
     img: &mut RgbaImage,
     squares: &GroupMapSquare,
-    location_config: &HashMap<u32, LocationConfig>,
-    #[cfg(feature = "rs3")] mapscenes: &HashMap<u32, MapScene>,
-    sprites: &HashMap<(u32, u32), Sprite>,
+    location_config: &BTreeMap<u32, LocationConfig>,
+    #[cfg(feature = "rs3")] mapscenes: &BTreeMap<u32, MapScene>,
+    sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     squares
         .all_locations_iter()

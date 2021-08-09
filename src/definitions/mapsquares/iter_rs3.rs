@@ -1,27 +1,13 @@
-use core::ops::{Range, RangeInclusive};
-use std::{
-    collections::{hash_map, BTreeMap, HashMap},
-    iter::Zip,
-};
-
-use itertools::{iproduct, Product};
-use ndarray::{iter::LanesIter, s, Axis, Dim};
+use core::ops::RangeInclusive;
+use std::collections::HashMap;
 
 use crate::{
     cache::{
-        arc::Archive,
         index::{self, CacheIndex},
         indextype::IndexType,
     },
-    definitions::{
-        locations::Location,
-        mapsquares::{GroupMapSquare, MapSquare},
-        tiles::{Tile, TileArray},
-    },
-    utils::{
-        error::{CacheError, CacheResult},
-        rangeclamp::RangeClamp,
-    },
+    definitions::mapsquares::{GroupMapSquare, MapSquare},
+    utils::error::CacheResult,
 };
 
 /// Iterates over all [`MapSquare`]s in arbitrary order.
@@ -32,8 +18,8 @@ pub struct MapSquareIterator {
 
 impl MapSquareIterator {
     /// Constructor for MapSquareIterator.
-    pub fn new() -> CacheResult<MapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2)?.into_iter();
+    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquareIterator> {
+        let inner = CacheIndex::new(IndexType::MAPSV2, config)?.into_iter();
         Ok(MapSquareIterator { inner })
     }
 }
@@ -58,15 +44,23 @@ pub struct GroupMapSquareIterator {
 
 impl GroupMapSquareIterator {
     /// Constructor for [`GroupMapSquareIterator`].
-    pub fn new(dx: RangeInclusive<i32>, dy: RangeInclusive<i32>) -> CacheResult<GroupMapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2)?.grouped(dx, dy).into_iter();
+    pub fn new(dx: RangeInclusive<i32>, dy: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
+        let inner = CacheIndex::new(IndexType::MAPSV2, config)?.grouped(dx, dy).into_iter();
         Ok(GroupMapSquareIterator { inner })
     }
 
     /// Constructor for [`GroupMapSquareIterator`], but limited to the [`MapSquare`]s in `coordinates`.
-    pub fn new_only(dx: RangeInclusive<i32>, dy: RangeInclusive<i32>, coordinates: Vec<(u8, u8)>) -> CacheResult<GroupMapSquareIterator> {
+    pub fn new_only(
+        dx: RangeInclusive<i32>,
+        dy: RangeInclusive<i32>,
+        coordinates: Vec<(u8, u8)>,
+        config: &crate::cli::Config,
+    ) -> CacheResult<GroupMapSquareIterator> {
         let archive_ids = coordinates.into_iter().map(|(i, j)| (i as u32) | (j as u32) << 7).collect::<Vec<u32>>();
-        let inner = CacheIndex::new(IndexType::MAPSV2)?.retain(archive_ids).grouped(dx, dy).into_iter();
+        let inner = CacheIndex::new(IndexType::MAPSV2, config)?
+            .retain(archive_ids)
+            .grouped(dx, dy)
+            .into_iter();
         Ok(GroupMapSquareIterator { inner })
     }
 }

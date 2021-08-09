@@ -1,4 +1,4 @@
-use std::{collections::HashMap, convert::TryInto};
+use std::{collections::BTreeMap, convert::TryInto};
 
 use image::{GenericImage, Rgba, RgbaImage};
 use ndarray::{ArrayBase, Dim, ViewRepr};
@@ -14,8 +14,8 @@ pub fn put(
     plane: usize,
     img: &mut RgbaImage,
     squares: &GroupMapSquare,
-    underlay_definitions: &HashMap<u32, Underlay>,
-    overlay_definitions: &HashMap<u32, Overlay>,
+    underlay_definitions: &BTreeMap<u32, Underlay>,
+    overlay_definitions: &BTreeMap<u32, Overlay>,
 ) {
     if let Ok(columns) = squares.core().indexed_columns() {
         columns.for_each(|(column, (x, y))| {
@@ -118,7 +118,7 @@ pub fn put(
 /// Averages out the [`Underlay`] colours, with a range specified by [`INTERP`].
 fn get_underlay_colour(
     column: ArrayBase<ViewRepr<&Tile>, Dim<[usize; 1]>>,
-    underlay_definitions: &HashMap<u32, Underlay>,
+    underlay_definitions: &BTreeMap<u32, Underlay>,
     squares: &GroupMapSquare,
     plane: usize,
     x: usize,

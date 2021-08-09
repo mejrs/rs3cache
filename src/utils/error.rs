@@ -1,18 +1,10 @@
-//use std::fmt::Display;
-use std::{
-    backtrace::Backtrace,
-    env::{self, VarError},
-    path::Path,
-};
+use std::backtrace::Backtrace;
 
-use crate::{
-    cache::{index::SYS_VAR, indextype::IndexType},
-    definitions::mapsquares::MapFileType,
-};
+#[cfg(feature = "rs3")]
+use crate::{cache::indextype::IndexType, definitions::mapsquares::MapFileType};
 
 /// Result wrapper for [`CacheError`].
 pub type CacheResult<T> = Result<T, CacheError>;
-use path_absolutize::*;
 
 /// An error type for things that can go wrong when reading from the cache.
 pub enum CacheError {
@@ -130,16 +122,9 @@ impl Debug for CacheError {
 
             Self::DecompressionError(msg, trace) => write!(f, "An error occurred while uncompressing: {}\n\n{:#?}", msg, trace),
             Self::CacheNotFoundError(e, file) => {
-                let full_path = Path::new(&file).absolutize().expect("Cannot resolve full path.");
-                let note = match env::var(SYS_VAR) {
-                    Ok(var) => format!("Used system variable \x1B[93m{}\x1B[0m = \x1B[93m'{}'\x1B[0m to look for cache.", SYS_VAR, var),
-                    Err(VarError::NotPresent) => format!("Help: a cache must be present in the \x1B[93m/raw\x1B[0m folder. \n Alternatively, set system variable \x1B[93m{}\x1B[0m to override.", SYS_VAR),
-                    Err(VarError::NotUnicode(_)) => unreachable!(),
-                };
-
                 let msg = format!(
-                    "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n Note: {}",
-                    e, full_path, note
+                    "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
+                    e, file
                 );
                 write!(f, "{}", msg)
             }
@@ -216,6 +201,3 @@ mod py_error_impl {
         }
     }
 }
-
-#[cfg(feature = "pyo3")]
-pub use py_error_impl::*;

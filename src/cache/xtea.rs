@@ -1,13 +1,6 @@
 #![cfg(feature = "osrs")]
 
-use std::{
-    array,
-    collections::HashMap,
-    error::Error,
-    fs::{self, File},
-    io::{BufReader, Write},
-    path::Path,
-};
+use std::{array, collections::HashMap, fs::File, io::BufReader, path::Path};
 
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -44,13 +37,16 @@ impl Xtea {
             /*let a = v0.wrapping_shl(4);
             let b = v0.wrapping_shr(5);
             let s = sum.wrapping_shr(11);*/
-            v1 = v1.wrapping_sub((v0.wrapping_shl(4) ^ v0.wrapping_shr(5)).wrapping_add(v0) ^ (sum.wrapping_add(xtea.key[(sum.wrapping_shr(11) & 3) as usize] as u32)));
+            v1 = v1.wrapping_sub(
+                (v0.wrapping_shl(4) ^ v0.wrapping_shr(5)).wrapping_add(v0) ^ (sum.wrapping_add(xtea.key[(sum.wrapping_shr(11) & 3) as usize] as u32)),
+            );
 
             sum = sum.wrapping_sub(GOLDEN_RATIO);
-/* 
+            /*
             let c = v1.wrapping_shl(4);
             let d = v1.wrapping_shr(5);*/
-            v0 = v0.wrapping_sub((v1.wrapping_shl(4) ^  v1.wrapping_shr(5)).wrapping_add(v1) ^ (sum.wrapping_add(xtea.key[(sum & 3) as usize] as u32)));
+            v0 =
+                v0.wrapping_sub((v1.wrapping_shl(4) ^ v1.wrapping_shr(5)).wrapping_add(v1) ^ (sum.wrapping_add(xtea.key[(sum & 3) as usize] as u32)));
         }
 
         let v0: [u8; 4] = v0.to_be_bytes();
@@ -90,7 +86,6 @@ mod tests {
         let output = Xtea::decrypt(input, xtea);
 
         let should_be_output = std::fs::read("tests/xtea/decrypted.dat").unwrap();
-        
 
         itertools::izip!(&output, &should_be_output).enumerate().for_each(|(count, (a, b))| {
             assert_eq!(a, b, "Mismatch at position {}.", count);

@@ -1,6 +1,6 @@
 #![cfg(feature = "rs3")]
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::{
     cache::{
@@ -29,8 +29,9 @@ pub struct MapScene {
 
 impl MapScene {
     /// Returns a mapping of all [`MapScene`] configurations.
-    pub fn dump_all() -> CacheResult<HashMap<u32, MapScene>> {
-        Ok(CacheIndex::new(IndexType::CONFIG)?
+    pub fn dump_all(config: &crate::cli::Config
+    ) -> CacheResult<BTreeMap<u32, MapScene>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, config)?
             .archive(ConfigType::MAPSCENES)?
             .take_files()
             .into_iter()
@@ -67,7 +68,9 @@ mod mapscene_tests {
 
     #[test]
     fn check_1612() -> CacheResult<()> {
-        let mapscenes = MapScene::dump_all()?;
+        let config = crate::cli::Config::default();
+
+        let mapscenes = MapScene::dump_all(&config)?;
         let has_1612 = mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).any(|id| id == 1612);
         assert!(has_1612, "Missing sprite 1612");
         Ok(())
@@ -75,7 +78,9 @@ mod mapscene_tests {
 
     #[test]
     fn check_1609() -> CacheResult<()> {
-        let mapscenes = MapScene::dump_all()?;
+        let config = crate::cli::Config::default();
+
+        let mapscenes = MapScene::dump_all(&config)?;
         let has_1609 = mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).any(|id| id == 1609);
         assert!(has_1609, "Missing sprite 1612");
         Ok(())

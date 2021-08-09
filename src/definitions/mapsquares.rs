@@ -12,24 +12,24 @@
 #[cfg_attr(feature = "osrs", path = "mapsquares/iter_osrs.rs")]
 #[cfg_attr(feature = "377", path = "mapsquares/iter_377.rs")]
 mod iterator;
-use core::ops::{Range, RangeInclusive};
 use std::{
-    collections::{hash_map, BTreeMap, HashMap},
+    collections::{hash_map, HashMap},
     iter::Zip,
+    ops::Range,
 };
 
-pub use self::iterator::*;
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 
+pub use self::iterator::*;
+#[cfg(feature = "rs3")]
+use crate::cache::arc::Archive;
 #[cfg(feature = "osrs")]
-use crate::cache::xtea::Xtea;
+use crate::cache::{
+    index::{CacheIndex, Initial},
+    xtea::Xtea,
+};
 use crate::{
-    cache::{
-        arc::Archive,
-        index::{self, CacheIndex},
-        indextype::IndexType,
-    },
     definitions::{
         locations::Location,
         tiles::{Tile, TileArray},
@@ -54,18 +54,18 @@ pub struct MapSquare {
     pub j: u8,
 
     /// Data on the tiles it contains.
-    tiles: Result<TileArray, CacheError>,
+    tiles: CacheResult<TileArray>,
 
     /// All locations in this [`MapSquare`].
     ///
     /// Locations can overlap on surrounding mapsquares.
-    locations: Result<Vec<Location>, CacheError>,
+    locations: CacheResult<Vec<Location>>,
 
     /// All water locations in this [`MapSquare`].
     ///
     /// Locations can overlap on surrounding mapsquares.
     #[cfg(feature = "rs3")]
-    water_locations: Result<Vec<Location>, CacheError>,
+    water_locations: CacheResult<Vec<Location>>,
 }
 
 /// Iterator over a columns of planes with their x, y coordinates
@@ -73,18 +73,20 @@ pub type ColumnIter<'c> = Zip<LanesIter<'c, Tile, Dim<[usize; 2]>>, Product<Rang
 
 impl MapSquare {
     #[cfg(all(test, feature = "rs3"))]
-    pub fn new(i: u8, j: u8) -> CacheResult<MapSquare> {
+    pub fn new(i: u8, j: u8, config: &crate::cli::Config) -> CacheResult<MapSquare> {
+        use crate::cache::{index::CacheIndex, indextype::IndexType};
+
         assert!(i < 0x7F, "Index out of range.");
         let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = CacheIndex::new(IndexType::MAPSV2)?.archive(archive_id)?;
+        let archive = CacheIndex::new(IndexType::MAPSV2, config)?.archive(archive_id)?;
         Ok(Self::from_archive(archive))
     }
 
     #[cfg(feature = "osrs")]
-    fn new(index: &CacheIndex<index::Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: u32, i: u8, j: u8) -> CacheResult<MapSquare> {
+    fn new(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
         let land = index.archive_with_xtea(land, xtea).and_then(|mut arch| arch.take_file(&0));
         let tiles = index.archive(tiles).unwrap().take_file(&0).unwrap();
-        let env = index.archive(env).unwrap();
+        let _env = env.map(|k| index.archive(k));
 
         let tiles = Tile::dump(tiles);
         let locations = if let Ok(ok_land) = land {
@@ -279,8 +281,10 @@ mod map_tests {
 
     #[test]
     fn loc_0_50_50_9_16_is_trapdoor() -> CacheResult<()> {
+        let config = crate::cli::Config::default();
+
         let id = 36687_u32;
-        let square = MapSquare::new(50, 50)?;
+        let square = MapSquare::new(50, 50, &config)?;
         assert!(square
             .get_locations()?
             .iter()
@@ -290,7 +294,9 @@ mod map_tests {
 
     #[test]
     fn get_tile() -> CacheResult<()> {
-        let square = MapSquare::new(49, 54)?;
+        let config = crate::cli::Config::default();
+
+        let square = MapSquare::new(49, 54, &config)?;
         let _tile = square.get_tiles()?.get([0, 24, 25]);
         Ok(())
     }
