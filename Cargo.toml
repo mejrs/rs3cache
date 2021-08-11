@@ -3,7 +3,7 @@ name = "rs3cache"
 version = "0.1.0"
 authors = ["mejrs"]
 edition = "2018"
-default-run = "osrscache"
+default-run = "rs3cache"
 
 [workspace]
 members = ["macro_utils"]

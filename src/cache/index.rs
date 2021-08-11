@@ -358,7 +358,7 @@ impl CacheIndex<Initial> {
     #[cfg(not(feature = "mockdata"))]
     pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(config.input / f!("js5-{index_id}.jcache"));
-
+        
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
             Ok(_) => {
@@ -750,9 +750,9 @@ impl Iterator for IntoIterGrouped {
 /// # Panics
 /// Panics if compiled with feature `mockdata`.
 #[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
-pub fn assert_coherence() -> CacheResult<()> {
+pub fn assert_coherence(config: &crate::cli::Config) -> CacheResult<()> {
     for index_id in IndexType::iterator() {
-        match CacheIndex::new(index_id, &crate::cli::Config::default())?.assert_coherence() {
+        match CacheIndex::new(index_id, config)?.assert_coherence() {
             Ok(_) => println!("Index {} is coherent!", index_id),
             Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
         }

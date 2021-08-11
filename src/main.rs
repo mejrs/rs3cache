@@ -8,8 +8,12 @@ use structopt::StructOpt;
 /// Entry point for the program. Run the executable with `--help` for a list of commands.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = Config::from_args();
-    dbg!(&config);
+
     let start = Instant::now();
+
+    if config.assert_coherence{
+        rs3cache::cache::index::assert_coherence(&config)?;
+    }
 
     for archive in &(config.dump) {
         archive.call(&config)?;
@@ -18,6 +22,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for map in &(config.render){
         map.call(&config)?;
     }
+
+   
 
     println!("\nFinished program in {} s.", start.elapsed().as_secs());
 

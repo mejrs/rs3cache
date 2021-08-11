@@ -3,7 +3,7 @@ use std::{path::PathBuf, str::FromStr};
 use fstrings::{f, format_args_f};
 use structopt::StructOpt;
 
-use crate::{definitions,  renderers::map, utils::error::CacheResult};
+use crate::{definitions, renderers::map, utils::error::CacheResult};
 
 #[derive(Debug)]
 pub enum Render {
@@ -34,7 +34,7 @@ impl FromStr for Render {
     }
 }
 
-#[derive(Debug)]
+#[derive(StructOpt, Debug)]
 pub enum Dump {
     All,
     Sprites,
@@ -146,17 +146,42 @@ impl FromStr for Dump {
 
 #[derive(Debug, Default, StructOpt)]
 pub struct Config {
-    #[structopt(long, env = "RS3CACHE_INPUT_FOLDER", default_value = "")]
+    /// The path where to look for the current cache.
+    /// If omitted this falls back to the
+    #[cfg_attr(feature = "rs3", doc = "\"RS3_CACHE_INPUT_FOLDER\"")]
+    #[cfg_attr(feature = "osrs", doc = "\"OSRS_CACHE_INPUT_FOLDER\"")]
+    ///  environment variable and then to the current folder if not set.
+    #[cfg_attr(feature = "rs3", structopt(long, env = "RS3_CACHE_INPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "osrs", structopt(long, env = "OSRS_CACHE_INPUT_FOLDER", default_value = ""))]
     pub input: PathBuf,
-    #[structopt(long, env = "RS3CACHE_OUTPUT_FOLDER", default_value = "")]
+
+    /// The path where to place output.
+    /// If omitted this falls back to the
+    #[cfg_attr(feature = "rs3", doc = "\"RS3_CACHE_OUTPUT_FOLDER\"")]
+    #[cfg_attr(feature = "osrs", doc = "\"OSRS_CACHE_OUTPUT_FOLDER\"")]
+    ///  environment variable and then to the current folder if not set.
+    #[cfg_attr(feature = "rs3", structopt(long, env = "RS3_CACHE_OUTPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "osrs", structopt(long, env = "OSRS_CACHE_OUTPUT_FOLDER", default_value = ""))]
     pub output: PathBuf,
 
+    /// Allowed values: [all, map]
+    ///
+    /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
+    /// suitable for use with interactive map libraries such as https://leafletjs.com/,
+    /// as seen on https://mejrs.github.io/
     #[structopt(long)]
     pub render: Vec<Render>,
+
+    /// Allowed values: [all sprites, locations, location_configs, location_configs_each, npc_configs, item_configs, maplabels, worldmaps, varbit_configs, structs, enums, underlays, overlays]
+    ///
+    /// Dumps the given archives.
     #[structopt(long)]
     pub dump: Vec<Dump>,
+
+    /// Checks whether the cache is in a consistent state.
+    /// Indices 14, 40, 54, 55 are not necessarily complete.
     #[structopt(long)]
-    pub assertions: Option<String>,
+    pub assert_coherence: bool,
 }
 
 impl Config {
