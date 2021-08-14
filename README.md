@@ -72,6 +72,7 @@ The following instructions are only tested on **windows**. If you run into issue
 - `git clone https://github.com/mejrs/rs3cache`.
 - Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
     - Check that pip is installed (`python -m pip --version`).
+    - Install maturin: `pip install maturin`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
 - Configure rustup to use the nightly version: `rustup default nightly`.
 - Navigate to this repository and build a Python wheel with `maturin build --cargo-extra-args="--features=rs3,pyo3"`.
