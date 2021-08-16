@@ -1,5 +1,4 @@
 use std::{collections::BTreeMap, io::SeekFrom, iter};
-
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 
@@ -19,8 +18,16 @@ pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
-    CacheIndex::new(IndexType::SPRITES, config)?.into_iter().par_apply(|mut archive| {
+    let index = CacheIndex::new(IndexType::SPRITES, config)?;
+
+    #[cfg(feature="rs3")]
+    let versions : BTreeMap<u32, ::filetime::FileTime> = index.metadatas().iter().map(|(_, meta)| 
+        (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() as i64, 0))
+    ).collect();
+    
+    index.into_iter().par_apply(|mut archive| {
         debug_assert_eq!(archive.file_count(), 1);
+        
 
         let file = archive
             .take_file(&0)
@@ -30,7 +37,17 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
             let id = archive.archive_id();
             let filename = path!(config.output / "sprites" / f!("{id}-{frame}.png"));
             img.save(&filename)
-                .unwrap_or_else(|_| panic!("Unable to save sprite {}-{} to {}", archive.archive_id(), frame, filename.to_string_lossy()));
+                .unwrap_or_else(|_| panic!("Unable to save sprite {}-{} to {}", id, frame, filename.to_string_lossy()));
+
+                #[cfg(feature = "rs3")]
+                {
+            let file = ::std::fs::OpenOptions::new().write(true).open(&filename).unwrap();
+
+            let date = versions[&id];
+
+            ::filetime::set_file_handle_times(&file, Some(date), Some(date)).unwrap();
+                }
+
         })
     });
     Ok(())

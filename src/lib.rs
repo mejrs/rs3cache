@@ -38,7 +38,6 @@
 //! - `target/release/rs3cache.exe --help` to see a list of commands
 //!
 
-
 #![feature(
     cfg_eval,
     option_result_contains,
@@ -63,7 +62,6 @@
     unreachable_pub
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
-
 
 #[cfg(not(any(feature = "rs3", feature = "osrs", feature = "377")))]
 compile_error!("You must use one and only one of the rs3, osrs or 377 feature flags");

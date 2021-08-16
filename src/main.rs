@@ -11,7 +11,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let start = Instant::now();
 
-    if config.assert_coherence{
+    #[cfg(feature="rs3")]
+    if config.assert_coherence {
         rs3cache::cache::index::assert_coherence(&config)?;
     }
 
@@ -19,11 +20,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         archive.call(&config)?;
     }
 
-    for map in &(config.render){
+    for map in &(config.render) {
         map.call(&config)?;
     }
-
-   
 
     println!("\nFinished program in {} s.", start.elapsed().as_secs());
 

@@ -49,6 +49,7 @@ structopt = "0.3.22"
 indicatif = "0.16.2"
 path_macro = "1.0.0"
 fstrings = "0.2.3"
+filetime = { version = "0.2.15",  optional = true}
 
 [dev-dependencies]
 criterion = "0.3.4"
@@ -58,7 +59,7 @@ mockdata = []
 save_mockdata = []
 dont_save = []
 fast = []
-rs3 = []
+rs3 = ["filetime"]
 osrs = []
 377 = []
 
