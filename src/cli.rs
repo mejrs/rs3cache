@@ -187,8 +187,8 @@ pub struct Config {
 impl Config {
     pub fn env() -> Self {
         Self {
-            input: std::env::var_os("RS3CACHE_INPUT_FOLDER").unwrap_or_default().into(),
-            output: std::env::var_os("RS3CACHE_INPUT_FOLDER").unwrap_or_default().into(),
+            input: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
+            output: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
             ..Default::default()
         }
     }
