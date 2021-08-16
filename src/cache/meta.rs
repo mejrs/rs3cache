@@ -1,7 +1,10 @@
 //! Metadata about the cache itself.
 
 use std::{
-    collections::{btree_map::{IntoIter, Keys, Iter}, BTreeMap},
+    collections::{
+        btree_map::{IntoIter, Iter, Keys},
+        BTreeMap,
+    },
     iter,
     ops::Add,
 };
@@ -11,7 +14,10 @@ use itertools::izip;
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
-use crate::{cache::buf::Buffer, utils::{adapters::Accumulator, error::CacheResult}};
+use crate::{
+    cache::buf::Buffer,
+    utils::{adapters::Accumulator, error::CacheResult},
+};
 
 /// Metadata about [`Archive`](crate::cache::arc::Archive)s.
 
@@ -105,18 +111,21 @@ impl Metadata {
     }
 }
 
+
+
 /// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
-#[cfg_attr(feature = "pyo3", pyclass)]
-#[derive(Debug, Clone)]
+#[cfg_eval]
+#[allow(missing_docs)]
+#[derive(Serialize, Clone, Debug, Default)]
 pub struct IndexMetadata {
     metadatas: BTreeMap<u32, Metadata>,
 }
 
 impl IndexMetadata {
     #[cfg(feature = "osrs")]
-    pub (crate) fn empty() -> Self{
-        Self{
-            metadatas: BTreeMap::default()
+    pub(crate) fn empty() -> Self {
+        Self {
+            metadatas: BTreeMap::default(),
         }
     }
     /// Returns the ids of the archives in the index.

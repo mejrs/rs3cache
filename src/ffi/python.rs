@@ -1,22 +1,6 @@
 //! Python bindings for `rs3cache`.
 //!
-//! # Setup
-//!
-//! You need to build binary wheels locally. The following instructions are only guaranteed on **windows**.
-//! If you run into issues on other platforms, please follow [here](https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux) or try [maturin](https://pypi.org/project/maturin/) instead.
-//!
-//! - `git clone https://github.com/mejrs/rs3cache`.
-//! - Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
-//!     - Check that pip is installed (`python -m pip --version`).
-//!     - Install setuptools: `pip install setuptools`.
-//!     - Install setuptools-rust: `pip install setuptools-rust`.
-//! - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-//! - Configure rustup to use the nightly version: `rustup default nightly`.
-//! - Navigate to this repository and run `python setup.py install`.
-//! - Either:
-//!     - Create a system variable named `RUNESCAPE_CACHE_FOLDER` and set its value to where your cache is located.
-//!       Typically, this is `%ProgramData%\Jagex\RuneScape`.
-//!     - Copy the entire cache and place it in the `raw` folder.
+//! See the README for help with installing this.
 //!
 //!  # Usage
 //!
@@ -48,7 +32,7 @@
 #[allow(missing_docs)]
 #[cfg(feature = "pyo3")]
 pub mod python_impl {
-    use std::collections::BTreeMap;
+    use std::collections::{btree_map, BTreeMap};
 
     use pyo3::{
         exceptions::{PyIndexError, PyReferenceError, PyTypeError},
@@ -182,14 +166,7 @@ pub mod python_impl {
                     .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
                     .archive(archive_id)?;
                 let sq = MapSquare::from_archive(archive);
-                let metadata = self
-                    .index
-                    .as_ref()
-                    .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                    .metadatas()
-                    .get(&archive_id)
-                    .cloned();
-                Ok(PyMapSquare { inner: sq, metadata })
+                Ok(PyMapSquare { inner: sq })
             }
         }
     }
@@ -221,8 +198,7 @@ pub mod python_impl {
             let archive = (*slf).inner.next()?;
             let archive_id = archive.archive_id();
             let sq = MapSquare::from_archive(archive);
-            let metadata = (*slf).inner.metadatas().get(&archive_id).cloned();
-            Some(PyMapSquare { inner: sq, metadata })
+            Some(PyMapSquare { inner: sq })
         }
     }
 
@@ -230,8 +206,6 @@ pub mod python_impl {
     #[pyclass(name = "MapSquare")]
     pub struct PyMapSquare {
         inner: MapSquare,
-        #[pyo3(get)]
-        metadata: Option<Metadata>,
     }
 
     #[pymethods]
@@ -313,20 +287,22 @@ pub mod python_impl {
         /// Raises `ValueError` if the archive cannot be found.
         pub fn archive(&self, archive_id: u32) -> PyResult<Archive> {
             Ok(self
-                .inner.as_ref()
+                .inner
+                .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
                 .archive(archive_id)?)
         }
 
         /// Returns the [`Metadata`] of all archives in `self`.
-        pub fn metadatas(&self) -> PyResult<IndexMetadata> {
+        pub fn metadatas(&self) -> PyResult<PyIndexMetadata> {
             let meta: IndexMetadata = self
                 .inner
                 .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
                 .metadatas()
                 .clone();
-            Ok(meta)
+
+            Ok(PyIndexMetadata { inner: Some(meta) })
         }
     }
 
@@ -379,6 +355,62 @@ pub mod python_impl {
         }
 
         fn __next__(mut slf: PyRefMut<Self>) -> Option<Archive> {
+            slf.inner.next()
+        }
+    }
+
+    #[pyclass(name = "IndexMetadata")]
+    pub struct PyIndexMetadata {
+        inner: Option<IndexMetadata>,
+    }
+
+    #[pyproto]
+    impl PyObjectProtocol for PyIndexMetadata {
+        fn __repr__(&self) -> PyResult<String> {
+            let inner = self
+                .inner
+                .as_ref()
+                .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+                .metadatas();
+            Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
+        }
+
+        fn __str__(&self) -> PyResult<String> {
+            let inner = self
+                .inner
+                .as_ref()
+                .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+                .metadatas();
+            Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
+        }
+    }
+
+    #[pyproto]
+    impl PyIterProtocol for PyIndexMetadata {
+        fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyIndexMetadataIter>> {
+            let inner = std::mem::take(&mut (*slf).inner);
+            let inner = inner
+                .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+                .into_iter();
+
+            let iter = PyIndexMetadataIter { inner };
+            Py::new(slf.py(), iter)
+        }
+    }
+
+    /// Iterator over all archives in an Index.
+    #[pyclass(name = "IndexIter")]
+    pub struct PyIndexMetadataIter {
+        inner: btree_map::IntoIter<u32, Metadata>,
+    }
+
+    #[pyproto]
+    impl PyIterProtocol for PyIndexMetadataIter {
+        fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
+            slf
+        }
+
+        fn __next__(mut slf: PyRefMut<Self>) -> Option<(u32, Metadata)> {
             slf.inner.next()
         }
     }
