@@ -34,7 +34,7 @@ FLAGS:
 
 OPTIONS:
         --dump <dump>...
-            Allowed values: [all sprites, locations, location_configs, location_configs_each, npc_configs, item_configs,
+            Allowed values: [all, sprites, locations, location_configs, location_configs_each, npc_configs, item_configs,
             maplabels, worldmaps, varbit_configs, structs, enums, underlays, overlays]
 
             Dumps the given archives.
