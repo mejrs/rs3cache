@@ -399,7 +399,7 @@ pub mod python_impl {
     }
 
     /// Iterator over all archives in an Index.
-    #[pyclass(name = "IndexIter")]
+    #[pyclass(name = "IndexMetadataIter")]
     pub struct PyIndexMetadataIter {
         inner: btree_map::IntoIter<u32, Metadata>,
     }
