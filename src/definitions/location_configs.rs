@@ -692,11 +692,11 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 
 ///Save the location configs as individual `json` files.
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(path!(&config.output/ "locations_each"))?;
+    let folder = fs::create_dir_all(path!(&config.output/ "locations"))?;
 
     let configs = LocationConfig::dump_all(config)?;
     configs.into_iter().par_apply(|(id, location_config)| {
-        let mut file = File::create(path!(config.output / "locations_each" / f!("{id}.json"))).unwrap();
+        let mut file = File::create(path!(&folder / f!("{id}.json"))).unwrap();
 
         let data = serde_json::to_string_pretty(&location_config).unwrap();
         file.write_all(data.as_bytes()).unwrap();
