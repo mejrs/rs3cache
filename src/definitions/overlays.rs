@@ -17,7 +17,7 @@ use crate::{
 use pyo3::prelude::*;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
-
+use path_macro::path;
 
 /// Describes (part of) ground colour.
 #[cfg_attr(feature = "pyo3", pyclass)]
@@ -121,7 +121,7 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     let mut labels = Overlay::dump_all(config)?.into_values().collect::<Vec<_>>();
     labels.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/overlays.json")?;
+    let mut file = File::create(path!(&config.output / "overlays.json"))?;
     let data = serde_json::to_string_pretty(&labels)?;
     file.write_all(data.as_bytes())?;
     Ok(())

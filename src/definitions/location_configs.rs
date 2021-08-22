@@ -692,7 +692,8 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 
 ///Save the location configs as individual `json` files.
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
-    let folder = fs::create_dir_all(path!(&config.output/ "locations"))?;
+    let folder = path!(&config.output/ "locations");
+    fs::create_dir_all(&folder)?;
 
     let configs = LocationConfig::dump_all(config)?;
     configs.into_iter().par_apply(|(id, location_config)| {
