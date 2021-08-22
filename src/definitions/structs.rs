@@ -9,7 +9,7 @@ use std::{
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-
+use path_macro::path;
 use crate::{
     cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
@@ -92,7 +92,7 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     let mut structs = Struct::dump_all(config)?.into_values().collect::<Vec<_>>();
     structs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create("out/structs.json")?;
+    let mut file = File::create(path!(&config.output / "structs.json"))?;
     let data = serde_json::to_string_pretty(&structs).unwrap();
     file.write_all(data.as_bytes())?;
 

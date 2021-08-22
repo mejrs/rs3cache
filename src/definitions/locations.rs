@@ -71,8 +71,12 @@ impl IntoPy<PyObject> for Watery {
 }
 
 /// A location, also referred to as an "object".
+#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[derive(Clone, Debug, Serialize)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug)]
 pub struct Location {
     /// The plane a.k.a elevation.
     ///
@@ -247,84 +251,6 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
         });
 
     Ok(())
-}
-
-/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
-pub fn _export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all("out/data/rs3/locations")?;
-
-    let last_id = {
-        let squares = MapSquareIterator::new(config)?;
-        squares
-            .filter_map(|sq| sq.take_locations().ok())
-            .filter(|locs| !locs.is_empty())
-            .map(|locs| locs.last().expect("locations stopped existing").id)
-            .max()
-            .unwrap()
-    };
-
-    let squares = MapSquareIterator::new(config)?;
-    let mut locs: Vec<_> = squares
-        .filter_map(|sq| sq.take_locations().ok())
-        .map(|locs| locs.into_iter().peekable())
-        .collect();
-
-    (0..=last_id)
-        .map(|id| {
-            (
-                id,
-                locs.iter_mut()
-                    .flat_map(|iterator| std::iter::repeat_with(move || iterator.next_if(|loc| loc.id == id)).take_while(|item| item.is_some()))
-                    .flatten()
-                    .collect::<Vec<Location>>(),
-            )
-        })
-        .par_apply(|(id, id_locs)| {
-            if !id_locs.is_empty() && id != 83 {
-                let mut file = File::create(format!("out/data/rs3/locations/{}.json", id)).unwrap();
-                let data = serde_json::to_string_pretty(&id_locs).unwrap();
-                file.write_all(data.as_bytes()).unwrap();
-            }
-        });
-
-    Ok(())
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl Location {
-    #[getter]
-    fn plane(&self) -> PyResult<Watery> {
-        Ok(self.plane)
-    }
-    #[getter]
-    fn i(&self) -> PyResult<u8> {
-        Ok(self.i)
-    }
-    #[getter]
-    fn j(&self) -> PyResult<u8> {
-        Ok(self.j)
-    }
-    #[getter]
-    fn x(&self) -> PyResult<u8> {
-        Ok(self.x)
-    }
-    #[getter]
-    fn y(&self) -> PyResult<u8> {
-        Ok(self.y)
-    }
-    #[getter]
-    fn id(&self) -> PyResult<u32> {
-        Ok(self.id)
-    }
-    #[getter]
-    fn r#type(&self) -> PyResult<u8> {
-        Ok(self.r#type)
-    }
-    #[getter]
-    fn rotation(&self) -> PyResult<u8> {
-        Ok(self.rotation)
-    }
 }
 
 #[cfg(feature = "pyo3")]
