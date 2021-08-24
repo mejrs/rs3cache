@@ -2,6 +2,7 @@ use std::{
     fs::{self, File},
     io::Write,
 };
+use std::hash::Hash;
 
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
@@ -14,7 +15,7 @@ use crate::{
 };
 
 /// Describes whether this location is on the contained plane.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Watery {
     /// It's on the contained plane
     True(u8),
@@ -76,7 +77,7 @@ impl IntoPy<PyObject> for Watery {
 #[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Location {
     /// The plane a.k.a elevation.
     ///
@@ -262,5 +263,21 @@ impl PyObjectProtocol for Location {
 
     fn __str__(&self) -> PyResult<String> {
         Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
+    }
+
+    fn __hash__(&self) -> PyResult<u64>{
+        use std::collections::hash_map::DefaultHasher;
+        use std::hash::Hasher;
+
+        let mut hasher = DefaultHasher::new();
+        self.hash(&mut hasher);
+        Ok(hasher.finish())
+    }
+
+    fn __richcmp__(&self, other: Location, op: pyo3::class::basic::CompareOp) -> PyResult<bool>{
+        match op{
+            pyo3::class::basic::CompareOp::Eq => Ok(*self == other),
+            _ => todo!()
+        }
     }
 }

@@ -33,6 +33,7 @@
 #[cfg(feature = "pyo3")]
 pub mod python_impl {
     use std::collections::{btree_map, BTreeMap};
+    use std::path::PathBuf;
 
     use pyo3::{
         exceptions::{PyIndexError, PyReferenceError, PyTypeError},
@@ -121,9 +122,14 @@ pub mod python_impl {
     #[pymethods]
     impl PyMapSquares {
         #[new]
-        fn new() -> PyResult<Self> {
+        #[args(path = "None")]
+        fn new(path: Option<PathBuf>) -> PyResult<Self> {
+            let mut config = Config::env();
+            if let Some(path) = path{
+                config.input = path
+            }
             Ok(Self {
-                index: Some(CacheIndex::new(IndexType::MAPSV2, &Config::env())?),
+                index: Some(CacheIndex::new(IndexType::MAPSV2, &config)?),
             })
         }
 
@@ -274,11 +280,17 @@ pub mod python_impl {
 
     #[pymethods]
     impl PyCacheIndex {
-        #[new]
         /// Constructor of [`PyCacheIndex`].
-        fn new(index_id: u32) -> PyResult<Self> {
+        #[new]
+        #[args(index_id, path = "None")]
+        fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
+            let mut config = Config::env();
+            if let Some(path) = path{
+                config.input = path
+            }
+
             Ok(Self {
-                inner: Some(CacheIndex::new(index_id, &Config::env())?),
+                inner: Some(CacheIndex::new(index_id, &config)?),
             })
         }
 
