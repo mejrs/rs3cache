@@ -159,7 +159,7 @@ pub fn render_tile(
 
 type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
-fn save_smallest(path: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
+fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
     // SAFETY (2) these checks assure that...
@@ -201,9 +201,10 @@ fn save_smallest(path: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                 #[cfg(not(test))]
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
-                {
-                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path.as_ref().to_str().unwrap(), CONFIG.map_id, 4, plane, base_i + x, base_j + y);
-
+                {   
+                    let xx = base_i + x;
+                    let yy = base_j + y;
+                    let filename = path!(folder / f!("{CONFIG.map_id}/4/{plane}_{xx}_{yy}.png"));
                     sub_image.to_image().save(filename).unwrap();
                 }
             }
@@ -223,7 +224,9 @@ fn save_smallest(path: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
 
                     debug_assert_eq!(resized.width(), 256);
                     debug_assert_eq!(resized.height(), 256);
-                    let filename = format!("{}/{}/{}/{}_{}_{}.png", path.as_ref().to_str().unwrap(), CONFIG.map_id, 3, plane, base_i + x, base_j + y);
+                    let xx = base_i + x;
+                    let yy = base_j + y;
+                    let filename = path!(folder / f!("{CONFIG.map_id}/3/{plane}_{xx}_{yy}.png"));
                     resized.save(filename).unwrap();
                 }
             }
@@ -242,7 +245,8 @@ fn save_smallest(path: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             if resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
-                let filename = format!("{}/{}/{}/{}_{}_{}.png", path.as_ref().to_str().unwrap(), CONFIG.map_id, 2, plane, base_i, base_j);
+
+                    let filename = path!(folder / f!("{CONFIG.map_id}/2/{plane}_{base_i}_{base_j}.png"));
                 resized.save(filename).unwrap();
             }
         }
