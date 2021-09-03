@@ -32,27 +32,37 @@
 #[allow(missing_docs)]
 #[cfg(feature = "pyo3")]
 pub mod python_impl {
-    use std::collections::{btree_map, BTreeMap};
-    use std::path::PathBuf;
+    use std::{
+        collections::{btree_map, BTreeMap},
+        path::PathBuf,
+    };
 
     use pyo3::{
-        exceptions::{PyIndexError, PyReferenceError, PyTypeError},
+        exceptions::{PyIndexError, PyReferenceError, PyTypeError, PyKeyError},
         prelude::*,
         types::PyInt,
         wrap_pyfunction, PyIterProtocol, PyObjectProtocol,
     };
 
+    use fstrings::{f, format_args_f};
+
     use crate::{
         cache::{
             arc::Archive,
             index::{self, CacheIndex, Initial},
-            indextype::IndexType,
             meta::{IndexMetadata, Metadata},
         },
         cli::Config,
         definitions::{
-            enums::Enum, item_configs::ItemConfig, location_configs::LocationConfig, locations::Location, mapsquares::MapSquare,
-            npc_configs::NpcConfig, structs::Struct, tiles::Tile, varbit_configs::VarbitConfig,
+            enums::Enum,
+            item_configs::ItemConfig,
+            location_configs::LocationConfig,
+            locations::Location,
+            mapsquares::{MapSquare, MapSquareIterator},
+            npc_configs::NpcConfig,
+            structs::Struct,
+            tiles::Tile,
+            varbit_configs::VarbitConfig,
         },
     };
 
@@ -72,8 +82,12 @@ pub mod python_impl {
 
     /// Wrapper for [`LocationConfig::dump_all`]
     #[pyfunction]
-    pub fn get_location_configs() -> PyResult<BTreeMap<u32, LocationConfig>> {
-        Ok(LocationConfig::dump_all(&Config::env())?)
+    pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, LocationConfig>> {
+        let mut config = Config::env();
+            if let Some(path) = path {
+                config.input = path
+            }
+        Ok(LocationConfig::dump_all(&config)?)
     }
 
     /// Wrapper for [`NpcConfig::dump_all`]
@@ -116,7 +130,7 @@ pub mod python_impl {
     ///```
     #[pyclass(name = "MapSquares")]
     pub struct PyMapSquares {
-        index: Option<CacheIndex<Initial>>,
+        index: Option<MapSquareIterator>,
     }
 
     #[pymethods]
@@ -125,11 +139,11 @@ pub mod python_impl {
         #[args(path = "None")]
         fn new(path: Option<PathBuf>) -> PyResult<Self> {
             let mut config = Config::env();
-            if let Some(path) = path{
+            if let Some(path) = path {
                 config.input = path
             }
             Ok(Self {
-                index: Some(CacheIndex::new(IndexType::MAPSV2, &config)?),
+                index: Some(MapSquareIterator::new(&config)?),
             })
         }
 
@@ -149,29 +163,42 @@ pub mod python_impl {
         ///```
         #[pyo3(text_signature = "($self, i, j)")]
         pub fn get(&self, i: &PyAny, j: &PyAny) -> PyResult<PyMapSquare> {
-            let rust_i = i
+            let i = i
                 .downcast::<PyInt>()
                 .map_err(|_| PyTypeError::new_err(format!("i was of type {}. i must be an integer.", i.get_type())))?
-                .extract::<u32>()
+                .extract::<u8>()
                 .map_err(|_| PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))?;
-            let rust_j = j
+            let j = j
                 .downcast::<PyInt>()
                 .map_err(|_| PyTypeError::new_err(format!("j was of type {}. j must be an integer.", j.get_type())))?
-                .extract::<u32>()
+                .extract::<u8>()
                 .map_err(|_| PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))?;
 
-            if rust_i >= 100 {
+            if i >= 100 {
                 Err(PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))
-            } else if rust_j >= 200 {
+            } else if j >= 200 {
                 Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
             } else {
-                let archive_id = rust_i | rust_j << 7;
-                let archive = self
+                #[cfg(feature = "rs3")]
+                let sq = {
+                    let archive_id = (i as u32) | (j as u32) << 7;
+                    let archive = self
+                        .index
+                        .as_ref()
+                        .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
+                        .archive(archive_id)?;
+
+                    MapSquare::from_archive(archive)
+                };
+
+                #[cfg(feature = "osrs")]
+                let sq = self
                     .index
                     .as_ref()
                     .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                    .archive(archive_id)?;
-                let sq = MapSquare::from_archive(archive);
+                    .get(i, j)
+                    .ok_or_else(|| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
+
                 Ok(PyMapSquare { inner: sq })
             }
         }
@@ -180,8 +207,8 @@ pub mod python_impl {
     #[pyproto]
     impl PyIterProtocol for PyMapSquares {
         fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyMapSquaresIter>> {
-            let inner: Option<CacheIndex<Initial>> = std::mem::take(&mut (*slf).index);
-            let inner: CacheIndex<Initial> = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
+            let inner = std::mem::take(&mut (*slf).index);
+            let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
 
             let iter = PyMapSquaresIter { inner: inner.into_iter() };
             Py::new(slf.py(), iter)
@@ -191,7 +218,7 @@ pub mod python_impl {
     /// Iterator over all archives in an Index.
     #[pyclass(name = "MapSquaresIter")]
     pub struct PyMapSquaresIter {
-        inner: index::IntoIter,
+        inner: MapSquareIterator,
     }
 
     #[pyproto]
@@ -201,10 +228,7 @@ pub mod python_impl {
         }
 
         fn __next__(mut slf: PyRefMut<Self>) -> Option<PyMapSquare> {
-            let archive = (*slf).inner.next()?;
-            let archive_id = archive.archive_id();
-            let sq = MapSquare::from_archive(archive);
-            Some(PyMapSquare { inner: sq })
+            (*slf).inner.next().map(|sq| PyMapSquare { inner: sq })
         }
     }
 
@@ -239,6 +263,7 @@ pub mod python_impl {
         }
 
         /// The water [`Location`]s in a mapsquare.
+        #[cfg(feature = "rs3")]
         pub fn water_locations(&self) -> PyResult<Vec<Location>> {
             let locs = self.inner.get_water_locations()?.clone();
             Ok(locs)
@@ -285,7 +310,7 @@ pub mod python_impl {
         #[args(index_id, path = "None")]
         fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
             let mut config = Config::env();
-            if let Some(path) = path{
+            if let Some(path) = path {
                 config.input = path
             }
 

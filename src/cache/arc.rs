@@ -8,9 +8,7 @@
 //! and use its [`IntoIterator`] implementation or its [`archive`](crate::cache::index::CacheIndex::archive())
 //! method instead.
 
-use std::
-    collections::{HashSet, BTreeMap}
-;
+use std::collections::{BTreeMap, HashSet};
 
 use itertools::izip;
 #[cfg(feature = "pyo3")]
@@ -18,11 +16,7 @@ use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol}
 
 use crate::{
     cache::{buf::Buffer, meta::Metadata},
-    utils::{
-        
-        error::{CacheError, CacheResult},
-        //slice::SharedSlice
-    },
+    utils::error::{CacheError, CacheResult},
 };
 
 /// A group of archives.
@@ -121,6 +115,7 @@ impl Archive {
             #[cfg(feature = "osrs")]
             child_count => {
                 use std::{convert::TryInto, io::SeekFrom::*};
+
                 use crate::utils::adapters::Accumulator;
 
                 let mut buffer = Buffer::new(&data);

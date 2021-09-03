@@ -61,20 +61,22 @@ impl MapSquareIterator {
 
         Ok(MapSquareIterator { inner, mapping, state })
     }
+
+    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+        let land = self.mapping.get(&("l", i, j))?;
+        let map = self.mapping.get(&("m", i, j))?;
+        let env = self.mapping.get(&("e", i, j)).copied();
+        let xtea = self.inner.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
+
+        MapSquare::new(&self.inner, xtea.copied(), *land, *map, env, i, j).ok()
+    }
 }
 
 impl Iterator for MapSquareIterator {
     type Item = MapSquare;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.state.next().map(|(i, j)| {
-            let land = self.mapping.get(&("l", i, j)).unwrap();
-            let map = self.mapping.get(&("m", i, j)).unwrap();
-            let env = self.mapping.get(&("e", i, j)).copied();
-            let xtea = self.inner.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
-
-            MapSquare::new(&self.inner, xtea.copied(), *land, *map, env, i, j).unwrap()
-        })
+        self.state.next().map(|(i, j)| self.get(i, j).unwrap())
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {

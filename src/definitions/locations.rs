@@ -1,18 +1,10 @@
-use std::{
-    fs::{self, File},
-    io::Write,
-};
 use std::hash::Hash;
 
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::{Serialize, Serializer};
 
-use crate::{
-    cache::buf::Buffer,
-    definitions::{mapsquares::MapSquareIterator, tiles::TileArray},
-    utils::{error::CacheResult, par::ParApply},
-};
+use crate::{cache::buf::Buffer, definitions::tiles::TileArray};
 
 /// Describes whether this location is on the contained plane.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
@@ -211,49 +203,6 @@ impl Location {
     }
 }
 
-/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
-pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    let out = path_macro::path!(config.output / "locations");
-
-    fs::create_dir_all(&out)?;
-
-    let last_id = {
-        let squares = MapSquareIterator::new(config)?;
-        squares
-            .filter_map(|sq| sq.take_locations().ok())
-            .filter(|locs| !locs.is_empty())
-            .map(|locs| locs.last().expect("locations stopped existing").id)
-            .max()
-            .unwrap()
-    };
-
-    let squares = MapSquareIterator::new(config)?;
-    let mut locs: Vec<_> = squares
-        .filter_map(|sq| sq.take_locations().ok())
-        .map(|locs| locs.into_iter().peekable())
-        .collect();
-
-    (0..=last_id)
-        .map(|id| {
-            (
-                id,
-                locs.iter_mut()
-                    .flat_map(|iterator| std::iter::repeat_with(move || iterator.next_if(|loc| loc.id == id)).take_while(|item| item.is_some()))
-                    .flatten()
-                    .collect::<Vec<Location>>(),
-            )
-        })
-        .par_apply(|(id, id_locs)| {
-            if !id_locs.is_empty() && id != 83 {
-                let mut file = File::create(path_macro::path!(&out / format!("{}.json", id))).unwrap();
-                let data = serde_json::to_string_pretty(&id_locs).unwrap();
-                file.write_all(data.as_bytes()).unwrap();
-            }
-        });
-
-    Ok(())
-}
-
 #[cfg(feature = "pyo3")]
 #[pyproto]
 impl PyObjectProtocol for Location {
@@ -265,19 +214,18 @@ impl PyObjectProtocol for Location {
         Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
     }
 
-    fn __hash__(&self) -> PyResult<u64>{
-        use std::collections::hash_map::DefaultHasher;
-        use std::hash::Hasher;
+    fn __hash__(&self) -> PyResult<u64> {
+        use std::{collections::hash_map::DefaultHasher, hash::Hasher};
 
         let mut hasher = DefaultHasher::new();
         self.hash(&mut hasher);
         Ok(hasher.finish())
     }
 
-    fn __richcmp__(&self, other: Location, op: pyo3::class::basic::CompareOp) -> PyResult<bool>{
-        match op{
+    fn __richcmp__(&self, other: Location, op: pyo3::class::basic::CompareOp) -> PyResult<bool> {
+        match op {
             pyo3::class::basic::CompareOp::Eq => Ok(*self == other),
-            _ => todo!()
+            _ => todo!(),
         }
     }
 }

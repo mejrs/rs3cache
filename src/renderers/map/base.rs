@@ -51,7 +51,7 @@ pub fn put(
                             if Some((255, 0, 255)) != *colour {
                                 if let Some((red, green, blue)) = *colour {
                                     let fill = Rgba([red, green, blue, 255]);
-                                    if column[p].shape.unwrap_or(0) != 0{
+                                    if column[p].shape.unwrap_or(0) != 0 {
                                         //dbg!(column[p]);
                                     }
                                     for (a, b) in OverlayShape::new(column[p].shape.unwrap_or(0), CONFIG.tile_size) {

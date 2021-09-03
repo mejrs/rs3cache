@@ -1,5 +1,7 @@
-use std::ops::{Deref, Range};
-use std::rc::Rc;
+use std::{
+    ops::{Deref, Range},
+    rc::Rc,
+};
 
 pub struct SharedSlice<T> {
     inner: Rc<[T]>,

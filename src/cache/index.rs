@@ -15,12 +15,12 @@ use std::{
     io::{Read, SeekFrom, Write},
     marker::PhantomData,
     ops::RangeInclusive,
-    path::Path,
+    path::{Path, PathBuf},
 };
-use std::path::PathBuf;
+
+use fstrings::{f, format_args_f};
 use itertools::iproduct;
 use path_macro::path;
-use fstrings::{f, format_args_f};
 
 #[cfg(feature = "osrs")]
 use crate::cache::xtea::Xtea;
@@ -358,7 +358,7 @@ impl CacheIndex<Initial> {
     #[cfg(not(feature = "mockdata"))]
     pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(config.input / f!("js5-{index_id}.jcache"));
-        
+
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
             Ok(_) => {
@@ -401,7 +401,7 @@ where
 {
     fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
         let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
-         let entry_data = fs::read(file)?;
+        let entry_data = fs::read(file)?;
         let mut buf = Buffer::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((buf.read_3_unsigned_bytes(), buf.read_3_unsigned_bytes()))

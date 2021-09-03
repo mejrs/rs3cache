@@ -1,14 +1,10 @@
-use std::{
-    collections::BTreeMap,
-    fs,
-    path::Path,
-};
+use std::{collections::BTreeMap, fs, path::Path};
 
+use fstrings::{f, format_args_f};
 use image::{imageops, GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::iproduct;
 use path_macro::path;
-use fstrings::{f, format_args_f};
 
 #[cfg(feature = "rs3")]
 use crate::definitions::mapscenes::MapScene;
@@ -71,20 +67,21 @@ pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
 pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
 
+    let folder = path!(config.output / "mapsquares");
+    fs::create_dir_all(&folder)?;
 
     for zoom in 2..=4 {
-        let folder = path!(config.output / f!("{CONFIG.map_id}/{zoom}"));
+        let inner_folder = path!(folder / f!("{CONFIG.map_id}/{zoom}"));
 
-        fs::create_dir_all(folder)?;
+        fs::create_dir_all(inner_folder)?;
     }
 
     let iter = GroupMapSquareIterator::new(-1_i32..=1_i32, -1_i32..=1_i32, config)?;
 
     inner_render(config, iter)?;
 
-    zoom::render_zoom_levels(&config.output, CONFIG.map_id, -4..2, Color::ALPHA)?;
+    zoom::render_zoom_levels(&folder, CONFIG.map_id, -4..2, Color::ALPHA)?;
     Ok(())
 }
 
@@ -99,14 +96,20 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
     let mapscenes = MapScene::dump_all(config)?;
 
     #[cfg(feature = "rs3")]
-    let sprites = sprites::dumps(CONFIG.scale, mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>(), config)?;
+    let sprites = sprites::dumps(
+        CONFIG.scale,
+        mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>(),
+        config,
+    )?;
+
+    let folder = path!(config.output / "mapsquares");
 
     #[cfg(feature = "osrs")]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
     iter.progress().par_apply(|gsq| {
         render_tile(
-            &config.output,
+            &folder,
             gsq,
             &location_definitions,
             &overlay_definitions,
@@ -121,7 +124,7 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
 
 /// Responsible for rendering a single [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub fn render_tile(
-    path: impl AsRef<Path>,
+    folder: impl AsRef<Path>,
     squares: GroupMapSquare,
     location_config: &BTreeMap<u32, LocationConfig>,
     overlay_definitions: &BTreeMap<u32, Overlay>,
@@ -130,7 +133,13 @@ pub fn render_tile(
     sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     let func = |plane| {
-        let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, Rgba(Color::BLACK));
+        let backfill = if plane != 0{
+            Rgba(Color::ALPHA)
+        } else {
+            Rgba(Color::BLACK)
+        };
+
+        let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, backfill);
 
         base::put(plane, &mut img, &squares, underlay_definitions, overlay_definitions);
         lines::put(plane, &mut img, &squares, location_config);
@@ -154,7 +163,7 @@ pub fn render_tile(
         imgs[0].save(filename).unwrap();
     }
 
-    save_smallest(path, squares.core_i(), squares.core_j(), imgs);
+    save_smallest(folder, squares.core_i(), squares.core_j(), imgs);
 }
 
 type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
@@ -194,14 +203,19 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             let base_i = i as u32 * 4;
             let base_j = j as u32 * 4;
             for (x, y) in iproduct!(0..4u32, 0..4u32) {
-                let sub_image = base.view((CONFIG.dim / 4) * x, CONFIG.dim - (CONFIG.dim / 4) * (y + 1), CONFIG.dim / 4, CONFIG.dim / 4);
+                let sub_image = base.view(
+                    (CONFIG.dim / 4) * x,
+                    CONFIG.dim - (CONFIG.dim / 4) * (y + 1),
+                    CONFIG.dim / 4,
+                    CONFIG.dim / 4,
+                );
                 debug_assert_eq!(sub_image.width(), 256);
                 debug_assert_eq!(sub_image.height(), 256);
 
                 #[cfg(not(test))]
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
-                {   
+                {
                     let xx = base_i + x;
                     let yy = base_j + y;
                     let filename = path!(folder / f!("{CONFIG.map_id}/4/{plane}_{xx}_{yy}.png"));
@@ -214,7 +228,12 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             let base_i = i as u32 * 2;
             let base_j = j as u32 * 2;
             for (x, y) in iproduct!(0..2u32, 0..2u32) {
-                let sub_image = base.view((CONFIG.dim / 2) * x, CONFIG.dim - (CONFIG.dim / 2) * (y + 1), CONFIG.dim / 2, CONFIG.dim / 2);
+                let sub_image = base.view(
+                    (CONFIG.dim / 2) * x,
+                    CONFIG.dim - (CONFIG.dim / 2) * (y + 1),
+                    CONFIG.dim / 2,
+                    CONFIG.dim / 2,
+                );
 
                 #[cfg(not(test))]
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
@@ -245,8 +264,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             if resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
-
-                    let filename = path!(folder / f!("{CONFIG.map_id}/2/{plane}_{base_i}_{base_j}.png"));
+                let filename = path!(folder / f!("{CONFIG.map_id}/2/{plane}_{base_i}_{base_j}.png"));
                 resized.save(filename).unwrap();
             }
         }
@@ -275,7 +293,7 @@ mod map_tests {
     #[ignore]
     fn render_some() -> CacheResult<()> {
         let config = crate::cli::Config::default();
-        
+
         let path = "tests/tiles";
         fs::create_dir_all(path)?;
         let coordinates: Vec<(u8, u8)> = vec![(50, 50), (41, 63), (47, 50), (56, 49), (34, 66), (33, 72), (49, 108), (43, 46)];

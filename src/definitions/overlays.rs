@@ -1,23 +1,23 @@
-use std::collections::BTreeMap;
 use std::{
+    collections::BTreeMap,
     fs::{self, File},
     io::Write,
 };
 
+use path_macro::path;
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
+use serde::Serialize;
+use serde_with::skip_serializing_none;
+
 use crate::{
     cache::{
-        buf::  Buffer,
+        buf::Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
     utils::error::CacheResult,
 };
-
-#[cfg(feature = "pyo3")]
-use pyo3::prelude::*;
-use serde::Serialize;
-use serde_with::skip_serializing_none;
-use path_macro::path;
 
 /// Describes (part of) ground colour.
 #[cfg_attr(feature = "pyo3", pyclass)]
@@ -76,7 +76,7 @@ impl Overlay {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Overlay {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         let mut overlay = Overlay { id, ..Default::default() };
 
         loop {

@@ -1,18 +1,19 @@
 //!
 
 use std::{
-    collections::HashMap,
+    collections::{BTreeMap, HashMap},
     convert::TryInto,
     fs::{self, File},
     io::Write,
     iter,
 };
-use std::collections::BTreeMap;
-use serde::Serialize;
-use path_macro::path;
+
 use fstrings::{f, format_args_f};
+use path_macro::path;
+use serde::Serialize;
+
 use crate::{
-    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     types::coordinate::Coordinate,
     utils::error::CacheResult,
 };
@@ -57,7 +58,7 @@ impl MapZone {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buf =  Buffer::new(file);
+        let mut buf = Buffer::new(file);
         let internal_name = buf.read_string();
         let name = buf.read_string();
         let center = buf.read_unsigned_int().try_into().unwrap();
@@ -132,7 +133,7 @@ mod mapzone_fields_impl {
     #![allow(missing_docs)]
     use serde::Serialize;
 
-    use crate::cache::buf::  Buffer;
+    use crate::cache::buf::Buffer;
 
     #[derive(Debug, Serialize)]
     pub struct BoundDef {
@@ -142,7 +143,7 @@ mod mapzone_fields_impl {
     }
 
     impl BoundDef {
-        pub fn deserialize(buf: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buf: &mut Buffer<Vec<u8>>) -> Self {
             let plane = buf.read_unsigned_byte();
             let src = Bound::deserialize(buf);
             let dst = Bound::deserialize(buf);
@@ -160,7 +161,7 @@ mod mapzone_fields_impl {
     }
 
     impl Bound {
-        pub fn deserialize(buf: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buf: &mut Buffer<Vec<u8>>) -> Self {
             let west = buf.read_unsigned_short();
             let south = buf.read_unsigned_short();
             let east = buf.read_unsigned_short();
@@ -200,7 +201,7 @@ impl MapPastes {
 
     /// Constructor for [`MapPastes`].
     pub fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buf =  Buffer::new(file);
+        let mut buf = Buffer::new(file);
         let mut pastes = Vec::new();
 
         let square_count = buf.read_unsigned_short() as usize;
@@ -222,7 +223,7 @@ mod mappaste_fields_impl {
     #![allow(missing_docs)]
     use serde::Serialize;
 
-    use crate::cache::buf::  Buffer;
+    use crate::cache::buf::Buffer;
 
     #[derive(Debug, Serialize)]
     pub struct Paste {
@@ -240,7 +241,7 @@ mod mappaste_fields_impl {
     }
 
     impl Paste {
-        pub fn deserialize_square(buf: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize_square(buf: &mut Buffer<Vec<u8>>) -> Self {
             let src_plane = buf.read_unsigned_byte();
             let n_planes = buf.read_unsigned_byte();
             let src_i = buf.read_unsigned_short();
@@ -265,7 +266,7 @@ mod mappaste_fields_impl {
             }
         }
 
-        pub fn deserialize_chunk(buf: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize_chunk(buf: &mut Buffer<Vec<u8>>) -> Self {
             let src_plane = buf.read_unsigned_byte();
             let n_planes = buf.read_unsigned_byte();
             let src_i = buf.read_unsigned_short();
@@ -300,7 +301,7 @@ mod mappaste_fields_impl {
     }
 
     impl Chunk {
-        pub fn deserialize(buf: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buf: &mut Buffer<Vec<u8>>) -> Self {
             let x = buf.read_unsigned_byte();
             let y = buf.read_unsigned_byte();
             Self { x, y }
@@ -311,8 +312,6 @@ pub use mappaste_fields_impl::*;
 
 /// Exports all world map pastes to `out/map_pastes.json`.
 pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
-    
-
     fs::create_dir_all(&config.output)?;
     // btreemap has deterministic order
     let map_pastes: BTreeMap<u32, MapPastes> = MapPastes::dump_all(config)?.into_iter().collect();
@@ -324,8 +323,7 @@ pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
 }
 
 /// Exports all world map zones to `out/map_zones.json`.
-pub fn export_zones(config: &crate::cli::Config
-) -> CacheResult<()> {
+pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;
 
     let mut map_zones = MapZone::dump_all(config)?.into_values().collect::<Vec<_>>();
@@ -338,8 +336,7 @@ pub fn export_zones(config: &crate::cli::Config
 }
 
 /// Exports small images of world maps to `out/world_map_small`.
-pub fn dump_small(config: &crate::cli::Config
-) -> CacheResult<()> {
+pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(path!(config.output / "world_map_small"))?;
 
     let files = CacheIndex::new(IndexType::WORLDMAP, config)?.archive(WorldMapType::SMALL)?.take_files();
@@ -359,7 +356,7 @@ pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
     let files = CacheIndex::new(IndexType::WORLDMAP, config)?.archive(WorldMapType::BIG)?.take_files();
 
     for (id, data) in files {
-        let mut buf =  Buffer::new(data);
+        let mut buf = Buffer::new(data);
         let size = buf.read_unsigned_int() as usize;
         let img = buf.read_n_bytes(size);
 

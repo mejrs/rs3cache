@@ -1,17 +1,16 @@
 use std::{collections::BTreeMap, io::SeekFrom, iter};
+
+use fstrings::{f, format_args_f};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
-
 use path_macro::path;
-use fstrings::{f, format_args_f};
-
 
 use crate::{
-    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     utils::{error::CacheResult, par::ParApply},
 };
 
-/// Type alias for a rgba image. 
+/// Type alias for a rgba image.
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
 /// Saves an image of every sprite to disk.
@@ -20,14 +19,15 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 
     let index = CacheIndex::new(IndexType::SPRITES, config)?;
 
-    #[cfg(feature="rs3")]
-    let versions : BTreeMap<u32, ::filetime::FileTime> = index.metadatas().iter().map(|(_, meta)| 
-        (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() as i64, 0))
-    ).collect();
-    
+    #[cfg(feature = "rs3")]
+    let versions: BTreeMap<u32, ::filetime::FileTime> = index
+        .metadatas()
+        .iter()
+        .map(|(_, meta)| (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() as i64, 0)))
+        .collect();
+
     index.into_iter().par_apply(|mut archive| {
         debug_assert_eq!(archive.file_count(), 1);
-        
 
         let file = archive
             .take_file(&0)
@@ -39,15 +39,14 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
             img.save(&filename)
                 .unwrap_or_else(|_| panic!("Unable to save sprite {}-{} to {}", id, frame, filename.to_string_lossy()));
 
-                #[cfg(feature = "rs3")]
-                {
-            let file = ::std::fs::OpenOptions::new().write(true).open(&filename).unwrap();
+            #[cfg(feature = "rs3")]
+            {
+                let file = ::std::fs::OpenOptions::new().write(true).open(&filename).unwrap();
 
-            let date = versions[&id];
+                let date = versions[&id];
 
-            ::filetime::set_file_handle_times(&file, Some(date), Some(date)).unwrap();
-                }
-
+                ::filetime::set_file_handle_times(&file, Some(date), Some(date)).unwrap();
+            }
         })
     });
     Ok(())
@@ -87,7 +86,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
 }
 
 fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
-    let mut buffer =  Buffer::new(file);
+    let mut buffer = Buffer::new(file);
     buffer.seek(SeekFrom::End(-2))?;
 
     let data = buffer.read_unsigned_short();
@@ -237,7 +236,7 @@ mod sprite_tests {
     #[should_panic]
     fn render_nonexistant() {
         let config = crate::cli::Config::default();
-        
+
         let ids = vec![40000, 50000];
 
         let sprites = dumps(2, ids, &config).expect("should be unable to create a limited archiveiterator if the key is not in metadatas");

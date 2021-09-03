@@ -38,7 +38,7 @@ pub fn put(
                     {
                         // 317 is the sprite named "mapscene", whose frames form all the mapscenes.
                         // 22 is missing and indicates the empty mapscene, which is why this does not index
-                       sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
+                        sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
                     }
                 })
             } else {

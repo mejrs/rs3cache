@@ -12,14 +12,19 @@
 #[cfg_attr(feature = "osrs", path = "mapsquares/iter_osrs.rs")]
 #[cfg_attr(feature = "377", path = "mapsquares/iter_377.rs")]
 mod iterator;
+
 use std::{
     collections::{hash_map, HashMap},
+    fs::{self, File},
+    io::Write,
     iter::Zip,
     ops::Range,
 };
 
+use fstrings::{f, format_args_f};
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
+use path_macro::path;
 
 pub use self::iterator::*;
 #[cfg(feature = "rs3")]
@@ -36,6 +41,7 @@ use crate::{
     },
     utils::{
         error::{CacheError, CacheResult},
+        par::ParApply,
         rangeclamp::RangeClamp,
     },
 };
@@ -273,6 +279,70 @@ impl MapFileType {
     pub const UNKNOWN_7: u32 = 7;
     pub const UNKNOWN_8: u32 = 8;
     pub const UNKNOWN_9: u32 = 9;
+}
+
+/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
+    let out = path_macro::path!(config.output / "locations");
+
+    fs::create_dir_all(&out)?;
+
+    let last_id = {
+        let squares = MapSquareIterator::new(config)?;
+        squares
+            .filter_map(|sq| sq.take_locations().ok())
+            .filter(|locs| !locs.is_empty())
+            .map(|locs| locs.last().expect("locations stopped existing").id)
+            .max()
+            .unwrap()
+    };
+
+    let squares = MapSquareIterator::new(config)?;
+    let mut locs: Vec<_> = squares
+        .filter_map(|sq| sq.take_locations().ok())
+        .map(|locs| locs.into_iter().peekable())
+        .collect();
+
+    // Here we exploit the fact that the mapsquare file yields its locations by id in ascending order.
+    (0..=last_id)
+        .map(|id| {
+            (
+                id,
+                locs.iter_mut()
+                    .flat_map(|iterator| std::iter::repeat_with(move || iterator.next_if(|loc| loc.id == id)).take_while(|item| item.is_some()))
+                    .flatten()
+                    .collect::<Vec<Location>>(),
+            )
+        })
+        .par_apply(|(id, id_locs)| {
+            if !id_locs.is_empty() && id != 83 {
+                let mut file = File::create(path!(&out / f!("{id}.json"))).unwrap();
+                let data = serde_json::to_string_pretty(&id_locs).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
+            }
+        });
+
+    Ok(())
+}
+
+/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()> {
+    let out = path_macro::path!(config.output / "mapsquares");
+
+    fs::create_dir_all(&out)?;
+    MapSquareIterator::new(config)?.par_apply(|sq| {
+        let i = sq.i;
+        let j = sq.j;
+        if let Ok(locations) = sq.take_locations() {
+            if !locations.is_empty() {
+                let mut file = File::create(path!(&out / f!("{i}_{j}.json"))).unwrap();
+                let data = serde_json::to_string_pretty(&locations).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
+            }
+        }
+    });
+
+    Ok(())
 }
 
 #[cfg(all(test, feature = "rs3"))]

@@ -4,6 +4,8 @@ use std::{
     io::Write,
 };
 
+use fstrings::{f, format_args_f};
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
@@ -15,8 +17,6 @@ use crate::{
     structures::paramtable::ParamTable,
     utils::{error::CacheResult, par::ParApply},
 };
-use path_macro::path;
-use fstrings::{f, format_args_f};
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 #[cfg_eval]
@@ -205,7 +205,9 @@ impl LocationConfig {
                 45 => loc.unknown_45 = Some(buffer.read_masked_index()),
                 // changed at some point after 2015
                 #[cfg(feature = "osrs")]
-                60 => {Some(buffer.read_unsigned_short());},
+                60 => {
+                    Some(buffer.read_unsigned_short());
+                }
                 #[cfg(feature = "osrs")]
                 61 => loc.category = Some(buffer.read_unsigned_short()),
                 62 => loc.mirror = Some(true),
@@ -295,6 +297,7 @@ pub mod location_config_fields {
     };
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
     #[cfg_eval]
+    #[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
@@ -346,6 +349,7 @@ pub mod location_config_fields {
 
     /// Like [`LocationMorphTable`], but with a default value.
     #[cfg_eval]
+    #[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
@@ -682,7 +686,6 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     let mut loc_configs = LocationConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     loc_configs.sort_unstable_by_key(|loc| loc.id);
 
-    
     let mut file = File::create(path!(config.output / "location_configs.json"))?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
     file.write_all(data.as_bytes())?;
@@ -692,7 +695,7 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 
 ///Save the location configs as individual `json` files.
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
-    let folder = path!(&config.output/ "locations");
+    let folder = path!(&config.output / "location_configs");
     fs::create_dir_all(&folder)?;
 
     let configs = LocationConfig::dump_all(config)?;

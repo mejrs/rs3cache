@@ -39,6 +39,7 @@ pub enum Dump {
     All,
     Sprites,
     Locations,
+    LocationsEach,
     LocationConfigs,
     LocationConfigsEach,
     NpcConfig,
@@ -84,14 +85,15 @@ impl Dump {
                 #[cfg(feature = "osrs")]
                 definitions::textures::export(config)?;
 
-                definitions::locations::export(config)?;
+                definitions::mapsquares::export_locations_by_id(config)?;
                 definitions::location_configs::export(config)?;
                 definitions::location_configs::export_each(config)?;
 
                 definitions::sprites::save_all(config)?;
             }
             Dump::Sprites => definitions::sprites::save_all(config)?,
-            Dump::Locations => definitions::locations::export(config)?,
+            Dump::Locations => definitions::mapsquares::export_locations_by_id(config)?,
+            Dump::LocationsEach => definitions::mapsquares::export_locations_by_square(config)?,
             Dump::LocationConfigs => definitions::location_configs::export(config)?,
             Dump::LocationConfigsEach => definitions::location_configs::export_each(config)?,
             Dump::NpcConfig => definitions::npc_configs::export(config)?,
@@ -125,6 +127,7 @@ impl FromStr for Dump {
             "all" => Ok(Self::All),
             "sprites" => Ok(Self::Sprites),
             "locations" => Ok(Self::Locations),
+            "locations_each" => Ok(Self::LocationsEach),
             "location_configs" => Ok(Self::LocationConfigs),
             "location_configs_each" => Ok(Self::LocationConfigsEach),
             "npc_configs" => Ok(Self::NpcConfig),

@@ -4,7 +4,6 @@ use std::{
     io::Write,
 };
 
-
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;

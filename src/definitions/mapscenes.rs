@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 
 use crate::{
     cache::{
-        buf::  Buffer,
+        buf::Buffer,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
@@ -29,8 +29,7 @@ pub struct MapScene {
 
 impl MapScene {
     /// Returns a mapping of all [`MapScene`] configurations.
-    pub fn dump_all(config: &crate::cli::Config
-    ) -> CacheResult<BTreeMap<u32, MapScene>> {
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, MapScene>> {
         Ok(CacheIndex::new(IndexType::CONFIG, config)?
             .archive(ConfigType::MAPSCENES)?
             .take_files()
@@ -39,9 +38,8 @@ impl MapScene {
             .collect())
     }
 
-   
     fn deserialize(id: u32, file: Vec<u8>) -> MapScene {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         let mut mapscene = MapScene { id, ..Default::default() };
 
         loop {

@@ -6,13 +6,13 @@ use std::{
     io::Write,
 };
 
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use path_macro::path;
 
 use crate::{
-    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::error::CacheResult,
 };
@@ -91,8 +91,7 @@ pub struct ItemConfig {
 
 impl ItemConfig {
     /// Returns a mapping of all [`ItemConfig`]s.
-    pub fn dump_all(config: &crate::cli::Config
-    ) -> CacheResult<BTreeMap<u32, Self>> {
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let archives = CacheIndex::new(IndexType::OBJ_CONFIG, &config)?.into_iter();
 
         let locations = archives
@@ -109,7 +108,7 @@ impl ItemConfig {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         let mut item = Self { id, ..Default::default() };
 
         loop {
@@ -224,7 +223,7 @@ pub mod item_config_fields {
     use pyo3::prelude::*;
     use serde::Serialize;
 
-    use crate::cache::buf::  Buffer;
+    use crate::cache::buf::Buffer;
 
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
@@ -257,7 +256,7 @@ pub mod item_config_fields {
     }
 
     impl ColourReplacements {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let colours = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
@@ -282,7 +281,7 @@ pub mod item_config_fields {
     }
 
     impl Textures {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Textures {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Textures {
             let count = buffer.read_unsigned_byte() as usize;
             let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
                 .take(count)
@@ -298,7 +297,7 @@ pub mod item_config_fields {
     }
 
     impl Quests {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
             let quests = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect();
             Self { quests }
@@ -326,14 +325,14 @@ pub mod item_config_fields {
     }
 
     impl StackInfo {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let unknown_1 = buffer.read_unsigned_short();
             let unknown_2 = buffer.read_unsigned_short();
             Self { unknown_1, unknown_2 }
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)] 
+    #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Serialize, Clone)]
     pub struct RecolourPalette {
         pub palette: Vec<i8>,
@@ -349,7 +348,7 @@ pub mod item_config_fields {
     }
 
     impl RecolourPalette {
-        pub fn deserialize(buffer: &mut  Buffer<Vec<u8>>) -> Self {
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
 
             let palette = iter::repeat_with(|| buffer.read_byte()).take(count).collect::<Vec<_>>();

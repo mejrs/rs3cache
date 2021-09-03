@@ -197,7 +197,7 @@ impl IntoPy<Py<PyAny>> for Value {
             Self::Integer(val) => val.into_py(py),
             Self::String(val) => val.into_py(py),
         }
-   }
+    }
 }
 
 /// Describes the properties of a given enum.

@@ -6,12 +6,13 @@ use std::{
     io::Write,
 };
 
+use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
-use path_macro::path;
+
 use crate::{
-    cache::{buf::  Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::error::CacheResult,
 };
@@ -50,7 +51,7 @@ impl Struct {
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer =  Buffer::new(file);
+        let mut buffer = Buffer::new(file);
         let mut r#struct = Self { id, ..Default::default() };
 
         loop {

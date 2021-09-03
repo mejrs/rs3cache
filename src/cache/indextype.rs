@@ -123,7 +123,7 @@ impl ConfigType {
     pub const OVERLAYS: u32 = 4;
     /// Unimplemented.
     pub const INVENTORY: u32 = 5;
-    
+
     #[cfg(feature = "osrs")]
     pub const LOC_CONFIG: u32 = 6;
     /// Unimplemented.
@@ -145,9 +145,9 @@ impl ConfigType {
     pub const CURSORS: u32 = 33;
     /// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).
     #[cfg(feature = "rs3")]
-    pub const MAPSCENES: u32 = 34;  
+    pub const MAPSCENES: u32 = 34;
     #[cfg(feature = "osrs")]
-    pub const MAPLABELS: u32 = 35;  
+    pub const MAPLABELS: u32 = 35;
     /// Unimplemented.
     #[cfg(feature = "rs3")]
     pub const QUESTS: u32 = 35;

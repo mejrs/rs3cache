@@ -105,7 +105,8 @@ impl Tile {
                     }
                     opcode if opcode <= 49 => {
                         tile.shape = Some(opcode - 2);
-                        tile.overlay_id = Some(buffer.read_unsigned_byte() as u16);},
+                        tile.overlay_id = Some(buffer.read_unsigned_byte() as u16);
+                    }
                     opcode if opcode <= 81 => tile.settings = Some(opcode - 49),
                     opcode => tile.underlay_id = Some((opcode - 81) as u16),
                 }

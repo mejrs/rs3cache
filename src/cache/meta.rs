@@ -111,8 +111,6 @@ impl Metadata {
     }
 }
 
-
-
 /// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
 #[cfg_eval]
 #[allow(missing_docs)]
