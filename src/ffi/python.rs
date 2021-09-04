@@ -66,11 +66,6 @@ pub mod python_impl {
         },
     };
 
-
-    #[pyclass(gc)]
-    struct Foo;
-
-
     #[pymodule]
     fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
         m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
