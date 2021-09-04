@@ -22,6 +22,13 @@ impl MapSquareIterator {
         let inner = CacheIndex::new(IndexType::MAPSV2, config)?.into_iter();
         Ok(MapSquareIterator { inner })
     }
+
+    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+        let archive_id = (i as u32) | (j as u32) << 7;
+        let archive = self.inner.index.archive(archive_id).ok()?;
+
+        Some(MapSquare::from_archive(archive))
+    }
 }
 
 impl Iterator for MapSquareIterator {

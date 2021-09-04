@@ -66,6 +66,11 @@ pub mod python_impl {
         },
     };
 
+
+    #[pyclass(gc)]
+    struct Foo;
+
+
     #[pymodule]
     fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
         m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
@@ -179,24 +184,11 @@ pub mod python_impl {
             } else if j >= 200 {
                 Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
             } else {
-                #[cfg(feature = "rs3")]
-                let sq = {
-                    let archive_id = (i as u32) | (j as u32) << 7;
-                    let archive = self
+                let sq = self
                         .index
                         .as_ref()
                         .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                        .archive(archive_id)?;
-
-                    MapSquare::from_archive(archive)
-                };
-
-                #[cfg(feature = "osrs")]
-                let sq = self
-                    .index
-                    .as_ref()
-                    .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                    .get(i, j)
+                        .get(i, j)
                     .ok_or_else(|| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
 
                 Ok(PyMapSquare { inner: sq })
