@@ -49,11 +49,9 @@ impl TextureConfig {
         let field1778 = buffer.read_byte() != 0;
         let _count = buffer.read_unsigned_byte();
 
-        // todo: a lot of fields i dont care about
+        // todo: a lot of fields I dont care about
 
-        let texture = Self { id, field1777, field1778 };
-
-        texture
+        Self { id, field1777, field1778 }
     }
 }
 

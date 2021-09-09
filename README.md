@@ -1,7 +1,4 @@
-![Build](https://github.com/mejrs/rs3-cache/workflows/Build/badge.svg)
-![Tests](https://github.com/mejrs/rs3-cache/workflows/Tests/badge.svg)
-[![Python](https://github.com/mejrs/rs3-cache/workflows/Python/badge.svg)](https://mejrs.github.io/doc/rs3cache/ffi/python/index.html "Python instructions")
-[![Docs](https://github.com/mejrs/rs3-cache/workflows/Docs/badge.svg)](https://mejrs.github.io/doc/rs3cache/index.html "Documentation")
+[![actions status](https://github.com/PyO3/pyo3/workflows/CI/badge.svg)](https://github.com/PyO3/pyo3/actions)
 
 # RS3 cache tool
 

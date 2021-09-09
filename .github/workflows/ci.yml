@@ -1,0 +1,36 @@
+name: CI
+
+# Run when master is pushed or when anyone makes a pull request
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: rustfmt
+      - name: Check rust formatting (rustfmt)
+        run: cargo fmt --features=rs3,pyo3 -- --check
+        run: cargo fmt --features=osrs,pyo3 -- --check
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: clippy
+      - run: cargo clippy --features=rs3,pyo3
+      - run: cargo clippy --features=osrs,pyo3

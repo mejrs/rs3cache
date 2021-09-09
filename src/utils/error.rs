@@ -1,4 +1,6 @@
-use std::backtrace::Backtrace;
+use std::{backtrace::Backtrace, borrow::Cow, path::PathBuf};
+
+use path_absolutize::*;
 
 #[cfg(feature = "rs3")]
 use crate::{cache::indextype::IndexType, definitions::mapsquares::MapFileType};
@@ -31,7 +33,7 @@ pub enum CacheError {
     /// Raised if a file fails during decompression.
     DecompressionError(String, Backtrace),
     /// Raised if the index cannot be found, usually if the cache is missing or malformed.
-    CacheNotFoundError(std::io::Error, String),
+    CacheNotFoundError(std::io::Error, PathBuf),
     /// Raised if an [`Archive`](crate::cache::arc::Archive) is not in the [`CacheIndex`](crate::cache::index::CacheIndex).
     ArchiveNotFoundError(u32, u32),
     /// Raised if a file is not in an [`Archive`](crate::cache::arc::Archive).
@@ -124,7 +126,8 @@ impl Debug for CacheError {
             Self::CacheNotFoundError(e, file) => {
                 let msg = format!(
                     "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
-                    e, file
+                    e,
+                    file.absolutize().unwrap_or(Cow::Borrowed(file))
                 );
                 write!(f, "{}", msg)
             }

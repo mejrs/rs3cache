@@ -67,7 +67,7 @@ pub struct Overlay {
 impl Overlay {
     /// Returns a mapping of all [`Overlay`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Overlay>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config)?
             .archive(ConfigType::OVERLAYS)?
             .take_files()
             .into_iter()

@@ -375,7 +375,7 @@ impl CacheIndex<Initial> {
                 })
             }
             //_ => panic!(),
-            Err(e) => Err(CacheError::CacheNotFoundError(e, file.to_string_lossy().to_string())),
+            Err(e) => Err(CacheError::CacheNotFoundError(e, file)),
         }
     }
 
@@ -680,7 +680,7 @@ impl IntoIterator for CacheIndex<TruncatedGrouped> {
 /// Iterator over all [`Archive`]s of `self`. Yields in arbitrary order.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 pub struct IntoIter {
-   pub(crate) index: CacheIndex<Initial>,
+    pub(crate) index: CacheIndex<Initial>,
     feed: std::vec::IntoIter<u32>,
 }
 

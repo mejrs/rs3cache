@@ -351,7 +351,7 @@ mod map_tests {
 
     #[test]
     fn loc_0_50_50_9_16_is_trapdoor() -> CacheResult<()> {
-        let config = crate::cli::Config::default();
+        let config = crate::cli::Config::env();
 
         let id = 36687_u32;
         let square = MapSquare::new(50, 50, &config)?;
@@ -364,7 +364,7 @@ mod map_tests {
 
     #[test]
     fn get_tile() -> CacheResult<()> {
-        let config = crate::cli::Config::default();
+        let config = crate::cli::Config::env();
 
         let square = MapSquare::new(49, 54, &config)?;
         let _tile = square.get_tiles()?.get([0, 24, 25]);

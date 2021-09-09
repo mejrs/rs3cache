@@ -201,7 +201,7 @@ mod sprite_tests {
     #[test]
     fn render_some_0() -> CacheResult<()> {
         fn dump(id: u32, frame: u32) -> CacheResult<Sprite> {
-            let config = crate::cli::Config::default();
+            let config = crate::cli::Config::env();
 
             let mut archive = CacheIndex::new(IndexType::SPRITES, &config)?.archive(id)?;
             let file = archive.take_file(&0)?;
@@ -223,7 +223,7 @@ mod sprite_tests {
 
     #[test]
     fn render_some_1() -> CacheResult<()> {
-        let config = crate::cli::Config::default();
+        let config = crate::cli::Config::env();
 
         let ids = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 14659, 3034];
 
@@ -235,7 +235,7 @@ mod sprite_tests {
     #[test]
     #[should_panic]
     fn render_nonexistant() {
-        let config = crate::cli::Config::default();
+        let config = crate::cli::Config::env();
 
         let ids = vec![40000, 50000];
 

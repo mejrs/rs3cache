@@ -67,7 +67,6 @@ pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
 pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
-
     let folder = path!(config.output / "mapsquares");
     fs::create_dir_all(&folder)?;
 
@@ -133,11 +132,7 @@ pub fn render_tile(
     sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     let func = |plane| {
-        let backfill = if plane != 0{
-            Rgba(Color::ALPHA)
-        } else {
-            Rgba(Color::BLACK)
-        };
+        let backfill = if plane != 0 { Rgba(Color::ALPHA) } else { Rgba(Color::BLACK) };
 
         let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, backfill);
 

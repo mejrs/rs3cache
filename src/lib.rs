@@ -49,14 +49,13 @@
 )]
 #![allow(non_snake_case)]
 #![warn(
-    //unused_crate_dependencies,
-    //unused_imports,
+    unused_imports,
     unused_qualifications,
     unused_import_braces,
     unused_extern_crates,
-    broken_intra_doc_links,
+    rustdoc::broken_intra_doc_links,
     //missing_docs,
-    missing_crate_level_docs,
+    rustdoc::missing_crate_level_docs,
     trivial_casts,
     trivial_numeric_casts,
     unreachable_pub

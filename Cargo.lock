@@ -1075,6 +1075,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "path-absolutize"
+version = "3.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f0feea2f0a6009a0fefe6ee3aae1871e4a57d7f2aae4681ac4a34a201071c9b9"
+dependencies = [
+ "path-dedot",
+]
+
+[[package]]
+name = "path-dedot"
+version = "3.0.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a14ca47b49e6abd75cf68db85e1e161d9f2b675716894a18af0e9add0266b26"
+dependencies = [
+ "once_cell",
+]
+
+[[package]]
 name = "path_macro"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1343,6 +1361,7 @@ dependencies = [
  "macro_utils",
  "ndarray",
  "num_cpus",
+ "path-absolutize",
  "path_macro",
  "pyo3",
  "regex",

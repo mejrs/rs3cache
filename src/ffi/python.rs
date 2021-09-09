@@ -37,14 +37,13 @@ pub mod python_impl {
         path::PathBuf,
     };
 
+    use fstrings::{f, format_args_f};
     use pyo3::{
-        exceptions::{PyIndexError, PyReferenceError, PyTypeError, PyKeyError},
+        exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyTypeError},
         prelude::*,
         types::PyInt,
         wrap_pyfunction, PyIterProtocol, PyObjectProtocol,
     };
-
-    use fstrings::{f, format_args_f};
 
     use crate::{
         cache::{
@@ -84,9 +83,9 @@ pub mod python_impl {
     #[pyfunction]
     pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, LocationConfig>> {
         let mut config = Config::env();
-            if let Some(path) = path {
-                config.input = path
-            }
+        if let Some(path) = path {
+            config.input = path
+        }
         Ok(LocationConfig::dump_all(&config)?)
     }
 
@@ -180,10 +179,10 @@ pub mod python_impl {
                 Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
             } else {
                 let sq = self
-                        .index
-                        .as_ref()
-                        .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                        .get(i, j)
+                    .index
+                    .as_ref()
+                    .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
+                    .get(i, j)
                     .ok_or_else(|| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
 
                 Ok(PyMapSquare { inner: sq })

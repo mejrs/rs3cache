@@ -90,12 +90,13 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
         let xtea = xtea.unwrap();
         let decrypted = crate::cache::xtea::Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
 
-        let mut decoder = match gzip::Decoder::new(&decrypted[4..]){
+        let mut decoder = match gzip::Decoder::new(&decrypted[4..]) {
             Ok(decoder) => decoder,
             Err(e) => {
                 println!("Error decoding mapsquare");
                 dbg!(xtea);
-                return Err(e.into());}
+                return Err(e.into());
+            }
         };
         let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
         decoder.read_to_end(&mut decoded_data).expect("oops");

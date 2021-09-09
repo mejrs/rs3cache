@@ -96,7 +96,7 @@ pub struct NpcConfig {
 impl NpcConfig {
     /// Returns a mapping of all [npc configurations](NpcConfig)
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::NPC_CONFIG, &config)?.into_iter();
+        let archives = CacheIndex::new(IndexType::NPC_CONFIG, config)?.into_iter();
 
         let npc_configs = archives
             .flat_map(|archive| {
@@ -581,7 +581,7 @@ mod tests {
 
     #[test]
     fn zero_is_hans() -> CacheResult<()> {
-        let config = crate::cli::Config::default();
+        let config = crate::cli::Config::env();
 
         let npc_config = NpcConfig::dump_all(&config)?;
         let npc = npc_config.get(&0).unwrap();

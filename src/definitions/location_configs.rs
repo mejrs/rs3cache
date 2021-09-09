@@ -206,7 +206,9 @@ impl LocationConfig {
                 // changed at some point after 2015
                 #[cfg(feature = "osrs")]
                 60 => {
-                    Some(buffer.read_unsigned_short());
+                    // used to be mapscenes
+                    // see https://discordapp.com/channels/177206626514632704/269673599554551808/872603876384178206
+                    buffer.read_unsigned_short();
                 }
                 #[cfg(feature = "osrs")]
                 61 => loc.category = Some(buffer.read_unsigned_short()),
@@ -724,10 +726,11 @@ impl PyObjectProtocol for LocationConfig {
 #[cfg(test)]
 mod map_tests {
     use super::*;
+    use crate::{cli::Config, structures::paramtable::Param};
 
     #[test]
     fn id_36687_is_trapdoor() -> CacheResult<()> {
-        let config = crate::cli::Config::default();
+        let config = Config::env();
 
         let loc_config = LocationConfig::dump_all(&config)?;
         let trapdoor = loc_config.get(&36687).unwrap();
@@ -738,9 +741,7 @@ mod map_tests {
 
     #[test]
     fn check_paramtable() -> CacheResult<()> {
-        use crate::structures::paramtable::Param;
-
-        let config = crate::cli::Config::default();
+        let config = Config::env();
 
         let loc_config = LocationConfig::dump_all(&config)?;
         let bookcase = loc_config.get(&118445).unwrap();
