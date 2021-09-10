@@ -386,7 +386,7 @@ impl CacheIndex<Initial> {
         let metadatas = IndexMetadata::deserialize(index_id, Buffer::new(raw_metadata))?;
 
         Ok(CacheIndex {
-            index_id: index_id,
+            index_id,
             path: config.input.clone(),
             connection: PhantomData,
             metadatas,
