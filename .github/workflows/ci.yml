@@ -20,8 +20,9 @@ jobs:
           toolchain: stable
           profile: minimal
           components: rustfmt
-      - name: Check rust formatting (rustfmt)
+      - name: Check rust formatting rs3
         run: cargo fmt --features=rs3,pyo3 -- --check
+      - name: Check rust formatting osrs
         run: cargo fmt --features=osrs,pyo3 -- --check
   clippy:
     runs-on: ubuntu-latest
