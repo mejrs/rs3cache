@@ -729,17 +729,23 @@ mod map_tests {
     use crate::{cli::Config, structures::paramtable::Param};
 
     #[test]
-    fn id_36687_is_trapdoor() -> CacheResult<()> {
+    fn id_36687() -> CacheResult<()> {
         let config = Config::env();
 
         let loc_config = LocationConfig::dump_all(&config)?;
-        let trapdoor = loc_config.get(&36687).unwrap();
-        let name = trapdoor.name.as_ref().unwrap();
-        assert_eq!(name, "Trapdoor", "{:?}", trapdoor);
+        let loc = loc_config.get(&36687).unwrap();
+        let name = loc.name.as_ref().unwrap();
+
+        #[cfg(feature = "rs3")]
+        assert_eq!(name, "Trapdoor", "{:?}", loc);
+
+        #[cfg(feature = "osrs")]
+        assert_eq!(name, "Tree stump", "{:?}", loc);
         Ok(())
     }
 
     #[test]
+    #[cfg(feature = "rs3")]
     fn check_paramtable() -> CacheResult<()> {
         let config = Config::env();
 

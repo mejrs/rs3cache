@@ -117,7 +117,7 @@ impl NpcConfig {
         loop {
             match buffer.read_unsigned_byte() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert_eq!(buffer.remaining(), 0, "The buffer was not fully read");
                     break npc;
                 }
                 1 => npc.models = Some(NpcModels::deserialize(&mut buffer)),
@@ -575,6 +575,7 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     Ok(())
 }
 
+#[cfg(feature = "rs3")]
 #[cfg(test)]
 mod tests {
     use super::*;

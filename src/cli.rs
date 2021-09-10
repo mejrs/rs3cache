@@ -188,11 +188,25 @@ pub struct Config {
 }
 
 impl Config {
+    #[cfg(not(feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
             input: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
             output: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
             ..Default::default()
         }
+    }
+
+    #[cfg(all(feature = "osrs", feature = "mockdata"))]
+    pub fn env() -> Self {
+        Self {
+            input: PathBuf::from("tests/osrs_cache"),
+            ..Default::default()
+        }
+    }
+
+    #[cfg(all(feature = "rs3", feature = "mockdata"))]
+    pub fn env() -> Self {
+        Self::default()
     }
 }

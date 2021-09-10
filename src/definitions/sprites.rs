@@ -212,7 +212,7 @@ mod sprite_tests {
 
         std::fs::create_dir_all("tests/sprites/method_0".to_string())?;
 
-        for id in vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 14659, 3034] {
+        for id in vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 3034] {
             let frame = 0;
             let sprite = dump(id, frame)?;
             let filename = format!("tests/sprites/method_0/{}-{}.png", id, frame);
@@ -225,7 +225,7 @@ mod sprite_tests {
     fn render_some_1() -> CacheResult<()> {
         let config = crate::cli::Config::env();
 
-        let ids = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 14659, 3034];
+        let ids = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 3034];
 
         let sprites = dumps(2, ids, &config)?;
         println!("{:?}", sprites.keys().collect::<Vec<_>>());

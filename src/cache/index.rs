@@ -381,12 +381,13 @@ impl CacheIndex<Initial> {
 
     /// Mock constructor for `CacheIndex`.
     #[cfg(feature = "mockdata")]
-    pub fn new(index_id: u32) -> CacheResult<Self> {
+    pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<Self> {
         let raw_metadata = Self::get_raw_metadata(index_id)?;
         let metadatas = IndexMetadata::deserialize(index_id, Buffer::new(raw_metadata))?;
 
         Ok(CacheIndex {
             index_id: index_id,
+            path: config.input.clone(),
             connection: PhantomData,
             metadatas,
             state: Initial {},
@@ -401,7 +402,7 @@ where
 {
     fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
         let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
-        let entry_data = fs::read(file)?;
+        let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
         let mut buf = Buffer::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((buf.read_3_unsigned_bytes(), buf.read_3_unsigned_bytes()))
@@ -479,9 +480,9 @@ impl CacheIndex<Initial> {
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
     pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
-        let path = path!(config.input / "cache" / "main_file_cache.dat2");
+        let file = path!(config.input / "cache" / "main_file_cache.dat2");
 
-        let file = fs::read(path)?.into_boxed_slice();
+        let file = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?.into_boxed_slice();
         let xteas = if index_id == 5 {
             let path = path!(config.input / "xteas.json");
 

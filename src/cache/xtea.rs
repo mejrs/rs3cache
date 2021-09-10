@@ -70,11 +70,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn load_xteas() {
-        Xtea::load("C:/Users/bruno/runescape/cache/raw_osrs/xteas.json").unwrap();
-    }
-
-    #[test]
     fn test_algorithm() {
         let xtea = Xtea {
             mapsquare: 12850,
