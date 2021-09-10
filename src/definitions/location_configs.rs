@@ -726,7 +726,7 @@ impl PyObjectProtocol for LocationConfig {
 #[cfg(test)]
 mod map_tests {
     use super::*;
-    use crate::{cli::Config, structures::paramtable::Param};
+    use crate::cli::Config;
 
     #[test]
     fn id_36687() -> CacheResult<()> {
@@ -747,6 +747,8 @@ mod map_tests {
     #[test]
     #[cfg(feature = "rs3")]
     fn check_paramtable() -> CacheResult<()> {
+        use crate::structures::paramtable::Param;
+
         let config = Config::env();
 
         let loc_config = LocationConfig::dump_all(&config)?;
