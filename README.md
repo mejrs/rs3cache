@@ -7,8 +7,7 @@ Tools and api for reading and interpreting the [RuneScape 3](https://www.runesca
 ## Installing the command line tool.
 
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Configure rustup to use the nightly version: `rustup default nightly`.
-- Install the tool with `cargo install --git https://github.com/mejrs/rs3cache/ --features=rs3`.
+- Install the tool with `cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3`.
 
 
 ## Usage 
@@ -60,7 +59,6 @@ The following instructions are only tested on **windows**. If you run into issue
     - Install setuptools: `pip install setuptools`.
     - Install setuptools-rust: `pip install setuptools-rust`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Configure rustup to use the nightly version: `rustup default nightly`.
 - Navigate to this repository and run `python setup.py install`.
 - Either:
 
