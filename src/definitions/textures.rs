@@ -67,7 +67,7 @@ impl Display for TextureConfig {
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;
 
-    let mut loc_configs = TextureConfig::dump_all(&config)?.into_values().collect::<Vec<_>>();
+    let mut loc_configs = TextureConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     loc_configs.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create(path!(config.output / "textures.json"))?;

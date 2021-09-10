@@ -196,7 +196,7 @@ pub mod python_impl {
             let inner = std::mem::take(&mut (*slf).index);
             let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
 
-            let iter = PyMapSquaresIter { inner: inner.into_iter() };
+            let iter = PyMapSquaresIter { inner};
             Py::new(slf.py(), iter)
         }
     }
