@@ -7,7 +7,7 @@ Tools and api for reading and interpreting the [RuneScape 3](https://www.runesca
 ## Installing the command line tool.
 
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Install the tool with `cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3`.
+- Install the tool with ```cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3```.
 
 
 ## Usage 
