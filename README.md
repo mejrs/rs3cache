@@ -1,4 +1,4 @@
-[![actions status](hhttps://github.com/mejrs/rs3cache/workflows/CI/badge.svg)](https://github.com/mejrs/rs3cache/actions)
+[![actions status](https://github.com/mejrs/rs3cache/workflows/CI/badge.svg)](https://github.com/mejrs/rs3cache/actions)
 
 # RS3 cache tool
 
