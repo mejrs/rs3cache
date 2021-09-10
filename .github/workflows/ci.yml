@@ -15,14 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check rust formatting rs3
-        run: cargo fmt --features=rs3,pyo3 -- --check
-      - name: Check rust formatting osrs
-        run: cargo fmt --features=osrs,pyo3 -- --check
+      - name: Check rust formatting
+        run: cargo fmt -- --check
+
   clippy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
       - run: cargo clippy --features=rs3,pyo3
       - run: cargo clippy --features=osrs,pyo3
