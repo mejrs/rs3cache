@@ -251,10 +251,7 @@ impl IntoIterator for MapSquares {
             .filter_map(|(ty, i, j)| if *ty == "m" { Some((*i, *j)) } else { None })
             .collect::<Vec<_>>()
             .into_iter();
-        MapSquareIterator {
-            mapsquares: self,
-            state,
-        }
+        MapSquareIterator { mapsquares: self, state }
     }
 }
 
@@ -336,8 +333,6 @@ impl GroupMapSquare {
         )
     }
 }
-
-
 
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
 pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {

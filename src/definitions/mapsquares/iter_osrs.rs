@@ -15,8 +15,8 @@ use crate::{
 /// Iterates over all [`MapSquare`]s in arbitrary order.
 
 pub struct MapSquareIterator {
-   pub(crate) mapsquares: crate::definitions::mapsquares::MapSquares,
-  pub(crate)  state: std::vec::IntoIter<(u8, u8)>,
+    pub(crate) mapsquares: crate::definitions::mapsquares::MapSquares,
+    pub(crate) state: std::vec::IntoIter<(u8, u8)>,
 }
 
 impl Iterator for MapSquareIterator {

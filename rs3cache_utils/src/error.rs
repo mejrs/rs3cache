@@ -137,7 +137,6 @@ impl Debug for CacheError {
                 write!(f, "{}", msg)
             }
 
-
             Self::ArchiveNotFoundError(5, archive) => write!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7),
             Self::ArchiveNotFoundError(index, archive) => write!(f, "Index {} does not contain archive {}", index, archive),
             /*
