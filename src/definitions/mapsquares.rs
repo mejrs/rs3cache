@@ -193,13 +193,13 @@ impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
         let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)), (i, j)))
             .collect();
         let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::TILES, i, j)), (i, j)))
             .collect();
         let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::ENVIRONMENT, i, j)), (i, j)))
             .collect();
 
         let mapping = index

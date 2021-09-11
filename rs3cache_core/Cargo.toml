@@ -10,8 +10,8 @@ sqlite = { version = "0.26.0", optional = true }
 libflate = "1.1.1"
 bytes = "1.1.0"
 itertools = "0.10.1"
-serde_json = "1.0.67"
-serde = { version = "1.0.130", features = ["derive"] }
+serde_json = { version = "1.0.67", optional = true }
+serde = { version = "1.0.130", features = ["derive"]}
 serde_with = "1.10.0"
 bzip2 = "0.4.3"
 pyo3 = { version = "0.14.5", optional = true }
@@ -19,7 +19,7 @@ path_macro = "1.0.0"
 fstrings = "0.2.3"
 
 [features]
-python = ["pyo3", "rs3cache_macros"]
+python = ["pyo3", "rs3cache_macros", "serde_json"]
 mockdata = []
 save_mockdata = []
 dont_save = []

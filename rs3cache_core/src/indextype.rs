@@ -211,10 +211,10 @@ pub struct MapFileType;
 #[cfg(feature = "osrs")]
 impl MapFileType {
     /// Deserializes to the sequence of [`Location`]s in `self`.
-    pub const LOCATIONS: &'static str = "l{}_{}";
+    pub const LOCATIONS: &'static str = "l";
     /// Deserializes to the [`TileArray`] of `self`.
-    pub const TILES: &'static str = "m{}_{}";
-    pub const ENVIRONMENT: &'static str = "e{}_{}";
+    pub const TILES: &'static str = "m";
+    pub const ENVIRONMENT: &'static str = "e";
 }
 
 #[allow(missing_docs)]

@@ -22,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cargo clippy --features=rs3,pyo3 -- -D warnings
-      - run: cargo clippy --features=osrs,pyo3 -- -D warnings
+      - run: cargo clippy --features=rs3,python -- -D warnings
+      - run: cargo clippy --features=osrs,python -- -D warnings
       - run: cargo clippy --features=rs3,mockdata -- -D warnings
       - run: cargo clippy --features=osrs,mockdata -- -D warnings
   test:
