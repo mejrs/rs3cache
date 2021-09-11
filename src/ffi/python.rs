@@ -57,7 +57,7 @@ pub mod python_impl {
             item_configs::ItemConfig,
             location_configs::LocationConfig,
             locations::Location,
-            mapsquares::{MapSquare, MapSquareIterator},
+            mapsquares::{MapSquare, MapSquareIterator, MapSquares},
             npc_configs::NpcConfig,
             structs::Struct,
             tiles::Tile,
@@ -129,7 +129,7 @@ pub mod python_impl {
     ///```
     #[pyclass(name = "MapSquares")]
     pub struct PyMapSquares {
-        index: Option<MapSquareIterator>,
+        mapsquares: Option<MapSquares>,
     }
 
     #[pymethods]
@@ -142,7 +142,7 @@ pub mod python_impl {
                 config.input = path
             }
             Ok(Self {
-                index: Some(MapSquareIterator::new(&config)?),
+                mapsquares: Some(MapSquares::new(&config)?),
             })
         }
 
@@ -179,7 +179,7 @@ pub mod python_impl {
                 Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
             } else {
                 let sq = self
-                    .index
+                    .mapsquares
                     .as_ref()
                     .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
                     .get(i, j)
@@ -193,8 +193,9 @@ pub mod python_impl {
     #[pyproto]
     impl PyIterProtocol for PyMapSquares {
         fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyMapSquaresIter>> {
-            let inner = std::mem::take(&mut (*slf).index);
+            let inner = std::mem::take(&mut (*slf).mapsquares);
             let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
+            let inner = inner.into_iter();
 
             let iter = PyMapSquaresIter { inner };
             Py::new(slf.py(), iter)
@@ -301,7 +302,7 @@ pub mod python_impl {
             }
 
             Ok(Self {
-                inner: Some(CacheIndex::new(index_id, &config)?),
+                inner: Some(CacheIndex::new(index_id, &config.input)?),
             })
         }
 

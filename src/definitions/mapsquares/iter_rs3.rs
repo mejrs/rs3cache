@@ -13,22 +13,7 @@ use crate::{
 /// Iterates over all [`MapSquare`]s in arbitrary order.
 
 pub struct MapSquareIterator {
-    inner: index::IntoIter,
-}
-
-impl MapSquareIterator {
-    /// Constructor for MapSquareIterator.
-    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2, config)?.into_iter();
-        Ok(MapSquareIterator { inner })
-    }
-
-    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
-        let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = self.inner.index.archive(archive_id).ok()?;
-
-        Some(MapSquare::from_archive(archive))
-    }
+    pub(crate) inner: index::IntoIter,
 }
 
 impl Iterator for MapSquareIterator {
@@ -52,7 +37,7 @@ pub struct GroupMapSquareIterator {
 impl GroupMapSquareIterator {
     /// Constructor for [`GroupMapSquareIterator`].
     pub fn new(dx: RangeInclusive<i32>, dy: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2, config)?.grouped(dx, dy).into_iter();
+        let inner = CacheIndex::new(IndexType::MAPSV2, &config.input)?.grouped(dx, dy).into_iter();
         Ok(GroupMapSquareIterator { inner })
     }
 
@@ -64,7 +49,7 @@ impl GroupMapSquareIterator {
         config: &crate::cli::Config,
     ) -> CacheResult<GroupMapSquareIterator> {
         let archive_ids = coordinates.into_iter().map(|(i, j)| (i as u32) | (j as u32) << 7).collect::<Vec<u32>>();
-        let inner = CacheIndex::new(IndexType::MAPSV2, config)?
+        let inner = CacheIndex::new(IndexType::MAPSV2, &config.input)?
             .retain(archive_ids)
             .grouped(dx, dy)
             .into_iter();

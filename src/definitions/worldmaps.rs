@@ -49,7 +49,7 @@ pub struct MapZone {
 impl MapZone {
     /// Returns a mapping of all [`MapZone`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::WORLDMAP, config)?
+        Ok(CacheIndex::new(IndexType::WORLDMAP, &config.input)?
             .archive(WorldMapType::ZONES)?
             .take_files()
             .into_iter()
@@ -191,7 +191,7 @@ pub struct MapPastes {
 impl MapPastes {
     /// Returns a mapping of all [`MapPastes`].
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::WORLDMAP, config)?
+        Ok(CacheIndex::new(IndexType::WORLDMAP, &config.input)?
             .archive(WorldMapType::PASTES)?
             .take_files()
             .into_iter()
@@ -326,7 +326,7 @@ pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;
 
-    let mut map_zones = MapZone::dump_all(config)?.into_values().collect::<Vec<_>>();
+    let mut map_zones = MapZone::dump_all(&config)?.into_values().collect::<Vec<_>>();
     map_zones.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create(path!(config.output / "map_zones.json"))?;
@@ -339,7 +339,9 @@ pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(path!(config.output / "world_map_small"))?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP, config)?.archive(WorldMapType::SMALL)?.take_files();
+    let files = CacheIndex::new(IndexType::WORLDMAP, &config.input)?
+        .archive(WorldMapType::SMALL)?
+        .take_files();
     for (id, data) in files {
         let filename = path!(config.output / "world_map_small" / f!("{id}.png"));
         let mut file = File::create(filename)?;
@@ -353,7 +355,9 @@ pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(path!(config.output / "world_map_big"))?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP, config)?.archive(WorldMapType::BIG)?.take_files();
+    let files = CacheIndex::new(IndexType::WORLDMAP, &config.input)?
+        .archive(WorldMapType::BIG)?
+        .take_files();
 
     for (id, data) in files {
         let mut buf = Buffer::new(data);

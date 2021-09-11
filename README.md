@@ -68,7 +68,7 @@ The following instructions are only tested on **windows**. If you run into issue
     - Check that pip is installed (`python -m pip --version`).
     - Install maturin: `pip install maturin`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Navigate to this repository and build a Python wheel with `maturin build --cargo-extra-args="--features=rs3,pyo3"`.
+- Navigate to this repository and build a Python wheel with `maturin build --cargo-extra-args="--features=rs3,python"`.
 
 
 - For examples, see `rs3cache/examples.py`.

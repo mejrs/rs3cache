@@ -17,7 +17,7 @@ pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
-    let index = CacheIndex::new(IndexType::SPRITES, config)?;
+    let index = CacheIndex::new(IndexType::SPRITES, &config.input)?;
 
     #[cfg(feature = "rs3")]
     let versions: BTreeMap<u32, ::filetime::FileTime> = index
@@ -74,7 +74,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
         })
     };
 
-    let sprites = CacheIndex::new(IndexType::SPRITES, config)?
+    let sprites = CacheIndex::new(IndexType::SPRITES, &config.input)?
         .retain(ids)
         .into_iter()
         .map(|mut archive| archive.take_file(&0).and_then(deserialize).map(|frames| (archive.archive_id(), frames)))
@@ -203,7 +203,7 @@ mod sprite_tests {
         fn dump(id: u32, frame: u32) -> CacheResult<Sprite> {
             let config = crate::cli::Config::env();
 
-            let mut archive = CacheIndex::new(IndexType::SPRITES, &config)?.archive(id)?;
+            let mut archive = CacheIndex::new(IndexType::SPRITES, &config.input)?.archive(id)?;
             let file = archive.take_file(&0)?;
             assert!(file.len() != 0, "{:?}", file);
             let mut images = deserialize(file).unwrap();

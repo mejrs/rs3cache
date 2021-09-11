@@ -9,15 +9,18 @@ use path_macro::path;
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
+#[cfg(feature = "osrs")]
+use crate::cache::indextype::ConfigType;
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::error::CacheResult,
 };
+
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
 #[cfg_eval]
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -28,6 +31,20 @@ pub struct NpcConfig {
     pub models: Option<NpcModels>,
     pub name: Option<String>,
     pub size: Option<u8>,
+    #[cfg(feature = "osrs")]
+    pub standing_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub walking_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub rotate_180_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub rotate_90_right_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub rotate_90_left_animation: Option<u16>,
+
+    #[cfg(feature = "osrs")]
+    pub category: Option<u16>,
+
     pub actions: Option<[Option<String>; 5]>,
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
@@ -46,7 +63,10 @@ pub struct NpcConfig {
     pub unknown_99: Option<bool>,
     pub ambience: Option<i8>,
     pub model_contract: Option<i8>,
+    #[cfg(feature = "rs3")]
     pub head_icon_data: Option<Vec<(Option<u32>, Option<u32>)>>,
+    #[cfg(feature = "osrs")]
+    pub head_icon_data: Option<u16>,
     pub unknown_103: Option<u16>,
     pub morphs_1: Option<NpcMorphTable>,
     pub unknown_107: Option<bool>,
@@ -95,8 +115,9 @@ pub struct NpcConfig {
 
 impl NpcConfig {
     /// Returns a mapping of all [npc configurations](NpcConfig)
+    #[cfg(feature = "rs3")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::NPC_CONFIG, config)?.into_iter();
+        let archives = CacheIndex::new(IndexType::NPC_CONFIG, &config.input)?.into_iter();
 
         let npc_configs = archives
             .flat_map(|archive| {
@@ -111,18 +132,42 @@ impl NpcConfig {
         Ok(npc_configs)
     }
 
+    #[cfg(feature = "osrs")]
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+            .archive(ConfigType::NPC_CONFIG)?
+            .take_files()
+            .into_iter()
+            .map(|(file_id, file)| (file_id, Self::deserialize(file_id, file)))
+            .collect())
+    }
+
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
         let mut npc = Self { id, ..Default::default() };
         let mut buffer = Buffer::new(file);
+
         loop {
             match buffer.read_unsigned_byte() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0, "The buffer was not fully read");
+                    debug_assert_eq!(buffer.remaining(), 0, "The buffer was not fully read. {}", npc);
                     break npc;
                 }
                 1 => npc.models = Some(NpcModels::deserialize(&mut buffer)),
                 2 => npc.name = Some(buffer.read_string()),
                 12 => npc.size = Some(buffer.read_unsigned_byte()),
+                #[cfg(feature = "osrs")]
+                13 => npc.standing_animation = Some(buffer.read_unsigned_short()),
+                #[cfg(feature = "osrs")]
+                14 => npc.walking_animation = Some(buffer.read_unsigned_short()),
+                #[cfg(feature = "osrs")]
+                17 => {
+                    npc.walking_animation = Some(buffer.read_unsigned_short());
+                    npc.rotate_180_animation = Some(buffer.read_unsigned_short());
+                    npc.rotate_90_right_animation = Some(buffer.read_unsigned_short());
+                    npc.rotate_90_left_animation = Some(buffer.read_unsigned_short());
+                }
+                #[cfg(feature = "osrs")]
+                18 => npc.category = Some(buffer.read_unsigned_short()),
                 opcode @ 30..=34 => {
                     let actions = npc.actions.get_or_insert([None, None, None, None, None]);
                     actions[opcode as usize - 30] = Some(buffer.read_string());
@@ -140,7 +185,10 @@ impl NpcConfig {
                 99 => npc.unknown_99 = Some(false),
                 100 => npc.ambience = Some(buffer.read_byte()),
                 101 => npc.ambience = Some(buffer.read_byte()),
+                #[cfg(feature = "rs3")]
                 102 => npc.head_icon_data = Some(buffer.read_masked_data()),
+                #[cfg(feature = "osrs")]
+                102 => npc.head_icon_data = Some(buffer.read_unsigned_short()),
                 103 => npc.unknown_103 = Some(buffer.read_unsigned_short()),
                 106 => npc.morphs_1 = Some(NpcMorphTable::deserialize(&mut buffer)),
                 107 => npc.unknown_107 = Some(false),
@@ -249,7 +297,12 @@ pub mod npc_config_fields {
             let varp = Varp::new(buffer.read_unsigned_short());
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let count = buffer.read_unsigned_smart() as usize;
+            let count = if cfg!(feature = "rs3") {
+                buffer.read_unsigned_smart() as usize
+            } else {
+                buffer.read_unsigned_byte() as usize
+            };
+
             let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
                 u16::MAX => None,
                 id => Some(id as u32),
@@ -281,7 +334,11 @@ pub mod npc_config_fields {
 
             let default_id = buffer.read_smart32();
 
-            let count = buffer.read_unsigned_smart() as usize;
+            let count = if cfg!(feature = "rs3") {
+                buffer.read_unsigned_smart() as usize
+            } else {
+                buffer.read_unsigned_byte() as usize
+            };
 
             let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
                 u16::MAX => None,
@@ -301,10 +358,24 @@ pub mod npc_config_fields {
     }
 
     impl NpcModels {
+        #[cfg(feature = "rs3")]
         pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_byte() as usize;
 
             let models = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
+            Self { models }
+        }
+
+        #[cfg(feature = "osrs")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
+            let count = buffer.read_unsigned_byte() as usize;
+
+            let models = iter::repeat_with(|| match buffer.read_unsigned_short() {
+                u16::MAX => None,
+                other => Some(other as u32),
+            })
+            .take(count)
+            .collect::<Vec<_>>();
             Self { models }
         }
     }
@@ -344,17 +415,34 @@ pub mod npc_config_fields {
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
-        pub headmodels: Vec<Option<u32>>,
+        #[cfg(feature = "rs3")]
+        pub models: Vec<Option<u32>>,
+        #[cfg(feature = "osrs")]
+        pub models: Vec<Option<u16>>,
     }
 
     impl HeadModels {
+        #[cfg(feature = "rs3")]
+        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
+            let count = buffer.read_byte() as usize;
+
+            let models = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
+            Self { models }
+        }
+
+        #[cfg(feature = "osrs")]
         pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
             let count = buffer.read_unsigned_byte() as usize;
-            let headmodels = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
-            Self { headmodels }
+
+            let models = iter::repeat_with(|| match buffer.read_unsigned_short() {
+                u16::MAX => None,
+                other => Some(other),
+            })
+            .take(count)
+            .collect::<Vec<_>>();
+            Self { models }
         }
     }
-
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {

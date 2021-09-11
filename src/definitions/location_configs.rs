@@ -21,7 +21,7 @@ use crate::{
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 #[cfg_eval]
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -144,7 +144,7 @@ impl LocationConfig {
     /// Returns a mapping of all [location configurations](LocationConfig)
     #[cfg(feature = "rs3")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::LOC_CONFIG, config)?.into_iter();
+        let archives = CacheIndex::new(IndexType::LOC_CONFIG, &config.input)?.into_iter();
         let locations = archives
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
@@ -160,7 +160,7 @@ impl LocationConfig {
 
     #[cfg(feature = "osrs")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, config)?
+        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
             .archive(ConfigType::LOC_CONFIG)?
             .take_files()
             .into_iter()
@@ -299,7 +299,7 @@ pub mod location_config_fields {
     };
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
@@ -351,7 +351,7 @@ pub mod location_config_fields {
 
     /// Like [`LocationMorphTable`], but with a default value.
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]

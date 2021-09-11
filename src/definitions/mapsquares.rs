@@ -30,11 +30,12 @@ pub use self::iterator::*;
 #[cfg(feature = "rs3")]
 use crate::cache::arc::Archive;
 #[cfg(feature = "osrs")]
-use crate::cache::{
-    index::{CacheIndex, Initial},
-    xtea::Xtea,
-};
+use crate::cache::xtea::Xtea;
 use crate::{
+    cache::{
+        index::{CacheIndex, Initial},
+        indextype::{IndexType, MapFileType},
+    },
     definitions::{
         locations::Location,
         tiles::{Tile, TileArray},
@@ -80,11 +81,9 @@ pub type ColumnIter<'c> = Zip<LanesIter<'c, Tile, Dim<[usize; 2]>>, Product<Rang
 impl MapSquare {
     #[cfg(all(test, feature = "rs3"))]
     pub fn new(i: u8, j: u8, config: &crate::cli::Config) -> CacheResult<MapSquare> {
-        use crate::cache::{index::CacheIndex, indextype::IndexType};
-
         assert!(i < 0x7F, "Index out of range.");
         let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = CacheIndex::new(IndexType::MAPSV2, config)?.archive(archive_id)?;
+        let archive = CacheIndex::new(IndexType::MAPSV2, &config.input)?.archive(archive_id)?;
         Ok(Self::from_archive(archive))
     }
 
@@ -167,6 +166,98 @@ impl MapSquare {
     }
 }
 
+pub struct MapSquares {
+    index: CacheIndex<Initial>,
+    #[cfg(feature = "osrs")]
+    mapping: std::collections::BTreeMap<(&'static str, u8, u8), u32>,
+}
+
+#[cfg(feature = "rs3")]
+impl MapSquares {
+    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
+        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+
+        Ok(MapSquares { index })
+    }
+
+    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+        let archive_id = (i as u32) | (j as u32) << 7;
+        let archive = self.index.archive(archive_id).ok()?;
+
+        Some(MapSquare::from_archive(archive))
+    }
+}
+
+#[cfg(feature = "osrs")]
+impl MapSquares {
+    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
+        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+        let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))
+            .collect();
+        let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{}_{}", i, j)), (i, j)))
+            .collect();
+        let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{}_{}", i, j)), (i, j)))
+            .collect();
+
+        let mapping = index
+            .metadatas()
+            .iter()
+            .map(|(_, m)| {
+                let name_hash = m.name().unwrap();
+
+                if let Some((i, j)) = land_hashes.get(&name_hash) {
+                    (("l", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = map_hashes.get(&name_hash) {
+                    (("m", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = env_hashes.get(&name_hash) {
+                    (("e", *i, *j), m.archive_id())
+                } else {
+                    unreachable!()
+                }
+            })
+            .collect();
+
+        Ok(MapSquares { index, mapping })
+    }
+
+    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+        let land = self.mapping.get(&("l", i, j))?;
+        let map = self.mapping.get(&("m", i, j))?;
+        let env = self.mapping.get(&("e", i, j)).copied();
+        let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
+
+        MapSquare::new(&self.index, xtea.copied(), *land, *map, env, i, j).ok()
+    }
+}
+
+impl IntoIterator for MapSquares {
+    type Item = MapSquare;
+    type IntoIter = MapSquareIterator;
+
+    #[cfg(feature = "rs3")]
+    fn into_iter(self) -> Self::IntoIter {
+        let inner = self.index.into_iter();
+        MapSquareIterator { inner }
+    }
+
+    #[cfg(feature = "osrs")]
+    fn into_iter(self) -> Self::IntoIter {
+        let state = self
+            .mapping
+            .keys()
+            .filter_map(|(ty, i, j)| if *ty == "m" { Some((*i, *j)) } else { None })
+            .collect::<Vec<_>>()
+            .into_iter();
+        MapSquareIterator {
+            mapsquares: self,
+            state,
+        }
+    }
+}
+
 /// A group of adjacent [`MapSquare`]s.
 ///
 /// Necessary for operations that need to care about surrounding mapsquares.
@@ -246,40 +337,7 @@ impl GroupMapSquare {
     }
 }
 
-/// Enumeration of the files in the [MAPSV2](IndexType::MAPSV2) archives.
-pub struct MapFileType;
 
-#[allow(missing_docs)]
-#[cfg(feature = "osrs")]
-impl MapFileType {
-    /// Deserializes to the sequence of [`Location`]s in `self`.
-    pub const LOCATIONS: &'static str = "l{}_{}";
-    /// Deserializes to the [`TileArray`] of `self`.
-    pub const TILES: &'static str = "m{}_{}";
-    pub const ENVIRONMENT: &'static str = "e{}_{}";
-}
-
-#[allow(missing_docs)]
-#[cfg(feature = "rs3")]
-impl MapFileType {
-    /// Deserializes to the sequence of [`Location`]s in `self`.
-    pub const LOCATIONS: u32 = 0;
-    /// Deserializes to a sequence of underwater [`Location`]s in `self`. Not implemented.
-    pub const WATER_LOCATIONS: u32 = 1;
-    /// Deserializes to a sequence of all npcs in `self`.
-    /// Only mapsquares which used to have a "zoom around" login screen,
-    /// or are derived from one that had, have this file.
-    pub const NPCS: u32 = 2;
-    /// Deserializes to the [`TileArray`] of `self`.
-    pub const TILES: u32 = 3;
-    /// Deserializes to the underwater [`TileArray`] of `self`.
-    pub const WATER_TILES: u32 = 4;
-    pub const UNKNOWN_5: u32 = 5;
-    pub const UNKNOWN_6: u32 = 6;
-    pub const UNKNOWN_7: u32 = 7;
-    pub const UNKNOWN_8: u32 = 8;
-    pub const UNKNOWN_9: u32 = 9;
-}
 
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
 pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
@@ -288,7 +346,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&out)?;
 
     let last_id = {
-        let squares = MapSquareIterator::new(config)?;
+        let squares = MapSquares::new(config)?.into_iter();
         squares
             .filter_map(|sq| sq.take_locations().ok())
             .filter(|locs| !locs.is_empty())
@@ -297,7 +355,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
             .unwrap()
     };
 
-    let squares = MapSquareIterator::new(config)?;
+    let squares = MapSquares::new(config)?.into_iter();
     let mut locs: Vec<_> = squares
         .filter_map(|sq| sq.take_locations().ok())
         .map(|locs| locs.into_iter().peekable())
@@ -330,7 +388,7 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
     let out = path_macro::path!(config.output / "mapsquares");
 
     fs::create_dir_all(&out)?;
-    MapSquareIterator::new(config)?.par_apply(|sq| {
+    MapSquares::new(config)?.into_iter().par_apply(|sq| {
         let i = sq.i;
         let j = sq.j;
         if let Ok(locations) = sq.take_locations() {

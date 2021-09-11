@@ -20,7 +20,7 @@ use crate::{
 /// Describes the properties of a given item.
 #[cfg_eval]
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -92,7 +92,7 @@ pub struct ItemConfig {
 impl ItemConfig {
     /// Returns a mapping of all [`ItemConfig`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::OBJ_CONFIG, config)?.into_iter();
+        let archives = CacheIndex::new(IndexType::OBJ_CONFIG, &config.input)?.into_iter();
 
         let locations = archives
             .flat_map(|archive| {

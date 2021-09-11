@@ -23,7 +23,7 @@ use crate::{
 ///
 /// This can be a text label, sprite, polygon or interactive.
 #[cfg_eval]
-#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -84,7 +84,7 @@ pub struct MapLabelConfig {
 impl MapLabelConfig {
     /// Returns a mapping of all [`MapLabelConfig`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, MapLabelConfig>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, config)?
+        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
             .archive(ConfigType::MAPLABELS)?
             .take_files()
             .into_iter()

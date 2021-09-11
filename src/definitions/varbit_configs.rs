@@ -27,7 +27,7 @@ use crate::{
 /// The varbit is the bits of Varp `index` from `least_significant_bit` to `most_significant_bit` inclusive.
 #[cfg_eval]
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -44,7 +44,7 @@ pub struct VarbitConfig {
 impl VarbitConfig {
     /// Returns a mapping of all [`VarbitConfig`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, config)?
+        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
             .archive(ConfigType::VARBITS)?
             .take_files()
             .into_iter()
@@ -89,7 +89,7 @@ impl VarbitConfig {
 /// Save the varbit configs as `varbit_configs.json`. Exposed as `--dump varbit_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;
-    let mut vb_configs = VarbitConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
+    let mut vb_configs = VarbitConfig::dump_all(&config)?.into_values().collect::<Vec<_>>();
     vb_configs.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create(path!(config.output / "varbit_configs.json"))?;
