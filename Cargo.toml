@@ -6,7 +6,7 @@ edition = "2018"
 default-run = "rs3cache"
 
 [workspace]
-members = ["macro_utils"]
+members = ["rs3cache_core", "rs3cache_macros", "rs3cache_utils"]
 
 [profile.release]
 lto = "thin"
@@ -29,38 +29,31 @@ required-features = ["osrs"]
 
 
 [dependencies]
-macro_utils = { path = "macro_utils", version = "0.1.0" }
-sqlite = "0.26.0"
-libflate = "1.0.4"
-bytes = "1.0.1"
-itertools = "0.10.0"
-ndarray = "0.15.1"
+rs3cache_macros = { path = "rs3cache_macros", version = "0.1.0" }
+rs3cache_core = { path = "rs3cache_core", version = "0.1.0" }
+rs3cache_utils = { path = "rs3cache_utils", version = "0.1.0" }
+itertools = "0.10.1"
+ndarray = "0.15.3"
 image = "0.23.14"
-regex = "1.4.5"
-futures = "0.3.14"
-async-std = "1.9.0"
-num_cpus = "1.13.0"
-serde_json = "1.0.64"
-serde = { version = "1.0.125", features = ["derive"] }
-serde_with = "1.8.0"
-bzip2 = "0.4.2"
-pyo3 = { version = "0.14.1", optional = true}
-structopt = "0.3.22"
+regex = "1.5.4"
+futures = "0.3.17"
+async-std = "1.10.0"
+serde_json = "1.0.67"
+serde = { version = "1.0.130", features = ["derive"] }
+serde_with = "1.10.0"
+pyo3 = { version = "0.14.5", features = ["extension-module"], optional = true }
+structopt = "0.3.23"
 indicatif = "0.16.2"
 path_macro = "1.0.0"
 fstrings = "0.2.3"
-filetime = { version = "0.2.10",  optional = true}
-path-absolutize = "3.0.10"
-
-[dev-dependencies]
-criterion = "0.3.4"
+filetime = { version = "0.2.15", optional = true }
 
 [features]
-mockdata = []
-save_mockdata = []
-dont_save = []
+python = ["pyo3", "rs3cache_core/pyo3", "rs3cache_utils/pyo3"]
+mockdata = ["rs3cache_core/mockdata"]
+save_mockdata = ["rs3cache_core/save_mockdata"]
 fast = []
-rs3 = ["filetime"]
-osrs = []
+rs3 = ["rs3cache_core/rs3", "filetime"]
+osrs = ["rs3cache_core/osrs"]
 377 = []
 

@@ -2,8 +2,10 @@ use std::{backtrace::Backtrace, borrow::Cow, path::PathBuf};
 
 use path_absolutize::*;
 
+/*
 #[cfg(feature = "rs3")]
-use crate::{cache::indextype::IndexType, definitions::mapsquares::MapFileType};
+use crate::cache::indextype::{IndexType, MapFileType};
+*/
 
 /// Result wrapper for [`CacheError`].
 pub type CacheResult<T> = Result<T, CacheError>;
@@ -11,6 +13,7 @@ pub type CacheResult<T> = Result<T, CacheError>;
 /// An error type for things that can go wrong when reading from the cache.
 pub enum CacheError {
     /// Wraps [`sqlite::Error`](https://docs.rs/sqlite/0.25.3/sqlite/struct.Error.html).
+    #[cfg(feature = "rs3")]
     SqliteError(sqlite::Error, Backtrace),
     /// Wraps [`io.error`](std::io::Error).
     IoError(std::io::Error, Backtrace),
@@ -40,6 +43,7 @@ pub enum CacheError {
     FileNotFoundError(u32, u32, u32),
 }
 
+#[cfg(feature = "rs3")]
 impl From<sqlite::Error> for CacheError {
     fn from(cause: sqlite::Error) -> Self {
         Self::SqliteError(cause, Backtrace::capture())
@@ -97,6 +101,7 @@ impl Display for CacheError {
 impl Debug for CacheError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
+            #[cfg(feature = "rs3")]
             Self::SqliteError(ref err, trace) => write!(f, "{}\n\n{:#?}", err, trace),
             Self::IoError(ref err, trace) => write!(f, "{}\n\n{:#?}", err, trace),
             Self::SerdeError(ref err, trace) => write!(f, "{}\n\n{:#?}", err, trace),
@@ -132,8 +137,10 @@ impl Debug for CacheError {
                 write!(f, "{}", msg)
             }
 
+
             Self::ArchiveNotFoundError(5, archive) => write!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7),
             Self::ArchiveNotFoundError(index, archive) => write!(f, "Index {} does not contain archive {}", index, archive),
+            /*
 
             #[cfg(feature = "rs3")]
             Self::FileNotFoundError(IndexType::MAPSV2, archive, MapFileType::LOCATIONS) => {
@@ -156,6 +163,7 @@ impl Debug for CacheError {
             Self::FileNotFoundError(IndexType::MAPSV2, archive, file) => {
                 write!(f, "Mapsquare ({}, {}) does not contain file {}", archive & 0x3F, archive >> 7, file)
             }
+            */
             Self::FileNotFoundError(index, archive, file) => write!(f, "\nIndex {}, Archive {} does not contain file {}", index, archive, file),
         }
     }
@@ -164,6 +172,7 @@ impl Debug for CacheError {
 impl std::error::Error for CacheError {
     fn backtrace(&self) -> Option<&Backtrace> {
         match self {
+            #[cfg(feature = "rs3")]
             Self::SqliteError(_, trace) => Some(trace),
             Self::IoError(_, trace) => Some(trace),
             Self::SerdeError(_, trace) => Some(trace),

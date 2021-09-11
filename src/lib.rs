@@ -49,6 +49,7 @@
 )]
 #![allow(non_snake_case)]
 #![warn(
+    unused_crate_dependencies,
     unused_imports,
     unused_qualifications,
     unused_import_braces,
@@ -70,17 +71,8 @@ pub mod cli;
 
 /// Tools for decoding the cache itself.
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
-pub mod cache {
-    pub mod arc;
-    pub mod buf;
-    pub mod decoder;
-    pub mod hash;
-    pub mod index;
-    pub mod indextype;
-    pub mod meta;
-    #[cfg(feature = "osrs")]
-    pub mod xtea;
-}
+pub use rs3cache_core as cache;
+pub use rs3cache_utils as utils;
 
 /// Various data types
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
@@ -146,22 +138,6 @@ pub mod renderers {
     /// Creates successive tiles for different zoom levels,
     /// for use with a [leaflet.js](https://leafletjs.com/) based map.
     pub mod zoom;
-}
-
-/// Utilities and helpers used throughout this crate.
-pub mod utils {
-    /// Adapters for iterators.
-    pub mod adapters;
-    /// Various colour constants.
-    pub mod color;
-    /// Contains the CacheError type.
-    pub mod error;
-    /// Threadpool adapter for iterators.
-    pub mod par;
-    /// Clamps a [`Range`](std::ops::Range) to a certain interval.
-    pub mod rangeclamp;
-
-    pub mod slice;
 }
 
 /// Contains structures that are used in multiple different configs.

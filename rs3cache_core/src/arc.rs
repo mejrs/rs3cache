@@ -15,7 +15,8 @@ use itertools::izip;
 use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol};
 
 use crate::{
-    cache::{buf::Buffer, meta::Metadata},
+    buf::Buffer,
+    meta::Metadata,
     utils::error::{CacheError, CacheResult},
 };
 
@@ -114,7 +115,7 @@ impl Archive {
 
             #[cfg(feature = "osrs")]
             child_count => {
-                use std::{convert::TryInto, io::SeekFrom::*};
+                use std::io::SeekFrom::*;
 
                 use crate::utils::adapters::Accumulator;
 

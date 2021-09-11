@@ -4,7 +4,7 @@ use std::{
 };
 
 /// Provides the `clamp()` method for [`Range`], clamping it to a given interval.
-pub(crate) trait RangeClamp {
+pub trait RangeClamp {
     /// Clamps a range to a given `start_bound` and `end_bound`.
     fn clamp(self, start_bound: Self::Item, end_bound: Self::Item) -> Range<Self::Item>
     where

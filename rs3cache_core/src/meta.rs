@@ -15,7 +15,7 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::{
-    cache::buf::Buffer,
+    buf::Buffer,
     utils::{adapters::Accumulator, error::CacheResult},
 };
 
@@ -23,7 +23,7 @@ use crate::{
 
 #[cfg_eval]
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", macro_utils::pyo3_get_all)]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]

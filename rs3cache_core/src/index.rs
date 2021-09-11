@@ -23,15 +23,13 @@ use itertools::iproduct;
 use path_macro::path;
 
 #[cfg(feature = "osrs")]
-use crate::cache::xtea::Xtea;
+use crate::xtea::Xtea;
 use crate::{
-    cache::{
-        arc::{Archive, ArchiveGroup},
-        buf::Buffer,
-        decoder,
-        indextype::IndexType,
-        meta::{IndexMetadata, Metadata},
-    },
+    arc::{Archive, ArchiveGroup},
+    buf::Buffer,
+    decoder,
+    indextype::IndexType,
+    meta::{IndexMetadata, Metadata},
     utils::error::{CacheError, CacheResult},
 };
 
@@ -356,8 +354,8 @@ impl CacheIndex<Initial> {
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
     #[cfg(not(feature = "mockdata"))]
-    pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(config.input / f!("js5-{index_id}.jcache"));
+    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(folder / f!("js5-{index_id}.jcache"));
 
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
@@ -370,7 +368,7 @@ impl CacheIndex<Initial> {
                     index_id,
                     metadatas,
                     connection,
-                    path: config.input.clone(),
+                    path: folder.as_ref().to_path_buf(),
                     state: Initial {},
                 })
             }
@@ -381,13 +379,13 @@ impl CacheIndex<Initial> {
 
     /// Mock constructor for `CacheIndex`.
     #[cfg(feature = "mockdata")]
-    pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<Self> {
+    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<Self> {
         let raw_metadata = Self::get_raw_metadata(index_id)?;
         let metadatas = IndexMetadata::deserialize(index_id, Buffer::new(raw_metadata))?;
 
         Ok(CacheIndex {
             index_id,
-            path: config.input.clone(),
+            path: folder.as_ref().to_path_buf(),
             connection: PhantomData,
             metadatas,
             state: Initial {},
@@ -462,7 +460,7 @@ where
     }
 
     pub fn archive_by_name(&self, name: String) -> CacheResult<Vec<u8>> {
-        let hash = crate::cache::hash::hash_djb2(&name);
+        let hash = crate::hash::hash_djb2(&name);
         for (_, m) in self.metadatas.iter() {
             if m.name() == Some(hash) {
                 return self.get_file(m);
@@ -479,12 +477,12 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, config: &crate::cli::Config) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(config.input / "cache" / "main_file_cache.dat2");
+    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(folder / "cache" / "main_file_cache.dat2");
 
         let file = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?.into_boxed_slice();
         let xteas = if index_id == 5 {
-            let path = path!(config.input / "xteas.json");
+            let path = path!(folder / "xteas.json");
 
             Some(Xtea::load(path)?)
         } else {
@@ -493,7 +491,7 @@ impl CacheIndex<Initial> {
 
         // `s` is in a partially initialized state here
         let mut s = Self {
-            path: config.input.clone(),
+            path: folder.as_ref().to_path_buf(),
             index_id,
             metadatas: IndexMetadata::empty(),
             #[cfg(feature = "rs3")]
@@ -751,9 +749,9 @@ impl Iterator for IntoIterGrouped {
 /// # Panics
 /// Panics if compiled with feature `mockdata`.
 #[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
-pub fn assert_coherence(config: &crate::cli::Config) -> CacheResult<()> {
+pub fn assert_coherence(folder: impl AsRef<Path>) -> CacheResult<()> {
     for index_id in IndexType::iterator() {
-        match CacheIndex::new(index_id, config)?.assert_coherence() {
+        match CacheIndex::new(index_id, &folder)?.assert_coherence() {
             Ok(_) => println!("Index {} is coherent!", index_id),
             Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
         }

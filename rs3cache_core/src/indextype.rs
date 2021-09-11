@@ -34,7 +34,7 @@ impl IndexType {
     /// Unimplemented.
     pub const ENUM_CONFIG: u32 = 17;
     /// Contains the [`NpcConfig`](crate::definitions::npc_configs::NpcConfig) definitions.
-    //#[cfg(feature = "rs3")]
+    #[cfg(feature = "rs3")]
     pub const NPC_CONFIG: u32 = 18;
     /// Unimplemented.
     pub const OBJ_CONFIG: u32 = 19;
@@ -202,4 +202,39 @@ impl ConfigType {
     pub const SEQGROUP: u32 = 80;
     /// Unimplemented.
     pub const UNKNOWN_83: u32 = 83;
+}
+
+/// Enumeration of the files in the [MAPSV2](IndexType::MAPSV2) archives.
+pub struct MapFileType;
+
+#[allow(missing_docs)]
+#[cfg(feature = "osrs")]
+impl MapFileType {
+    /// Deserializes to the sequence of [`Location`]s in `self`.
+    pub const LOCATIONS: &'static str = "l{}_{}";
+    /// Deserializes to the [`TileArray`] of `self`.
+    pub const TILES: &'static str = "m{}_{}";
+    pub const ENVIRONMENT: &'static str = "e{}_{}";
+}
+
+#[allow(missing_docs)]
+#[cfg(feature = "rs3")]
+impl MapFileType {
+    /// Deserializes to the sequence of [`Location`]s in `self`.
+    pub const LOCATIONS: u32 = 0;
+    /// Deserializes to a sequence of underwater [`Location`]s in `self`. Not implemented.
+    pub const WATER_LOCATIONS: u32 = 1;
+    /// Deserializes to a sequence of all npcs in `self`.
+    /// Only mapsquares which used to have a "zoom around" login screen,
+    /// or are derived from one that had, have this file.
+    pub const NPCS: u32 = 2;
+    /// Deserializes to the [`TileArray`] of `self`.
+    pub const TILES: u32 = 3;
+    /// Deserializes to the underwater [`TileArray`] of `self`.
+    pub const WATER_TILES: u32 = 4;
+    pub const UNKNOWN_5: u32 = 5;
+    pub const UNKNOWN_6: u32 = 6;
+    pub const UNKNOWN_7: u32 = 7;
+    pub const UNKNOWN_8: u32 = 8;
+    pub const UNKNOWN_9: u32 = 9;
 }

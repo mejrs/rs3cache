@@ -61,8 +61,8 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
 }
 
 #[cfg(feature = "osrs")]
-pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<crate::cache::xtea::Xtea>) -> CacheResult<Vec<u8>> {
-    use crate::cache::buf::Buffer;
+pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<crate::xtea::Xtea>) -> CacheResult<Vec<u8>> {
+    use crate::buf::Buffer;
 
     if &encoded_data[0..3] == Compression::ZLIB {
         let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
@@ -88,7 +88,7 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
         let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
 
         let xtea = xtea.unwrap();
-        let decrypted = crate::cache::xtea::Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
+        let decrypted = crate::xtea::Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
 
         let mut decoder = match gzip::Decoder::new(&decrypted[4..]) {
             Ok(decoder) => decoder,
