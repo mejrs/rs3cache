@@ -16,7 +16,8 @@ use serde::Serialize;
 
 use crate::{
     buf::Buffer,
-    utils::{adapters::Accumulator, error::CacheResult},
+    utils::adapters::Accumulator, 
+    error::CacheResult,
 };
 
 /// Metadata about [`Archive`](crate::cache::arc::Archive)s.

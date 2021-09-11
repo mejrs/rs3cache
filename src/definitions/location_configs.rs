@@ -13,9 +13,9 @@ use serde::Serialize;
 #[cfg(feature = "osrs")]
 use crate::cache::indextype::ConfigType;
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType, error::CacheResult},
     structures::paramtable::ParamTable,
-    utils::{error::CacheResult, par::ParApply},
+    utils::par::ParApply,
 };
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).

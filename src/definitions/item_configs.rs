@@ -14,7 +14,7 @@ use serde::Serialize;
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 
 /// Describes the properties of a given item.

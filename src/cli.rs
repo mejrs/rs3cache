@@ -3,7 +3,7 @@ use std::{path::PathBuf, str::FromStr};
 use fstrings::{f, format_args_f};
 use structopt::StructOpt;
 
-use crate::{definitions, renderers::map, utils::error::CacheResult};
+use crate::{definitions, renderers::map, cache::error::CacheResult};
 
 #[derive(Debug)]
 pub enum Render {

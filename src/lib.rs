@@ -72,7 +72,7 @@ pub mod cli;
 /// Tools for decoding the cache itself.
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub use rs3cache_core as cache;
-pub use rs3cache_utils as utils;
+use rs3cache_utils as utils;
 
 /// Various data types
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]

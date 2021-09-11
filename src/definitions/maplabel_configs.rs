@@ -16,7 +16,7 @@ use crate::{
         indextype::{ConfigType, IndexType},
     },
     structures::paramtable::ParamTable,
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 
 /// Map element on the ingame world map.

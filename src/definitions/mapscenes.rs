@@ -8,7 +8,7 @@ use crate::{
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 /// A configuration of a sprite that can be drawn on the world map.
 #[derive(Debug, Default, Copy, Clone)]

@@ -17,7 +17,7 @@ use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol}
 use crate::{
     buf::Buffer,
     meta::Metadata,
-    utils::error::{CacheError, CacheResult},
+    error::{CacheError, CacheResult},
 };
 
 /// A group of archives.

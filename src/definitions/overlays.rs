@@ -16,7 +16,7 @@ use crate::{
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 
 /// Describes (part of) ground colour.

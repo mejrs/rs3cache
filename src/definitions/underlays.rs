@@ -16,7 +16,7 @@ use crate::{
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 
 /// Describes the general ground colour. This colour is blended with surrounding tiles.

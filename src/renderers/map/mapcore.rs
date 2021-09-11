@@ -17,8 +17,9 @@ use crate::{
         underlays::Underlay,
     },
     renderers::{map::*, zoom},
-    utils::{color::Color, error::CacheResult, par::ParApply},
+    utils::{color::Color,  par::ParApply},
 };
+use crate::cache::error::CacheResult;
 
 pub struct RenderConfig {
     /// -1 is the "real" world map.

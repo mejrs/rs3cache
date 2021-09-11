@@ -24,11 +24,12 @@
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
 #![cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 
-pub use rs3cache_utils as utils;
+use rs3cache_utils as utils;
 
 pub mod arc;
 pub mod buf;
 pub mod decoder;
+pub mod error;
 pub mod hash;
 pub mod index;
 pub mod indextype;

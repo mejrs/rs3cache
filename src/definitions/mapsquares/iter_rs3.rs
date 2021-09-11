@@ -7,7 +7,7 @@ use crate::{
         indextype::IndexType,
     },
     definitions::mapsquares::{GroupMapSquare, MapSquare},
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 
 /// Iterates over all [`MapSquare`]s in arbitrary order.

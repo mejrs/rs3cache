@@ -1232,8 +1232,10 @@ dependencies = [
  "bytes",
  "bzip2",
  "fstrings",
+ "image",
  "itertools",
  "libflate",
+ "path-absolutize",
  "path_macro",
  "pyo3",
  "rs3cache_macros",
@@ -1257,13 +1259,7 @@ dependencies = [
 name = "rs3cache_utils"
 version = "0.1.0"
 dependencies = [
- "bzip2",
- "image",
  "num_cpus",
- "path-absolutize",
- "pyo3",
- "serde_json",
- "sqlite",
 ]
 
 [[package]]

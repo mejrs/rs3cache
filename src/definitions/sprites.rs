@@ -6,8 +6,8 @@ use itertools::izip;
 use path_macro::path;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    utils::{error::CacheResult, par::ParApply},
+    cache::{buf::Buffer, index::CacheIndex, error::CacheResult, indextype::IndexType},
+    utils::par::ParApply,
 };
 
 /// Type alias for a rgba image.

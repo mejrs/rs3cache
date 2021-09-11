@@ -27,8 +27,6 @@
 pub mod adapters;
 /// Various colour constants.
 pub mod color;
-/// Contains the CacheError type.
-pub mod error;
 /// Threadpool adapter for iterators.
 pub mod par;
 /// Clamps a [`Range`](std::ops::Range) to a certain interval.

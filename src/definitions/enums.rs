@@ -16,7 +16,7 @@ use serde::Serialize;
 
 use crate::{
     cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 
 #[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]

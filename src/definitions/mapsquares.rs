@@ -35,14 +35,14 @@ use crate::{
     cache::{
         index::{CacheIndex, Initial},
         indextype::{IndexType, MapFileType},
+        error::{CacheError, CacheResult},
     },
     definitions::{
         locations::Location,
         tiles::{Tile, TileArray},
     },
     utils::{
-        error::{CacheError, CacheResult},
-        par::ParApply,
+                par::ParApply,
         rangeclamp::RangeClamp,
     },
 };

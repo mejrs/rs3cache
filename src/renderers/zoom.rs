@@ -9,7 +9,8 @@ use itertools::{iproduct, izip};
 use path_macro::path;
 use regex::Regex;
 
-use crate::utils::{error::CacheResult, par::ParApply};
+use crate::cache::error::CacheResult;
+use crate::utils:: par::ParApply;
 
 static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 

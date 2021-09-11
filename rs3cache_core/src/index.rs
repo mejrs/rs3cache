@@ -30,7 +30,7 @@ use crate::{
     decoder,
     indextype::IndexType,
     meta::{IndexMetadata, Metadata},
-    utils::error::{CacheError, CacheResult},
+    error::{CacheError, CacheResult},
 };
 
 mod states {

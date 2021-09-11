@@ -49,7 +49,7 @@ fstrings = "0.2.3"
 filetime = { version = "0.2.15", optional = true }
 
 [features]
-python = ["pyo3", "rs3cache_core/python", "rs3cache_utils/pyo3", "rs3cache_macros"]
+python = ["pyo3", "rs3cache_core/python", "rs3cache_macros"]
 mockdata = ["rs3cache_core/mockdata"]
 save_mockdata = ["rs3cache_core/save_mockdata"]
 fast = []

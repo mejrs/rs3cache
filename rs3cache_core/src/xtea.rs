@@ -5,7 +5,7 @@ use std::{array, collections::HashMap, fs::File, io::BufReader, path::Path};
 use serde::{Deserialize, Serialize};
 use serde_json;
 
-use crate::utils::error::CacheResult;
+use crate::error::CacheResult;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Xtea {

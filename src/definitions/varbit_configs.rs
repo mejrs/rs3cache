@@ -20,7 +20,7 @@ use crate::{
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
-    utils::error::CacheResult,
+    cache::error::CacheResult,
 };
 /// A varbit configuration.
 ///
