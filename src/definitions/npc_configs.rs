@@ -12,9 +12,8 @@ use serde::Serialize;
 #[cfg(feature = "osrs")]
 use crate::cache::indextype::ConfigType;
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
-    cache::error::CacheResult,
 };
 
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).

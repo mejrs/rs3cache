@@ -12,11 +12,11 @@ use serde::Serialize;
 use crate::{
     cache::{
         buf::Buffer,
+        error::CacheResult,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
     },
     structures::paramtable::ParamTable,
-    cache::error::CacheResult,
 };
 
 /// Map element on the ingame world map.

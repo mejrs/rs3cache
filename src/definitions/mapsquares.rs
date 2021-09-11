@@ -33,18 +33,15 @@ use crate::cache::arc::Archive;
 use crate::cache::xtea::Xtea;
 use crate::{
     cache::{
+        error::{CacheError, CacheResult},
         index::{CacheIndex, Initial},
         indextype::{IndexType, MapFileType},
-        error::{CacheError, CacheResult},
     },
     definitions::{
         locations::Location,
         tiles::{Tile, TileArray},
     },
-    utils::{
-                par::ParApply,
-        rangeclamp::RangeClamp,
-    },
+    utils::{par::ParApply, rangeclamp::RangeClamp},
 };
 
 /// Represents a section of the game map

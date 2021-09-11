@@ -14,11 +14,7 @@ use itertools::izip;
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
-use crate::{
-    buf::Buffer,
-    utils::adapters::Accumulator, 
-    error::CacheResult,
-};
+use crate::{buf::Buffer, error::CacheResult, utils::adapters::Accumulator};
 
 /// Metadata about [`Archive`](crate::cache::arc::Archive)s.
 

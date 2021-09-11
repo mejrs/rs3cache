@@ -14,10 +14,7 @@ use path_macro::path;
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
-use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    cache::error::CacheResult,
-};
+use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 #[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
 pub enum KeyType {

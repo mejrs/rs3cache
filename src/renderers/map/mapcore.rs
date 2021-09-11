@@ -9,6 +9,7 @@ use path_macro::path;
 #[cfg(feature = "rs3")]
 use crate::definitions::mapscenes::MapScene;
 use crate::{
+    cache::error::CacheResult,
     definitions::{
         location_configs::LocationConfig,
         mapsquares::{GroupMapSquare, GroupMapSquareIterator},
@@ -17,9 +18,8 @@ use crate::{
         underlays::Underlay,
     },
     renderers::{map::*, zoom},
-    utils::{color::Color,  par::ParApply},
+    utils::{color::Color, par::ParApply},
 };
-use crate::cache::error::CacheResult;
 
 pub struct RenderConfig {
     /// -1 is the "real" world map.

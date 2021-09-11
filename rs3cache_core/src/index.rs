@@ -28,9 +28,9 @@ use crate::{
     arc::{Archive, ArchiveGroup},
     buf::Buffer,
     decoder,
+    error::{CacheError, CacheResult},
     indextype::IndexType,
     meta::{IndexMetadata, Metadata},
-    error::{CacheError, CacheResult},
 };
 
 mod states {

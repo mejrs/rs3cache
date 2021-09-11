@@ -13,9 +13,8 @@ use path_macro::path;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
     types::coordinate::Coordinate,
-    cache::error::CacheResult,
 };
 
 /// Enumeration of the archives in the [WORLDMAP](IndexType::WORLDMAP) index.

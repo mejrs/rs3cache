@@ -13,7 +13,7 @@ use serde::Serialize;
 #[cfg(feature = "osrs")]
 use crate::cache::indextype::ConfigType;
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType, error::CacheResult},
+    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
     utils::par::ParApply,
 };

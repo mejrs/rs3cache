@@ -12,9 +12,8 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
+    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
-    cache::error::CacheResult,
 };
 
 /// Describes the properties of a given item.

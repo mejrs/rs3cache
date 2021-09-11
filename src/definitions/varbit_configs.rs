@@ -14,13 +14,11 @@ use path_macro::path;
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
-use crate::{
-    cache::{
-        buf::Buffer,
-        index::CacheIndex,
-        indextype::{ConfigType, IndexType},
-    },
-    cache::error::CacheResult,
+use crate::cache::{
+    buf::Buffer,
+    error::CacheResult,
+    index::CacheIndex,
+    indextype::{ConfigType, IndexType},
 };
 /// A varbit configuration.
 ///

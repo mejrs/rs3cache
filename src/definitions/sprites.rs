@@ -6,7 +6,7 @@ use itertools::izip;
 use path_macro::path;
 
 use crate::{
-    cache::{buf::Buffer, index::CacheIndex, error::CacheResult, indextype::IndexType},
+    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
     utils::par::ParApply,
 };
 

@@ -2,13 +2,11 @@
 
 use std::collections::BTreeMap;
 
-use crate::{
-    cache::{
-        buf::Buffer,
-        index::CacheIndex,
-        indextype::{ConfigType, IndexType},
-    },
-    cache::error::CacheResult,
+use crate::cache::{
+    buf::Buffer,
+    error::CacheResult,
+    index::CacheIndex,
+    indextype::{ConfigType, IndexType},
 };
 /// A configuration of a sprite that can be drawn on the world map.
 #[derive(Debug, Default, Copy, Clone)]

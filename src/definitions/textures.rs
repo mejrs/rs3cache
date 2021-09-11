@@ -11,10 +11,7 @@ use path_macro::path;
 use pyo3::prelude::*;
 use serde::Serialize;
 
-use crate::{
-    cache::{buf::Buffer, index::CacheIndex, indextype::IndexType},
-    cache::error::CacheResult,
-};
+use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 /// Describes the properties of a given item.
 
