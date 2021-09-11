@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rs3cache_macros = { path = "../rs3cache_macros", version = "0.1.0" }
+rs3cache_macros = { path = "../rs3cache_macros", version = "0.1.0" , optional = true}
 rs3cache_utils = { path = "../rs3cache_utils", version = "0.1.0" }
 sqlite = { version = "0.26.0", optional = true }
 libflate = "1.1.1"
@@ -19,6 +19,7 @@ path_macro = "1.0.0"
 fstrings = "0.2.3"
 
 [features]
+python = ["pyo3", "rs3cache_macros"]
 mockdata = []
 save_mockdata = []
 dont_save = []

@@ -89,7 +89,7 @@ impl VarbitConfig {
 /// Save the varbit configs as `varbit_configs.json`. Exposed as `--dump varbit_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;
-    let mut vb_configs = VarbitConfig::dump_all(&config)?.into_values().collect::<Vec<_>>();
+    let mut vb_configs = VarbitConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     vb_configs.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create(path!(config.output / "varbit_configs.json"))?;

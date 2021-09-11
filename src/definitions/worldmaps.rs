@@ -326,7 +326,7 @@ pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;
 
-    let mut map_zones = MapZone::dump_all(&config)?.into_values().collect::<Vec<_>>();
+    let mut map_zones = MapZone::dump_all(config)?.into_values().collect::<Vec<_>>();
     map_zones.sort_unstable_by_key(|loc| loc.id);
 
     let mut file = File::create(path!(config.output / "map_zones.json"))?;
