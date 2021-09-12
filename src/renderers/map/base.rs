@@ -47,9 +47,9 @@ pub fn put(
                     // Overlays
                     if let Some(id) = column[p].overlay_id {
                         let ov = &overlay_definitions[&(id.checked_sub(1).expect("Not 100% sure about this invariant.") as u32)];
-                        for colour in &[ov.primary_colour, ov.secondary_colour] {
-                            if Some((255, 0, 255)) != *colour {
-                                if let Some((red, green, blue)) = *colour {
+                        for colour in [ov.primary_colour, ov.secondary_colour] {
+                            if Some((255, 0, 255)) != colour {
+                                if let Some((red, green, blue)) = colour {
                                     let fill = Rgba([red, green, blue, 255]);
                                     if column[p].shape.unwrap_or(0) != 0 {
                                         //dbg!(column[p]);

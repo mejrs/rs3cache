@@ -38,15 +38,7 @@
 //! - `target/release/rs3cache.exe --help` to see a list of commands
 //!
 
-#![feature(
-    cfg_eval,
-    option_result_contains,
-    option_get_or_insert_default,
-    option_result_unwrap_unchecked,
-    backtrace,
-    thread_spawn_unchecked,
-    once_cell
-)]
+#![feature(cfg_eval, option_result_contains, option_get_or_insert_default, option_result_unwrap_unchecked, once_cell)]
 #![allow(non_snake_case)]
 #![warn(
     unused_crate_dependencies,

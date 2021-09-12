@@ -16,7 +16,6 @@ name = "rs3cache"
 # dual types make it work both for compiling as package and python lib
 crate-type = ["lib", "cdylib"]
 
-
 [[bin]]
 name = "rs3cache"
 path = "src/main.rs"
