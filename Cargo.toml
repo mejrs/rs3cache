@@ -2,7 +2,7 @@
 name = "rs3cache"
 version = "0.1.0"
 authors = ["mejrs"]
-edition = "2018"
+edition = "2021"
 default-run = "rs3cache"
 
 [workspace]
