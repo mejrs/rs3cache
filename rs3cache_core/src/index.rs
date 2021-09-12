@@ -225,7 +225,7 @@ where
             let mut file = File::create(&filename).unwrap();
             file.write_all(&encoded_data).unwrap();
         }
-        decoder::decompress(encoded_data, None)
+        Ok(decoder::decompress(encoded_data, None)?)
     }
 
     /// Grabs mock data from disk.
@@ -237,7 +237,7 @@ where
         let mut encoded_data = Vec::new();
         file.read_to_end(&mut encoded_data)?;
 
-        decoder::decompress(encoded_data, None)
+        Ok(decoder::decompress(encoded_data, None)?)
     }
 
     /// Executes a sql command to retrieve an archive from the cache.
@@ -286,7 +286,7 @@ where
             let mut file = File::create(&filename).unwrap();
             file.write_all(&encoded_data).unwrap()
         }
-        decoder::decompress(encoded_data, metadata.size())
+        Ok(decoder::decompress(encoded_data, metadata.size())?)
     }
     /// Grabs mock data from disk.
     #[cfg(feature = "mockdata")]
@@ -295,7 +295,7 @@ where
         let mut file = File::open(&filename)?;
         let mut encoded_data = Vec::new();
         file.read_to_end(&mut encoded_data)?;
-        decoder::decompress(encoded_data, metadata.size())
+        Ok(decoder::decompress(encoded_data, metadata.size())?)
     }
 
     /// Assert whether the cache held by `self` is in a coherent state.
@@ -442,7 +442,7 @@ where
 
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
         let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        decoder::decompress(data, None, None)
+        Ok(decoder::decompress(data, None, None)?)
     }
 
     pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>> {

@@ -1,10 +1,11 @@
 //! Functions to decompress cache data.
 
-use std::io::Read;
+use std::{
+    fmt::{Debug, Display, Formatter},
+    io::Read,
+};
 
 use libflate::{gzip, zlib};
-
-use crate::error::{CacheError, CacheResult};
 
 /// Enumeration of different compression types.
 pub struct Compression;
@@ -24,7 +25,7 @@ impl Compression {
 ///
 /// Used internally by [`CacheIndex`](crate::cache::index::CacheIndex).
 #[cfg(feature = "rs3")]
-pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<Vec<u8>> {
+pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> Result<Vec<u8>, DecodeError> {
     if &encoded_data[0..3] == Compression::ZLIB {
         let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
         let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
@@ -37,10 +38,7 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
         let mut temp = b"BZh1".to_vec();
         temp.extend(&encoded_data[9..]);
 
-        let mut decoded_data = Vec::with_capacity(
-            filesize.ok_or_else(|| CacheError::DecompressionError("bzip2 length must be known".to_string(), std::backtrace::Backtrace::capture()))?
-                as usize,
-        );
+        let mut decoded_data = Vec::with_capacity(filesize.ok_or_else(|| DecodeError::Other("bzip2 length must be known".to_string()))? as usize);
 
         let mut decoder = bzip2::Decompress::new(false);
 
@@ -53,15 +51,12 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> CacheResult<V
         decoder.read_to_end(&mut decoded_data)?;
         Ok(decoded_data)
     } else {
-        Err(CacheError::DecompressionError(
-            format!("Unknown compression format: {:?}", &encoded_data[0..10]),
-            std::backtrace::Backtrace::capture(),
-        ))
+        unimplemented!("unknown format {}", encoded_data[0])
     }
 }
 
 #[cfg(feature = "osrs")]
-pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<crate::xtea::Xtea>) -> CacheResult<Vec<u8>> {
+pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<crate::xtea::Xtea>) -> Result<Vec<u8>, DecodeError> {
     use crate::buf::Buffer;
 
     if &encoded_data[0..3] == Compression::ZLIB {
@@ -92,10 +87,8 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
 
         let mut decoder = match gzip::Decoder::new(&decrypted[4..]) {
             Ok(decoder) => decoder,
-            Err(e) => {
-                println!("Error decoding mapsquare");
-                dbg!(xtea);
-                return Err(e.into());
+            Err(_e) => {
+                return Err(DecodeError::XteaError);
             }
         };
         let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
@@ -108,9 +101,50 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
         decoder.read_to_end(&mut decoded_data)?;
         Ok(decoded_data)
     } else {
-        Err(CacheError::DecompressionError(
-            format!("Unknown compression format: {:?}", &encoded_data[0..10]),
-            std::backtrace::Backtrace::capture(),
-        ))
+        unimplemented!("unknown format {}", encoded_data[0])
+    }
+}
+
+#[derive(Debug)]
+pub enum DecodeError {
+    /// Wraps [`bzip2::Error`](https://docs.rs/bzip2/0.4.2/bzip2/enum.Error.html).
+    IoError(std::io::Error),
+    BZip2Error(bzip2::Error),
+    #[cfg(feature = "osrs")]
+    XteaError,
+    Other(String),
+}
+
+impl From<std::io::Error> for DecodeError {
+    fn from(cause: std::io::Error) -> Self {
+        Self::IoError(cause)
+    }
+}
+
+impl From<bzip2::Error> for DecodeError {
+    fn from(cause: bzip2::Error) -> Self {
+        Self::BZip2Error(cause)
+    }
+}
+
+impl Display for DecodeError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::BZip2Error(e) => Display::fmt(&e, f),
+            Self::IoError(e) => Display::fmt(&e, f),
+            Self::Other(e) => Display::fmt(&e, f),
+            #[cfg(feature = "osrs")]
+            Self::XteaError => Display::fmt("XteaError", f),
+        }
+    }
+}
+
+impl std::error::Error for DecodeError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::BZip2Error(e) => Some(e),
+            Self::IoError(e) => Some(e),
+            _ => None,
+        }
     }
 }
