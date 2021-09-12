@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, convert::TryInto};
+use std::collections::BTreeMap;
 
 use image::{GenericImage, Rgba, RgbaImage};
 use ndarray::{ArrayBase, Dim, ViewRepr};

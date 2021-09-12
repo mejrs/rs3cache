@@ -2,7 +2,6 @@
 
 use std::{
     collections::{BTreeMap, HashMap},
-    convert::TryInto,
     fs::{self, File},
     io::Write,
     iter,

@@ -1,7 +1,5 @@
 //! The [`Coordinate`] type.
 
-use std::convert::TryFrom;
-
 use serde::Serialize;
 
 /// A coordinate.
