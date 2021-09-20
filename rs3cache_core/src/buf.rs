@@ -169,7 +169,9 @@ where
     /// Reads `count` bytes from the buffer.
     #[inline(always)]
     pub fn read_n_bytes(&mut self, count: usize) -> Vec<u8> {
-        iter::repeat_with(|| self.buf.get_u8()).take(count).collect()
+        let mut out = vec![0; count];
+        self.buf.copy_to_slice(&mut out);
+        out
     }
 
     /// Reads three unsigned bytes as an 32-bit unsigned integer.
