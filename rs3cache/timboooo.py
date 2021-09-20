@@ -15,12 +15,12 @@ loc_config = get_location_configs()
 for i, j in product(range(100), range(200)):
     try:
         new_objs = set(new.get(i,j).locations())
-    except (ValueError, FileNotFoundError):
+    except (ValueError, FileNotFoundError, RuntimeError):
         new_objs = set()
 
     try:
         old_objs = set(old.get(i,j).locations())
-    except (ValueError, FileNotFoundError):
+    except (ValueError, FileNotFoundError, RuntimeError):
         old_objs = set()
 
     added = new_objs - old_objs
