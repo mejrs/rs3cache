@@ -215,9 +215,8 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                     let xx = base_i + x;
                     let yy = base_j + y;
                     let filename = path!(folder / f!("{CONFIG.map_id}/4/{plane}_{xx}_{yy}.png"));
-                    //sub_image.to_image().save(filename).unwrap();
-                    let img = sub_image.to_image();
-                    std::hint::black_box(img);
+                    sub_image.to_image().save(filename).unwrap();
+
                 }
             }
         }
@@ -244,9 +243,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                     let xx = base_i + x;
                     let yy = base_j + y;
                     let filename = path!(folder / f!("{CONFIG.map_id}/3/{plane}_{xx}_{yy}.png"));
-                    //resized.save(filename).unwrap();
-                    let img = resized;
-                    std::hint::black_box(img);
+                    resized.save(filename).unwrap();
                 }
             }
         }
@@ -265,9 +262,8 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             /* don't save useless tiles */
             {
                 let filename = path!(folder / f!("{CONFIG.map_id}/2/{plane}_{base_i}_{base_j}.png"));
-                //resized.save(filename).unwrap();
-                let img = resized;
-                std::hint::black_box(img);
+                resized.save(filename).unwrap();
+
             }
         }
     }
