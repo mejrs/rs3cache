@@ -31,7 +31,7 @@ pub fn draw(ty: u8, rotation: u8, size: u32, fun: impl FnMut((u32, u32))) {
 
 #[cfg(test)]
 mod line_shape_tests {
-    use super::LineShape;
+    use super::*;
 
     // Unsafe code in renderers/map.rs depends on this test passing
     #[test]
@@ -42,25 +42,13 @@ mod line_shape_tests {
         for ty in &types {
             for rot in &rotations {
                 for size in &sizes {
-                    for (x, y) in LineShape::new(*ty, *rot, *size) {
+                    draw(*ty, *rot, *size, |(x,y)| {
                         if !(x < *size && y < *size) {
                             panic!("{} {} {} {} {}", x, y, ty, rot, size)
                         }
-                    }
+                    });
                 }
             }
         }
-    }
-
-    #[test]
-    #[should_panic]
-    fn unpower_of_two() {
-        let _ = LineShape::new(0, 0, 7);
-    }
-
-    #[test]
-    #[should_panic]
-    fn invalid_type() {
-        let _ = LineShape::new(4, 0, 8);
     }
 }

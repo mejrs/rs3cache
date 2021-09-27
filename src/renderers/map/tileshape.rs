@@ -155,19 +155,13 @@ mod shape_tests {
         let sizes = [2, 4, 8, 16, 32, 64];
         for size in &sizes {
             for shape in &shapes {
-                for (x, y) in OverlayShape::new(*shape, *size) {
+                draw_overlay(*shape, *size, |(x,y)| {
                     if !(x < *size && y < *size) {
                         panic!("{} {} {} {}", x, y, shape, size)
                     }
-                }
+                });
             }
         }
-    }
-
-    #[test]
-    #[should_panic]
-    fn overlay_unpower_of_two() {
-        let _ = OverlayShape::new(0, 13);
     }
 
     // Unsafe code in renderers/map.rs depends on this invariant
@@ -179,25 +173,20 @@ mod shape_tests {
         ];
         let sizes = [2, 4, 8, 16, 32, 64];
         for size in &sizes {
-            for (x, y) in UnderlayShape::new(None, *size) {
+            draw_underlay(None, *size, |(x,y)| {
                 if !(x < *size && y < *size) {
                     panic!("{} {} {}", x, y, size)
                 }
-            }
+            });
+
             for shape in &shapes {
-                for (x, y) in UnderlayShape::new(Some(*shape), *size) {
+                draw_underlay(Some(*shape), *size, |(x,y)| {
                     if !(x < *size && y < *size) {
-                        panic!("{} {} {} {}", x, y, shape, size)
+                        panic!("{} {} {}", x, y, size)
                     }
-                }
+                });
             }
         }
-    }
-
-    #[test]
-    #[should_panic]
-    fn underlay_unpower_of_two() {
-        let _ = UnderlayShape::new(Some(0), 13);
     }
 
     #[test]
@@ -209,14 +198,20 @@ mod shape_tests {
         let sizes = [2, 4, 8, 16, 32, 64];
         for size in &sizes {
             for shape in &shapes {
-                let mut o = OverlayShape::new(*shape, *size).into_iter().collect::<Vec<_>>();
-                let mut u = UnderlayShape::new(Some(*shape), *size).into_iter().collect::<Vec<_>>();
-                let total_length = o.len() + u.len();
-                assert_eq!(total_length as u32, size * size);
+                let mut collection = Vec::new();
+
+                draw_underlay(Some(*shape), *size, |(x,y)| {
+                    collection.push((x,y));
+                });
+
+                draw_overlay(*shape, *size, |(x,y)| {
+                    collection.push((x,y));
+                });
+
+                assert_eq!(collection.len() as u32, size * size);
 
                 let mut uniq = HashSet::new();
-                o.append(&mut u);
-                assert!(o.into_iter().all(move |x| uniq.insert(x)));
+                assert!(collection.into_iter().all(move |x| uniq.insert(x)));
             }
         }
     }
