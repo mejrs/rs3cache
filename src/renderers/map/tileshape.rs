@@ -155,7 +155,7 @@ mod shape_tests {
         let sizes = [2, 4, 8, 16, 32, 64];
         for size in &sizes {
             for shape in &shapes {
-                draw_overlay(*shape, *size, |(x,y)| {
+                draw_overlay(*shape, *size, |(x, y)| {
                     if !(x < *size && y < *size) {
                         panic!("{} {} {} {}", x, y, shape, size)
                     }
@@ -173,14 +173,14 @@ mod shape_tests {
         ];
         let sizes = [2, 4, 8, 16, 32, 64];
         for size in &sizes {
-            draw_underlay(None, *size, |(x,y)| {
+            draw_underlay(None, *size, |(x, y)| {
                 if !(x < *size && y < *size) {
                     panic!("{} {} {}", x, y, size)
                 }
             });
 
             for shape in &shapes {
-                draw_underlay(Some(*shape), *size, |(x,y)| {
+                draw_underlay(Some(*shape), *size, |(x, y)| {
                     if !(x < *size && y < *size) {
                         panic!("{} {} {}", x, y, size)
                     }
@@ -200,12 +200,12 @@ mod shape_tests {
             for shape in &shapes {
                 let mut collection = Vec::new();
 
-                draw_underlay(Some(*shape), *size, |(x,y)| {
-                    collection.push((x,y));
+                draw_underlay(Some(*shape), *size, |(x, y)| {
+                    collection.push((x, y));
                 });
 
-                draw_overlay(*shape, *size, |(x,y)| {
-                    collection.push((x,y));
+                draw_overlay(*shape, *size, |(x, y)| {
+                    collection.push((x, y));
                 });
 
                 assert_eq!(collection.len() as u32, size * size);

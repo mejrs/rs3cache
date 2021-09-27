@@ -42,7 +42,7 @@ mod line_shape_tests {
         for ty in &types {
             for rot in &rotations {
                 for size in &sizes {
-                    draw(*ty, *rot, *size, |(x,y)| {
+                    draw(*ty, *rot, *size, |(x, y)| {
                         if !(x < *size && y < *size) {
                             panic!("{} {} {} {} {}", x, y, ty, rot, size)
                         }

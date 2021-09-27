@@ -216,7 +216,6 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                     let yy = base_j + y;
                     let filename = path!(folder / f!("{CONFIG.map_id}/4/{plane}_{xx}_{yy}.png"));
                     sub_image.to_image().save(filename).unwrap();
-
                 }
             }
         }
@@ -263,7 +262,6 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             {
                 let filename = path!(folder / f!("{CONFIG.map_id}/2/{plane}_{base_i}_{base_j}.png"));
                 resized.save(filename).unwrap();
-
             }
         }
     }
