@@ -30,6 +30,12 @@ where
         Buffer { buf: Cursor::new(file) }
     }
 
+    pub fn read_array<const LENGTH: usize>(&mut self) -> [u8; LENGTH] {
+        let mut dst = [0; LENGTH];
+        self.buf.copy_to_slice(&mut dst);
+        dst
+    }
+
     /// Reads a byte as signed 8-bit integer. Wraps [Buf::get_i8()](https://docs.rs/bytes/1.0.1/bytes/buf/trait.Buf.html#method.get_i8)
     #[inline(always)]
     pub fn read_byte(&mut self) -> i8 {
@@ -177,17 +183,15 @@ where
     /// Reads three unsigned bytes as an 32-bit unsigned integer.
     #[inline(always)]
     pub fn read_3_unsigned_bytes(&mut self) -> u32 {
-        (self.buf.get_u8() as u32) << 16 | (self.buf.get_u8() as u32) << 8 | (self.buf.get_u8() as u32)
+        let mut dst = [0; 4];
+        self.buf.copy_to_slice(&mut dst[1..]);
+        u32::from_be_bytes(dst)
     }
 
-    /// Reads three unsigned bytes , returning a `(red, blue, green)` colour tuple.
+    /// Reads three unsigned bytes , returning a `[red, blue, green]` array.
     #[inline(always)]
-    pub fn read_rgb(&mut self) -> (u8, u8, u8) {
-        let red = self.buf.get_u8();
-        let green = self.buf.get_u8();
-        let blue = self.buf.get_u8();
-
-        (red, green, blue)
+    pub fn read_rgb(&mut self) -> [u8; 3] {
+        self.read_array()
     }
 
     /// Reads two obfuscated bytes.

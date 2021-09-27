@@ -25,7 +25,7 @@ pub struct Overlay {
     /// Id of the [`Overlay`] configuration.
     pub id: u32,
     /// Primary colour of the [`Overlay`] configuration.
-    pub primary_colour: Option<(u8, u8, u8)>,
+    pub primary_colour: Option<[u8; 3]>,
 
     #[cfg(feature = "osrs")]
     pub texture: Option<u8>,
@@ -35,7 +35,7 @@ pub struct Overlay {
 
     op_5: Option<bool>,
     /// Secondary colour of the [`Overlay`] configuration.
-    pub secondary_colour: Option<(u8, u8, u8)>,
+    pub secondary_colour: Option<[u8; 3]>,
 
     #[cfg(feature = "rs3")]
     op_8: Option<bool>,
@@ -53,7 +53,7 @@ pub struct Overlay {
     op_12: Option<bool>,
 
     #[cfg(feature = "rs3")]
-    ternary_colour: Option<(u8, u8, u8)>,
+    ternary_colour: Option<[u8; 3]>,
 
     #[cfg(feature = "rs3")]
     op_14: Option<u8>,

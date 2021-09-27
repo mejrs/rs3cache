@@ -26,7 +26,7 @@ pub struct Underlay {
     /// Id of the underlay configuration.
     pub id: u32,
     /// Ground colour of this tile type
-    pub colour: Option<(u8, u8, u8)>,
+    pub colour: Option<[u8; 3]>,
     #[cfg(feature = "rs3")]
     op_2: Option<u16>,
     #[cfg(feature = "rs3")]

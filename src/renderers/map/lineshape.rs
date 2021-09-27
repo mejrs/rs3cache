@@ -1,53 +1,32 @@
-/// An iterator that given a shape and [`tilesize`](crate::renderers::map::mapcore::TILESIZE), yields which pixels should be coloured.
-#[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct LineShape {
-    inner: Vec<(u32, u32)>,
-}
+pub fn draw(ty: u8, rotation: u8, size: u32, fun: impl FnMut((u32, u32))) {
+    debug_assert!(size.is_power_of_two(), "{} is an invalid size Only 2^n values are allowed.", size);
 
-impl LineShape {
-    /// Constructor for [`LineShape`].
-    pub fn new(ty: u8, rotation: u8, size: u32) -> LineShape {
-        debug_assert!(size.is_power_of_two(), "{} is an invalid size Only 2^n values are allowed.", size);
+    match (ty, rotation) {
+        (0, 0) => (0..(size / 4)).flat_map(|x| (0..size).map(move |y| (x, y))).for_each(fun),
+        (0, 1) => (0..size).flat_map(|x| (0..(size / 4)).map(move |y| (x, y))).for_each(fun),
+        (0, 2) => ((size * 3 / 4)..size).flat_map(|x| (0..size).map(move |y| (x, y))).for_each(fun),
+        (0, 3) => (0..size).flat_map(|x| ((size * 3 / 4)..size).map(move |y| (x, y))).for_each(fun),
+        (2, 0) => (0..size)
+            .flat_map(|x| (0..if x < size / 4 { size } else { size / 4 }).map(move |y| (x, y)))
+            .for_each(fun),
+        (2, 1) => (0..size)
+            .flat_map(|x| (0..if x < size * 3 / 4 { size / 4 } else { size }).map(move |y| (x, y)))
+            .for_each(fun),
+        (2, 2) => (0..size)
+            .flat_map(|x| (if x < size * 3 / 4 { size * 3 / 4 } else { 0 }..size).map(move |y| (x, y)))
+            .for_each(fun),
+        (2, 3) => (0..size)
+            .flat_map(|x| (if x < size / 4 { 0 } else { size * 3 / 4 }..size).map(move |y| (x, y)))
+            .for_each(fun),
+        (9, 0) | (9, 2) => (0..size)
+            .flat_map(|x| ((size - x).saturating_sub(size / 8)..(size - x + size / 8).clamp(0, size)).map(move |y| (x, y)))
+            .for_each(fun),
+        (9, 1) | (9, 3) => (0..size)
+            .flat_map(|x| (x.saturating_sub(size / 8)..(x + size / 8).clamp(0, size)).map(move |y| (x, y)))
+            .for_each(fun),
 
-        let points: Vec<(u32, u32)> = match (ty, rotation) {
-            (0, 0) => (0..(size / 4)).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            (0, 1) => (0..size).flat_map(|x| (0..(size / 4)).map(move |y| (x, y))).collect(),
-            (0, 2) => ((size * 3 / 4)..size).flat_map(|x| (0..size).map(move |y| (x, y))).collect(),
-            (0, 3) => (0..size).flat_map(|x| ((size * 3 / 4)..size).map(move |y| (x, y))).collect(),
-            (2, 0) => (0..size)
-                .flat_map(|x| (0..if x < size / 4 { size } else { size / 4 }).map(move |y| (x, y)))
-                .collect(),
-            (2, 1) => (0..size)
-                .flat_map(|x| (0..if x < size * 3 / 4 { size / 4 } else { size }).map(move |y| (x, y)))
-                .collect(),
-            (2, 2) => (0..size)
-                .flat_map(|x| (if x < size * 3 / 4 { size * 3 / 4 } else { 0 }..size).map(move |y| (x, y)))
-                .collect(),
-            (2, 3) => (0..size)
-                .flat_map(|x| (if x < size / 4 { 0 } else { size * 3 / 4 }..size).map(move |y| (x, y)))
-                .collect(),
-            (9, 0) | (9, 2) => (0..size)
-                .flat_map(|x| ((size - x).saturating_sub(size / 8)..(size - x + size / 8).clamp(0, size)).map(move |y| (x, y)))
-                .collect(),
-            (9, 1) | (9, 3) => (0..size)
-                .flat_map(|x| (x.saturating_sub(size / 8)..(x + size / 8).clamp(0, size)).map(move |y| (x, y)))
-                .collect(),
-
-            (other_type, other_rot) => unimplemented!("LineShape for type {} with rotation {} is not implemented.", other_type, other_rot),
-        };
-
-        Self { inner: points }
-    }
-}
-
-impl IntoIterator for LineShape {
-    type Item = (u32, u32);
-
-    type IntoIter = std::vec::IntoIter<Self::Item>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.inner.into_iter()
-    }
+        (other_type, other_rot) => unimplemented!("LineShape for type {} with rotation {} is not implemented.", other_type, other_rot),
+    };
 }
 
 #[cfg(test)]

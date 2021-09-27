@@ -133,8 +133,8 @@ fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
                         };
 
                         img.pixels_mut().zip(base).zip(mask).for_each(|((pixel, idx), alpha_channel)| {
-                            let ((red, green, blue), alpha) = if idx == 0 {
-                                ((255, 0, 255), 0)
+                            let ([red, green, blue], alpha) = if idx == 0 {
+                                ([255, 0, 255], 0)
                             } else {
                                 (palette[idx as usize - 1], alpha_channel)
                             };
@@ -177,7 +177,7 @@ fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
             let mut img = RgbaImage::new(width as u32, height as u32);
 
             img.pixels_mut().zip(base).zip(mask).for_each(|((pixel, rgb), alpha)| {
-                let (red, green, blue) = rgb;
+                let [red, green, blue] = rgb;
                 pixel[0] = red;
                 pixel[1] = green;
                 pixel[2] = blue;

@@ -4,7 +4,7 @@ use image::{GenericImage, Rgba, RgbaImage};
 
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare},
-    renderers::map::{lineshape::LineShape, mapcore::CONFIG},
+    renderers::map::{lineshape, mapcore::CONFIG},
     utils::color::Color,
 };
 
@@ -37,21 +37,19 @@ pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location
                     Rgba(Color::WHITE)
                 };
 
-                for (a, b) in LineShape::new(location.r#type, location.rotation, CONFIG.tile_size) {
-                    unsafe {
-                        debug_assert!(
-                            (CONFIG.tile_size * location.x as u32 + a) < img.width()
-                                && (CONFIG.tile_size * (63u32 - location.y as u32) + b) < img.height(),
-                            "Index out of range."
-                        );
+                lineshape::draw(location.r#type, location.rotation, CONFIG.tile_size, |(a, b)| unsafe {
+                    debug_assert!(
+                        (CONFIG.tile_size * location.x as u32 + a) < img.width()
+                            && (CONFIG.tile_size * (63u32 - location.y as u32) + b) < img.height(),
+                        "Index out of range."
+                    );
 
-                        img.unsafe_put_pixel(
-                            CONFIG.tile_size * location.x as u32 + a,
-                            CONFIG.tile_size * (63u32 - location.y as u32) + b,
-                            fill,
-                        );
-                    }
-                }
+                    img.unsafe_put_pixel(
+                        CONFIG.tile_size * location.x as u32 + a,
+                        CONFIG.tile_size * (63u32 - location.y as u32) + b,
+                        fill,
+                    );
+                });
             });
     }
 }

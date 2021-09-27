@@ -41,9 +41,9 @@ pub struct MapLabelConfig {
     /// If present, the label is text on the map, with the given `String`.
     pub text: Option<String>,
     /// Text colour.
-    pub label_colour_1: Option<(u8, u8, u8)>,
+    pub label_colour_1: Option<[u8; 3]>,
     /// Text colour 2.
-    pub label_colour_2: Option<(u8, u8, u8)>,
+    pub label_colour_2: Option<[u8; 3]>,
     /// Font size ( any of 0, 1, 2, 3), if the label is text.
     pub font_size: Option<u8>,
     /// The sprite shown on the map.
