@@ -41,11 +41,7 @@ jobs:
       - clippy
       - test
     steps:
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-x86_64-unknown-linux-gnu
-          profile: minimal
-
+      - uses: actions/checkout@v2
       - name: Build the doc
         run: |
           cargo +nightly rustdoc --features=rs3,python
