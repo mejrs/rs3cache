@@ -1,11 +1,11 @@
-//! Units of data in a [`CacheIndex`](crate::cache::index::CacheIndex).
+//! Units of data in a [`CacheIndex`](crate::index::CacheIndex).
 //!
 //! Each [`Archive`] conatins files, which contain the actual data that can be parsed with
-//! the appropriate deserializer in [`definitions`](crate::definitions).
+//! the appropriate deserializer in [`definitions`](../../rs3cache/definitions/index.html).
 //!
 //! None of the structs in this module can be constructed directly.
-//! Instead, construct a [`CacheIndex`](crate::cache::index::CacheIndex)
-//! and use its [`IntoIterator`] implementation or its [`archive`](crate::cache::index::CacheIndex::archive())
+//! Instead, construct a [`CacheIndex`](crate::index::CacheIndex)
+//! and use its [`IntoIterator`] implementation or its [`archive`](crate::index::CacheIndex::archive())
 //! method instead.
 
 use std::collections::{BTreeMap, HashSet};
@@ -70,7 +70,7 @@ impl std::fmt::Debug for Archive {
 }
 
 impl Archive {
-    /// The [`index id`](crate::cache::indextype::IndexType) of `self`.
+    /// The [`index id`](crate::indextype::IndexType) of `self`.
     pub const fn index_id(&self) -> u32 {
         self.index_id
     }

@@ -11,7 +11,7 @@ pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Default, Debug, Copy, Clone)]
 pub struct Tile {
-    /// Reference to an [`OverlayShape`](crate::renderers::map::tileshape::OverlayShape).
+    /// Reference to a [shape](crate::renderers::map::tileshape).
     pub shape: Option<u8>,
 
     /// Reference to an [`Overlay`](crate::definitions::overlays::Overlay).

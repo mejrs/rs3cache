@@ -1,3 +1,5 @@
+//! Core cache interpreting utilities.
+
 #![feature(backtrace, error_iter, cfg_eval)]
 #![allow(non_snake_case)]
 #![warn(

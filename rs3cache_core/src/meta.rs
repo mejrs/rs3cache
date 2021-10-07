@@ -16,7 +16,7 @@ use serde::Serialize;
 
 use crate::{buf::Buffer, error::CacheResult, utils::adapters::Accumulator};
 
-/// Metadata about [`Archive`](crate::cache::arc::Archive)s.
+/// Metadata about [`Archive`](crate::arc::Archive)s.
 
 #[cfg_eval]
 #[allow(missing_docs)]
@@ -39,19 +39,19 @@ pub struct Metadata {
 }
 
 impl Metadata {
-    /// The [index id](crate::cache::indextype::IndexType) of this Metadata.
+    /// The [index id](crate::indextype::IndexType) of this Metadata.
     #[inline(always)]
     pub const fn index_id(&self) -> u32 {
         self.index_id
     }
 
-    /// The archive_id of the [`Archive`](crate::cache::arc::Archive).
+    /// The archive_id of the [`Archive`](crate::arc::Archive).
     #[inline(always)]
     pub const fn archive_id(&self) -> u32 {
         self.archive_id
     }
 
-    /// The hashed name of the [`Archive`](crate::cache::arc::Archive), if present.
+    /// The hashed name of the [`Archive`](crate::arc::Archive), if present.
     #[inline(always)]
     pub const fn name(&self) -> Option<i32> {
         self.name
@@ -64,7 +64,7 @@ impl Metadata {
     }
 
     /// Usually, the amount of seconds between [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time)
-    /// and when the [`Archive`](crate::cache::arc::Archive) was compiled,
+    /// and when the [`Archive`](crate::arc::Archive) was compiled,
     /// but it can also be a version counter.
     #[inline(always)]
     pub const fn version(&self) -> i32 {
@@ -77,13 +77,13 @@ impl Metadata {
         self.unknown
     }
 
-    /// Size of the [`Archive`](crate::cache::arc::Archive).
+    /// Size of the [`Archive`](crate::arc::Archive).
     #[inline(always)]
     pub const fn compressed_size(&self) -> Option<u32> {
         self.compressed_size
     }
 
-    /// Size of the [`Archive`](crate::cache::arc::Archive) once decompressed.
+    /// Size of the [`Archive`](crate::arc::Archive) once decompressed.
     #[inline(always)]
     pub const fn size(&self) -> Option<u32> {
         self.size
@@ -101,14 +101,14 @@ impl Metadata {
         self.child_count
     }
 
-    /// Enumerated file ids of files in the [`Archive`](crate::cache::arc::Archive).
+    /// Enumerated file ids of files in the [`Archive`](crate::arc::Archive).
     #[inline(always)]
     pub fn child_indices(&self) -> &[u32] {
         &self.child_indices
     }
 }
 
-/// Contains the [`Metadata`] for every [`Archive`](crate::cache::arc::Archive) in the index.
+/// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.
 #[cfg_eval]
 #[allow(missing_docs)]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -129,7 +129,7 @@ impl IndexMetadata {
         self.metadatas.keys()
     }
 
-    /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](crate::cache::indextype::IndexType).
+    /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_core::indextype::IndexType).
     pub(crate) fn deserialize(index_id: u32, mut buffer: Buffer<Vec<u8>>) -> CacheResult<Self> {
         let format = buffer.read_byte();
 

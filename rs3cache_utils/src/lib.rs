@@ -1,3 +1,5 @@
+//! Miscellanious utilities.
+
 #![feature(thread_spawn_unchecked)]
 #![allow(non_snake_case)]
 #![warn(

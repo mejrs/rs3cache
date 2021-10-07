@@ -58,7 +58,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 ///
 /// # Errors
 ///
-/// Raises [`CacheError`](crate::utils::error::CacheError) if any of `ids` does not correspond to a sprite.
+/// Raises [`CacheError`](rs3cache_core::error::CacheError) if any of `ids` does not correspond to a sprite.
 ///
 /// # Panics
 ///

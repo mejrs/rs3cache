@@ -1,4 +1,5 @@
 // Mostly adapted from `serde_with_macros`.
+//! Proc macro for the `rs3cache` crate.
 
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};

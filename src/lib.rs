@@ -1,42 +1,4 @@
-//! # rs3cache
-//!
-//! Tools and api for reading and interpreting the [Runescape 3](https://www.runescape.com/community) game cache.
-//!
-//!
-//! # Setup
-//!
-//! - `git clone https://github.com/mejrs/rs3-cache`.
-//!
-//! - Install the [Rust compiler](https://rustup.rs/).
-//!
-//! - Configure rustup to use the nightly version: `rustup default nightly`.
-//!
-//! - Navigate to this repository
-//!
-//! - Compile the executable with `cargo build --release`.
-//!
-//! - Either:
-//!     - Create a system variable named `RUNESCAPE_CACHE_FOLDER` and set its value to where your cache is located.
-//!       Typically, this is `%ProgramData%\Jagex\RuneScape`.
-//!     - Copy the entire cache and place it in the `raw` folder.
-//!
-//!  # Usage (executable)
-//!
-//! The following commands are available:
-//!
-//! - `target/release/rs3cache.exe --dump all`: save various archives as JSON in the `out` folder.
-//! - Use `target/release/rs3cache.exe --dump <archive>` to only dump a specific archive.
-//!
-//! - `target/release/rs3cache.exe --render map`: render images of the game surface.
-//! This exports them as small tiles,  <br>
-//! formatted as `<layer>/<zoom>/<plane>_<x>_<y>.png`,
-//! suitable for use with interactive map libraries such as [Leaflet](https://leafletjs.com/),
-//! as seen on [mejrs.github.io](https://mejrs.github.io/).
-//!
-//! - `target/release/rs3cache.exe --assert coherence`: checks whether the cache is in a coherent state.
-//!
-//! - `target/release/rs3cache.exe --help` to see a list of commands
-//!
+#![doc = include_str!("../README.md")]
 
 #![feature(
     cfg_eval,

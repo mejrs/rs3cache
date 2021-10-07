@@ -8,7 +8,7 @@ pub type CacheResult<T> = Result<T, CacheError>;
 
 /// An error type for things that can go wrong when reading from the cache.
 pub enum CacheError {
-    /// Wraps [`sqlite::Error`](https://docs.rs/sqlite/0.25.3/sqlite/struct.Error.html).
+    /// Wraps [`sqlite::Error`].
     #[cfg(feature = "rs3")]
     SqliteError(sqlite::Error),
     DecodeError(DecodeError),
@@ -16,25 +16,25 @@ pub enum CacheError {
     IoError(std::io::Error),
     /// Wraps [`ParseIntError`](std::num::ParseIntError).
     ParseIntError(std::num::ParseIntError),
-    /// Wraps [`ImageError`](https://docs.rs/image/0.23.14/image/error/enum.ImageError.html).
+    /// Wraps [`image::ImageError`].
     ImageError(image::ImageError),
-    /// Wraps [`serde_json::Error`](https://docs.serde.rs/serde_json/struct.Error.html).
+    /// Wraps [`serde_json::Error`].
     JsonDecodeError(Backtrace, serde_json::Error, Option<PathBuf>),
-    /// Wraps [`serde_json::Error`](https://docs.serde.rs/serde_json/struct.Error.html).
+    /// Wraps [`serde_json::Error`].
     JsonEncodeError(Backtrace, serde_json::Error, Option<PathBuf>),
     /// Raised when the CRC field of the requested archive is unequal
-    /// to the one in its [`Metadata`](crate::cache::meta::Metadata).
+    /// to the one in its [`Metadata`](crate::meta::Metadata).
     CrcError(u32, u32, i64, i64),
     /// Raised when the CRC field of the requested archive is unequal
-    /// to the one in its [`Metadata`](crate::cache::meta::Metadata).
+    /// to the one in its [`Metadata`](crate::meta::Metadata).
     VersionError(u32, u32, i64, i64),
     /// Raised if a file fails during decompression.
     DecompressionError(String),
     /// Raised if the index cannot be found, usually if the cache is missing or malformed.
     CacheNotFoundError(std::io::Error, PathBuf),
-    /// Raised if an [`Archive`](crate::cache::arc::Archive) is not in the [`CacheIndex`](crate::cache::index::CacheIndex).
+    /// Raised if an [`Archive`](crate::arc::Archive) is not in the [`CacheIndex`](crate::index::CacheIndex).
     ArchiveNotFoundError(u32, u32),
-    /// Raised if a file is not in an [`Archive`](crate::cache::arc::Archive).
+    /// Raised if a file is not in an [`Archive`](crate::arc::Archive).
     FileNotFoundError(u32, u32, u32),
 }
 

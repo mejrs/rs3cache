@@ -23,7 +23,7 @@ impl Compression {
 
 /// Decompresses index files.
 ///
-/// Used internally by [`CacheIndex`](crate::cache::index::CacheIndex).
+/// Used internally by [`CacheIndex`](crate::index::CacheIndex).
 #[cfg(feature = "rs3")]
 pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> Result<Vec<u8>, DecodeError> {
     if &encoded_data[0..3] == Compression::ZLIB {
@@ -107,7 +107,7 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
 
 #[derive(Debug)]
 pub enum DecodeError {
-    /// Wraps [`bzip2::Error`](https://docs.rs/bzip2/0.4.2/bzip2/enum.Error.html).
+    /// Wraps [`bzip2::Error`].
     IoError(std::io::Error),
     BZip2Error(bzip2::Error),
     #[cfg(feature = "osrs")]

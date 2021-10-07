@@ -91,7 +91,7 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    /// The [index id](crate::cache::indextype::IndexType) of `self`,
+    /// The [index id](crate::indextype::IndexType) of `self`,
     /// corresponding to the `raw/js5-{index_id}.jcache` file being held.
     #[inline(always)]
     pub fn index_id(&self) -> u32 {
@@ -707,7 +707,7 @@ impl Iterator for IntoIter {
 }
 
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-/// An iterator of [`ArchiveGroup`]s. Used internally by renderers that need to know about the surrounding [`GroupMapSquare`](crate::definitions::mapsquares::GroupMapSquare).
+/// An iterator of [`ArchiveGroup`]s. Used internally by renderers that need to know about the surrounding [`GroupMapSquare`](../../rs3cache/definitions/mapsquares/struct.GroupMapSquare.html).
 pub struct IntoIterGrouped {
     /// Handle to the underlying [`CacheIndex`].
     index: CacheIndex<Grouped>,

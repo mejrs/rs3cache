@@ -171,8 +171,8 @@ pub struct Config {
     /// Allowed values: [all, map]
     ///
     /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
-    /// suitable for use with interactive map libraries such as https://leafletjs.com/,
-    /// as seen on https://mejrs.github.io/
+    /// suitable for use with interactive map libraries such as <https://leafletjs.com/>,
+    /// as seen on <https://mejrs.github.io/>
     #[structopt(long)]
     pub render: Vec<Render>,
 

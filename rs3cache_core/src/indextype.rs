@@ -11,11 +11,11 @@ impl IndexType {
     pub const CONFIG: u32 = 2;
     /// Unimplemented.
     pub const INTERFACES: u32 = 3;
-    /// Contains [`MapSquare`](crate::definitions::mapsquares::MapSquare) definitions.
+    /// Contains [`MapSquare`](../../rs3cache/definitions/mapsquares/struct.MapSquares.html) definitions.
     pub const MAPSV2: u32 = 5;
     /// Discontinued.
     const MODELS: u32 = 7;
-    /// Contains [`Sprite`](crate::definitions::sprites::Sprite) definitions.
+    /// Contains [`sprite`](../../rs3cache/definitions/sprites/index.html) definitions.
     pub const SPRITES: u32 = 8;
     /// Unimplemented.
     #[cfg(feature = "osrs")]
@@ -28,12 +28,12 @@ impl IndexType {
     pub const FONTMETRICS: u32 = 13;
     /// Unimplemented.
     pub const VORBIS: u32 = 14;
-    /// Contains the [`LocationConfig`](crate::definitions::location_configs::LocationConfig) definitions.
+    /// Contains the [`LocationConfig`](../../rs3cache/definitions/location_configs/struct.LocationConfig.html) definitions.
     #[cfg(feature = "rs3")]
     pub const LOC_CONFIG: u32 = 16;
     /// Unimplemented.
     pub const ENUM_CONFIG: u32 = 17;
-    /// Contains the [`NpcConfig`](crate::definitions::npc_configs::NpcConfig) definitions.
+    /// Contains the [`NpcConfig`](../../rs3cache/definitions/npc_configs/struct.NpcConfig.html) definitions.
     #[cfg(feature = "rs3")]
     pub const NPC_CONFIG: u32 = 18;
     /// Unimplemented.
@@ -44,8 +44,8 @@ impl IndexType {
     pub const SPOT_CONFIG: u32 = 21;
     /// Unimplemented.
     pub const STRUCT_CONFIG: u32 = 22;
-    /// Contains [`MapZone`](crate::definitions::worldmaps::MapZone),
-    /// [`MapPastes`](crate::definitions::worldmaps::MapPastes) definitions,
+    /// Contains [`MapZone`](../../rs3cache/definitions/worldmaps/struct.MapZone.html),
+    /// [`MapPastes`](../../rs3cache/definitions/worldmaps/struct.MapPastes.html) definitions,
     /// as well as PNG images of the world map.
     pub const WORLDMAP: u32 = 23;
     /// Unimplemented.
@@ -113,13 +113,13 @@ impl IndexType {
 pub struct ConfigType;
 
 impl ConfigType {
-    /// Contains [`Underlay`](crate::definitions::underlays::Underlay) definitions.
+    /// Contains [`Underlay`](../../rs3cache/definitions/underlays/struct.Underlay.html) definitions.
     pub const UNDERLAYS: u32 = 1;
     /// Unimplemented.
     pub const HUNT: u32 = 2;
     /// Unimplemented.
     pub const IDENTITY_KIT: u32 = 3;
-    /// Contains [`Overlay`](crate::definitions::overlays::Overlay) definitions.
+    /// Contains [`Overlay`](../../rs3cache/definitions/overlays/struct.Overlay.html) definitions.
     pub const OVERLAYS: u32 = 4;
     /// Unimplemented.
     pub const INVENTORY: u32 = 5;
@@ -143,7 +143,7 @@ impl ConfigType {
     pub const BASE_ANIMATION_SET: u32 = 32;
     /// Unimplemented.
     pub const CURSORS: u32 = 33;
-    /// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).
+    /// Contains [`MapScene`](../../rs3cache/definitions/mapscenes/struct.MapScene.html).
     #[cfg(feature = "rs3")]
     pub const MAPSCENES: u32 = 34;
     #[cfg(feature = "osrs")]
@@ -151,7 +151,7 @@ impl ConfigType {
     /// Unimplemented.
     #[cfg(feature = "rs3")]
     pub const QUESTS: u32 = 35;
-    /// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).
+    /// Contains [`MapLabelConfig`](../../rs3cache/definitions/maplabel_configs/struct.MapLabelConfig.html).
     #[cfg(feature = "rs3")]
     pub const MAPLABELS: u32 = 36;
     /// Unimplemented.
@@ -220,17 +220,17 @@ impl MapFileType {
 #[allow(missing_docs)]
 #[cfg(feature = "rs3")]
 impl MapFileType {
-    /// Deserializes to the sequence of [`Location`]s in `self`.
+    /// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.
     pub const LOCATIONS: u32 = 0;
-    /// Deserializes to a sequence of underwater [`Location`]s in `self`. Not implemented.
+    /// Deserializes to a sequence of underwater  [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`. Not implemented.
     pub const WATER_LOCATIONS: u32 = 1;
     /// Deserializes to a sequence of all npcs in `self`.
     /// Only mapsquares which used to have a "zoom around" login screen,
     /// or are derived from one that had, have this file.
     pub const NPCS: u32 = 2;
-    /// Deserializes to the [`TileArray`] of `self`.
+    /// Deserializes to the [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.
     pub const TILES: u32 = 3;
-    /// Deserializes to the underwater [`TileArray`] of `self`.
+    /// Deserializes to the underwater [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.
     pub const WATER_TILES: u32 = 4;
     pub const UNKNOWN_5: u32 = 5;
     pub const UNKNOWN_6: u32 = 6;

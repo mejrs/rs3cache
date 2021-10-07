@@ -45,7 +45,7 @@ jobs:
       - name: Build the doc
         run: |
           cargo doc --features="rs3,python" --target-dir="gh-pages-build" --no-deps --workspace
-          echo "<meta http-equiv=refresh content=0;url=rs3cache/index.html>" > gh-pages-build/index.html
+          echo "<meta http-equiv=refresh content=0;url=rs3cache/index.html>" > gh-pages-build/doc/index.html
       - name: Deploy
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: peaceiris/actions-gh-pages@v3
