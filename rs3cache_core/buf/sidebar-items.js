@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Buffer","Contains a buffer, exposing various reads on it."]]});

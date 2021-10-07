@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["export","Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`."],["export_each","Save the location configs as individual `json` files."]],"mod":[["location_config_fields","Defines the structs used as fields of [`LocationConfig`],"]],"struct":[["LocationConfig","Describes the properties of a given `Location`."]]});

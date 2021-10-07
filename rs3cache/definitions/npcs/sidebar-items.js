@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Npc","A non player character."]]});

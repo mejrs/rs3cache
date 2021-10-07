@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ColourReplacements",""],["Quests",""],["RecolourPalette",""],["Rotation",""],["StackInfo",""],["Textures",""],["Translation",""]]});

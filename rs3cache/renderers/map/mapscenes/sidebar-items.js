@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["put","Applies [`MapScene`]s to the base image."]]});

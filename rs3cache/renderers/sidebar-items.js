@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["map","Exports map tiles."],["zoom","Creates successive tiles for different zoom levels, for use with a leaflet.js based map."]]});

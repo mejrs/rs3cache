@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["adapters","Adapters for iterators."],["color","Various colour constants."],["par","Threadpool adapter for iterators."],["rangeclamp","Clamps a `Range` to a certain interval."],["slice",""]]});

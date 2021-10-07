@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Accumulate","An iterator to maintain state while iterating another iterator."],["Pairwise","An iterator that returns pair values ofn the preceding iterator."]],"trait":[["Accumulator","An iterator to maintain state while iterating another iterator."],["Pairwisor","An iterator that returns pair values of the preceding iterator."]]});

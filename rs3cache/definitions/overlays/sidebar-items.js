@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["export","Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`."]],"struct":[["Overlay","Describes (part of) ground colour."]]});

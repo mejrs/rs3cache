@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["export","Save the item configs as `item_configs.json`. Exposed as `--dump item_configs`."]],"mod":[["item_config_fields","Defines the structs used as fields of [`ItemConfig`],"]],"struct":[["ItemConfig","Describes the properties of a given item."]]});

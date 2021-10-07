@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["IndexMetadata","Contains the [`Metadata`] for every `Archive` in the index."],["Metadata","Metadata about `Archive`s."]]});

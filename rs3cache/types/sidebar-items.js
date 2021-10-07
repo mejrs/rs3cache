@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["coordinate","The [`Coordinate`] type."],["variables","Player variables"]]});

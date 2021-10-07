@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["export","Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`."]],"struct":[["Underlay","Describes the general ground colour. This colour is blended with surrounding tiles."]]});

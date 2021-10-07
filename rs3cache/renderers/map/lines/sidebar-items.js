@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["put","Applies lines of doors, fences, walls and so on to the base image."]]});

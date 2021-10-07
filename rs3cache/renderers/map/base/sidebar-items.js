@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["put","Applies ground colouring to the base image."]]});

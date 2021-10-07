@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Archive","A collection of files."],["ArchiveGroup","A group of archives."]]});
