@@ -251,11 +251,11 @@
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INTERFACES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="doccomment">/// Contains [`MapSquare`](crate::definitions::mapsquares::MapSquare) definitions.</span>
+    <span class="doccomment">/// Contains [`MapSquare`](../../rs3cache/definitions/mapsquares/struct.MapSquares.html) definitions.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPSV2</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">5</span>;
     <span class="doccomment">/// Discontinued.</span>
     <span class="kw">const</span> <span class="ident">MODELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">7</span>;
-    <span class="doccomment">/// Contains [`Sprite`](crate::definitions::sprites::Sprite) definitions.</span>
+    <span class="doccomment">/// Contains [`sprite`](../../rs3cache/definitions/sprites/index.html) definitions.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SPRITES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">8</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
@@ -268,12 +268,12 @@
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FONTMETRICS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">13</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VORBIS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">14</span>;
-    <span class="doccomment">/// Contains the [`LocationConfig`](crate::definitions::location_configs::LocationConfig) definitions.</span>
+    <span class="doccomment">/// Contains the [`LocationConfig`](../../rs3cache/definitions/location_configs/struct.LocationConfig.html) definitions.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">16</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ENUM_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">17</span>;
-    <span class="doccomment">/// Contains the [`NpcConfig`](crate::definitions::npc_configs::NpcConfig) definitions.</span>
+    <span class="doccomment">/// Contains the [`NpcConfig`](../../rs3cache/definitions/npc_configs/struct.NpcConfig.html) definitions.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NPC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">18</span>;
     <span class="doccomment">/// Unimplemented.</span>
@@ -284,8 +284,8 @@
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SPOT_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">21</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">STRUCT_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">22</span>;
-    <span class="doccomment">/// Contains [`MapZone`](crate::definitions::worldmaps::MapZone),</span>
-    <span class="doccomment">/// [`MapPastes`](crate::definitions::worldmaps::MapPastes) definitions,</span>
+    <span class="doccomment">/// Contains [`MapZone`](../../rs3cache/definitions/worldmaps/struct.MapZone.html),</span>
+    <span class="doccomment">/// [`MapPastes`](../../rs3cache/definitions/worldmaps/struct.MapPastes.html) definitions,</span>
     <span class="doccomment">/// as well as PNG images of the world map.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WORLDMAP</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">23</span>;
     <span class="doccomment">/// Unimplemented.</span>
@@ -353,13 +353,13 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigType</span>;
 
 <span class="kw">impl</span> <span class="ident">ConfigType</span> {
-    <span class="doccomment">/// Contains [`Underlay`](crate::definitions::underlays::Underlay) definitions.</span>
+    <span class="doccomment">/// Contains [`Underlay`](../../rs3cache/definitions/underlays/struct.Underlay.html) definitions.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNDERLAYS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">HUNT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">IDENTITY_KIT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="doccomment">/// Contains [`Overlay`](crate::definitions::overlays::Overlay) definitions.</span>
+    <span class="doccomment">/// Contains [`Overlay`](../../rs3cache/definitions/overlays/struct.Overlay.html) definitions.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">OVERLAYS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">4</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INVENTORY</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">5</span>;
@@ -383,7 +383,7 @@
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BASE_ANIMATION_SET</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">32</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CURSORS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">33</span>;
-    <span class="doccomment">/// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).</span>
+    <span class="doccomment">/// Contains [`MapScene`](../../rs3cache/definitions/mapscenes/struct.MapScene.html).</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPSCENES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">34</span>;
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
@@ -391,7 +391,7 @@
     <span class="doccomment">/// Unimplemented.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">QUESTS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">35</span>;
-    <span class="doccomment">/// Contains [`MapScene`](crate::definitions::mapscenes::MapScene).</span>
+    <span class="doccomment">/// Contains [`MapLabelConfig`](../../rs3cache/definitions/maplabel_configs/struct.MapLabelConfig.html).</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPLABELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">36</span>;
     <span class="doccomment">/// Unimplemented.</span>
@@ -460,17 +460,17 @@
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
 <span class="kw">impl</span> <span class="ident">MapFileType</span> {
-    <span class="doccomment">/// Deserializes to the sequence of [`Location`]s in `self`.</span>
+    <span class="doccomment">/// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOCATIONS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="doccomment">/// Deserializes to a sequence of underwater [`Location`]s in `self`. Not implemented.</span>
+    <span class="doccomment">/// Deserializes to a sequence of underwater  [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`. Not implemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WATER_LOCATIONS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
     <span class="doccomment">/// Deserializes to a sequence of all npcs in `self`.</span>
     <span class="doccomment">/// Only mapsquares which used to have a &quot;zoom around&quot; login screen,</span>
     <span class="doccomment">/// or are derived from one that had, have this file.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NPCS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="doccomment">/// Deserializes to the [`TileArray`] of `self`.</span>
+    <span class="doccomment">/// Deserializes to the [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TILES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="doccomment">/// Deserializes to the underwater [`TileArray`] of `self`.</span>
+    <span class="doccomment">/// Deserializes to the underwater [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WATER_TILES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">4</span>;
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_5</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">5</span>;
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_6</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">6</span>;

@@ -851,7 +851,7 @@
 <span class="kw">where</span>
     <span class="ident">S</span>: <span class="ident">IndexState</span>,
 {
-    <span class="doccomment">/// The [index id](crate::cache::indextype::IndexType) of `self`,</span>
+    <span class="doccomment">/// The [index id](crate::indextype::IndexType) of `self`,</span>
     <span class="doccomment">/// corresponding to the `raw/js5-{index_id}.jcache` file being held.</span>
     <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
@@ -1467,7 +1467,7 @@
 }
 
 <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]</span>
-<span class="doccomment">/// An iterator of [`ArchiveGroup`]s. Used internally by renderers that need to know about the surrounding [`GroupMapSquare`](crate::definitions::mapsquares::GroupMapSquare).</span>
+<span class="doccomment">/// An iterator of [`ArchiveGroup`]s. Used internally by renderers that need to know about the surrounding [`GroupMapSquare`](../../rs3cache/definitions/mapsquares/struct.GroupMapSquare.html).</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IntoIterGrouped</span> {
     <span class="doccomment">/// Handle to the underlying [`CacheIndex`].</span>
     <span class="ident">index</span>: <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Grouped</span><span class="op">&gt;</span>,

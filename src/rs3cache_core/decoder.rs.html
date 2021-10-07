@@ -173,7 +173,7 @@
 
 <span class="doccomment">/// Decompresses index files.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Used internally by [`CacheIndex`](crate::cache::index::CacheIndex).</span>
+<span class="doccomment">/// Used internally by [`CacheIndex`](crate::index::CacheIndex).</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decompress</span>(<span class="ident">encoded_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">filesize</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">0</span>..<span class="number">3</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">Compression::ZLIB</span> {
@@ -257,7 +257,7 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DecodeError</span> {
-    <span class="doccomment">/// Wraps [`bzip2::Error`](https://docs.rs/bzip2/0.4.2/bzip2/enum.Error.html).</span>
+    <span class="doccomment">/// Wraps [`bzip2::Error`].</span>
     <span class="ident">IoError</span>(<span class="ident">std::io::Error</span>),
     <span class="ident">BZip2Error</span>(<span class="ident">bzip2::Error</span>),
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>

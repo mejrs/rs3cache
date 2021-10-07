@@ -1,52 +1,80 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="rs3cache"><meta name="keywords" content="rust, rustlang, rust-lang, rs3cache"><title>rs3cache - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings" ></script><script src="../storage.js"></script><script src="../crates.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../rs3cache/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><h2 class="location">Crate rs3cache</h2><div class="block version"><div class="narrow-helper"></div><p>Version 0.1.0</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all rs3cache's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li></ul></div><div id="sidebar-vars" data-name="rs3cache" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../wheel.svg"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">rs3cache</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/rs3cache/lib.rs.html#1-152" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h1 id="rs3cache" class="section-header"><a href="#rs3cache">rs3cache</a></h1>
-<p>Tools and api for reading and interpreting the <a href="https://www.runescape.com/community">Runescape 3</a> game cache.</p>
-<h1 id="setup" class="section-header"><a href="#setup">Setup</a></h1>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="actions status"><meta name="keywords" content="rust, rustlang, rust-lang, rs3cache"><title>rs3cache - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings" ></script><script src="../storage.js"></script><script src="../crates.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../rs3cache/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><h2 class="location">Crate rs3cache</h2><div class="block version"><div class="narrow-helper"></div><p>Version 0.1.0</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all rs3cache's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li></ul></div><div id="sidebar-vars" data-name="rs3cache" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../wheel.svg"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">rs3cache</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/rs3cache/lib.rs.html#1-113" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p><a href="https://github.com/mejrs/rs3cache/actions"><img src="https://github.com/mejrs/rs3cache/workflows/CI/badge.svg" alt="actions status" /></a></p>
+<h1 id="rs3-cache-tool" class="section-header"><a href="#rs3-cache-tool">RS3 cache tool</a></h1>
+<p>Tools and api for reading and interpreting the <a href="https://www.runescape.com/community" title="RuneScape">RuneScape 3</a> game cache.</p>
+<h2 id="installing-the-command-line-tool" class="section-header"><a href="#installing-the-command-line-tool">Installing the command line tool.</a></h2>
 <ul>
-<li>
-<p><code>git clone https://github.com/mejrs/rs3-cache</code>.</p>
-</li>
-<li>
-<p>Install the <a href="https://rustup.rs/">Rust compiler</a>.</p>
-</li>
-<li>
-<p>Configure rustup to use the nightly version: <code>rustup default nightly</code>.</p>
-</li>
-<li>
-<p>Navigate to this repository</p>
-</li>
-<li>
-<p>Compile the executable with <code>cargo build --release</code>.</p>
-</li>
-<li>
-<p>Either:</p>
+<li><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</li>
+<li>Install the tool with <code>cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3</code>.</li>
+</ul>
+<h2 id="usage" class="section-header"><a href="#usage">Usage</a></h2>
 <ul>
-<li>Create a system variable named <code>RUNESCAPE_CACHE_FOLDER</code> and set its value to where your cache is located.
-Typically, this is <code>%ProgramData%\Jagex\RuneScape</code>.</li>
-<li>Copy the entire cache and place it in the <code>raw</code> folder.</li>
+<li><code>rs3cache --help</code> to see a list of commands:</li>
+</ul>
+<div class="example-wrap"><pre class="language-text"><code>USAGE:
+    rs3cache.exe [FLAGS] [OPTIONS]
+
+FLAGS:
+        --assert-coherence
+            Checks whether the cache is in a consistent state. Indices 14, 40, 54, 55 are not necessarily complete
+
+    -h, --help
+            Prints help information
+
+    -V, --version
+            Prints version information
+
+
+OPTIONS:
+        --dump &lt;dump&gt;...
+            Allowed values: [all, sprites, locations, location_configs, location_configs_each, npc_configs, item_configs,
+            maplabels, worldmaps, varbit_configs, structs, enums, underlays, overlays]
+
+            Dumps the given archives.
+        --input &lt;input&gt;
+            The path where to look for the current cache. If omitted this falls back to the &quot;RS3_CACHE_INPUT_FOLDER&quot;
+            environment variable and then to the current folder if not set [env: RS3_CACHE_INPUT_FOLDER=]  [default: ]
+        --output &lt;output&gt;
+            The path where to place output. If omitted this falls back to the &quot;RS3_CACHE_OUTPUT_FOLDER&quot; environment
+            variable and then to the current folder if not set [env: RS3_CACHE_OUTPUT_FOLDER=]  [default: ]
+        --render &lt;render&gt;...
+            Allowed values: [all, map]
+
+            This exports them as small tiles, formatted as `&lt;layer&gt;/&lt;mapid&gt;/&lt;zoom&gt;/&lt;plane&gt;_&lt;x&gt;_&lt;y&gt;.png`, suitable for
+            use with interactive map libraries such as https://leafletjs.com/, as seen on https://mejrs.github.io/</code></pre></div><h2 id="building-as-a-python-library" class="section-header"><a href="#building-as-a-python-library">Building as a Python library.</a></h2><h3 id="using-setuptools-rust" class="section-header"><a href="#using-setuptools-rust">Using <code>setuptools-rust</code></a></h3>
+<p>The following instructions are only tested on <strong>windows</strong>. If you run into issues on other platforms, try following <a href="https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux" title="setuptools-rust">here</a> or build with <a href="https://pypi.org/project/maturin/" title="maturin">maturin</a> instead.</p>
+<ul>
+<li><code>git clone https://github.com/mejrs/rs3cache</code>.</li>
+<li>Install <a href="https://www.python.org/downloads/" title="Download Python">Python</a>, version 3.9 (lower versions may work).
+<ul>
+<li>Check that pip is installed (<code>python -m pip --version</code>).</li>
+<li>Install setuptools: <code>pip install setuptools</code>.</li>
+<li>Install setuptools-rust: <code>pip install setuptools-rust</code>.</li>
 </ul>
 </li>
+<li><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</li>
+<li>Navigate to this repository and run <code>python setup.py install</code>.</li>
+<li>Either:</li>
 </ul>
-<h1 id="usage-executable" class="section-header"><a href="#usage-executable">Usage (executable)</a></h1>
-<p>The following commands are available:</p>
+<h3 id="using-maturin" class="section-header"><a href="#using-maturin">Using <code>maturin</code></a></h3>
 <ul>
 <li>
-<p><code>target/release/rs3cache.exe --dump all</code>: save various archives as JSON in the <code>out</code> folder.</p>
+<p><code>git clone https://github.com/mejrs/rs3cache</code>.</p>
 </li>
 <li>
-<p>Use <code>target/release/rs3cache.exe --dump &lt;archive&gt;</code> to only dump a specific archive.</p>
+<p>Install <a href="https://www.python.org/downloads/" title="Download Python">Python</a>, version 3.9 (lower versions may work).</p>
+<ul>
+<li>Check that pip is installed (<code>python -m pip --version</code>).</li>
+<li>Install maturin: <code>pip install maturin</code>.</li>
+</ul>
 </li>
 <li>
-<p><code>target/release/rs3cache.exe --render map</code>: render images of the game surface.
-This exports them as small tiles,  <br>
-formatted as <code>&lt;layer&gt;/&lt;zoom&gt;/&lt;plane&gt;_&lt;x&gt;_&lt;y&gt;.png</code>,
-suitable for use with interactive map libraries such as <a href="https://leafletjs.com/">Leaflet</a>,
-as seen on <a href="https://mejrs.github.io/">mejrs.github.io</a>.</p>
+<p><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</p>
 </li>
 <li>
-<p><code>target/release/rs3cache.exe --assert coherence</code>: checks whether the cache is in a coherent state.</p>
+<p>Navigate to this repository and build a Python wheel with <code>maturin build --cargo-extra-args=&quot;--features=rs3,python&quot;</code>.</p>
 </li>
 <li>
-<p><code>target/release/rs3cache.exe --help</code> to see a list of commands</p>
+<p>For examples, see <code>rs3cache/examples.py</code>.</p>
 </li>
 </ul>
 </div></details><h2 id="reexports" class="section-header"><a href="#reexports">Re-exports</a></h2>

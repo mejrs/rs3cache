@@ -209,14 +209,14 @@
 <span id="209">209</span>
 <span id="210">210</span>
 <span id="211">211</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Units of data in a [`CacheIndex`](crate::cache::index::CacheIndex).</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Units of data in a [`CacheIndex`](crate::index::CacheIndex).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Each [`Archive`] conatins files, which contain the actual data that can be parsed with</span>
-<span class="doccomment">//! the appropriate deserializer in [`definitions`](crate::definitions).</span>
+<span class="doccomment">//! the appropriate deserializer in [`definitions`](../../rs3cache/definitions/index.html).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! None of the structs in this module can be constructed directly.</span>
-<span class="doccomment">//! Instead, construct a [`CacheIndex`](crate::cache::index::CacheIndex)</span>
-<span class="doccomment">//! and use its [`IntoIterator`] implementation or its [`archive`](crate::cache::index::CacheIndex::archive())</span>
+<span class="doccomment">//! Instead, construct a [`CacheIndex`](crate::index::CacheIndex)</span>
+<span class="doccomment">//! and use its [`IntoIterator`] implementation or its [`archive`](crate::index::CacheIndex::archive())</span>
 <span class="doccomment">//! method instead.</span>
 
 <span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">HashSet</span>};
@@ -281,7 +281,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Archive</span> {
-    <span class="doccomment">/// The [`index id`](crate::cache::indextype::IndexType) of `self`.</span>
+    <span class="doccomment">/// The [`index id`](crate::indextype::IndexType) of `self`.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">index_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
         <span class="self">self</span>.<span class="ident">index_id</span>
     }

@@ -132,7 +132,7 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Tile</span> {
-    <span class="doccomment">/// Reference to an [`OverlayShape`](crate::renderers::map::tileshape::OverlayShape).</span>
+    <span class="doccomment">/// Reference to a [shape](crate::renderers::map::tileshape).</span>
     <span class="kw">pub</span> <span class="ident">shape</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Reference to an [`Overlay`](crate::definitions::overlays::Overlay).</span>

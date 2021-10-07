@@ -200,7 +200,7 @@
 
 <span class="doccomment">/// An error type for things that can go wrong when reading from the cache.</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CacheError</span> {
-    <span class="doccomment">/// Wraps [`sqlite::Error`](https://docs.rs/sqlite/0.25.3/sqlite/struct.Error.html).</span>
+    <span class="doccomment">/// Wraps [`sqlite::Error`].</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="ident">SqliteError</span>(<span class="ident">sqlite::Error</span>),
     <span class="ident">DecodeError</span>(<span class="ident">DecodeError</span>),
@@ -208,25 +208,25 @@
     <span class="ident">IoError</span>(<span class="ident">std::io::Error</span>),
     <span class="doccomment">/// Wraps [`ParseIntError`](std::num::ParseIntError).</span>
     <span class="ident">ParseIntError</span>(<span class="ident">std::num::ParseIntError</span>),
-    <span class="doccomment">/// Wraps [`ImageError`](https://docs.rs/image/0.23.14/image/error/enum.ImageError.html).</span>
+    <span class="doccomment">/// Wraps [`image::ImageError`].</span>
     <span class="ident">ImageError</span>(<span class="ident">image::ImageError</span>),
-    <span class="doccomment">/// Wraps [`serde_json::Error`](https://docs.serde.rs/serde_json/struct.Error.html).</span>
+    <span class="doccomment">/// Wraps [`serde_json::Error`].</span>
     <span class="ident">JsonDecodeError</span>(<span class="ident">Backtrace</span>, <span class="ident">serde_json::Error</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Wraps [`serde_json::Error`](https://docs.serde.rs/serde_json/struct.Error.html).</span>
+    <span class="doccomment">/// Wraps [`serde_json::Error`].</span>
     <span class="ident">JsonEncodeError</span>(<span class="ident">Backtrace</span>, <span class="ident">serde_json::Error</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>),
     <span class="doccomment">/// Raised when the CRC field of the requested archive is unequal</span>
-    <span class="doccomment">/// to the one in its [`Metadata`](crate::cache::meta::Metadata).</span>
+    <span class="doccomment">/// to the one in its [`Metadata`](crate::meta::Metadata).</span>
     <span class="ident">CrcError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">i64</span>, <span class="ident">i64</span>),
     <span class="doccomment">/// Raised when the CRC field of the requested archive is unequal</span>
-    <span class="doccomment">/// to the one in its [`Metadata`](crate::cache::meta::Metadata).</span>
+    <span class="doccomment">/// to the one in its [`Metadata`](crate::meta::Metadata).</span>
     <span class="ident">VersionError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">i64</span>, <span class="ident">i64</span>),
     <span class="doccomment">/// Raised if a file fails during decompression.</span>
     <span class="ident">DecompressionError</span>(<span class="ident">String</span>),
     <span class="doccomment">/// Raised if the index cannot be found, usually if the cache is missing or malformed.</span>
     <span class="ident">CacheNotFoundError</span>(<span class="ident">std::io::Error</span>, <span class="ident">PathBuf</span>),
-    <span class="doccomment">/// Raised if an [`Archive`](crate::cache::arc::Archive) is not in the [`CacheIndex`](crate::cache::index::CacheIndex).</span>
+    <span class="doccomment">/// Raised if an [`Archive`](crate::arc::Archive) is not in the [`CacheIndex`](crate::index::CacheIndex).</span>
     <span class="ident">ArchiveNotFoundError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>),
-    <span class="doccomment">/// Raised if a file is not in an [`Archive`](crate::cache::arc::Archive).</span>
+    <span class="doccomment">/// Raised if a file is not in an [`Archive`](crate::arc::Archive).</span>
     <span class="ident">FileNotFoundError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">u32</span>),
 }
 
