@@ -1,5 +1,4 @@
 #![doc = include_str!("../README.md")]
-
 #![feature(
     cfg_eval,
     option_result_contains,
