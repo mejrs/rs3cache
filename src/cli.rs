@@ -1,9 +1,10 @@
 use std::{path::PathBuf, str::FromStr};
 
 use fstrings::{f, format_args_f};
+use rs3cache_core::error::CacheResult;
 use structopt::StructOpt;
 
-use crate::{cache::error::CacheResult, definitions, renderers::map};
+use crate::{definitions, renderers::map};
 
 #[derive(Debug)]
 pub enum Render {

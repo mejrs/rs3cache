@@ -2,9 +2,10 @@ use std::hash::Hash;
 
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
+use rs3cache_core::buf::Buffer;
 use serde::{Serialize, Serializer};
 
-use crate::{cache::buf::Buffer, definitions::tiles::TileArray};
+use crate::definitions::tiles::TileArray;
 
 /// Describes whether this location is on the contained plane.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]

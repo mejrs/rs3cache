@@ -1,4 +1,4 @@
-#![feature(cfg_eval)]
+#![feature(backtrace, error_iter, cfg_eval)]
 #![allow(non_snake_case)]
 #![warn(
     unused_crate_dependencies,

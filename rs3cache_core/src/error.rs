@@ -1,4 +1,4 @@
-use std::{borrow::Cow, path::PathBuf};
+use std::{backtrace::Backtrace, borrow::Cow, path::PathBuf};
 
 use path_absolutize::*;
 
@@ -7,7 +7,6 @@ use crate::decoder::DecodeError;
 pub type CacheResult<T> = Result<T, CacheError>;
 
 /// An error type for things that can go wrong when reading from the cache.
-#[derive(Debug)]
 pub enum CacheError {
     /// Wraps [`sqlite::Error`](https://docs.rs/sqlite/0.25.3/sqlite/struct.Error.html).
     #[cfg(feature = "rs3")]
@@ -20,7 +19,9 @@ pub enum CacheError {
     /// Wraps [`ImageError`](https://docs.rs/image/0.23.14/image/error/enum.ImageError.html).
     ImageError(image::ImageError),
     /// Wraps [`serde_json::Error`](https://docs.serde.rs/serde_json/struct.Error.html).
-    SerdeError(serde_json::Error),
+    JsonDecodeError(Backtrace, serde_json::Error, Option<PathBuf>),
+    /// Wraps [`serde_json::Error`](https://docs.serde.rs/serde_json/struct.Error.html).
+    JsonEncodeError(Backtrace, serde_json::Error, Option<PathBuf>),
     /// Raised when the CRC field of the requested archive is unequal
     /// to the one in its [`Metadata`](crate::cache::meta::Metadata).
     CrcError(u32, u32, i64, i64),
@@ -64,7 +65,11 @@ impl From<image::ImageError> for CacheError {
 
 impl From<serde_json::Error> for CacheError {
     fn from(cause: serde_json::Error) -> Self {
-        Self::SerdeError(cause)
+        if cause.is_io() {
+            Self::JsonDecodeError(Backtrace::force_capture(), cause, None)
+        } else {
+            Self::JsonEncodeError(Backtrace::force_capture(), cause, None)
+        }
     }
 }
 
@@ -84,38 +89,50 @@ impl From<&CacheError> for CacheError {
     }
 }
 
-use std::fmt::{Display, Formatter};
+use std::fmt::{Debug, Display, Formatter};
+
+impl Debug for CacheError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self, f)
+    }
+}
 
 impl Display for CacheError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            #[cfg(feature = "rs3")]
-            Self::SqliteError(ref e) => Display::fmt(&e, f),
-            Self::DecodeError(ref e) => Display::fmt(&e, f),
-            Self::IoError(ref e) => Display::fmt(&e, f),
-            Self::SerdeError(ref e) => Display::fmt(&e, f),
-            Self::ImageError(ref e) => Display::fmt(&e, f),
-            Self::ParseIntError(e) => Display::fmt(&e, f),
-            Self::DecompressionError(e) => Display::fmt(&e, f),
-            Self::CrcError(index_id, archive_id, crc1, crc2) => {
-                write!(f, "Index {} Archive {}: Crc does not match: {} !=  {}", index_id, archive_id, crc1, crc2)
-            }
-            Self::VersionError(index_id, archive_id, v1, v2) => {
-                write!(f, "Index {} Archive {}: Version does not match: {} !=  {}", index_id, archive_id, v1, v2)
-            }
+        use std::error::Error;
 
-            Self::CacheNotFoundError(e, file) => {
-                let msg = format!(
-                    "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
-                    e,
-                    file.absolutize().unwrap_or(Cow::Borrowed(file))
-                );
-                write!(f, "{}", msg)
+        writeln!(f, "An error occurred while interpreting the cache.")?;
+        writeln!(f)?;
+
+        // Do some special formatting for the first source error
+        match self {
+            Self::JsonDecodeError(_, source, Some(file)) => writeln!(
+                f,
+                "Caused by `serde_json::Error`: {} while deserializing {}",
+                source,
+                file.to_string_lossy()
+            )?,
+
+            _ => {
+                if let Some(source) = self.source() {
+                    writeln!(f, "Caused by: {}", source)?;
+                }
             }
-            Self::ArchiveNotFoundError(5, archive) => write!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7),
-            Self::ArchiveNotFoundError(index, archive) => write!(f, "Index {} does not contain archive {}", index, archive),
-            Self::FileNotFoundError(index, archive, file) => write!(f, "\nIndex {}, Archive {} does not contain file {}", index, archive, file),
         }
+
+        // Display deeper source errors, if any.
+        for s in <dyn Error>::chain(self).skip(2) {
+            writeln!(f, "Caused by: {}", s)?;
+        }
+
+        writeln!(f)?;
+
+        if let Some(trace) = self.backtrace() {
+            writeln!(f, "The following backtrace was captured:")?;
+            writeln!(f, "{}", trace)?;
+        }
+
+        Ok(())
     }
 }
 
@@ -126,9 +143,16 @@ impl std::error::Error for CacheError {
             Self::SqliteError(ref e) => Some(e),
             Self::DecodeError(ref e) => Some(e),
             Self::IoError(ref e) => Some(e),
-            Self::SerdeError(ref e) => Some(e),
+            Self::JsonDecodeError(_, ref e, _) => Some(e),
             Self::ImageError(ref e) => Some(e),
             Self::ParseIntError(e) => Some(e),
+            _ => None,
+        }
+    }
+
+    fn backtrace(&self) -> Option<&Backtrace> {
+        match self {
+            Self::JsonDecodeError(trace, _, _) => Some(trace),
             _ => None,
         }
     }

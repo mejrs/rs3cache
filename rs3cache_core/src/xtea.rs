@@ -1,12 +1,11 @@
 #![cfg(feature = "osrs")]
 
-use std::{array, collections::HashMap, fs::File, io::BufReader, path::Path};
+use std::{array, backtrace::Backtrace, collections::HashMap, fs::File, io::BufReader, path::Path};
 
 use serde::{Deserialize, Serialize};
 use serde_json;
 
-use crate::error::CacheResult;
-
+use crate::error::{CacheError, CacheResult};
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Xtea {
     pub mapsquare: u32,
@@ -15,10 +14,12 @@ pub struct Xtea {
 
 impl Xtea {
     pub fn load(path: impl AsRef<Path>) -> CacheResult<HashMap<u32, Self>> {
+        let path = path.as_ref();
         let file = File::open(path)?;
         let reader = BufReader::new(file);
 
-        let xteas: Vec<Self> = serde_json::from_reader(reader)?;
+        let xteas: Vec<Self> =
+            serde_json::from_reader(reader).map_err(|cause| CacheError::JsonDecodeError(Backtrace::force_capture(), cause, Some(path.into())))?;
         let map = xteas.into_iter().map(|xtea| (xtea.mapsquare, xtea)).collect();
         Ok(map)
     }

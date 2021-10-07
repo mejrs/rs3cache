@@ -8,15 +8,13 @@ use fstrings::{f, format_args_f};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
+#[cfg(feature = "osrs")]
+use rs3cache_core::indextype::ConfigType;
+use rs3cache_core::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
+use rs3cache_utils::par::ParApply;
 use serde::Serialize;
 
-#[cfg(feature = "osrs")]
-use crate::cache::indextype::ConfigType;
-use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
-    structures::paramtable::ParamTable,
-    utils::par::ParApply,
-};
+use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 #[cfg_eval]
@@ -204,12 +202,11 @@ impl LocationConfig {
                 44 => loc.unknown_44 = Some(buffer.read_masked_index()),
                 45 => loc.unknown_45 = Some(buffer.read_masked_index()),
                 // changed at some point after 2015
+                // used to be mapscenes
+                // see https://discordapp.com/channels/177206626514632704/269673599554551808/872603876384178206
                 #[cfg(feature = "osrs")]
-                60 => {
-                    // used to be mapscenes
-                    // see https://discordapp.com/channels/177206626514632704/269673599554551808/872603876384178206
-                    buffer.read_unsigned_short();
-                }
+                60 => loc.mapscene = Some(buffer.read_unsigned_short()),
+
                 #[cfg(feature = "osrs")]
                 61 => loc.category = Some(buffer.read_unsigned_short()),
                 62 => loc.mirror = Some(true),
