@@ -51,6 +51,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gh-pages-build/
+          publish_dir: ./gh-pages-build/doc
           destination_dir: .
           full_commit_message: "Upload documentation"
