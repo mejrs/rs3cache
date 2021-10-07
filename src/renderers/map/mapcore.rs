@@ -74,7 +74,6 @@ pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
     for zoom in 2..=4 {
         let inner_folder = path!(folder / f!("{CONFIG.map_id}/{zoom}"));
 
-
         fs::create_dir_all(inner_folder)?;
     }
 

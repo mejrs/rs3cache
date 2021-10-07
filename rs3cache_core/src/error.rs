@@ -112,7 +112,21 @@ impl Display for CacheError {
                 source,
                 file.to_string_lossy()
             )?,
-
+            Self::CacheNotFoundError(e, file) => writeln!(
+                f,
+                "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
+                e,
+                file.absolutize().unwrap_or(Cow::Borrowed(file))
+            )?,
+            Self::CrcError(index_id, archive_id, crc1, crc2) => {
+                writeln!(f, "Index {} Archive {}: Crc does not match: {} !=  {}", index_id, archive_id, crc1, crc2)?
+            }
+            Self::VersionError(index_id, archive_id, v1, v2) => {
+                writeln!(f, "Index {} Archive {}: Version does not match: {} !=  {}", index_id, archive_id, v1, v2)?
+            }
+            Self::ArchiveNotFoundError(5, archive) => writeln!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7)?,
+            Self::ArchiveNotFoundError(index, archive) => writeln!(f, "Index {} does not contain archive {}", index, archive)?,
+            Self::FileNotFoundError(index, archive, file) => writeln!(f, "\nIndex {}, Archive {} does not contain file {}", index, archive, file)?,
             _ => {
                 if let Some(source) = self.source() {
                     writeln!(f, "Caused by: {}", source)?;
