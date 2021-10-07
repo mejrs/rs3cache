@@ -41,10 +41,9 @@ jobs:
       - clippy
       - test
     steps:
-
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: nightly-x86_64-unknown-linux-gnu
           profile: minimal
 
       - name: Build the doc
