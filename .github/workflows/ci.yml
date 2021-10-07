@@ -33,14 +33,20 @@ jobs:
       - run: cargo test --features=rs3,mockdata
       - run: cargo test --features=osrs,mockdata
   doc:
+    runs-on: ubuntu-latest
+    needs:
+      - fmt
+      - clippy
+      - test
+    steps:
        # This adds the docs to gh-pages branch
-      needs: fmt, clippy, test
-      name: Build the doc
-      run: |
-        cargo doc --features=rs3,python --no-deps --open
-        cp -r target/doc gh-pages-build
-        echo "<meta http-equiv=refresh content=0;url=doc/index.html>" > gh-pages-build/index.html
-      name: Deploy
+
+      - name: Build the doc
+        run: |
+          cargo doc --features=rs3,python --no-deps --open
+          cp -r target/doc gh-pages-build
+          echo "<meta http-equiv=refresh content=0;url=doc/index.html>" > gh-pages-build/index.html
+      - name: Deploy
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
