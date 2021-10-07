@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the doc
         run: |
-          cargo +nightly rustdoc --features=rs3,python
+          cargo doc --features=rs3,python
           cp -r target/doc gh-pages-build
           echo "<meta http-equiv=refresh content=0;url=rs3cache/index.html>" > gh-pages-build/index.html
       - name: Deploy
