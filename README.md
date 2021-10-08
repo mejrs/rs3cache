@@ -59,7 +59,6 @@ The following instructions are only tested on **windows**. If you run into issue
     - Install setuptools-rust: `pip install setuptools-rust`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
 - Navigate to this repository and run `python setup.py install`.
-- Either:
 
 ### Using `maturin`
 
