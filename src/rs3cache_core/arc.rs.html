@@ -179,36 +179,6 @@
 <span id="179">179</span>
 <span id="180">180</span>
 <span id="181">181</span>
-<span id="182">182</span>
-<span id="183">183</span>
-<span id="184">184</span>
-<span id="185">185</span>
-<span id="186">186</span>
-<span id="187">187</span>
-<span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
-<span id="199">199</span>
-<span id="200">200</span>
-<span id="201">201</span>
-<span id="202">202</span>
-<span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
-<span id="206">206</span>
-<span id="207">207</span>
-<span id="208">208</span>
-<span id="209">209</span>
-<span id="210">210</span>
-<span id="211">211</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Units of data in a [`CacheIndex`](crate::index::CacheIndex).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Each [`Archive`] conatins files, which contain the actual data that can be parsed with</span>
@@ -231,42 +201,12 @@
     <span class="ident">meta::Metadata</span>,
 };
 
-<span class="doccomment">/// A group of archives.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ArchiveGroup</span> {
-    <span class="ident">core_id</span>: <span class="ident">u32</span>,
-    <span class="ident">archives</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">ArchiveGroup</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">core_id</span>: <span class="ident">u32</span>, <span class="ident">archives</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">core_id</span>, <span class="ident">archives</span> }
-    }
-
-    <span class="doccomment">/// Get the Archive id of the [`ArchiveGroup`].</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">core_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">core_id</span>
-    }
-}
-
-<span class="kw">type</span> <span class="ident">File</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>;
-
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">ArchiveGroup</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Archive</span>;
-
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span>;
-
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="self">self</span>.<span class="ident">archives</span>.<span class="ident">into_iter</span>()
-    }
-}
-
 <span class="doccomment">/// A collection of files.</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Archive</span> {
     <span class="ident">index_id</span>: <span class="ident">u32</span>,
     <span class="ident">archive_id</span>: <span class="ident">u32</span>,
-    <span class="ident">files</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">File</span><span class="op">&gt;</span>,
+    <span class="ident">files</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">poison_state</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
 }
 
@@ -291,7 +231,7 @@
         <span class="self">self</span>.<span class="ident">archive_id</span>
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>, <span class="ident">data</span>: <span class="ident">File</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Archive</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>, <span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Archive</span> {
         <span class="kw">let</span> <span class="ident">index_id</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">index_id</span>();
         <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">archive_id</span>();
         <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">metadata</span>.<span class="ident">child_count</span>() {
@@ -364,7 +304,7 @@
     <span class="doccomment">/// # Panics</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function will panic if file `file_id` has already been removed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_file</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">file_id</span>: <span class="kw-2">&amp;</span><span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">File</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_file</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">file_id</span>: <span class="kw-2">&amp;</span><span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">poison_state</span>.<span class="ident">insert</span>(<span class="kw-2">*</span><span class="ident">file_id</span>) {
             <span class="self">self</span>.<span class="ident">files</span>
                 .<span class="ident">remove</span>(<span class="ident">file_id</span>)
@@ -379,7 +319,7 @@
     <span class="doccomment">/// # Panics</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function will panic if [`take_file`](Archive::take_file) has been called prior.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_files</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">File</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_files</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">poison_state</span>.<span class="ident">is_empty</span>() {
             <span class="self">self</span>.<span class="ident">files</span>
         } <span class="kw">else</span> {

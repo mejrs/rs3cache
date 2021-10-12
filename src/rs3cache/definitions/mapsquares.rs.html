@@ -421,6 +421,13 @@
 <span id="421">421</span>
 <span id="422">422</span>
 <span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Data comprising the game surface.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The game map is divided in (potentially) 128 by 256 [`MapSquare`]s,</span>
@@ -659,8 +666,15 @@
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">into_iter</span>();
-        <span class="ident">MapSquareIterator</span> { <span class="ident">inner</span> }
+        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">index</span>
+            .<span class="ident">metadatas</span>()
+            .<span class="ident">keys</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> ((<span class="ident">id</span> <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="kw">as</span> <span class="ident">u8</span>, (<span class="ident">id</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>) <span class="kw">as</span> <span class="ident">u8</span>))
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+            .<span class="ident">into_iter</span>();
+
+        <span class="ident">MapSquareIterator</span> { <span class="ident">mapsquares</span>: <span class="self">self</span>, <span class="ident">state</span> }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
