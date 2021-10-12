@@ -1,6 +1,8 @@
 use core::ops::RangeInclusive;
 use std::collections::HashMap;
 
+use itertools::iproduct;
+
 use crate::{
     cache::{
         error::CacheResult,
@@ -12,48 +14,67 @@ use crate::{
 
 /// Iterates over all [`MapSquare`]s in arbitrary order.
 
+/// Iterates over all [`MapSquare`]s in arbitrary order.
 pub struct MapSquareIterator {
-    pub(crate) inner: index::IntoIter,
+    pub(crate) mapsquares: crate::definitions::mapsquares::MapSquares,
+    pub(crate) state: std::vec::IntoIter<(u8, u8)>,
 }
 
 impl Iterator for MapSquareIterator {
     type Item = MapSquare;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.inner.next().map(MapSquare::from_archive)
+        self.state.next().map(|(i, j)| self.mapsquares.get(i, j).unwrap())
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        self.inner.size_hint()
+        self.state.size_hint()
     }
 }
 
 /// Iterates over [`GroupMapSquare`] in arbitrary order.
 
 pub struct GroupMapSquareIterator {
-    inner: index::IntoIterGrouped,
+    index: CacheIndex<index::Initial>,
+    range_i: RangeInclusive<i32>,
+    range_j: RangeInclusive<i32>,
+    state: std::vec::IntoIter<(u8, u8)>,
 }
 
 impl GroupMapSquareIterator {
-    /// Constructor for [`GroupMapSquareIterator`].
-    pub fn new(dx: RangeInclusive<i32>, dy: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2, &config.input)?.grouped(dx, dy).into_iter();
-        Ok(GroupMapSquareIterator { inner })
+    pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
+        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+
+        let state = index
+            .metadatas()
+            .keys()
+            .map(|id| ((id & 0x7F) as u8, (id >> 7) as u8))
+            .collect::<Vec<_>>()
+            .into_iter();
+
+        Ok(GroupMapSquareIterator {
+            index,
+            range_i,
+            range_j,
+            state,
+        })
     }
 
-    /// Constructor for [`GroupMapSquareIterator`], but limited to the [`MapSquare`]s in `coordinates`.
+    #[doc(hidden)]
     pub fn new_only(
-        dx: RangeInclusive<i32>,
-        dy: RangeInclusive<i32>,
+        range_i: RangeInclusive<i32>,
+        range_j: RangeInclusive<i32>,
         coordinates: Vec<(u8, u8)>,
         config: &crate::cli::Config,
     ) -> CacheResult<GroupMapSquareIterator> {
-        let archive_ids = coordinates.into_iter().map(|(i, j)| (i as u32) | (j as u32) << 7).collect::<Vec<u32>>();
-        let inner = CacheIndex::new(IndexType::MAPSV2, &config.input)?
-            .retain(archive_ids)
-            .grouped(dx, dy)
-            .into_iter();
-        Ok(GroupMapSquareIterator { inner })
+        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+
+        Ok(GroupMapSquareIterator {
+            index,
+            range_i,
+            range_j,
+            state: coordinates.into_iter(),
+        })
     }
 }
 
@@ -61,19 +82,27 @@ impl Iterator for GroupMapSquareIterator {
     type Item = GroupMapSquare;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.inner.next().map(|group| {
-            let (core_i, core_j) = ((group.core_id() & 0x7F) as u8, (group.core_id() >> 7) as u8);
-            let mapsquares = group
-                .into_iter()
+        self.state.next().map(|(core_i, core_j)| {
+            let i = core_i as i32;
+            let j = core_j as i32;
+            let group_ids = iproduct!(self.range_i.clone(), self.range_j.clone())
+                .map(|(di, dj)| (i + di, j + dj))
+                .filter(|(i, j)| *i >= 0 && *j >= 0)
+                .map(|(i, j)| (i + (j << 7)) as u32);
+
+            let archives = group_ids.filter_map(|archive_id| self.index.archive(archive_id).ok());
+
+            let mapsquares = archives
                 .map(MapSquare::from_archive)
                 .map(|sq| ((sq.i, sq.j), sq))
                 .collect::<HashMap<_, _>>();
+
             GroupMapSquare { core_i, core_j, mapsquares }
         })
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        self.inner.size_hint()
+        self.state.size_hint()
     }
 }
 

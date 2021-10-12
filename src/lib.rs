@@ -25,6 +25,9 @@
 #[cfg(not(any(feature = "rs3", feature = "osrs", feature = "377")))]
 compile_error!("You must use one and only one of the rs3, osrs or 377 feature flags");
 
+#[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
+compile_error!("mockdata and save_mockdata are incompatible");
+
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod cli;
 

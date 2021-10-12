@@ -2,12 +2,6 @@
 
 #![allow(unused_imports)] // varies based on mock config flags
 
-#[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
-compile_error!("mockdata and save_mockdata are incompatible");
-
-#[cfg(all(feature = "rs3", feature = "osrs"))]
-compile_error!("rs3 and osrs are incompatible");
-
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
@@ -25,7 +19,7 @@ use path_macro::path;
 #[cfg(feature = "osrs")]
 use crate::xtea::Xtea;
 use crate::{
-    arc::{Archive, ArchiveGroup},
+    arc::Archive,
     buf::Buffer,
     decoder,
     error::{CacheError, CacheResult},
@@ -43,27 +37,14 @@ mod states {
         pub feed: Vec<u32>,
     }
 
-    pub struct Grouped {
-        pub dim_i: RangeInclusive<i32>,
-        pub dim_j: RangeInclusive<i32>,
-    }
-
-    pub struct TruncatedGrouped {
-        pub feed: Vec<u32>,
-        pub dim_i: RangeInclusive<i32>,
-        pub dim_j: RangeInclusive<i32>,
-    }
-
     /// Trait that describes the current index state. Cannot be implemented.
     pub trait IndexState {}
     impl IndexState for Initial {}
     impl IndexState for Truncated {}
-    impl IndexState for Grouped {}
-    impl IndexState for TruncatedGrouped {}
 }
 
 pub use states::Initial;
-use states::{Grouped, IndexState, Truncated, TruncatedGrouped};
+use states::{IndexState, Truncated};
 
 /// Container of [`Archive`]s.
 pub struct CacheIndex<S: IndexState> {
@@ -157,47 +138,6 @@ impl CacheIndex<Initial> {
             #[cfg(feature = "osrs")]
             xteas,
             state: Truncated { feed: ids },
-        }
-    }
-
-    /// Groups archives according to their surface proximity.
-    /// Only valid for the `MAPSV2` index.
-    /// Advances `self` to the `Grouped` state.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `self.index_id() != IndexType::MAPSV2`.
-    pub fn grouped(self, dim_i: RangeInclusive<i32>, dim_j: RangeInclusive<i32>) -> CacheIndex<Grouped> {
-        assert_eq!(
-            self.index_id(),
-            IndexType::MAPSV2,
-            "Grouped archives are only valid for IndexType::MAPSV2."
-        );
-
-        let Self {
-            path,
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            index_id,
-            metadatas,
-            #[cfg(feature = "osrs")]
-            xteas,
-            ..
-        } = self;
-
-        CacheIndex {
-            path,
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            index_id,
-            metadatas,
-            #[cfg(feature = "osrs")]
-            xteas,
-            state: Grouped { dim_i, dim_j },
         }
     }
 }
@@ -516,53 +456,6 @@ impl CacheIndex<Initial> {
     }
 }
 
-impl CacheIndex<Truncated> {
-    /// Groups archives according to their surface proximity.
-    /// Only valid for the `MAPSV2` index.
-    /// Advances `self` to the `TruncatedGrouped` state.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `self.index_id() != IndexType::MAPSV2`.
-    pub fn grouped(self, dim_i: RangeInclusive<i32>, dim_j: RangeInclusive<i32>) -> CacheIndex<TruncatedGrouped> {
-        assert_eq!(
-            self.index_id(),
-            IndexType::MAPSV2,
-            "Grouped archives are only valid for IndexType::MAPSV2."
-        );
-
-        let Self {
-            path,
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            index_id,
-            metadatas,
-            #[cfg(feature = "osrs")]
-            xteas,
-            state,
-        } = self;
-
-        CacheIndex {
-            path,
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            index_id,
-            metadatas,
-            #[cfg(feature = "osrs")]
-            xteas,
-            state: TruncatedGrouped {
-                feed: state.feed,
-                dim_i,
-                dim_j,
-            },
-        }
-    }
-}
-
 impl IntoIterator for CacheIndex<Initial> {
     type Item = Archive;
 
@@ -614,68 +507,6 @@ impl IntoIterator for CacheIndex<Truncated> {
     }
 }
 
-impl IntoIterator for CacheIndex<Grouped> {
-    type Item = ArchiveGroup;
-
-    type IntoIter = IntoIterGrouped;
-
-    fn into_iter(self) -> Self::IntoIter {
-        let feed = self.metadatas().keys().copied().collect::<Vec<u32>>().into_iter();
-        let dim_i = self.state.dim_i.clone();
-        let dim_j = self.state.dim_j.clone();
-        IntoIterGrouped {
-            index: self,
-            feed,
-            dim_i,
-            dim_j,
-        }
-    }
-}
-
-impl IntoIterator for CacheIndex<TruncatedGrouped> {
-    type Item = ArchiveGroup;
-
-    type IntoIter = IntoIterGrouped;
-
-    fn into_iter(self) -> Self::IntoIter {
-        let Self {
-            path,
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            index_id,
-            metadatas,
-            #[cfg(feature = "osrs")]
-            xteas,
-            state,
-        } = self;
-        let TruncatedGrouped { dim_i, dim_j, feed } = state;
-        let index = CacheIndex {
-            path,
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            index_id,
-            metadatas,
-            #[cfg(feature = "osrs")]
-            xteas,
-            state: Grouped {
-                dim_i: dim_i.clone(),
-                dim_j: dim_j.clone(),
-            },
-        };
-
-        IntoIterGrouped {
-            index,
-            dim_i,
-            dim_j,
-            feed: feed.into_iter(),
-        }
-    }
-}
-
 /// Iterator over all [`Archive`]s of `self`. Yields in arbitrary order.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 pub struct IntoIter {
@@ -698,41 +529,6 @@ impl Iterator for IntoIter {
             self.index
                 .archive(archive_id)
                 .unwrap_or_else(|_| panic!("Error decoding index {} archive {}.", self.index.index_id(), archive_id))
-        })
-    }
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        self.feed.size_hint()
-    }
-}
-
-#[must_use = "iterators are lazy and do nothing unless consumed"]
-/// An iterator of [`ArchiveGroup`]s. Used internally by renderers that need to know about the surrounding [`GroupMapSquare`](../../rs3cache/definitions/mapsquares/struct.GroupMapSquare.html).
-pub struct IntoIterGrouped {
-    /// Handle to the underlying [`CacheIndex`].
-    index: CacheIndex<Grouped>,
-    feed: std::vec::IntoIter<u32>,
-    /// The horizontal range of the [`ArchiveGroup`]s.
-    dim_i: RangeInclusive<i32>,
-    /// The vertical range of the [`ArchiveGroup`]s.
-    dim_j: RangeInclusive<i32>,
-}
-
-impl Iterator for IntoIterGrouped {
-    type Item = ArchiveGroup;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.feed.next().map(|core_id| {
-            let (i, j) = ((core_id & 0x7F) as i32, (core_id >> 7) as i32);
-
-            let group_ids = iproduct!(self.dim_i.clone(), self.dim_j.clone())
-                .map(|(di, dj)| (i + di, j + dj))
-                .filter(|(i, j)| *i >= 0 && *j >= 0)
-                .map(|(i, j)| (i + (j << 7)) as u32);
-
-            let archives = group_ids.filter_map(|archive_id| self.index.archive(archive_id).ok()).collect::<Vec<_>>();
-
-            ArchiveGroup::new(core_id, archives)
         })
     }
 

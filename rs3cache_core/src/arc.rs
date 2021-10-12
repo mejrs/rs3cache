@@ -20,42 +20,12 @@ use crate::{
     meta::Metadata,
 };
 
-/// A group of archives.
-pub struct ArchiveGroup {
-    core_id: u32,
-    archives: Vec<Archive>,
-}
-
-impl ArchiveGroup {
-    pub(crate) fn new(core_id: u32, archives: Vec<Archive>) -> Self {
-        Self { core_id, archives }
-    }
-
-    /// Get the Archive id of the [`ArchiveGroup`].
-    #[inline(always)]
-    pub const fn core_id(&self) -> u32 {
-        self.core_id
-    }
-}
-
-type File = Vec<u8>;
-
-impl IntoIterator for ArchiveGroup {
-    type Item = Archive;
-
-    type IntoIter = std::vec::IntoIter<Self::Item>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.archives.into_iter()
-    }
-}
-
 /// A collection of files.
 #[cfg_attr(feature = "pyo3", pyclass)]
 pub struct Archive {
     index_id: u32,
     archive_id: u32,
-    files: BTreeMap<u32, File>,
+    files: BTreeMap<u32, Vec<u8>>,
     poison_state: HashSet<u32>,
 }
 
@@ -80,7 +50,7 @@ impl Archive {
         self.archive_id
     }
 
-    pub(crate) fn deserialize(metadata: &Metadata, data: File) -> Archive {
+    pub(crate) fn deserialize(metadata: &Metadata, data: Vec<u8>) -> Archive {
         let index_id = metadata.index_id();
         let archive_id = metadata.archive_id();
         let files = match metadata.child_count() {
@@ -153,7 +123,7 @@ impl Archive {
     /// # Panics
     ///
     /// This function will panic if file `file_id` has already been removed.
-    pub fn take_file(&mut self, file_id: &u32) -> CacheResult<File> {
+    pub fn take_file(&mut self, file_id: &u32) -> CacheResult<Vec<u8>> {
         if self.poison_state.insert(*file_id) {
             self.files
                 .remove(file_id)
@@ -168,7 +138,7 @@ impl Archive {
     /// # Panics
     ///
     /// This function will panic if [`take_file`](Archive::take_file) has been called prior.
-    pub fn take_files(self) -> BTreeMap<u32, File> {
+    pub fn take_files(self) -> BTreeMap<u32, Vec<u8>> {
         if self.poison_state.is_empty() {
             self.files
         } else {

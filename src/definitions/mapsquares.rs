@@ -236,8 +236,15 @@ impl IntoIterator for MapSquares {
 
     #[cfg(feature = "rs3")]
     fn into_iter(self) -> Self::IntoIter {
-        let inner = self.index.into_iter();
-        MapSquareIterator { inner }
+        let state = self
+            .index
+            .metadatas()
+            .keys()
+            .map(|id| ((id & 0x7F) as u8, (id >> 7) as u8))
+            .collect::<Vec<_>>()
+            .into_iter();
+
+        MapSquareIterator { mapsquares: self, state }
     }
 
     #[cfg(feature = "osrs")]
