@@ -190,9 +190,9 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError::Other</span>(<span class="string">&quot;bzip2 length must be known&quot;</span>.<span class="ident">to_string</span>()))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2::Decompress::new</span>(<span class="bool-val">false</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2_rs::DecoderReader::new</span>(<span class="ident">temp</span>.<span class="ident">as_slice</span>());
 
-        <span class="ident">decoder</span>.<span class="ident">decompress_vec</span>(<span class="kw-2">&amp;</span><span class="ident">temp</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
+        <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>)
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">encoded_data</span>[<span class="number">0</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">Compression::GZIP</span> {
@@ -225,9 +225,9 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">length</span> <span class="kw">as</span> <span class="kw">_</span>);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2::Decompress::new</span>(<span class="bool-val">false</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2_rs::DecoderReader::new</span>(<span class="ident">temp</span>.<span class="ident">as_slice</span>());
 
-        <span class="ident">decoder</span>.<span class="ident">decompress_vec</span>(<span class="kw-2">&amp;</span><span class="ident">temp</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
+        <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>)
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">xtea</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">encoded_data</span>[<span class="number">0</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">Compression::GZIP</span> {
         <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">u32::from_be_bytes</span>([<span class="ident">encoded_data</span>[<span class="number">1</span>], <span class="ident">encoded_data</span>[<span class="number">2</span>], <span class="ident">encoded_data</span>[<span class="number">3</span>], <span class="ident">encoded_data</span>[<span class="number">4</span>]]) <span class="kw">as</span> <span class="ident">usize</span>;
@@ -259,7 +259,7 @@
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DecodeError</span> {
     <span class="doccomment">/// Wraps [`bzip2::Error`].</span>
     <span class="ident">IoError</span>(<span class="ident">std::io::Error</span>),
-    <span class="ident">BZip2Error</span>(<span class="ident">bzip2::Error</span>),
+    <span class="ident">BZip2Error</span>(<span class="ident">bzip2_rs::decoder::DecoderError</span>),
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
     <span class="ident">XteaError</span>,
     <span class="ident">Other</span>(<span class="ident">String</span>),
@@ -271,8 +271,8 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">bzip2::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">bzip2::Error</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">bzip2_rs::decoder::DecoderError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">bzip2_rs::decoder::DecoderError</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="ident"><span class="self">Self</span>::BZip2Error</span>(<span class="ident">cause</span>)
     }
 }

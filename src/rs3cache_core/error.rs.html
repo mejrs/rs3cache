@@ -190,9 +190,8 @@
 <span id="190">190</span>
 <span id="191">191</span>
 <span id="192">192</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">backtrace::Backtrace</span>, <span class="ident">borrow::Cow</span>, <span class="ident">path::PathBuf</span>};
-
-<span class="kw">use</span> <span class="ident">path_absolutize</span>::<span class="kw-2">*</span>;
+<span id="193">193</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">backtrace::Backtrace</span>, <span class="ident">path::PathBuf</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::decoder::DecodeError</span>;
 <span class="doccomment">/// Result wrapper for [`CacheError`].</span>
@@ -304,12 +303,15 @@
                 <span class="ident">source</span>,
                 <span class="ident">file</span>.<span class="ident">to_string_lossy</span>()
             )<span class="question-mark">?</span>,
-            <span class="ident"><span class="self">Self</span>::CacheNotFoundError</span>(<span class="ident">e</span>, <span class="ident">file</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">writeln!</span>(
-                <span class="ident">f</span>,
-                <span class="string">&quot;Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n&quot;</span>,
-                <span class="ident">e</span>,
-                <span class="ident">file</span>.<span class="ident">absolutize</span>().<span class="ident">unwrap_or</span>(<span class="ident">Cow::Borrowed</span>(<span class="ident">file</span>))
-            )<span class="question-mark">?</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
+            <span class="ident"><span class="self">Self</span>::CacheNotFoundError</span>(<span class="ident">e</span>, <span class="ident">file</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path_absolutize::Absolutize::absolutize</span>(<span class="ident">file</span>).<span class="ident">unwrap_or</span>(<span class="ident">std::borrow::Cow::Borrowed</span>(<span class="ident">file</span>));
+                <span class="macro">writeln!</span>(
+                    <span class="ident">f</span>,
+                    <span class="string">&quot;Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n&quot;</span>,
+                    <span class="ident">e</span>, <span class="ident">path</span>
+                )<span class="question-mark">?</span>;
+            }
             <span class="ident"><span class="self">Self</span>::CrcError</span>(<span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">crc1</span>, <span class="ident">crc2</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Index {} Archive {}: Crc does not match: {} !=  {}&quot;</span>, <span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">crc1</span>, <span class="ident">crc2</span>)<span class="question-mark">?</span>
             }

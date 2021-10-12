@@ -211,20 +211,30 @@
 <span id="211">211</span>
 <span id="212">212</span>
 <span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
 <span class="kw">use</span> <span class="ident">rs3cache_core::error::CacheResult</span>;
 <span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">definitions</span>, <span class="ident">renderers::map</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::definitions</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::renderers::map</span>;
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Render</span> {
     <span class="ident">All</span>,
     <span class="ident">Map</span>,
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">Render</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
@@ -236,6 +246,7 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">FromStr</span> <span class="kw">for</span> <span class="ident">Render</span> {
     <span class="kw">type</span> <span class="prelude-val">Err</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
 
@@ -386,6 +397,7 @@
     <span class="doccomment">/// This exports them as small tiles, formatted as `&lt;layer&gt;/&lt;mapid&gt;/&lt;zoom&gt;/&lt;plane&gt;_&lt;x&gt;_&lt;y&gt;.png`,</span>
     <span class="doccomment">/// suitable for use with interactive map libraries such as &lt;https://leafletjs.com/&gt;,</span>
     <span class="doccomment">/// as seen on &lt;https://mejrs.github.io/&gt;</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>)]</span>
     <span class="kw">pub</span> <span class="ident">render</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Render</span><span class="op">&gt;</span>,
 

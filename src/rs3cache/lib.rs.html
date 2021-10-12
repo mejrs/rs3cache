@@ -202,7 +202,7 @@
 }
 
 <span class="doccomment">/// Functions for rendering the map.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;377&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>), <span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;377&quot;</span>)))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">renderers</span> {
     <span class="doccomment">/// Exports map tiles.</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">map</span>;
