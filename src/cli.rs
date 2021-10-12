@@ -4,14 +4,18 @@ use fstrings::{f, format_args_f};
 use rs3cache_core::error::CacheResult;
 use structopt::StructOpt;
 
-use crate::{definitions, renderers::map};
+use crate::definitions;
+#[cfg(not(target_arch = "wasm32"))]
+use crate::renderers::map;
 
+#[cfg(not(target_arch = "wasm32"))]
 #[derive(Debug)]
 pub enum Render {
     All,
     Map,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 impl Render {
     pub fn call(&self, config: &Config) -> CacheResult<()> {
         match self {
@@ -23,6 +27,7 @@ impl Render {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 impl FromStr for Render {
     type Err = &'static str;
 
@@ -173,6 +178,7 @@ pub struct Config {
     /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
     /// suitable for use with interactive map libraries such as <https://leafletjs.com/>,
     /// as seen on <https://mejrs.github.io/>
+    #[cfg(not(target_arch = "wasm32"))]
     #[structopt(long)]
     pub render: Vec<Render>,
 

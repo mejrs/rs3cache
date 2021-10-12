@@ -18,6 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         archive.call(&config)?;
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
     for map in &(config.render) {
         map.call(&config)?;
     }

@@ -40,9 +40,9 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> Result<Vec<u8
 
         let mut decoded_data = Vec::with_capacity(filesize.ok_or_else(|| DecodeError::Other("bzip2 length must be known".to_string()))? as usize);
 
-        let mut decoder = bzip2::Decompress::new(false);
+        let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
 
-        decoder.decompress_vec(&temp, &mut decoded_data)?;
+        decoder.read_to_end(&mut decoded_data)?;
 
         Ok(decoded_data)
     } else if encoded_data[0] == Compression::GZIP {
@@ -75,9 +75,9 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
 
         let mut decoded_data = Vec::with_capacity(length as _);
 
-        let mut decoder = bzip2::Decompress::new(false);
+        let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
 
-        decoder.decompress_vec(&temp, &mut decoded_data)?;
+        decoder.read_to_end(&mut decoded_data)?;
         Ok(decoded_data)
     } else if xtea.is_some() && encoded_data[0] == Compression::GZIP {
         let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
@@ -109,7 +109,7 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
 pub enum DecodeError {
     /// Wraps [`bzip2::Error`].
     IoError(std::io::Error),
-    BZip2Error(bzip2::Error),
+    BZip2Error(bzip2_rs::decoder::DecoderError),
     #[cfg(feature = "osrs")]
     XteaError,
     Other(String),
@@ -121,8 +121,8 @@ impl From<std::io::Error> for DecodeError {
     }
 }
 
-impl From<bzip2::Error> for DecodeError {
-    fn from(cause: bzip2::Error) -> Self {
+impl From<bzip2_rs::decoder::DecoderError> for DecodeError {
+    fn from(cause: bzip2_rs::decoder::DecoderError) -> Self {
         Self::BZip2Error(cause)
     }
 }

@@ -89,7 +89,7 @@ pub mod definitions {
 }
 
 /// Functions for rendering the map.
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(all(not(target_arch = "wasm32"), any(feature = "rs3", feature = "osrs", feature = "377")))]
 pub mod renderers {
     /// Exports map tiles.
     pub mod map;

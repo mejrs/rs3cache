@@ -1,6 +1,4 @@
-use std::{backtrace::Backtrace, borrow::Cow, path::PathBuf};
-
-use path_absolutize::*;
+use std::{backtrace::Backtrace, path::PathBuf};
 
 use crate::decoder::DecodeError;
 /// Result wrapper for [`CacheError`].
@@ -112,12 +110,15 @@ impl Display for CacheError {
                 source,
                 file.to_string_lossy()
             )?,
-            Self::CacheNotFoundError(e, file) => writeln!(
-                f,
-                "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
-                e,
-                file.absolutize().unwrap_or(Cow::Borrowed(file))
-            )?,
+            #[cfg(not(target_arch = "wasm32"))]
+            Self::CacheNotFoundError(e, file) => {
+                let path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
+                writeln!(
+                    f,
+                    "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
+                    e, path
+                )?;
+            }
             Self::CrcError(index_id, archive_id, crc1, crc2) => {
                 writeln!(f, "Index {} Archive {}: Crc does not match: {} !=  {}", index_id, archive_id, crc1, crc2)?
             }
