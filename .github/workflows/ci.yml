@@ -26,12 +26,14 @@ jobs:
       - run: cargo clippy --features=osrs,python -- -D warnings
       - run: cargo clippy --features=rs3,mockdata -- -D warnings
       - run: cargo clippy --features=osrs,mockdata -- -D warnings
+      - run: cargo clippy --target=wasm32-unknown-unknown --features=osrs -- -D warnings
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: cargo test --features=rs3,mockdata
       - run: cargo test --features=osrs,mockdata
+
 
   # This adds the docs to gh-pages branch
   doc:

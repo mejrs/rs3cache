@@ -107,8 +107,9 @@ pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<cra
 
 #[derive(Debug)]
 pub enum DecodeError {
-    /// Wraps [`bzip2::Error`].
+    /// Wraps [`std::io::Error`].
     IoError(std::io::Error),
+    /// Wraps [`bzip2_rs::decoder::DecoderError`].
     BZip2Error(bzip2_rs::decoder::DecoderError),
     #[cfg(feature = "osrs")]
     XteaError,
