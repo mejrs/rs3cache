@@ -18,90 +18,74 @@ impl Compression {
     /// Token for gzip compression.
     pub const GZIP: u8 = 2;
     /// Token for zlib compression.
-    pub const ZLIB: &'static [u8; 3] = b"ZLB";
+    pub const ZLIB: &'static [u8] = b"ZLB";
 }
 
 /// Decompresses index files.
 ///
 /// Used internally by [`CacheIndex`](crate::index::CacheIndex).
-#[cfg(feature = "rs3")]
-pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>) -> Result<Vec<u8>, DecodeError> {
-    if &encoded_data[0..3] == Compression::ZLIB {
-        let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
-        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-        decoder.read_to_end(&mut decoded_data)?;
-        Ok(decoded_data)
-    } else if encoded_data[0] == Compression::NONE {
-        // length is encoded_data[1..5] as u32 + 7
-        Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec())
-    } else if encoded_data[0] == Compression::BZIP {
-        let mut temp = b"BZh1".to_vec();
-        temp.extend(&encoded_data[9..]);
-
-        let mut decoded_data = Vec::with_capacity(filesize.ok_or_else(|| DecodeError::Other("bzip2 length must be known".to_string()))? as usize);
-
-        let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
-
-        decoder.read_to_end(&mut decoded_data)?;
-
-        Ok(decoded_data)
-    } else if encoded_data[0] == Compression::GZIP {
-        let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
-        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-        decoder.read_to_end(&mut decoded_data)?;
-        Ok(decoded_data)
-    } else {
-        unimplemented!("unknown format {}", encoded_data[0])
-    }
-}
-
-#[cfg(feature = "osrs")]
-pub fn decompress(encoded_data: Vec<u8>, filesize: Option<u32>, xtea: Option<crate::xtea::Xtea>) -> Result<Vec<u8>, DecodeError> {
+pub fn decompress(
+    encoded_data: Vec<u8>,
+    filesize: Option<u32>,
+    #[cfg(feature = "osrs")] xtea: Option<crate::xtea::Xtea>,
+) -> Result<Vec<u8>, DecodeError> {
     use crate::buf::Buffer;
 
-    if &encoded_data[0..3] == Compression::ZLIB {
-        let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
-        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-        decoder.read_to_end(&mut decoded_data)?;
-        Ok(decoded_data)
-    } else if encoded_data[0] == Compression::NONE {
-        // length is encoded_data[1..5] as u32 + 7
-        Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec())
-    } else if encoded_data[0] == Compression::BZIP {
-        let mut temp = b"BZh1".to_vec();
-        let mut length = Buffer::new(&encoded_data[5..9]);
-        let length = length.read_int();
-        temp.extend(&encoded_data[9..]);
+    match &encoded_data[0..3] {
+        Compression::ZLIB => {
+            let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
+            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+            decoder.read_to_end(&mut decoded_data)?;
+            Ok(decoded_data)
+        }
 
-        let mut decoded_data = Vec::with_capacity(length as _);
+        &[Compression::NONE, ..] => {
+            // length is encoded_data[1..5] as u32 + 7
+            Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec())
+        }
 
-        let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
+        &[Compression::BZIP, ..] => {
+            let mut temp = b"BZh1".to_vec();
+            let mut length = Buffer::new(&encoded_data[5..9]);
 
-        decoder.read_to_end(&mut decoded_data)?;
-        Ok(decoded_data)
-    } else if xtea.is_some() && encoded_data[0] == Compression::GZIP {
-        let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
+            let length = length.read_int();
+            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(length as u32) as usize);
 
-        let xtea = xtea.unwrap();
-        let decrypted = crate::xtea::Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
+            temp.extend(&encoded_data[9..]);
 
-        let mut decoder = match gzip::Decoder::new(&decrypted[4..]) {
-            Ok(decoder) => decoder,
-            Err(_e) => {
-                return Err(DecodeError::XteaError);
-            }
-        };
-        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-        decoder.read_to_end(&mut decoded_data).expect("oops");
+            let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
 
-        Ok(decoded_data)
-    } else if encoded_data[0] == Compression::GZIP {
-        let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
-        let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-        decoder.read_to_end(&mut decoded_data)?;
-        Ok(decoded_data)
-    } else {
-        unimplemented!("unknown format {}", encoded_data[0])
+            decoder.read_to_end(&mut decoded_data)?;
+            Ok(decoded_data)
+        }
+        
+        #[cfg(feature = "osrs")]
+        &[Compression::GZIP, ..] if xtea.is_some() => {
+            let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
+
+            let xtea = xtea.unwrap();
+            let decrypted = crate::xtea::Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
+
+            let mut decoder = match gzip::Decoder::new(&decrypted[4..]) {
+                Ok(decoder) => decoder,
+                Err(_e) => {
+                    return Err(DecodeError::XteaError);
+                }
+            };
+            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+            decoder.read_to_end(&mut decoded_data).expect("oops");
+
+            Ok(decoded_data)
+        }
+
+        &[Compression::GZIP, ..] => {
+            let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
+            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+            decoder.read_to_end(&mut decoded_data)?;
+            Ok(decoded_data)
+        }
+
+        other => unimplemented!("unknown format {:?}", other),
     }
 }
 

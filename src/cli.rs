@@ -198,8 +198,15 @@ impl Config {
     #[cfg(not(feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
+            #[cfg(all(feature = "rs3"]
             input: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
+            #[cfg(all(feature = "rs3"]
             output: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
+
+            #[cfg(all(feature = "osrs"]
+            input: std::env::var_os("OSRS_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
+            #[cfg(all(feature = "osrs"]
+            output: std::env::var_os("OSRS_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
             ..Default::default()
         }
     }
