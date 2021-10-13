@@ -7,7 +7,10 @@ Tools and api for reading and interpreting the [RuneScape 3](https://www.runesca
 ## Installing the command line tool.
 
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Install the tool with ```cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3```.
+- Install the tool with 
+   ```text
+    cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3
+    ```
 
 ## Usage 
 - `rs3cache --help` to see a list of commands:
@@ -52,22 +55,37 @@ OPTIONS:
 
 The following instructions are only tested on **windows**. If you run into issues on other platforms, try following [here](https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux "setuptools-rust") or build with [maturin](https://pypi.org/project/maturin/ "maturin") instead.
 
-- `git clone https://github.com/mejrs/rs3cache`.
+- Clone the repository:
+   ```text
+   git clone https://github.com/mejrs/rs3cache
+   ```
 - Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
     - Check that pip is installed (`python -m pip --version`).
     - Install setuptools: `pip install setuptools`.
     - Install setuptools-rust: `pip install setuptools-rust`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Navigate to this repository and run `python setup.py install`.
+- Navigate to this repository and install it with
+    ```text
+    python setup.py install
+    ```
 
 ### Using `maturin`
 
-- `git clone https://github.com/mejrs/rs3cache`.
+- Clone the repository:
+   ```text
+   git clone https://github.com/mejrs/rs3cache
+   ```
 - Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
     - Check that pip is installed (`python -m pip --version`).
     - Install maturin: `pip install maturin`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Navigate to this repository and build a Python wheel with `maturin build --cargo-extra-args="--features=rs3,python"`.
-
+- Navigate to this repository and build a Python wheel with 
+    ```text
+    maturin build --cargo-extra-args="--features=rs3,python"
+    ```
+- Using the wheel from above, run
+    ```text
+    pip install <path  to wheel>
+    ```
 
 - For examples, see `rs3cache/examples.py`.
