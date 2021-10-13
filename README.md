@@ -85,7 +85,7 @@ The following instructions are only tested on **windows**. If you run into issue
     ```
 - Using the wheel from above, run
     ```text
-    pip install <path  to wheel>
+    pip install <path to wheel>
     ```
 
 - For examples, see `rs3cache/examples.py`.
