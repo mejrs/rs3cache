@@ -4,7 +4,7 @@
 <h2 id="installing-the-command-line-tool" class="section-header"><a href="#installing-the-command-line-tool">Installing the command line tool.</a></h2>
 <ul>
 <li><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</li>
-<li>Install the tool with <code>cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3</code>.</li>
+<li>Install the tool with <div class="example-wrap"><pre class="language-text"><code> cargo +nightly install --git https://github.com/mejrs/rs3cache/ --features=rs3</code></pre></div></li>
 </ul>
 <h2 id="usage" class="section-header"><a href="#usage">Usage</a></h2>
 <ul>
@@ -43,7 +43,7 @@ OPTIONS:
             use with interactive map libraries such as https://leafletjs.com/, as seen on https://mejrs.github.io/</code></pre></div><h2 id="building-as-a-python-library" class="section-header"><a href="#building-as-a-python-library">Building as a Python library.</a></h2><h3 id="using-setuptools-rust" class="section-header"><a href="#using-setuptools-rust">Using <code>setuptools-rust</code></a></h3>
 <p>The following instructions are only tested on <strong>windows</strong>. If you run into issues on other platforms, try following <a href="https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux" title="setuptools-rust">here</a> or build with <a href="https://pypi.org/project/maturin/" title="maturin">maturin</a> instead.</p>
 <ul>
-<li><code>git clone https://github.com/mejrs/rs3cache</code>.</li>
+<li>Clone the repository:<div class="example-wrap"><pre class="language-text"><code>git clone https://github.com/mejrs/rs3cache</code></pre></div></li>
 <li>Install <a href="https://www.python.org/downloads/" title="Download Python">Python</a>, version 3.9 (lower versions may work).
 <ul>
 <li>Check that pip is installed (<code>python -m pip --version</code>).</li>
@@ -52,13 +52,13 @@ OPTIONS:
 </ul>
 </li>
 <li><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</li>
-<li>Navigate to this repository and run <code>python setup.py install</code>.</li>
+<li>Navigate to this repository and install it with<div class="example-wrap"><pre class="language-text"><code>python setup.py install</code></pre></div></li>
 </ul>
 <h3 id="using-maturin" class="section-header"><a href="#using-maturin">Using <code>maturin</code></a></h3>
 <ul>
 <li>
-<p><code>git clone https://github.com/mejrs/rs3cache</code>.</p>
-</li>
+<p>Clone the repository:</p>
+<div class="example-wrap"><pre class="language-text"><code>git clone https://github.com/mejrs/rs3cache</code></pre></div></li>
 <li>
 <p>Install <a href="https://www.python.org/downloads/" title="Download Python">Python</a>, version 3.9 (lower versions may work).</p>
 <ul>
@@ -70,8 +70,11 @@ OPTIONS:
 <p><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</p>
 </li>
 <li>
-<p>Navigate to this repository and build a Python wheel with <code>maturin build --cargo-extra-args=&quot;--features=rs3,python&quot;</code>.</p>
-</li>
+<p>Navigate to this repository and build a Python wheel with </p>
+<div class="example-wrap"><pre class="language-text"><code>maturin build --cargo-extra-args=&quot;--features=rs3,python&quot;</code></pre></div></li>
+<li>
+<p>Using the wheel from above, run</p>
+<div class="example-wrap"><pre class="language-text"><code>pip install &lt;path  to wheel&gt;</code></pre></div></li>
 <li>
 <p>For examples, see <code>rs3cache/examples.py</code>.</p>
 </li>
