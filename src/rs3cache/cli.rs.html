@@ -217,6 +217,13 @@
 <span id="217">217</span>
 <span id="218">218</span>
 <span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -417,8 +424,15 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mockdata&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
             <span class="ident">input</span>: <span class="ident">std::env::var_os</span>(<span class="string">&quot;RS3_CACHE_INPUT_FOLDER&quot;</span>).<span class="ident">unwrap_or_default</span>().<span class="ident">into</span>(),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
             <span class="ident">output</span>: <span class="ident">std::env::var_os</span>(<span class="string">&quot;RS3_CACHE_INPUT_FOLDER&quot;</span>).<span class="ident">unwrap_or_default</span>().<span class="ident">into</span>(),
+
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
+            <span class="ident">input</span>: <span class="ident">std::env::var_os</span>(<span class="string">&quot;OSRS_CACHE_INPUT_FOLDER&quot;</span>).<span class="ident">unwrap_or_default</span>().<span class="ident">into</span>(),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
+            <span class="ident">output</span>: <span class="ident">std::env::var_os</span>(<span class="string">&quot;OSRS_CACHE_INPUT_FOLDER&quot;</span>).<span class="ident">unwrap_or_default</span>().<span class="ident">into</span>(),
             ..<span class="ident">Default::default</span>()
         }
     }
