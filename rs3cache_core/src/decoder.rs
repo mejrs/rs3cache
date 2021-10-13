@@ -58,7 +58,7 @@ pub fn decompress(
             decoder.read_to_end(&mut decoded_data)?;
             Ok(decoded_data)
         }
-        
+
         #[cfg(feature = "osrs")]
         &[Compression::GZIP, ..] if xtea.is_some() => {
             let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
