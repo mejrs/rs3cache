@@ -93,7 +93,7 @@ impl ItemConfig {
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let archives = CacheIndex::new(IndexType::OBJ_CONFIG, &config.input)?.into_iter();
 
-        let locations = archives
+        let items = archives
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
                 archive
@@ -103,7 +103,7 @@ impl ItemConfig {
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
             .collect::<BTreeMap<u32, Self>>();
-        Ok(locations)
+        Ok(items)
     }
 
     fn deserialize(id: u32, file: Vec<u8>) -> Self {
