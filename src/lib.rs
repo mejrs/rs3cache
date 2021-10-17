@@ -5,7 +5,8 @@
     option_get_or_insert_default,
     option_result_unwrap_unchecked,
     once_cell,
-    bench_black_box
+    bench_black_box,
+    doc_cfg
 )]
 #![allow(non_snake_case)]
 #![warn(
