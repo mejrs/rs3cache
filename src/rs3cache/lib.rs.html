@@ -114,6 +114,7 @@
 <span id="114">114</span>
 <span id="115">115</span>
 <span id="116">116</span>
+<span id="117">117</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">doc</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(
     <span class="ident">cfg_eval</span>,
@@ -121,7 +122,8 @@
     <span class="ident">option_get_or_insert_default</span>,
     <span class="ident">option_result_unwrap_unchecked</span>,
     <span class="ident">once_cell</span>,
-    <span class="ident">bench_black_box</span>
+    <span class="ident">bench_black_box</span>,
+    <span class="ident">doc_cfg</span>
 )]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(
