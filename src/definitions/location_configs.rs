@@ -8,10 +8,10 @@ use fstrings::{f, format_args_f};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
+use rayon::iter::{ParallelBridge, ParallelIterator};
 #[cfg(feature = "osrs")]
 use rs3cache_core::indextype::ConfigType;
 use rs3cache_core::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
-use rs3cache_utils::par::ParApply;
 use serde::Serialize;
 
 use crate::structures::paramtable::ParamTable;
@@ -698,7 +698,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&folder)?;
 
     let configs = LocationConfig::dump_all(config)?;
-    configs.into_iter().par_apply(|(id, location_config)| {
+    configs.into_iter().par_bridge().for_each(|(id, location_config)| {
         let mut file = File::create(path!(&folder / f!("{id}.json"))).unwrap();
 
         let data = serde_json::to_string_pretty(&location_config).unwrap();

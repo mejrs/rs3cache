@@ -25,6 +25,7 @@ use fstrings::{f, format_args_f};
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 
 pub use self::iterator::*;
 #[cfg(feature = "rs3")]
@@ -41,7 +42,7 @@ use crate::{
         locations::Location,
         tiles::{Tile, TileArray},
     },
-    utils::{par::ParApply, rangeclamp::RangeClamp},
+    utils::rangeclamp::RangeClamp,
 };
 
 /// Represents a section of the game map
@@ -371,7 +372,8 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
                     .collect::<Vec<Location>>(),
             )
         })
-        .par_apply(|(id, id_locs)| {
+        .par_bridge()
+        .for_each(|(id, id_locs)| {
             if !id_locs.is_empty() && id != 83 {
                 let mut file = File::create(path!(&out / f!("{id}.json"))).unwrap();
                 let data = serde_json::to_string_pretty(&id_locs).unwrap();
@@ -387,7 +389,7 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
     let out = path_macro::path!(config.output / "mapsquares");
 
     fs::create_dir_all(&out)?;
-    MapSquares::new(config)?.into_iter().par_apply(|sq| {
+    MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
         let i = sq.i;
         let j = sq.j;
         if let Ok(locations) = sq.take_locations() {

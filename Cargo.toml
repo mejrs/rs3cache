@@ -46,6 +46,7 @@ indicatif = "0.16.2"
 path_macro = "1.0.0"
 fstrings = "0.2.3"
 filetime = { version = "0.2.15", optional = true }
+rayon = "1.5.1"
 
 [features]
 python = ["pyo3", "rs3cache_core/python", "rs3cache_macros"]

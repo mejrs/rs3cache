@@ -4,11 +4,9 @@ use fstrings::{f, format_args_f};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 
-use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
-    utils::par::ParApply,
-};
+use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 /// Type alias for a rgba image.
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
@@ -26,7 +24,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
         .map(|(_, meta)| (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() as i64, 0)))
         .collect();
 
-    index.into_iter().par_apply(|mut archive| {
+    index.into_iter().par_bridge().for_each(|mut archive| {
         debug_assert_eq!(archive.file_count(), 1);
 
         let file = archive

@@ -1,7 +1,5 @@
 //! Miscellanious utilities.
-
-#![feature(thread_spawn_unchecked)]
-#![allow(non_snake_case)]
+#![forbid(unsafe_code)]
 #![warn(
     unused_crate_dependencies,
     unused_imports,
@@ -21,8 +19,7 @@
 pub mod adapters;
 /// Various colour constants.
 pub mod color;
-/// Threadpool adapter for iterators.
-pub mod par;
+
 /// Clamps a [`Range`](std::ops::Range) to a certain interval.
 pub mod rangeclamp;
 

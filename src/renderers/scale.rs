@@ -1,8 +1,8 @@
 use image::{GenericImageView, Pixel, Rgba, RgbaImage};
 use itertools::{iproduct, izip};
 
-/// Resizes a 512x512 image to 256x256
-
+/// Resizes a 512x512 image to 256x256.
+///
 /// This function is used over the resize functions for two reasons:
 /// - Performance, because image's resize function is shit.
 /// - To avoid white lines around the edges.
@@ -25,8 +25,8 @@ pub fn resize_half(input: impl GenericImageView<Pixel = Rgba<u8>>) -> RgbaImage 
     })
 }
 
-/// Resizes a 1024x1024 image to 256x256
-
+/// Resizes a 1024x1024 image to 256x256.
+///
 /// This function is used over the resize functions for two reasons:
 /// - Performance, because image's resize function is shit.
 /// - To avoid white lines around the edges.

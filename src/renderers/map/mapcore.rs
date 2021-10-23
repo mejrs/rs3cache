@@ -5,6 +5,7 @@ use image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::iproduct;
 use path_macro::path;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 
 #[cfg(feature = "rs3")]
 use crate::definitions::mapscenes::MapScene;
@@ -18,9 +19,10 @@ use crate::{
         underlays::Underlay,
     },
     renderers::{map::*, scale, zoom},
-    utils::{color::Color, par::ParApply},
+    utils::color::Color,
 };
 
+///
 pub struct RenderConfig {
     /// -1 is the "real" world map.
     pub map_id: i32,
@@ -107,7 +109,7 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
     #[cfg(feature = "osrs")]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
-    iter.progress().par_apply(|gsq| {
+    iter.progress().par_bridge().for_each(|gsq| {
         render_tile(
             &folder,
             gsq,

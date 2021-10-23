@@ -7,9 +7,10 @@ use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageFormat, Rgba,
 use indicatif::ProgressIterator;
 use itertools::{iproduct, izip};
 use path_macro::path;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 use regex::Regex;
 
-use crate::{cache::error::CacheResult, renderers::scale, utils::par::ParApply};
+use crate::{cache::error::CacheResult, renderers::scale};
 
 static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 
@@ -27,7 +28,7 @@ pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, ra
             img.save(filename).unwrap();
         };
 
-        new_tile_coordinates.progress().par_apply(func);
+        new_tile_coordinates.progress().par_bridge().for_each(func);
     }
     Ok(())
 }
