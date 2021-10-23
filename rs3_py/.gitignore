@@ -1,0 +1,11 @@
+/target
+*.jcache
+*.JCACHE
+/out
+*.egg-info
+__pycache__
+*.pyd
+/dist
+/build
+/.vscode
+/raw

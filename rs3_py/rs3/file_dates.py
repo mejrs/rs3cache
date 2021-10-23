@@ -1,4 +1,4 @@
-from rs3cache import *
+from rs3 import *
 from datetime import datetime
 
 # Iterate over all the metadata of this index (47 is models)

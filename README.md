@@ -64,7 +64,7 @@ The following instructions are only tested on **windows**. If you run into issue
     - Install setuptools: `pip install setuptools`.
     - Install setuptools-rust: `pip install setuptools-rust`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Navigate to this repository and install it with
+- Navigate to the `/rs3_py` folder and build a Python wheel with 
     ```text
     python setup.py install
     ```
@@ -79,9 +79,9 @@ The following instructions are only tested on **windows**. If you run into issue
     - Check that pip is installed (`python -m pip --version`).
     - Install maturin: `pip install maturin`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Navigate to this repository and build a Python wheel with 
+- Navigate to the `/rs3_py` folder and build a Python wheel with 
     ```text
-    maturin build --cargo-extra-args="--features=rs3,python"
+    maturin build
     ```
 - Using the wheel from above, run
     ```text

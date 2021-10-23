@@ -1,4 +1,4 @@
-from rs3cache import *
+from osrs import *
 from itertools import product
 
 """

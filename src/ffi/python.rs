@@ -29,413 +29,410 @@
 //! CacheIndex
 //! ```
 
-#[allow(missing_docs)]
-#[cfg(feature = "pyo3")]
-pub mod python_impl {
-    use std::{
-        collections::{btree_map, BTreeMap},
-        path::PathBuf,
-    };
+#![cfg(feature = "pyo3")]
 
-    use fstrings::{f, format_args_f};
-    use pyo3::{
-        exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyTypeError},
-        prelude::*,
-        types::PyInt,
-        wrap_pyfunction, PyIterProtocol, PyObjectProtocol,
-    };
+use std::{
+    collections::{btree_map, BTreeMap},
+    path::PathBuf,
+};
 
-    use crate::{
-        cache::{
-            arc::Archive,
-            index::{self, CacheIndex, Initial},
-            meta::{IndexMetadata, Metadata},
-        },
-        cli::Config,
-        definitions::{
-            enums::Enum,
-            item_configs::ItemConfig,
-            location_configs::LocationConfig,
-            locations::Location,
-            mapsquares::{MapSquare, MapSquareIterator, MapSquares},
-            npc_configs::NpcConfig,
-            structs::Struct,
-            tiles::Tile,
-            varbit_configs::VarbitConfig,
-        },
-    };
+use fstrings::{f, format_args_f};
+use pyo3::{
+    exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyTypeError},
+    prelude::*,
+    types::PyInt,
+    wrap_pyfunction, PyIterProtocol, PyObjectProtocol,
+};
 
-    #[pymodule]
-    fn rs3cache(_py: Python, m: &PyModule) -> PyResult<()> {
-        m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
-        m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
-        m.add_function(wrap_pyfunction!(get_item_configs, m)?)?;
-        m.add_function(wrap_pyfunction!(get_varbit_configs, m)?)?;
-        m.add_function(wrap_pyfunction!(get_struct_configs, m)?)?;
-        m.add_function(wrap_pyfunction!(get_enum_configs, m)?)?;
+use crate::{
+    cache::{
+        arc::Archive,
+        index::{self, CacheIndex, Initial},
+        meta::{IndexMetadata, Metadata},
+    },
+    cli::Config,
+    definitions::{
+        enums::Enum,
+        item_configs::ItemConfig,
+        location_configs::LocationConfig,
+        locations::Location,
+        mapsquares::{MapSquare, MapSquareIterator, MapSquares},
+        npc_configs::NpcConfig,
+        structs::Struct,
+        tiles::Tile,
+        varbit_configs::VarbitConfig,
+    },
+};
 
-        m.add_class::<PyMapSquares>()?;
-        m.add_class::<PyCacheIndex>()?;
-        Ok(())
+pub fn initializer(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_item_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_varbit_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_struct_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(get_enum_configs, m)?)?;
+
+    m.add_class::<PyMapSquares>()?;
+    m.add_class::<PyCacheIndex>()?;
+    Ok(())
+}
+
+/// Wrapper for [`LocationConfig::dump_all`]
+#[pyfunction]
+pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, LocationConfig>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
     }
+    Ok(LocationConfig::dump_all(&config)?)
+}
 
-    /// Wrapper for [`LocationConfig::dump_all`]
-    #[pyfunction]
-    pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, LocationConfig>> {
+/// Wrapper for [`NpcConfig::dump_all`]
+#[pyfunction]
+pub fn get_npc_configs() -> PyResult<BTreeMap<u32, NpcConfig>> {
+    Ok(NpcConfig::dump_all(&Config::env())?)
+}
+
+/// Wrapper for [`NpcConfig::dump_all`]
+#[pyfunction]
+pub fn get_item_configs() -> PyResult<BTreeMap<u32, ItemConfig>> {
+    Ok(ItemConfig::dump_all(&Config::env())?)
+}
+
+/// Wrapper for [`Struct::dump_all`]
+#[pyfunction]
+pub fn get_struct_configs() -> PyResult<BTreeMap<u32, Struct>> {
+    Ok(Struct::dump_all(&Config::env())?)
+}
+
+/// Wrapper for [`Struct::dump_all`]
+#[pyfunction]
+pub fn get_enum_configs() -> PyResult<BTreeMap<u32, Enum>> {
+    Ok(Enum::dump_all(&Config::env())?)
+}
+
+/// Wrapper for [`VarbitConfig::dump_all`]
+#[pyfunction]
+pub fn get_varbit_configs() -> PyResult<BTreeMap<u32, VarbitConfig>> {
+    Ok(VarbitConfig::dump_all(&Config::env())?)
+}
+
+/// Container of [`PyMapSquare`]s.
+/// Accessible with `from rs3cache import MapSquares`.
+/// # Example
+/// ```python
+/// from rs3cache import *
+///
+/// mapsquares = MapSquares()
+///```
+#[pyclass(name = "MapSquares")]
+pub struct PyMapSquares {
+    mapsquares: Option<MapSquares>,
+}
+
+#[pymethods]
+impl PyMapSquares {
+    #[new]
+    #[args(path = "None")]
+    fn new(path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
             config.input = path
         }
-        Ok(LocationConfig::dump_all(&config)?)
+        Ok(Self {
+            mapsquares: Some(MapSquares::new(&config)?),
+        })
     }
 
-    /// Wrapper for [`NpcConfig::dump_all`]
-    #[pyfunction]
-    pub fn get_npc_configs() -> PyResult<BTreeMap<u32, NpcConfig>> {
-        Ok(NpcConfig::dump_all(&Config::env())?)
-    }
-
-    /// Wrapper for [`NpcConfig::dump_all`]
-    #[pyfunction]
-    pub fn get_item_configs() -> PyResult<BTreeMap<u32, ItemConfig>> {
-        Ok(ItemConfig::dump_all(&Config::env())?)
-    }
-
-    /// Wrapper for [`Struct::dump_all`]
-    #[pyfunction]
-    pub fn get_struct_configs() -> PyResult<BTreeMap<u32, Struct>> {
-        Ok(Struct::dump_all(&Config::env())?)
-    }
-
-    /// Wrapper for [`Struct::dump_all`]
-    #[pyfunction]
-    pub fn get_enum_configs() -> PyResult<BTreeMap<u32, Enum>> {
-        Ok(Enum::dump_all(&Config::env())?)
-    }
-
-    /// Wrapper for [`VarbitConfig::dump_all`]
-    #[pyfunction]
-    pub fn get_varbit_configs() -> PyResult<BTreeMap<u32, VarbitConfig>> {
-        Ok(VarbitConfig::dump_all(&Config::env())?)
-    }
-
-    /// Container of [`PyMapSquare`]s.
-    /// Accessible with `from rs3cache import MapSquares`.
+    /// Get a specific mapsquare.
+    ///
+    /// # Exceptions
+    /// Raises `TypeError` if `i` and `j` are not integers.
+    /// Raises `IndexError` if not(0 <= i <= 100 and 0 <= j <= 200)
+    /// Raises `ValueError` if there is not a mapsquare at i, j.
+    ///
     /// # Example
     /// ```python
-    /// from rs3cache import *
+    /// from rs3cache import MapSquares
     ///
     /// mapsquares = MapSquares()
+    /// lumbridge = mapsquares.get(50, 50)
     ///```
-    #[pyclass(name = "MapSquares")]
-    pub struct PyMapSquares {
-        mapsquares: Option<MapSquares>,
-    }
+    #[pyo3(text_signature = "($self, i, j)")]
+    pub fn get(&self, i: &PyAny, j: &PyAny) -> PyResult<PyMapSquare> {
+        let i = i
+            .downcast::<PyInt>()
+            .map_err(|_| PyTypeError::new_err(format!("i was of type {}. i must be an integer.", i.get_type())))?
+            .extract::<u8>()
+            .map_err(|_| PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))?;
+        let j = j
+            .downcast::<PyInt>()
+            .map_err(|_| PyTypeError::new_err(format!("j was of type {}. j must be an integer.", j.get_type())))?
+            .extract::<u8>()
+            .map_err(|_| PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))?;
 
-    #[pymethods]
-    impl PyMapSquares {
-        #[new]
-        #[args(path = "None")]
-        fn new(path: Option<PathBuf>) -> PyResult<Self> {
-            let mut config = Config::env();
-            if let Some(path) = path {
-                config.input = path
-            }
-            Ok(Self {
-                mapsquares: Some(MapSquares::new(&config)?),
-            })
-        }
+        if i >= 100 {
+            Err(PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))
+        } else if j >= 200 {
+            Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
+        } else {
+            let sq = self
+                .mapsquares
+                .as_ref()
+                .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
+                .get(i, j)
+                .ok_or_else(|| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
 
-        /// Get a specific mapsquare.
-        ///
-        /// # Exceptions
-        /// Raises `TypeError` if `i` and `j` are not integers.
-        /// Raises `IndexError` if not(0 <= i <= 100 and 0 <= j <= 200)
-        /// Raises `ValueError` if there is not a mapsquare at i, j.
-        ///
-        /// # Example
-        /// ```python
-        /// from rs3cache import MapSquares
-        ///
-        /// mapsquares = MapSquares()
-        /// lumbridge = mapsquares.get(50, 50)
-        ///```
-        #[pyo3(text_signature = "($self, i, j)")]
-        pub fn get(&self, i: &PyAny, j: &PyAny) -> PyResult<PyMapSquare> {
-            let i = i
-                .downcast::<PyInt>()
-                .map_err(|_| PyTypeError::new_err(format!("i was of type {}. i must be an integer.", i.get_type())))?
-                .extract::<u8>()
-                .map_err(|_| PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))?;
-            let j = j
-                .downcast::<PyInt>()
-                .map_err(|_| PyTypeError::new_err(format!("j was of type {}. j must be an integer.", j.get_type())))?
-                .extract::<u8>()
-                .map_err(|_| PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))?;
-
-            if i >= 100 {
-                Err(PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))
-            } else if j >= 200 {
-                Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
-            } else {
-                let sq = self
-                    .mapsquares
-                    .as_ref()
-                    .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                    .get(i, j)
-                    .ok_or_else(|| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
-
-                Ok(PyMapSquare { inner: sq })
-            }
+            Ok(PyMapSquare { inner: sq })
         }
     }
+}
 
-    #[pyproto]
-    impl PyIterProtocol for PyMapSquares {
-        fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyMapSquaresIter>> {
-            let inner = std::mem::take(&mut (*slf).mapsquares);
-            let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
-            let inner = inner.into_iter();
+#[pyproto]
+impl PyIterProtocol for PyMapSquares {
+    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyMapSquaresIter>> {
+        let inner = std::mem::take(&mut (*slf).mapsquares);
+        let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
+        let inner = inner.into_iter();
 
-            let iter = PyMapSquaresIter { inner };
-            Py::new(slf.py(), iter)
-        }
+        let iter = PyMapSquaresIter { inner };
+        Py::new(slf.py(), iter)
+    }
+}
+
+/// Iterator over all archives in an Index.
+#[pyclass(name = "MapSquaresIter")]
+pub struct PyMapSquaresIter {
+    inner: MapSquareIterator,
+}
+
+#[pyproto]
+impl PyIterProtocol for PyMapSquaresIter {
+    fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
+        slf
     }
 
-    /// Iterator over all archives in an Index.
-    #[pyclass(name = "MapSquaresIter")]
-    pub struct PyMapSquaresIter {
-        inner: MapSquareIterator,
+    fn __next__(mut slf: PyRefMut<Self>) -> Option<PyMapSquare> {
+        (*slf).inner.next().map(|sq| PyMapSquare { inner: sq })
     }
+}
 
-    #[pyproto]
-    impl PyIterProtocol for PyMapSquaresIter {
-        fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
-            slf
-        }
+/// Obtained from [`PyMapSquares`]'s [`get`](PyMapSquares::get) method.
+#[pyclass(name = "MapSquare")]
+pub struct PyMapSquare {
+    inner: MapSquare,
+}
 
-        fn __next__(mut slf: PyRefMut<Self>) -> Option<PyMapSquare> {
-            (*slf).inner.next().map(|sq| PyMapSquare { inner: sq })
-        }
-    }
-
-    /// Obtained from [`PyMapSquares`]'s [`get`](PyMapSquares::get) method.
-    #[pyclass(name = "MapSquare")]
-    pub struct PyMapSquare {
-        inner: MapSquare,
-    }
-
-    #[pymethods]
-    impl PyMapSquare {
-        /// The horizontal [`MapSquare`] coordinate.
-        ///
-        /// It can have any value in the range `0..=100`.
-        #[getter]
-        pub fn i(&self) -> u8 {
-            self.inner.i
-        }
-
-        /// The vertical [`MapSquare`] coordinate.
-        ///
-        /// It can have any value in the range `0..=200`.
-        #[getter]
-        pub fn j(&self) -> u8 {
-            self.inner.j
-        }
-
-        /// The [`Location`]s in a mapsquare.
-        pub fn locations(&self) -> PyResult<Vec<Location>> {
-            let locs = self.inner.get_locations()?.clone();
-            Ok(locs)
-        }
-
-        /// The water [`Location`]s in a mapsquare.
-        #[cfg(feature = "rs3")]
-        pub fn water_locations(&self) -> PyResult<Vec<Location>> {
-            let locs = self.inner.get_water_locations()?.clone();
-            Ok(locs)
-        }
-
-        /// The [`Tile`]s in a mapsquare.   
-        pub fn tiles(&self) -> PyResult<BTreeMap<(u8, u8, u8), Tile>> {
-            let tiles = self.inner.get_tiles()?;
-            let map: BTreeMap<(u8, u8, u8), Tile> = tiles.indexed_iter().map(|((p, x, y), &t)| ((p as u8, x as u8, y as u8), t)).collect();
-            Ok(map)
-        }
-    }
-
-    #[pyproto]
-    impl PyObjectProtocol for PyMapSquare {
-        fn __repr__(&self) -> String {
-            format!("MapSquare({},{})", self.inner.i, self.inner.j)
-        }
-
-        fn __str__(&self) -> String {
-            format!("MapSquare({},{})", self.inner.i, self.inner.j)
-        }
-    }
-
-    /// Wrapper over [`CacheIndex`]. The Python alias for this is `Index`
+#[pymethods]
+impl PyMapSquare {
+    /// The horizontal [`MapSquare`] coordinate.
     ///
-    /// # Examples
-    /// ```python
-    /// from rs3cache import Index
+    /// It can have any value in the range `0..=100`.
+    #[getter]
+    pub fn i(&self) -> u8 {
+        self.inner.i()
+    }
+
+    /// The vertical [`MapSquare`] coordinate.
     ///
-    /// index = Index(2)
-    ///```
+    /// It can have any value in the range `0..=200`.
+    #[getter]
+    pub fn j(&self) -> u8 {
+        self.inner.j()
+    }
+
+    /// The [`Location`]s in a mapsquare.
+    pub fn locations(&self) -> PyResult<Vec<Location>> {
+        let locs = self.inner.get_locations()?.clone();
+        Ok(locs)
+    }
+
+    /// The water [`Location`]s in a mapsquare.
+    #[cfg(feature = "rs3")]
+    pub fn water_locations(&self) -> PyResult<Vec<Location>> {
+        let locs = self.inner.get_water_locations()?.clone();
+        Ok(locs)
+    }
+
+    /// The [`Tile`]s in a mapsquare.   
+    pub fn tiles(&self) -> PyResult<BTreeMap<(u8, u8, u8), Tile>> {
+        let tiles = self.inner.get_tiles()?;
+        let map: BTreeMap<(u8, u8, u8), Tile> = tiles.indexed_iter().map(|((p, x, y), &t)| ((p as u8, x as u8, y as u8), t)).collect();
+        Ok(map)
+    }
+}
+
+#[pyproto]
+impl PyObjectProtocol for PyMapSquare {
+    fn __repr__(&self) -> String {
+        format!("MapSquare({},{})", self.inner.i(), self.inner.j())
+    }
+
+    fn __str__(&self) -> String {
+        format!("MapSquare({},{})", self.inner.i(), self.inner.j())
+    }
+}
+
+/// Wrapper over [`CacheIndex`]. The Python alias for this is `Index`
+///
+/// # Examples
+/// ```python
+/// from rs3cache import Index
+///
+/// index = Index(2)
+///```
+/// # Exceptions
+/// Raises `FileNotFoundError` if the cache cannot be found.
+#[pyclass(name = "Index")]
+pub struct PyCacheIndex {
+    inner: Option<CacheIndex<Initial>>,
+}
+
+#[pymethods]
+impl PyCacheIndex {
+    /// Constructor of [`PyCacheIndex`].
+    #[new]
+    #[args(index_id, path = "None")]
+    fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
+        let mut config = Config::env();
+        if let Some(path) = path {
+            config.input = path
+        }
+
+        Ok(Self {
+            inner: Some(CacheIndex::new(index_id, &config.input)?),
+        })
+    }
+
+    /// Get a specific [`Archive`].
     /// # Exceptions
-    /// Raises `FileNotFoundError` if the cache cannot be found.
-    #[pyclass(name = "Index")]
-    pub struct PyCacheIndex {
-        inner: Option<CacheIndex<Initial>>,
+    /// Raises `ValueError` if the archive cannot be found.
+    pub fn archive(&self, archive_id: u32) -> PyResult<Archive> {
+        Ok(self
+            .inner
+            .as_ref()
+            .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
+            .archive(archive_id)?)
     }
 
-    #[pymethods]
-    impl PyCacheIndex {
-        /// Constructor of [`PyCacheIndex`].
-        #[new]
-        #[args(index_id, path = "None")]
-        fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
-            let mut config = Config::env();
-            if let Some(path) = path {
-                config.input = path
-            }
+    /// Returns the [`Metadata`] of all archives in `self`.
+    pub fn metadatas(&self) -> PyResult<PyIndexMetadata> {
+        let meta: IndexMetadata = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
+            .metadatas()
+            .clone();
 
-            Ok(Self {
-                inner: Some(CacheIndex::new(index_id, &config.input)?),
-            })
-        }
+        Ok(PyIndexMetadata { inner: Some(meta) })
+    }
+}
 
-        /// Get a specific [`Archive`].
-        /// # Exceptions
-        /// Raises `ValueError` if the archive cannot be found.
-        pub fn archive(&self, archive_id: u32) -> PyResult<Archive> {
-            Ok(self
-                .inner
+#[pyproto]
+impl PyObjectProtocol for PyCacheIndex {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!(
+            "Index({})",
+            self.inner
                 .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
-                .archive(archive_id)?)
-        }
+                .index_id()
+        ))
+    }
 
-        /// Returns the [`Metadata`] of all archives in `self`.
-        pub fn metadatas(&self) -> PyResult<PyIndexMetadata> {
-            let meta: IndexMetadata = self
-                .inner
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!(
+            "Index({})",
+            self.inner
                 .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
-                .metadatas()
-                .clone();
+                .index_id()
+        ))
+    }
+}
 
-            Ok(PyIndexMetadata { inner: Some(meta) })
-        }
+#[pyproto]
+impl PyIterProtocol for PyCacheIndex {
+    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyCacheIndexIter>> {
+        let inner = std::mem::take(&mut (*slf).inner);
+        let inner = inner
+            .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
+            .into_iter();
+
+        let iter = PyCacheIndexIter { inner };
+        Py::new(slf.py(), iter)
+    }
+}
+
+/// Iterator over all archives in an Index.
+#[pyclass(name = "IndexIter")]
+pub struct PyCacheIndexIter {
+    inner: index::IntoIter,
+}
+
+#[pyproto]
+impl PyIterProtocol for PyCacheIndexIter {
+    fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
+        slf
     }
 
-    #[pyproto]
-    impl PyObjectProtocol for PyCacheIndex {
-        fn __repr__(&self) -> PyResult<String> {
-            Ok(format!(
-                "Index({})",
-                self.inner
-                    .as_ref()
-                    .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
-                    .index_id()
-            ))
-        }
+    fn __next__(mut slf: PyRefMut<Self>) -> Option<Archive> {
+        slf.inner.next()
+    }
+}
 
-        fn __str__(&self) -> PyResult<String> {
-            Ok(format!(
-                "Index({})",
-                self.inner
-                    .as_ref()
-                    .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
-                    .index_id()
-            ))
-        }
+#[pyclass(name = "IndexMetadata")]
+pub struct PyIndexMetadata {
+    inner: Option<IndexMetadata>,
+}
+
+#[pyproto]
+impl PyObjectProtocol for PyIndexMetadata {
+    fn __repr__(&self) -> PyResult<String> {
+        let inner = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+            .metadatas();
+        Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
     }
 
-    #[pyproto]
-    impl PyIterProtocol for PyCacheIndex {
-        fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyCacheIndexIter>> {
-            let inner = std::mem::take(&mut (*slf).inner);
-            let inner = inner
-                .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
-                .into_iter();
+    fn __str__(&self) -> PyResult<String> {
+        let inner = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+            .metadatas();
+        Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
+    }
+}
 
-            let iter = PyCacheIndexIter { inner };
-            Py::new(slf.py(), iter)
-        }
+#[pyproto]
+impl PyIterProtocol for PyIndexMetadata {
+    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyIndexMetadataIter>> {
+        let inner = std::mem::take(&mut (*slf).inner);
+        let inner = inner
+            .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+            .into_iter();
+
+        let iter = PyIndexMetadataIter { inner };
+        Py::new(slf.py(), iter)
+    }
+}
+
+/// Iterator over all archives in an Index.
+#[pyclass(name = "IndexMetadataIter")]
+pub struct PyIndexMetadataIter {
+    inner: btree_map::IntoIter<u32, Metadata>,
+}
+
+#[pyproto]
+impl PyIterProtocol for PyIndexMetadataIter {
+    fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
+        slf
     }
 
-    /// Iterator over all archives in an Index.
-    #[pyclass(name = "IndexIter")]
-    pub struct PyCacheIndexIter {
-        inner: index::IntoIter,
-    }
-
-    #[pyproto]
-    impl PyIterProtocol for PyCacheIndexIter {
-        fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
-            slf
-        }
-
-        fn __next__(mut slf: PyRefMut<Self>) -> Option<Archive> {
-            slf.inner.next()
-        }
-    }
-
-    #[pyclass(name = "IndexMetadata")]
-    pub struct PyIndexMetadata {
-        inner: Option<IndexMetadata>,
-    }
-
-    #[pyproto]
-    impl PyObjectProtocol for PyIndexMetadata {
-        fn __repr__(&self) -> PyResult<String> {
-            let inner = self
-                .inner
-                .as_ref()
-                .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
-                .metadatas();
-            Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
-        }
-
-        fn __str__(&self) -> PyResult<String> {
-            let inner = self
-                .inner
-                .as_ref()
-                .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
-                .metadatas();
-            Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
-        }
-    }
-
-    #[pyproto]
-    impl PyIterProtocol for PyIndexMetadata {
-        fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyIndexMetadataIter>> {
-            let inner = std::mem::take(&mut (*slf).inner);
-            let inner = inner
-                .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
-                .into_iter();
-
-            let iter = PyIndexMetadataIter { inner };
-            Py::new(slf.py(), iter)
-        }
-    }
-
-    /// Iterator over all archives in an Index.
-    #[pyclass(name = "IndexMetadataIter")]
-    pub struct PyIndexMetadataIter {
-        inner: btree_map::IntoIter<u32, Metadata>,
-    }
-
-    #[pyproto]
-    impl PyIterProtocol for PyIndexMetadataIter {
-        fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
-            slf
-        }
-
-        fn __next__(mut slf: PyRefMut<Self>) -> Option<(u32, Metadata)> {
-            slf.inner.next()
-        }
+    fn __next__(mut slf: PyRefMut<Self>) -> Option<(u32, Metadata)> {
+        slf.inner.next()
     }
 }

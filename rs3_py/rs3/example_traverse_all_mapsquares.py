@@ -1,7 +1,7 @@
 # This locates all locations (a.k.a. objects) that are named "[ph]".
 
 # Imports the library. You must have built python wheels to make this work.
-from rs3cache import *
+from rs3 import *
 
 # Load all location properties (e.g. their name, models and so on).
 loc_configs = get_location_configs()

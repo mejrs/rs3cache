@@ -6,7 +6,7 @@ edition = "2021"
 default-run = "rs3cache"
 
 [workspace]
-members = ["rs3cache_core", "rs3cache_macros", "rs3cache_utils"]
+members = ["rs3cache_core", "rs3cache_macros", "rs3cache_utils", "rs3_py", "osrs_py"]
 
 [profile.release]
 lto = "thin"

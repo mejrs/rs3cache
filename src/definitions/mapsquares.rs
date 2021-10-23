@@ -51,12 +51,12 @@ pub struct MapSquare {
     /// The horizontal [`MapSquare`] coordinate.
     ///
     /// It can have any value in the range `0..=100`.
-    pub i: u8,
+    i: u8,
 
     /// The vertical [`MapSquare`] coordinate.
     ///
     /// It can have any value in the range `0..=200`.
-    pub j: u8,
+    j: u8,
 
     /// Data on the tiles it contains.
     tiles: CacheResult<TileArray>,
@@ -77,6 +77,20 @@ pub struct MapSquare {
 pub type ColumnIter<'c> = Zip<LanesIter<'c, Tile, Dim<[usize; 2]>>, Product<Range<u32>, Range<u32>>>;
 
 impl MapSquare {
+    /// The horizontal [`MapSquare`] coordinate.
+    ///
+    /// It can have any value in the range `0..=100`.
+    pub fn i(&self) -> u8 {
+        self.i
+    }
+
+    /// The vertical [`MapSquare`] coordinate.
+    ///
+    /// It can have any value in the range `0..=200`.
+    pub fn j(&self) -> u8 {
+        self.j
+    }
+
     #[cfg(all(test, feature = "rs3"))]
     pub fn new(i: u8, j: u8, config: &crate::cli::Config) -> CacheResult<MapSquare> {
         assert!(i < 0x7F, "Index out of range.");

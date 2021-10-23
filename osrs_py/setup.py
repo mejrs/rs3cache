@@ -9,11 +9,10 @@ except ModuleNotFoundError as e:
     raise ModuleNotFoundError("You must install the 'setuptools-rust' package. Try 'pip install setuptools-rust'.") from e
 
 setup(
-    name="rs3cache",
+    name="osrs",
     version="1.0",
-    rust_extensions=[RustExtension("rs3cache.rs3cache", features=["python,rs3"], binding=Binding.PyO3)],
-    packages=["rs3cache"],
+    rust_extensions=[RustExtension("osrs.osrs", binding=Binding.PyO3)],
+    packages=["osrs"],
     # rust extensions are not zip safe, just like C-extensions.
     zip_safe=False,
-    
 )

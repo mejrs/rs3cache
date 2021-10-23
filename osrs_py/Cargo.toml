@@ -1,0 +1,12 @@
+[package]
+name = "osrs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "osrs"
+crate-type = ["lib", "cdylib"]
+
+[dependencies]
+rs3cache = { path = "../../rs3cache", version = "0.1.0", features=["osrs", "python"] }
+pyo3 = { version = "0.14.5", features = ["extension-module"]}
