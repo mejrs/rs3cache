@@ -68,7 +68,7 @@ pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
 pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
-    let folder = path!(config.output / "map_squares");
+    let folder = path!(config.output / "mapsquares");
     fs::create_dir_all(&folder)?;
 
     for zoom in 2..=4 {
@@ -102,7 +102,7 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
         config,
     )?;
 
-    let folder = path!(config.output / "map_squares");
+    let folder = path!(config.output / "mapsquares");
 
     #[cfg(feature = "osrs")]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"

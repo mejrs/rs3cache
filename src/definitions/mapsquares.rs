@@ -384,7 +384,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
 
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
 pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()> {
-    let out = path_macro::path!(config.output / "map_squares");
+    let out = path_macro::path!(config.output / "mapsquares");
 
     fs::create_dir_all(&out)?;
     MapSquares::new(config)?.into_iter().par_apply(|sq| {
