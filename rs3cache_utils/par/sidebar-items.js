@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["ParApply","Enables the par_apply() iterator adapter."]]});

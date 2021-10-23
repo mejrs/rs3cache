@@ -51,8 +51,8 @@
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">image</span>::{<span class="ident">GenericImageView</span>, <span class="ident">Pixel</span>, <span class="ident">Rgba</span>, <span class="ident">RgbaImage</span>};
 <span class="kw">use</span> <span class="ident">itertools</span>::{<span class="ident">iproduct</span>, <span class="ident">izip</span>};
 
-<span class="doccomment">/// Resizes a 512x512 image to 256x256</span>
-
+<span class="doccomment">/// Resizes a 512x512 image to 256x256.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// This function is used over the resize functions for two reasons:</span>
 <span class="doccomment">/// - Performance, because image&#39;s resize function is shit.</span>
 <span class="doccomment">/// - To avoid white lines around the edges.</span>
@@ -75,8 +75,8 @@
     })
 }
 
-<span class="doccomment">/// Resizes a 1024x1024 image to 256x256</span>
-
+<span class="doccomment">/// Resizes a 1024x1024 image to 256x256.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// This function is used over the resize functions for two reasons:</span>
 <span class="doccomment">/// - Performance, because image&#39;s resize function is shit.</span>
 <span class="doccomment">/// - To avoid white lines around the edges.</span>

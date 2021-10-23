@@ -24,13 +24,8 @@
 <span id="24">24</span>
 <span id="25">25</span>
 <span id="26">26</span>
-<span id="27">27</span>
-<span id="28">28</span>
-<span id="29">29</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Miscellanious utilities.</span>
-
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">thread_spawn_unchecked</span>)]</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
+<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">unsafe_code</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(
     <span class="ident">unused_crate_dependencies</span>,
     <span class="ident">unused_imports</span>,
@@ -50,8 +45,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">adapters</span>;
 <span class="doccomment">/// Various colour constants.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">color</span>;
-<span class="doccomment">/// Threadpool adapter for iterators.</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">par</span>;
+
 <span class="doccomment">/// Clamps a [`Range`](std::ops::Range) to a certain interval.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rangeclamp</span>;
 
