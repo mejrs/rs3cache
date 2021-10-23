@@ -1,7 +1,7 @@
 use std::{collections::BTreeMap, fs, path::Path};
 
 use fstrings::{f, format_args_f};
-use image::{imageops, GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
+use image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::iproduct;
 use path_macro::path;
@@ -17,7 +17,7 @@ use crate::{
         sprites::{self, Sprite},
         underlays::Underlay,
     },
-    renderers::{map::*, zoom},
+    renderers::{map::*, scale, zoom},
     utils::{color::Color, par::ParApply},
 };
 
@@ -68,7 +68,7 @@ pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
 pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
-    let folder = path!(config.output / "mapsquares");
+    let folder = path!(config.output / "map_squares");
     fs::create_dir_all(&folder)?;
 
     for zoom in 2..=4 {
@@ -102,7 +102,7 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
         config,
     )?;
 
-    let folder = path!(config.output / "mapsquares");
+    let folder = path!(config.output / "map_squares");
 
     #[cfg(feature = "osrs")]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
@@ -235,7 +235,9 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
-                    let resized = imageops::resize(&sub_image, 256, 256, imageops::FilterType::CatmullRom);
+                    //let resized = imageops::resize(&sub_image, 256, 256, imageops::FilterType::CatmullRom);
+
+                    let resized = scale::resize_half(sub_image);
 
                     debug_assert_eq!(resized.width(), 256);
                     debug_assert_eq!(resized.height(), 256);
@@ -251,7 +253,8 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             let base_i = i as u32;
             let base_j = j as u32;
 
-            let resized = imageops::resize(&base, 256, 256, imageops::FilterType::CatmullRom);
+            //let resized = imageops::resize(&base, 256, 256, imageops::FilterType::CatmullRom);
+            let resized = scale::resize_quarter(base);
 
             debug_assert_eq!(resized.width(), 256);
             debug_assert_eq!(resized.height(), 256);

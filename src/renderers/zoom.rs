@@ -9,7 +9,7 @@ use itertools::{iproduct, izip};
 use path_macro::path;
 use regex::Regex;
 
-use crate::{cache::error::CacheResult, utils::par::ParApply};
+use crate::{cache::error::CacheResult, renderers::scale, utils::par::ParApply};
 
 static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 
@@ -64,7 +64,7 @@ fn make_tile(
             Err(other_error) => return Err(other_error.into()),
         }
     }
-    let scaled = imageops::resize(&base, 256, 256, imageops::FilterType::CatmullRom);
+    let scaled = scale::resize_half(base);
     Ok(scaled)
 }
 

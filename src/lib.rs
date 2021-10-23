@@ -98,6 +98,8 @@ pub mod renderers {
     /// Exports map tiles.
     pub mod map;
 
+    pub mod scale;
+
     /// Creates successive tiles for different zoom levels,
     /// for use with a [leaflet.js](https://leafletjs.com/) based map.
     pub mod zoom;
