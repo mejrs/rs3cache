@@ -115,6 +115,8 @@
 <span id="115">115</span>
 <span id="116">116</span>
 <span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">doc</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(
     <span class="ident">cfg_eval</span>,
@@ -214,6 +216,8 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">renderers</span> {
     <span class="doccomment">/// Exports map tiles.</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">map</span>;
+
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">scale</span>;
 
     <span class="doccomment">/// Creates successive tiles for different zoom levels,</span>
     <span class="doccomment">/// for use with a [leaflet.js](https://leafletjs.com/) based map.</span>

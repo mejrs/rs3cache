@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["resize_half","Resizes a 512x512 image to 256x256 This function is used over the resize functions for two reasons:"],["resize_quarter","Resizes a 1024x1024 image to 256x256 This function is used over the resize functions for two reasons:"]]});
