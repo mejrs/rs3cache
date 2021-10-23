@@ -38,7 +38,7 @@ jobs:
   maturin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v2
       - uses: messense/maturin-action@v1
         with:
           maturin-version: latest
