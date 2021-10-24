@@ -52,7 +52,7 @@ OPTIONS:
 </ul>
 </li>
 <li><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</li>
-<li>Navigate to this repository and install it with<div class="example-wrap"><pre class="language-text"><code>python setup.py install</code></pre></div></li>
+<li>Navigate to the <code>/rs3_py</code> folder and build a Python wheel with <div class="example-wrap"><pre class="language-text"><code>python setup.py install</code></pre></div></li>
 </ul>
 <h3 id="using-maturin" class="section-header"><a href="#using-maturin">Using <code>maturin</code></a></h3>
 <ul>
@@ -70,8 +70,8 @@ OPTIONS:
 <p><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</p>
 </li>
 <li>
-<p>Navigate to this repository and build a Python wheel with </p>
-<div class="example-wrap"><pre class="language-text"><code>maturin build --cargo-extra-args=&quot;--features=rs3,python&quot;</code></pre></div></li>
+<p>Navigate to the <code>/rs3_py</code> folder and build a Python wheel with </p>
+<div class="example-wrap"><pre class="language-text"><code>maturin build</code></pre></div></li>
 <li>
 <p>Using the wheel from above, run</p>
 <div class="example-wrap"><pre class="language-text"><code>pip install &lt;path to wheel&gt;</code></pre></div></li>

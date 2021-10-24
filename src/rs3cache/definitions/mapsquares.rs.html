@@ -430,6 +430,20 @@
 <span id="430">430</span>
 <span id="431">431</span>
 <span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Data comprising the game surface.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The game map is divided in (potentially) 128 by 256 [`MapSquare`]s,</span>
@@ -483,12 +497,12 @@
     <span class="doccomment">/// The horizontal [`MapSquare`] coordinate.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// It can have any value in the range `0..=100`.</span>
-    <span class="kw">pub</span> <span class="ident">i</span>: <span class="ident">u8</span>,
+    <span class="ident">i</span>: <span class="ident">u8</span>,
 
     <span class="doccomment">/// The vertical [`MapSquare`] coordinate.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// It can have any value in the range `0..=200`.</span>
-    <span class="kw">pub</span> <span class="ident">j</span>: <span class="ident">u8</span>,
+    <span class="ident">j</span>: <span class="ident">u8</span>,
 
     <span class="doccomment">/// Data on the tiles it contains.</span>
     <span class="ident">tiles</span>: <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">TileArray</span><span class="op">&gt;</span>,
@@ -509,6 +523,20 @@
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ColumnIter</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">LanesIter</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="ident">Tile</span>, <span class="ident">Dim</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Product</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 <span class="kw">impl</span> <span class="ident">MapSquare</span> {
+    <span class="doccomment">/// The horizontal [`MapSquare`] coordinate.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// It can have any value in the range `0..=100`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+        <span class="self">self</span>.<span class="ident">i</span>
+    }
+
+    <span class="doccomment">/// The vertical [`MapSquare`] coordinate.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// It can have any value in the range `0..=200`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">j</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+        <span class="self">self</span>.<span class="ident">j</span>
+    }
+
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
         <span class="macro">assert!</span>(<span class="ident">i</span> <span class="op">&lt;</span> <span class="number">0x7F</span>, <span class="string">&quot;Index out of range.&quot;</span>);

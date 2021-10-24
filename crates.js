@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["rs3cache","rs3cache_core","rs3cache_macros","rs3cache_utils"];
+window.ALL_CRATES = ["rs3","rs3cache","rs3cache_core","rs3cache_macros","rs3cache_utils"];
