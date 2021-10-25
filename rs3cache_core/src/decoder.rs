@@ -24,6 +24,7 @@ impl Compression {
 /// Decompresses index files.
 ///
 /// Used internally by [`CacheIndex`](crate::index::CacheIndex).
+#[track_caller]
 pub fn decompress(
     encoded_data: Vec<u8>,
     filesize: Option<u32>,

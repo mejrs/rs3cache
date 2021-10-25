@@ -1,4 +1,4 @@
-from osrsimport *
+from osrs import *
 
 mapsquares = MapSquares()
 
