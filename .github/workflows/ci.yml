@@ -43,12 +43,12 @@ jobs:
         with:
           maturin-version: latest
           command: build
-          args: --release -m rs3_py/Cargo.toml
+          args: -m rs3_py/Cargo.toml
       - uses: messense/maturin-action@v1
         with:
           maturin-version: latest
           command: build
-          args: --release -m osrs_py/Cargo.toml
+          args: -m osrs_py/Cargo.toml
 
   # This adds the docs to gh-pages branch
   doc:
