@@ -133,6 +133,7 @@
 <span id="133">133</span>
 <span id="134">134</span>
 <span id="135">135</span>
+<span id="136">136</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Functions to decompress cache data.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -159,6 +160,7 @@
 <span class="doccomment">/// Decompresses index files.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Used internally by [`CacheIndex`](crate::index::CacheIndex).</span>
+<span class="attribute">#[<span class="ident">track_caller</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decompress</span>(
     <span class="ident">encoded_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
     <span class="ident">filesize</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
