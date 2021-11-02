@@ -51,6 +51,8 @@ pub fn put(
 
             let dim_a = sprite.width() as i32;
             let dim_b = sprite.height() as i32;
+
+            // There is an offset here that's not present in osrs
             let vertical_offset = if cfg!(feature = "rs3") { dim_b / 2 } else { 0 };
 
             let range_a = (offset_a..(offset_a + dim_a)).clamp(0, img.width() as i32);
