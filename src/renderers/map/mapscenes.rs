@@ -51,13 +51,14 @@ pub fn put(
 
             let dim_a = sprite.width() as i32;
             let dim_b = sprite.height() as i32;
+            let vertical_offset = if cfg!(feature = "rs3") { dim_b / 2 } else { 0 };
 
             let range_a = (offset_a..(offset_a + dim_a)).clamp(0, img.width() as i32);
-            let range_b = ((offset_b - dim_b / 2)..(offset_b + dim_b / 2)).clamp(0, img.height() as i32);
+            let range_b = ((offset_b - vertical_offset)..(offset_b + dim_b - vertical_offset)).clamp(0, img.height() as i32);
 
             for (a, b) in iproduct!(range_a, range_b) {
                 let sprite_a = (a - offset_a) as u32;
-                let sprite_b = (b - (offset_b - dim_b / 2)) as u32;
+                let sprite_b = (b - (offset_b - vertical_offset)) as u32;
 
                 let sprite_pixel = unsafe {
                     debug_assert!(sprite_a < sprite.width() && sprite_b < sprite.height(), "Index out of range.");
