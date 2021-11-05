@@ -8,6 +8,8 @@ use crate::cache::buf::Buffer;
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 
 /// Describes the properties of a tile in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
+#[cfg_eval]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Default, Debug, Copy, Clone)]
 pub struct Tile {
