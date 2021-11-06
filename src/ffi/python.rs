@@ -52,6 +52,7 @@ use crate::{
     },
     cli::Config,
     definitions::{
+        achievements::Achievement,
         enums::Enum,
         item_configs::ItemConfig,
         location_configs::LocationConfig,
@@ -65,6 +66,7 @@ use crate::{
 };
 
 pub fn initializer(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(get_achievement_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_item_configs, m)?)?;
@@ -75,6 +77,16 @@ pub fn initializer(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyMapSquares>()?;
     m.add_class::<PyCacheIndex>()?;
     Ok(())
+}
+
+/// Wrapper for [`Achievement::dump_all`]
+#[pyfunction]
+pub fn get_achievement_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Achievement>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
+    }
+    Ok(Achievement::dump_all(&config)?)
 }
 
 /// Wrapper for [`LocationConfig::dump_all`]

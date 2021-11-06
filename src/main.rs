@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let start = Instant::now();
 
-    #[cfg(all(feature = "rs3", not(feature = "mockdata")))]
+    #[cfg(all(feature = "rs3", not(feature = "mockdata"), not(feature = "save_mockdata")))]
     if config.assert_coherence {
         rs3cache::cache::index::assert_coherence(&config.input)?;
     }

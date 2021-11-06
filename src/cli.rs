@@ -43,6 +43,7 @@ impl FromStr for Render {
 #[derive(StructOpt, Debug)]
 pub enum Dump {
     All,
+    Achievements,
     Sprites,
     Locations,
     LocationsEach,
@@ -66,6 +67,8 @@ impl Dump {
     pub fn call(&self, config: &Config) -> CacheResult<()> {
         match self {
             Dump::All => {
+                #[cfg(feature = "rs3")]
+                definitions::achievements::export(config)?;
                 #[cfg(feature = "rs3")]
                 definitions::npc_configs::export(config)?;
                 #[cfg(feature = "rs3")]
@@ -97,6 +100,8 @@ impl Dump {
 
                 definitions::sprites::save_all(config)?;
             }
+            #[cfg(feature = "rs3")]
+            Dump::Achievements => definitions::achievements::export(config)?,
             Dump::Sprites => definitions::sprites::save_all(config)?,
             Dump::Locations => definitions::mapsquares::export_locations_by_id(config)?,
             Dump::LocationsEach => definitions::mapsquares::export_locations_by_square(config)?,
@@ -131,6 +136,7 @@ impl FromStr for Dump {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "all" => Ok(Self::All),
+            "achievements" => Ok(Self::Achievements),
             "sprites" => Ok(Self::Sprites),
             "locations" => Ok(Self::Locations),
             "locations_each" => Ok(Self::LocationsEach),

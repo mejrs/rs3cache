@@ -59,6 +59,16 @@ pub enum Param {
 }
 
 #[cfg(feature = "pyo3")]
+impl IntoPy<PyObject> for Param {
+    fn into_py(self, py: Python) -> PyObject {
+        match self {
+            Param::Integer(val) => val.into_py(py),
+            Param::String(val) => val.into_py(py),
+        }
+    }
+}
+
+#[cfg(feature = "pyo3")]
 impl IntoPy<PyObject> for &Param {
     fn into_py(self, py: Python) -> PyObject {
         match self {
