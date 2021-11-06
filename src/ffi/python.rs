@@ -44,6 +44,8 @@ use pyo3::{
     wrap_pyfunction, PyIterProtocol, PyObjectProtocol,
 };
 
+#[cfg(feature = "rs3")]
+use crate::definitions::achievements::Achievement;
 use crate::{
     cache::{
         arc::Archive,
@@ -52,7 +54,6 @@ use crate::{
     },
     cli::Config,
     definitions::{
-        achievements::Achievement,
         enums::Enum,
         item_configs::ItemConfig,
         location_configs::LocationConfig,
@@ -66,6 +67,7 @@ use crate::{
 };
 
 pub fn initializer(_py: Python, m: &PyModule) -> PyResult<()> {
+    #[cfg(feature = "rs3")]
     m.add_function(wrap_pyfunction!(get_achievement_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_npc_configs, m)?)?;
@@ -80,7 +82,9 @@ pub fn initializer(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 /// Wrapper for [`Achievement::dump_all`]
+
 #[pyfunction]
+#[cfg(feature = "rs3")]
 pub fn get_achievement_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Achievement>> {
     let mut config = Config::env();
     if let Some(path) = path {

@@ -43,6 +43,7 @@ impl FromStr for Render {
 #[derive(StructOpt, Debug)]
 pub enum Dump {
     All,
+    #[cfg(feature = "rs3")]
     Achievements,
     Sprites,
     Locations,
@@ -136,6 +137,7 @@ impl FromStr for Dump {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "all" => Ok(Self::All),
+            #[cfg(feature = "rs3")]
             "achievements" => Ok(Self::Achievements),
             "sprites" => Ok(Self::Sprites),
             "locations" => Ok(Self::Locations),

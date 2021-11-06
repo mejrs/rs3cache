@@ -49,6 +49,7 @@ pub mod types {
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
 pub mod definitions {
     /// Configurations of Achievements
+    #[cfg(feature = "rs3")]
     pub mod achievements;
 
     /// Configuration of game locations.
