@@ -1,4 +1,4 @@
-use std::{collections::HashMap, iter};
+use std::{collections::BTreeMap, iter};
 
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
@@ -9,11 +9,13 @@ use crate::cache::buf::Buffer;
 /// [`LocationConfig`](crate::definitions::location_configs::LocationConfig)s,
 /// items and
 /// [`NpcConfig`](crate::definitions::npc_configs::NpcConfig)s can have additional mapping of keys to properties.
+#[cfg_eval]
+#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Serialize, Debug, Clone)]
 pub struct ParamTable {
     /// Key:Value pairs of additional properties.
-    pub params: HashMap<u32, Param>,
+    pub params: BTreeMap<u32, Param>,
 }
 
 impl ParamTable {
