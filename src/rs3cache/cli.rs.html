@@ -224,6 +224,14 @@
 <span id="224">224</span>
 <span id="225">225</span>
 <span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -269,6 +277,8 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Dump</span> {
     <span class="ident">All</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="ident">Achievements</span>,
     <span class="ident">Sprites</span>,
     <span class="ident">Locations</span>,
     <span class="ident">LocationsEach</span>,
@@ -292,6 +302,8 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Dump::All</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+                <span class="ident">definitions::achievements::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
                 <span class="ident">definitions::npc_configs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
@@ -323,6 +335,8 @@
 
                 <span class="ident">definitions::sprites::save_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
             }
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+            <span class="ident">Dump::Achievements</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">definitions::achievements::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::Sprites</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">definitions::sprites::save_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::Locations</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">definitions::mapsquares::export_locations_by_id</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::LocationsEach</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">definitions::mapsquares::export_locations_by_square</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
@@ -357,6 +371,8 @@
     <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Err</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">s</span> {
             <span class="string">&quot;all&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::All</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+            <span class="string">&quot;achievements&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Achievements</span>),
             <span class="string">&quot;sprites&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Sprites</span>),
             <span class="string">&quot;locations&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Locations</span>),
             <span class="string">&quot;locations_each&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::LocationsEach</span>),

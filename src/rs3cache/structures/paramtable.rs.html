@@ -65,7 +65,19 @@
 <span id="65">65</span>
 <span id="66">66</span>
 <span id="67">67</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::HashMap</span>, <span class="ident">iter</span>};
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">iter</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
@@ -76,11 +88,13 @@
 <span class="doccomment">/// [`LocationConfig`](crate::definitions::location_configs::LocationConfig)s,</span>
 <span class="doccomment">/// items and</span>
 <span class="doccomment">/// [`NpcConfig`](crate::definitions::npc_configs::NpcConfig)s can have additional mapping of keys to properties.</span>
+<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ParamTable</span> {
     <span class="doccomment">/// Key:Value pairs of additional properties.</span>
-    <span class="kw">pub</span> <span class="ident">params</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Param</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">params</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Param</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">ParamTable</span> {
@@ -121,6 +135,16 @@
     <span class="ident">Integer</span>(<span class="ident">i32</span>),
     <span class="doccomment">/// The string variant.</span>
     <span class="ident">String</span>(<span class="ident">String</span>),
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">PyObject</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Param</span> {
+    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyObject</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Param::Integer</span>(<span class="ident">val</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">val</span>.<span class="ident">into_py</span>(<span class="ident">py</span>),
+            <span class="ident">Param::String</span>(<span class="ident">val</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">val</span>.<span class="ident">into_py</span>(<span class="ident">py</span>),
+        }
+    }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["export","Save the Achievement configs as `Achievement>.json`. Exposed as `--dump Achievement`."]],"mod":[["achievement_fields_impl",""]],"struct":[["Achievement","Describes the properties of a given Achievement."]]});
