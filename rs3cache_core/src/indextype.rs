@@ -95,7 +95,7 @@ impl IndexType {
     pub const TEXTURES_ETC: u32 = 55;
     /// Unimplemented.
     pub const ANIMS_KEYFRAMES: u32 = 56;
-    /// Unimplemented.
+
     pub const ACHIEVEMENT_CONFIG: u32 = 57;
 }
 

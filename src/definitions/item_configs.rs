@@ -94,6 +94,7 @@ impl ItemConfig {
         let archives = CacheIndex::new(IndexType::OBJ_CONFIG, &config.input)?.into_iter();
 
         let items = archives
+            .map(Result::unwrap)
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
                 archive

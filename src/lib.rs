@@ -74,6 +74,9 @@ pub mod definitions {
 
     pub mod mapsquares;
 
+    #[cfg(feature = "rs3")]
+    pub mod music;
+
     /// Describes the colours of tiles.
     pub mod overlays;
     /// Images displayed by the game client.

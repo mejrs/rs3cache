@@ -33,7 +33,7 @@ impl TextureConfig {
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
         let archives = CacheIndex::new(IndexType::TEXTURES, &config.input)?.into_iter();
         let locations = archives
-            .flat_map(|archive| archive.take_files().into_iter())
+            .flat_map(|archive| archive.unwrap().take_files().into_iter())
             .map(|(id, file)| (id, Self::deserialize(id, file)))
             .collect::<HashMap<u32, Self>>();
         Ok(locations)

@@ -44,6 +44,8 @@ impl FromStr for Render {
 pub enum Dump {
     All,
     #[cfg(feature = "rs3")]
+    Music,
+    #[cfg(feature = "rs3")]
     Achievements,
     Sprites,
     Locations,
@@ -94,6 +96,8 @@ impl Dump {
                 definitions::enums::export(config)?;
                 #[cfg(feature = "osrs")]
                 definitions::textures::export(config)?;
+                #[cfg(feature = "rs3")]
+                Dump::Music => definitions::music::export_each(config)?,
 
                 definitions::mapsquares::export_locations_by_id(config)?;
                 definitions::location_configs::export(config)?;
@@ -101,6 +105,8 @@ impl Dump {
 
                 definitions::sprites::save_all(config)?;
             }
+            #[cfg(feature = "rs3")]
+            Dump::Music => definitions::music::export_each(config)?,
             #[cfg(feature = "rs3")]
             Dump::Achievements => definitions::achievements::export(config)?,
             Dump::Sprites => definitions::sprites::save_all(config)?,
@@ -137,6 +143,8 @@ impl FromStr for Dump {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "all" => Ok(Self::All),
+            #[cfg(feature = "rs3")]
+            "music" => Ok(Self::Music),
             #[cfg(feature = "rs3")]
             "achievements" => Ok(Self::Achievements),
             "sprites" => Ok(Self::Sprites),
@@ -190,7 +198,7 @@ pub struct Config {
     #[structopt(long)]
     pub render: Vec<Render>,
 
-    /// Allowed values: [all, sprites, locations, location_configs, location_configs_each, npc_configs, item_configs, maplabels, worldmaps, varbit_configs, structs, enums, underlays, overlays]
+    /// Allowed values: [all, sprites, locations, location_configs, location_configs_each, npc_configs, item_configs, maplabels, music, worldmaps, varbit_configs, structs, enums, underlays, overlays]
     ///
     /// Dumps the given archives.
     #[structopt(long)]

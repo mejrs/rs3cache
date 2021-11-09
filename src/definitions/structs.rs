@@ -37,6 +37,7 @@ impl Struct {
         let archives = CacheIndex::new(IndexType::STRUCT_CONFIG, &config.input)?.into_iter();
 
         let locations = archives
+            .map(Result::unwrap)
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
                 archive

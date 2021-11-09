@@ -119,6 +119,7 @@ impl NpcConfig {
         let archives = CacheIndex::new(IndexType::NPC_CONFIG, &config.input)?.into_iter();
 
         let npc_configs = archives
+            .map(Result::unwrap)
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
                 archive

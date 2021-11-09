@@ -222,6 +222,7 @@ impl Enum {
         let archives = CacheIndex::new(IndexType::ENUM_CONFIG, &config.input)?.into_iter();
 
         let enums = archives
+            .map(Result::unwrap)
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
                 archive
@@ -234,7 +235,7 @@ impl Enum {
         Ok(enums)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
+    pub fn deserialize(id: u32, file: Vec<u8>) -> Self {
         let mut buffer = Buffer::new(file);
         let mut r#enum = Self { id, ..Default::default() };
 

@@ -393,7 +393,8 @@ impl PyIterProtocol for PyCacheIndexIter {
     }
 
     fn __next__(mut slf: PyRefMut<Self>) -> Option<Archive> {
-        slf.inner.next()
+        // no archive currently expose can fail here once fully loaded
+        slf.inner.next().map(Result::unwrap)
     }
 }
 

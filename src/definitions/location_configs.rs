@@ -144,6 +144,7 @@ impl LocationConfig {
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let archives = CacheIndex::new(IndexType::LOC_CONFIG, &config.input)?.into_iter();
         let locations = archives
+            .map(Result::unwrap)
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
                 archive

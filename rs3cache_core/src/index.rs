@@ -457,7 +457,7 @@ impl CacheIndex<Initial> {
 }
 
 impl IntoIterator for CacheIndex<Initial> {
-    type Item = Archive;
+    type Item = CacheResult<Archive>;
 
     type IntoIter = IntoIter;
 
@@ -469,7 +469,7 @@ impl IntoIterator for CacheIndex<Initial> {
 }
 
 impl IntoIterator for CacheIndex<Truncated> {
-    type Item = Archive;
+    type Item = CacheResult<Archive>;
 
     type IntoIter = IntoIter;
 
@@ -522,14 +522,10 @@ impl IntoIter {
 }
 
 impl Iterator for IntoIter {
-    type Item = Archive;
+    type Item = CacheResult<Archive>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.feed.next().map(|archive_id| {
-            self.index
-                .archive(archive_id)
-                .unwrap_or_else(|_| panic!("Error decoding index {} archive {}.", self.index.index_id(), archive_id))
-        })
+        self.feed.next().map(|archive_id| self.index.archive(archive_id))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {

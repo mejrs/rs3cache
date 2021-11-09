@@ -24,7 +24,8 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
         .map(|(_, meta)| (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() as i64, 0)))
         .collect();
 
-    index.into_iter().par_bridge().for_each(|mut archive| {
+    index.into_iter().par_bridge().for_each(|archive| {
+        let mut archive = archive.unwrap();
         debug_assert_eq!(archive.file_count(), 1);
 
         let file = archive
@@ -75,6 +76,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
     let sprites = CacheIndex::new(IndexType::SPRITES, &config.input)?
         .retain(ids)
         .into_iter()
+        .map(Result::unwrap)
         .map(|mut archive| archive.take_file(&0).and_then(deserialize).map(|frames| (archive.archive_id(), frames)))
         .collect::<CacheResult<Vec<(u32, _)>>>()?
         .into_iter()
