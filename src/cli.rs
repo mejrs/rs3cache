@@ -97,7 +97,7 @@ impl Dump {
                 #[cfg(feature = "osrs")]
                 definitions::textures::export(config)?;
                 #[cfg(feature = "rs3")]
-                Dump::Music => definitions::music::export_each(config)?,
+                definitions::music::export_each(config)?;
 
                 definitions::mapsquares::export_locations_by_id(config)?;
                 definitions::location_configs::export(config)?;

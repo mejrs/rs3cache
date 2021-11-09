@@ -21,10 +21,10 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
 
     for (archive_id, name) in music_names.variants.into_iter() {
         let name = match name {
-            Value::String(s) if s.chars().all(|c| c == ' ') =>  f!("Unnamed track {archive_id}"),
+            Value::String(s) if s.chars().all(|c| c == ' ') => f!("Unnamed track {archive_id}"),
             // Check for bad filenames
             // Almost never happens, so we check first before possibly creating a new string
-            Value::String(s) if s.chars().any(|c| ['?','/', '\\'].contains(&c)) =>  s.chars().filter(|c| ['?','/', '\\'].contains(c)).collect(),
+            Value::String(s) if s.chars().any(|c| ['?', '/', '\\'].contains(&c)) => s.chars().filter(|c| ['?', '/', '\\'].contains(c)).collect(),
             Value::String(s) => s,
             _ => unreachable!(),
         };
@@ -55,7 +55,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
         let file_name = path!(&out / f!("{music_archive_id}.ogg"));
         let mut file = File::create(&file_name).unwrap();
         file.write_all(&data).unwrap();
-        
+
         // Prepare a process that invokes `Sox` to concatenate all these files.
         // This is really scuffed, but SoX seems to be only program capable of handling it
         // Simply concatenating the files should normally work for .ogg files, but not for these...
@@ -71,7 +71,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
             file.write_all(&more_data).unwrap();
             command.arg(file_name);
         }
-        
+
         command.arg(path!(config.output / "music" / f!("{name}.ogg")));
         command.output().unwrap();
     }
