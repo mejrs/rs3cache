@@ -756,6 +756,7 @@
 <span id="756">756</span>
 <span id="757">757</span>
 <span id="758">758</span>
+<span id="759">759</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
     <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
@@ -902,6 +903,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::LOC_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
         <span class="kw">let</span> <span class="ident">locations</span> <span class="op">=</span> <span class="ident">archives</span>
+            .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
             .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
                 <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
                 <span class="ident">archive</span>

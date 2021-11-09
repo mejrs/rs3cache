@@ -242,6 +242,8 @@
 <span id="242">242</span>
 <span id="243">243</span>
 <span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">io::SeekFrom</span>, <span class="ident">iter</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -268,7 +270,8 @@
         .<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">meta</span>)<span class="op">|</span> (<span class="ident">meta</span>.<span class="ident">archive_id</span>(), <span class="ident">::filetime::FileTime::from_unix_time</span>(<span class="ident">meta</span>.<span class="ident">version</span>() <span class="kw">as</span> <span class="ident">i64</span>, <span class="number">0</span>)))
         .<span class="ident">collect</span>();
 
-    <span class="ident">index</span>.<span class="ident">into_iter</span>().<span class="ident">par_bridge</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">archive</span><span class="op">|</span> {
+    <span class="ident">index</span>.<span class="ident">into_iter</span>().<span class="ident">par_bridge</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">archive</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">unwrap</span>();
         <span class="macro">debug_assert_eq!</span>(<span class="ident">archive</span>.<span class="ident">file_count</span>(), <span class="number">1</span>);
 
         <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">archive</span>
@@ -319,6 +322,7 @@
     <span class="kw">let</span> <span class="ident">sprites</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::SPRITES</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
         .<span class="ident">retain</span>(<span class="ident">ids</span>)
         .<span class="ident">into_iter</span>()
+        .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
         .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">archive</span><span class="op">|</span> <span class="ident">archive</span>.<span class="ident">take_file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">and_then</span>(<span class="ident">deserialize</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">frames</span><span class="op">|</span> (<span class="ident">archive</span>.<span class="ident">archive_id</span>(), <span class="ident">frames</span>)))
         .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="kw">_</span>)<span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>
         .<span class="ident">into_iter</span>()

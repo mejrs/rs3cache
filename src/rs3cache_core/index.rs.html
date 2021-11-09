@@ -550,10 +550,6 @@
 <span id="550">550</span>
 <span id="551">551</span>
 <span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The interface between [rs3cache](crate) and the cache database.</span>
 
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span> <span class="comment">// varies based on mock config flags</span>
@@ -1013,7 +1009,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Archive</span>;
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>;
 
     <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">IntoIter</span>;
 
@@ -1025,7 +1021,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Truncated</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Archive</span>;
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>;
 
     <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">IntoIter</span>;
 
@@ -1078,14 +1074,10 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">IntoIter</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Archive</span>;
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">feed</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">archive_id</span><span class="op">|</span> {
-            <span class="self">self</span>.<span class="ident">index</span>
-                .<span class="ident">archive</span>(<span class="ident">archive_id</span>)
-                .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="macro">panic!</span>(<span class="string">&quot;Error decoding index {} archive {}.&quot;</span>, <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">index_id</span>(), <span class="ident">archive_id</span>))
-        })
+        <span class="self">self</span>.<span class="ident">feed</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">archive_id</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">archive_id</span>))
     }
 
     <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {

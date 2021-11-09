@@ -452,6 +452,7 @@
 <span id="452">452</span>
 <span id="453">453</span>
 <span id="454">454</span>
+<span id="455">455</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Python bindings for `rs3cache`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the README for help with installing this.</span>
@@ -847,7 +848,8 @@
     }
 
     <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">mut</span> <span class="ident">slf</span>: <span class="ident">PyRefMut</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
-        <span class="ident">slf</span>.<span class="ident">inner</span>.<span class="ident">next</span>()
+        <span class="comment">// no archive currently expose can fail here once fully loaded</span>
+        <span class="ident">slf</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
     }
 }
 

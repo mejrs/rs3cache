@@ -370,6 +370,7 @@
 <span id="370">370</span>
 <span id="371">371</span>
 <span id="372">372</span>
+<span id="373">373</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of items.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -466,6 +467,7 @@
         <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::OBJ_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
 
         <span class="kw">let</span> <span class="ident">items</span> <span class="op">=</span> <span class="ident">archives</span>
+            .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
             .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
                 <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
                 <span class="ident">archive</span>
