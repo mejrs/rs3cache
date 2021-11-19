@@ -49,7 +49,8 @@ pub struct Metadata {
     child_indices: Vec<u32>,
 }
 
-#[pymethods]
+#[cfg(feature = "pyo3")]
+#[pyo3::pymethods]
 impl Metadata {
     #[getter(digest)]
     fn py_digest(&self, py: Python) -> Py<PyAny> {

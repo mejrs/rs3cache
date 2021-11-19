@@ -96,7 +96,7 @@ where
             .metadatas()
             .get(&archive_id)
             .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
-        let data = self.get_file(metadata)?.into();
+        let data = self.get_file(metadata)?;
 
         Ok(Archive::deserialize(metadata, data))
     }
@@ -171,7 +171,7 @@ where
 
     /// Grabs mock data from disk.
     #[cfg(feature = "mockdata")]
-    fn get_raw_metadata(index_id: u32) -> CacheResult<Vec<u8>> {
+    fn get_raw_metadata(index_id: u32) -> CacheResult<Bytes> {
         let filename = format!("tests/mockdata/cache_index_{}", index_id);
 
         let mut file = File::open(&filename)?;
@@ -300,7 +300,7 @@ impl CacheIndex<Initial> {
         match fs::metadata(&file) {
             Ok(_) => {
                 let connection = sqlite::open(file)?;
-                let raw_metadata: Bytes = Self::get_raw_metadata(index_id, &connection)?.into();
+                let raw_metadata: Bytes = Self::get_raw_metadata(index_id, &connection)?;
                 let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
 
                 Ok(Self {
@@ -320,7 +320,7 @@ impl CacheIndex<Initial> {
     #[cfg(feature = "mockdata")]
     pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<Self> {
         let raw_metadata = Self::get_raw_metadata(index_id)?;
-        let metadatas = IndexMetadata::deserialize(index_id, Buffer::new(raw_metadata))?;
+        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
 
         Ok(CacheIndex {
             index_id,

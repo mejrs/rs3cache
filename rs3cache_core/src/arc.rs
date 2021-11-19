@@ -86,8 +86,7 @@ impl Archive {
             #[cfg(feature = "osrs")]
             child_count => {
                 use crate::utils::adapters::Accumulator;
-
-                let mut data: Bytes = data.into();
+                let mut data = data;
 
                 let n_chunks = *data.last().unwrap() as usize;
 
