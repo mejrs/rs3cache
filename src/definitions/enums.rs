@@ -8,12 +8,13 @@ use std::{
     iter,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
-use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
+use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 #[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
 pub enum KeyType {
@@ -235,46 +236,45 @@ impl Enum {
         Ok(enums)
     }
 
-    pub fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    pub fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut r#enum = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert!(!buffer.has_remaining());
 
                     break r#enum;
                 }
-                1 => r#enum.key_type = buffer.read_unsigned_byte().try_into().unwrap(),
-                2 => r#enum.value_type = buffer.read_unsigned_byte().try_into().unwrap(),
-                101 => r#enum.key_type = buffer.read_unsigned_byte().try_into().unwrap(),
-                102 => r#enum.value_type = buffer.read_unsigned_byte().try_into().unwrap(),
-                3 => r#enum.default = Some(Value::String(buffer.read_string())),
-                4 => r#enum.default = Some(Value::Integer(buffer.read_int())),
+                1 => r#enum.key_type = buffer.get_u8().try_into().unwrap(),
+                2 => r#enum.value_type = buffer.get_u8().try_into().unwrap(),
+                101 => r#enum.key_type = buffer.get_u8().try_into().unwrap(),
+                102 => r#enum.value_type = buffer.get_u8().try_into().unwrap(),
+                3 => r#enum.default = Some(Value::String(buffer.get_string())),
+                4 => r#enum.default = Some(Value::Integer(buffer.get_i32())),
                 5 => {
-                    let count = buffer.read_unsigned_short() as usize;
-                    r#enum.variants = iter::repeat_with(|| (buffer.read_int(), Value::String(buffer.read_string())))
+                    let count = buffer.get_u16() as usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_i32(), Value::String(buffer.get_string())))
                         .take(count)
                         .collect();
                 }
                 6 => {
-                    let count = buffer.read_unsigned_short() as usize;
-                    r#enum.variants = iter::repeat_with(|| (buffer.read_int(), Value::Integer(buffer.read_int())))
+                    let count = buffer.get_u16() as usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_i32(), Value::Integer(buffer.get_i32())))
                         .take(count)
                         .collect();
                 }
                 7 => {
-                    let _max = buffer.read_unsigned_short();
-                    let count = buffer.read_unsigned_short() as usize;
-                    r#enum.variants = iter::repeat_with(|| (buffer.read_unsigned_short() as i32, Value::String(buffer.read_string())))
+                    let _max = buffer.get_u16();
+                    let count = buffer.get_u16() as usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_u16() as i32, Value::String(buffer.get_string())))
                         .take(count)
                         .collect();
                 }
                 8 => {
-                    let _max = buffer.read_unsigned_short();
-                    let count = buffer.read_unsigned_short() as usize;
-                    r#enum.variants = iter::repeat_with(|| (buffer.read_unsigned_short() as i32, Value::Integer(buffer.read_int())))
+                    let _max = buffer.get_u16();
+                    let count = buffer.get_u16() as usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_u16() as i32, Value::Integer(buffer.get_i32())))
                         .take(count)
                         .collect();
                 }

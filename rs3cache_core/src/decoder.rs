@@ -1,12 +1,14 @@
 //! Functions to decompress cache data.
-
+#![allow(deprecated)]
 use std::{
     fmt::{Debug, Display, Formatter},
     io::Read,
 };
 
+use bytes::{Buf, Bytes};
 use libflate::{gzip, zlib};
 
+use crate::buf::BufExtra;
 /// Enumeration of different compression types.
 pub struct Compression;
 
@@ -29,27 +31,24 @@ pub fn decompress(
     encoded_data: Vec<u8>,
     filesize: Option<u32>,
     #[cfg(feature = "osrs")] xtea: Option<crate::xtea::Xtea>,
-) -> Result<Vec<u8>, DecodeError> {
-    use crate::buf::Buffer;
-
+) -> Result<Bytes, DecodeError> {
     match &encoded_data[0..3] {
         Compression::ZLIB => {
             let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
             let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
             decoder.read_to_end(&mut decoded_data)?;
-            Ok(decoded_data)
+            Ok(decoded_data.into())
         }
 
         &[Compression::NONE, ..] => {
             // length is encoded_data[1..5] as u32 + 7
-            Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec())
+            Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec().into())
         }
 
         &[Compression::BZIP, ..] => {
             let mut temp = b"BZh1".to_vec();
-            let mut length = Buffer::new(&encoded_data[5..9]);
+            let length = u32::from_be_bytes([encoded_data[5], encoded_data[6], encoded_data[7], encoded_data[8]]) as usize;
 
-            let length = length.read_int();
             let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(length as u32) as usize);
 
             temp.extend(&encoded_data[9..]);
@@ -57,7 +56,7 @@ pub fn decompress(
             let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
 
             decoder.read_to_end(&mut decoded_data)?;
-            Ok(decoded_data)
+            Ok(decoded_data.into())
         }
 
         #[cfg(feature = "osrs")]
@@ -76,14 +75,14 @@ pub fn decompress(
             let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
             decoder.read_to_end(&mut decoded_data).expect("oops");
 
-            Ok(decoded_data)
+            Ok(decoded_data.into())
         }
 
         &[Compression::GZIP, ..] => {
             let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
             let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
             decoder.read_to_end(&mut decoded_data)?;
-            Ok(decoded_data)
+            Ok(decoded_data.into())
         }
 
         other => unimplemented!("unknown format {:?}", other),

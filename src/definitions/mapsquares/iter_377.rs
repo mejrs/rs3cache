@@ -4,6 +4,7 @@ use std::{
     iter::Zip,
 };
 
+use bytes::{Buf, Bytes};
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 

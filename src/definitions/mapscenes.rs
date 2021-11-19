@@ -2,8 +2,10 @@
 
 use std::collections::BTreeMap;
 
+use bytes::{Buf, Bytes};
+
 use crate::cache::{
-    buf::Buffer,
+    buf::BufExtra,
     error::CacheResult,
     index::CacheIndex,
     indextype::{ConfigType, IndexType},
@@ -36,19 +38,18 @@ impl MapScene {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> MapScene {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> MapScene {
         let mut mapscene = MapScene { id, ..Default::default() };
 
         loop {
-            let opcode = buffer.read_unsigned_byte();
+            let opcode = buffer.get_u8();
             match opcode {
                 0 => {
-                    assert_eq!(buffer.remaining(), 0);
+                    assert!(!buffer.has_remaining());
                     break mapscene;
                 }
-                1 => mapscene.sprite_id = buffer.read_smart32(),
-                2 => mapscene.op_2 = Some(buffer.read_3_unsigned_bytes()),
+                1 => mapscene.sprite_id = buffer.get_smart32(),
+                2 => mapscene.op_2 = Some(buffer.get_uint(3) as u32),
                 3 => mapscene.op_3 = Some(true),
                 4 => mapscene.op_4 = Some(true),
                 5 => mapscene.op_5 = Some(true),

@@ -12,8 +12,9 @@ use pyo3::prelude::*;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
+use bytes::{Buf, Bytes};
 use crate::cache::{
-    buf::Buffer,
+    buf::{BufExtra,Buffer},
     error::CacheResult,
     index::CacheIndex,
     indextype::{ConfigType, IndexType},
@@ -42,22 +43,22 @@ impl <Name> {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> <Name> {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> <Name> {
+        
         let mut <Name> = <Name> { id, ..Default::default() };
 
         loop {
-            let opcode = buffer.read_unsigned_byte();
+            let opcode = buffer.get_u8();
             match opcode {
                 0 => {
-                    assert_eq!(buffer.remaining(), 0);
+                    assert!(!buffer.has_remaining());
                     break <Name>;
                 }
-                1 => <Name>.colour = Some(buffer.read_rgb()),
+                1 => <Name>.colour = Some(buffer.get_rgb()),
                 #[cfg(feature = "rs3")]
-                2 => <Name>.op_2 = Some(buffer.read_unsigned_short()),
+                2 => <Name>.op_2 = Some(buffer.get_u16()),
                 #[cfg(feature = "rs3")]
-                3 => <Name>.op_3 = Some(buffer.read_unsigned_short()),
+                3 => <Name>.op_3 = Some(buffer.get_u16()),
                 #[cfg(feature = "rs3")]
                 4 => <Name>.op_4 = Some(true),
                 #[cfg(feature = "rs3")]

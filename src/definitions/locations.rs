@@ -1,12 +1,12 @@
 use std::hash::Hash;
 
+use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
-use rs3cache_core::buf::Buffer;
+use rs3cache_core::buf::BufExtra;
 use serde::{Serialize, Serializer};
 
 use crate::definitions::tiles::TileArray;
-
 /// Describes whether this location is on the contained plane.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Watery {
@@ -111,27 +111,26 @@ pub struct Location {
 impl Location {
     // todo: fix this with water tiles
     #[cfg(feature = "rs3")]
-    pub(crate) fn dump_water_locations(i: u8, j: u8, file: Vec<u8>) -> Vec<Self> {
+    pub(crate) fn dump_water_locations(i: u8, j: u8, buffer: Bytes) -> Vec<Self> {
         let blanks = TileArray::default((4, 64, 64));
-        Self::dump(i, j, &blanks, file)
+        Self::dump(i, j, &blanks, buffer)
     }
 
     /// Constructor for [`Location`].
-    pub fn dump(i: u8, j: u8, tiles: &TileArray, file: Vec<u8>) -> Vec<Self> {
-        let mut buffer = Buffer::new(file);
+    pub fn dump(i: u8, j: u8, tiles: &TileArray, mut buffer: Bytes) -> Vec<Self> {
         let mut locations = Vec::new();
 
         let mut id: i32 = -1;
 
         loop {
-            match buffer.read_smarts() as i32 {
+            match buffer.get_smarts() as i32 {
                 0 => break locations,
                 id_increment => {
                     id += id_increment;
 
                     let mut location = 0;
                     loop {
-                        match buffer.read_unsigned_smart() {
+                        match buffer.get_unsigned_smart() {
                             0 => break,
                             location_increment => {
                                 location += location_increment - 1;
@@ -140,41 +139,41 @@ impl Location {
                                 let x = (location >> 6 & 0x3F) as u8;
                                 let y = (location & 0x3F) as u8;
 
-                                let data = buffer.read_unsigned_byte();
+                                let data = buffer.get_u8();
                                 let r#type = data >> 2 & 0x1F;
                                 let rotation = data & 0x3;
 
                                 // some objects have offsets; not using this data atm
                                 #[cfg(feature = "rs3")]
                                 if data >= 0x80 {
-                                    let sub_data = buffer.read_unsigned_byte();
+                                    let sub_data = buffer.get_u8();
                                     if sub_data != 0 {
                                         if sub_data & 0x1 != 0 {
-                                            buffer.read_unsigned_short();
-                                            buffer.read_unsigned_short();
-                                            buffer.read_unsigned_short();
-                                            buffer.read_unsigned_short();
+                                            buffer.get_u16();
+                                            buffer.get_u16();
+                                            buffer.get_u16();
+                                            buffer.get_u16();
                                         }
                                         if sub_data & 0x2 != 0 {
-                                            buffer.read_unsigned_short();
+                                            buffer.get_u16();
                                         }
                                         if sub_data & 0x4 != 0 {
-                                            buffer.read_unsigned_short();
+                                            buffer.get_u16();
                                         }
                                         if sub_data & 0x8 != 0 {
-                                            buffer.read_unsigned_short();
+                                            buffer.get_u16();
                                         }
                                         if sub_data & 0x10 != 0 {
-                                            buffer.read_unsigned_short();
+                                            buffer.get_u16();
                                         } else {
                                             if sub_data & 0x20 != 0 {
-                                                buffer.read_unsigned_short();
+                                                buffer.get_u16();
                                             }
                                             if sub_data & 0x40 != 0 {
-                                                buffer.read_unsigned_short();
+                                                buffer.get_u16();
                                             }
                                             if sub_data & 0x80 != 0 {
-                                                buffer.read_unsigned_short();
+                                                buffer.get_u16();
                                             }
                                         }
                                     }

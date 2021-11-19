@@ -6,13 +6,14 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
 };
 
@@ -107,82 +108,78 @@ impl ItemConfig {
         Ok(items)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut item = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert!(!buffer.has_remaining());
                     break item;
                 }
-                1 => item.base_model = Some(buffer.read_smart32().unwrap()),
-                2 => item.name = Some(buffer.read_string()),
-                3 => item.buff_effect = Some(buffer.read_string()),
-                4 => item.rotation.get_or_insert_default().yaw = buffer.read_unsigned_short(),
-                5 => item.rotation.get_or_insert_default().pitch = buffer.read_unsigned_short(),
-                6 => item.rotation.get_or_insert_default().roll = buffer.read_unsigned_short(),
-                7 => item.translation.get_or_insert_default().x = buffer.read_unsigned_short(),
-                8 => item.translation.get_or_insert_default().y = buffer.read_unsigned_short(),
+                1 => item.base_model = Some(buffer.get_smart32().unwrap()),
+                2 => item.name = Some(buffer.get_string()),
+                3 => item.buff_effect = Some(buffer.get_string()),
+                4 => item.rotation.get_or_insert_default().yaw = buffer.get_u16(),
+                5 => item.rotation.get_or_insert_default().pitch = buffer.get_u16(),
+                6 => item.rotation.get_or_insert_default().roll = buffer.get_u16(),
+                7 => item.translation.get_or_insert_default().x = buffer.get_u16(),
+                8 => item.translation.get_or_insert_default().y = buffer.get_u16(),
                 11 => item.stackable = Some(true),
-                12 => item.value = Some(buffer.read_int()),
-                13 => item.equipslot_id = Some(buffer.read_unsigned_byte()),
-                14 => item.equip_id = Some(buffer.read_unsigned_byte()),
+                12 => item.value = Some(buffer.get_i32()),
+                13 => item.equipslot_id = Some(buffer.get_u8()),
+                14 => item.equip_id = Some(buffer.get_u8()),
                 15 => item.unknown_15 = Some(true),
                 16 => item.is_members = Some(true),
-                23 => item.male_models.get_or_insert_default()[0] = Some(buffer.read_smart32().unwrap()),
-                24 => item.male_models.get_or_insert_default()[1] = Some(buffer.read_smart32().unwrap()),
-                25 => item.female_models.get_or_insert_default()[0] = Some(buffer.read_smart32().unwrap()),
-                26 => item.female_models.get_or_insert_default()[1] = Some(buffer.read_smart32().unwrap()),
-                27 => item.unknown_27 = Some(buffer.read_unsigned_byte()),
+                23 => item.male_models.get_or_insert_default()[0] = Some(buffer.get_smart32().unwrap()),
+                24 => item.male_models.get_or_insert_default()[1] = Some(buffer.get_smart32().unwrap()),
+                25 => item.female_models.get_or_insert_default()[0] = Some(buffer.get_smart32().unwrap()),
+                26 => item.female_models.get_or_insert_default()[1] = Some(buffer.get_smart32().unwrap()),
+                27 => item.unknown_27 = Some(buffer.get_u8()),
                 opcode @ 30..=34 => {
-                    item.ground_actions.get_or_insert([None, None, None, None, None])[opcode as usize - 30] = Some(buffer.read_string())
+                    item.ground_actions.get_or_insert([None, None, None, None, None])[opcode as usize - 30] = Some(buffer.get_string())
                 }
                 opcode @ 35..=39 => {
-                    item.widget_actions.get_or_insert([None, None, None, None, None])[opcode as usize - 35] = Some(buffer.read_string())
+                    item.widget_actions.get_or_insert([None, None, None, None, None])[opcode as usize - 35] = Some(buffer.get_string())
                 }
                 40 => item.colour_replacements = Some(ColourReplacements::deserialize(&mut buffer)),
                 41 => item.textures = Some(Textures::deserialize(&mut buffer)),
                 42 => item.recolour_palette = Some(RecolourPalette::deserialize(&mut buffer)),
-                44 => item.recolour_indices = Some(buffer.read_masked_index()),
-                45 => item.retexture_indices = Some(buffer.read_masked_index()),
+                44 => item.recolour_indices = Some(buffer.get_masked_index()),
+                45 => item.retexture_indices = Some(buffer.get_masked_index()),
                 65 => item.is_tradeable = Some(true),
-                69 => item.ge_buy_limit = Some(buffer.read_int()),
-                78 => item.male_models.get_or_insert_default()[2] = Some(buffer.read_smart32().unwrap()),
-                79 => item.female_models.get_or_insert_default()[2] = Some(buffer.read_smart32().unwrap()),
-                90 => item.male_head_models.get_or_insert_default()[0] = Some(buffer.read_smart32().unwrap()),
-                91 => item.female_head_models.get_or_insert_default()[0] = Some(buffer.read_smart32().unwrap()),
-                92 => item.male_head_models.get_or_insert_default()[1] = Some(buffer.read_smart32().unwrap()),
-                93 => item.female_head_models.get_or_insert_default()[1] = Some(buffer.read_smart32().unwrap()),
-                94 => item.category = Some(buffer.read_unsigned_short()),
-                95 => item.model_yaw = Some(buffer.read_unsigned_short()),
-                96 => item.dummy_item = Some(buffer.read_unsigned_byte()),
-                97 => item.note_data = Some(buffer.read_unsigned_short()),
-                98 => item.note_template = Some(buffer.read_unsigned_short()),
-                opcode @ 100..=109 => {
-                    item.stack_info.get_or_insert_default()[opcode as usize - 100] =
-                        Some((buffer.read_unsigned_short(), buffer.read_unsigned_short()))
-                }
-                opcode @ 110..=112 => item.scale.get_or_insert_default()[opcode as usize - 110] = Some(buffer.read_unsigned_short()),
-                113 => item.ambiance = Some(buffer.read_byte()),
-                114 => item.contrast = Some(buffer.read_byte()),
-                115 => item.team = Some(buffer.read_unsigned_byte()),
-                121 => item.loan_id = Some(buffer.read_unsigned_short()),
-                122 => item.loan_template = Some(buffer.read_unsigned_short()),
-                125 => item.male_translate = Some(buffer.read_3_unsigned_bytes()),
-                126 => item.female_translate = Some(buffer.read_3_unsigned_bytes()),
+                69 => item.ge_buy_limit = Some(buffer.get_i32()),
+                78 => item.male_models.get_or_insert_default()[2] = Some(buffer.get_smart32().unwrap()),
+                79 => item.female_models.get_or_insert_default()[2] = Some(buffer.get_smart32().unwrap()),
+                90 => item.male_head_models.get_or_insert_default()[0] = Some(buffer.get_smart32().unwrap()),
+                91 => item.female_head_models.get_or_insert_default()[0] = Some(buffer.get_smart32().unwrap()),
+                92 => item.male_head_models.get_or_insert_default()[1] = Some(buffer.get_smart32().unwrap()),
+                93 => item.female_head_models.get_or_insert_default()[1] = Some(buffer.get_smart32().unwrap()),
+                94 => item.category = Some(buffer.get_u16()),
+                95 => item.model_yaw = Some(buffer.get_u16()),
+                96 => item.dummy_item = Some(buffer.get_u8()),
+                97 => item.note_data = Some(buffer.get_u16()),
+                98 => item.note_template = Some(buffer.get_u16()),
+                opcode @ 100..=109 => item.stack_info.get_or_insert_default()[opcode as usize - 100] = Some((buffer.get_u16(), buffer.get_u16())),
+                opcode @ 110..=112 => item.scale.get_or_insert_default()[opcode as usize - 110] = Some(buffer.get_u16()),
+                113 => item.ambiance = Some(buffer.get_i8()),
+                114 => item.contrast = Some(buffer.get_i8()),
+                115 => item.team = Some(buffer.get_u8()),
+                121 => item.loan_id = Some(buffer.get_u16()),
+                122 => item.loan_template = Some(buffer.get_u16()),
+                125 => item.male_translate = Some(buffer.get_uint(3) as u32),
+                126 => item.female_translate = Some(buffer.get_uint(3) as u32),
                 132 => item.quests = Some(Quests::deserialize(&mut buffer)),
-                134 => item.pick_size_shift = Some(buffer.read_unsigned_byte()),
-                139 => item.unknown_bind_link = Some(buffer.read_unsigned_short()),
-                140 => item.bind_template = Some(buffer.read_unsigned_short()),
-                opcode @ 142..=146 => item.ground_action_cursor.get_or_insert_default()[opcode as usize - 142] = Some(buffer.read_unsigned_short()),
-                opcode @ 150..=154 => item.widget_action_cursor.get_or_insert_default()[opcode as usize - 150] = Some(buffer.read_unsigned_short()),
+                134 => item.pick_size_shift = Some(buffer.get_u8()),
+                139 => item.unknown_bind_link = Some(buffer.get_u16()),
+                140 => item.bind_template = Some(buffer.get_u16()),
+                opcode @ 142..=146 => item.ground_action_cursor.get_or_insert_default()[opcode as usize - 142] = Some(buffer.get_u16()),
+                opcode @ 150..=154 => item.widget_action_cursor.get_or_insert_default()[opcode as usize - 150] = Some(buffer.get_u16()),
                 157 => item.randomize_ground_pos = Some(true),
-                161 => item.combine_info = Some(buffer.read_unsigned_short()),
-                162 => item.combine_template = Some(buffer.read_unsigned_short()),
-                163 => item.combine_num_required = Some(buffer.read_unsigned_short()),
-                164 => item.combine_shard_name = Some(buffer.read_string()),
+                161 => item.combine_info = Some(buffer.get_u16()),
+                162 => item.combine_template = Some(buffer.get_u16()),
+                163 => item.combine_num_required = Some(buffer.get_u16()),
+                164 => item.combine_shard_name = Some(buffer.get_string()),
                 165 => item.never_stackable = Some(true),
                 167 => item.unknown_167 = Some(true),
                 168 => item.unknown_168 = Some(true),
@@ -219,11 +216,12 @@ pub mod item_config_fields {
     #![allow(missing_docs)]
     use std::{collections::BTreeMap, iter};
 
+    use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
 
-    use crate::cache::buf::Buffer;
+    use crate::cache::buf::BufExtra;
 
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
@@ -256,11 +254,9 @@ pub mod item_config_fields {
     }
 
     impl ColourReplacements {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let colours = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
-                .take(count)
-                .collect::<Vec<_>>();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let colours = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16())).take(count).collect::<Vec<_>>();
             Self { colours }
         }
     }
@@ -281,9 +277,9 @@ pub mod item_config_fields {
     }
 
     impl Textures {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Textures {
-            let count = buffer.read_unsigned_byte() as usize;
-            let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
+        pub fn deserialize(buffer: &mut Bytes) -> Textures {
+            let count = buffer.get_u8() as usize;
+            let textures = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16()))
                 .take(count)
                 .collect::<BTreeMap<_, _>>();
             Textures { textures }
@@ -297,9 +293,9 @@ pub mod item_config_fields {
     }
 
     impl Quests {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let quests = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let quests = iter::repeat_with(|| buffer.get_u16()).take(count).collect();
             Self { quests }
         }
     }
@@ -325,9 +321,9 @@ pub mod item_config_fields {
     }
 
     impl StackInfo {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let unknown_1 = buffer.read_unsigned_short();
-            let unknown_2 = buffer.read_unsigned_short();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let unknown_1 = buffer.get_u16();
+            let unknown_2 = buffer.get_u16();
             Self { unknown_1, unknown_2 }
         }
     }
@@ -348,10 +344,10 @@ pub mod item_config_fields {
     }
 
     impl RecolourPalette {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
 
-            let palette = iter::repeat_with(|| buffer.read_byte()).take(count).collect::<Vec<_>>();
+            let palette = iter::repeat_with(|| buffer.get_i8()).take(count).collect::<Vec<_>>();
             Self { palette }
         }
     }

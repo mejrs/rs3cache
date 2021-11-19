@@ -6,12 +6,13 @@ use std::{
     iter,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
-use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
+use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 /// Describes the properties of a given Achievement.
 #[cfg_eval]
@@ -97,35 +98,34 @@ impl Achievement {
         Ok(Achievements)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut achievement = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
                     debug_assert_eq!(buffer.remaining(), 0, "{}", achievement);
                     break achievement;
                 }
-                1 => achievement.name = Some(buffer.read_padded_string()),
+                1 => achievement.name = Some(buffer.get_padded_string()),
                 2 => {
-                    let is_ironman = buffer.read_unsigned_byte();
-                    assert_eq!(buffer.read_unsigned_byte(), 0, "I'm unsure whether this is an invariant");
+                    let is_ironman = buffer.get_u8();
+                    assert_eq!(buffer.get_u8(), 0, "I'm unsure whether this is an invariant");
 
-                    achievement.description = Some(buffer.read_padded_string());
+                    achievement.description = Some(buffer.get_padded_string());
                     if is_ironman == 2 {
-                        assert_eq!(buffer.read_unsigned_byte(), 1, "I'm unsure whether this is an invariant");
-                        achievement.ironman_description = Some(buffer.read_padded_string());
+                        assert_eq!(buffer.get_u8(), 1, "I'm unsure whether this is an invariant");
+                        achievement.ironman_description = Some(buffer.get_padded_string());
                     }
                 }
-                3 => achievement.category = Some(buffer.read_unsigned_short()),
-                4 => achievement.sprite_id = Some(buffer.read_smart32().unwrap()),
-                5 => achievement.points = Some(buffer.read_unsigned_byte()),
-                6 => achievement.unknown_6 = Some(buffer.read_unsigned_short()),
-                7 => achievement.reward = Some(buffer.read_padded_string()),
+                3 => achievement.category = Some(buffer.get_u16()),
+                4 => achievement.sprite_id = Some(buffer.get_smart32().unwrap()),
+                5 => achievement.points = Some(buffer.get_u8()),
+                6 => achievement.unknown_6 = Some(buffer.get_u16()),
+                7 => achievement.reward = Some(buffer.get_padded_string()),
                 8 => {
                     achievement.skill_requirements_1 = {
-                        let count = buffer.read_unsigned_smart() as usize;
+                        let count = buffer.get_unsigned_smart() as usize;
                         Some(
                             iter::repeat_with(|| MaybeIronmanSkillRequirement::deserialize(&mut buffer))
                                 .take(count)
@@ -135,31 +135,31 @@ impl Achievement {
                 }
                 9 => {
                     achievement.unknown_9 = {
-                        let count = buffer.read_unsigned_byte() as usize;
+                        let count = buffer.get_u8() as usize;
                         Some(iter::repeat_with(|| VarbitRequirement10::deserialize(&mut buffer)).take(count).collect())
                     }
                 }
                 10 => {
                     achievement.unknown_10 = {
-                        let count = buffer.read_unsigned_byte() as usize;
+                        let count = buffer.get_u8() as usize;
                         Some(iter::repeat_with(|| VarbitRequirement10::deserialize(&mut buffer)).take(count).collect())
                     }
                 }
                 11 => {
                     achievement.previous_achievements = {
-                        let count = buffer.read_unsigned_byte() as usize;
-                        Some(iter::repeat_with(|| buffer.read_3_unsigned_bytes()).take(count).collect())
+                        let count = buffer.get_u8() as usize;
+                        Some(iter::repeat_with(|| buffer.get_uint(3) as u32).take(count).collect())
                     }
                 }
                 12 => {
                     achievement.skill_requirements_2 = {
-                        let count = buffer.read_unsigned_smart() as usize;
+                        let count = buffer.get_unsigned_smart() as usize;
                         Some(iter::repeat_with(|| SkillRequirement::deserialize(&mut buffer)).take(count).collect())
                     }
                 }
                 13 => {
                     achievement.unknown_13 = {
-                        let count = buffer.read_unsigned_smart() as usize;
+                        let count = buffer.get_unsigned_smart() as usize;
                         Some(
                             iter::repeat_with(|| MultipleVarbitsRequirement::deserialize(&mut buffer))
                                 .take(count)
@@ -169,7 +169,7 @@ impl Achievement {
                 }
                 14 => {
                     achievement.subreqs_14 = {
-                        let count = buffer.read_unsigned_smart() as usize;
+                        let count = buffer.get_unsigned_smart() as usize;
                         Some(
                             iter::repeat_with(|| MultipleVarbitsRequirement::deserialize(&mut buffer))
                                 .take(count)
@@ -179,28 +179,28 @@ impl Achievement {
                 }
                 15 => {
                     achievement.sub_achievements = {
-                        let count = buffer.read_unsigned_smart() as usize;
-                        Some(iter::repeat_with(|| buffer.read_3_unsigned_bytes()).take(count).collect())
+                        let count = buffer.get_unsigned_smart() as usize;
+                        Some(iter::repeat_with(|| buffer.get_uint(3) as u32).take(count).collect())
                     }
                 }
-                16 => achievement.sub_category = Some(buffer.read_unsigned_short()),
-                18 => achievement.hidden = Some(buffer.read_unsigned_byte()),
+                16 => achievement.sub_category = Some(buffer.get_u16()),
+                18 => achievement.hidden = Some(buffer.get_u8()),
                 19 => achievement.free_to_play = Some(true),
                 20 => {
                     achievement.quest_req_for_miniquests = {
-                        let count = buffer.read_unsigned_byte() as usize;
-                        Some(iter::repeat_with(|| buffer.read_3_unsigned_bytes()).take(count).collect())
+                        let count = buffer.get_u8() as usize;
+                        Some(iter::repeat_with(|| buffer.get_uint(3) as u32).take(count).collect())
                     }
                 }
                 21 => {
                     achievement.required_quest_ids = {
-                        let count = buffer.read_unsigned_byte() as usize;
-                        Some(iter::repeat_with(|| buffer.read_3_unsigned_bytes()).take(count).collect())
+                        let count = buffer.get_u8() as usize;
+                        Some(iter::repeat_with(|| buffer.get_uint(3) as u32).take(count).collect())
                     }
                 }
                 23 => {
                     achievement.reqs_23 = {
-                        let count = buffer.read_unsigned_smart() as usize;
+                        let count = buffer.get_unsigned_smart() as usize;
                         Some(
                             iter::repeat_with(|| PackedVarbitRequirement::deserialize(&mut buffer))
                                 .take(count)
@@ -210,7 +210,7 @@ impl Achievement {
                 }
                 25 => {
                     achievement.reqs_25 = {
-                        let count = buffer.read_unsigned_smart() as usize;
+                        let count = buffer.get_unsigned_smart() as usize;
                         Some(
                             iter::repeat_with(|| PackedVarbitRequirement::deserialize(&mut buffer))
                                 .take(count)
@@ -221,22 +221,22 @@ impl Achievement {
                 27 => achievement.unknown_27 = Some(true),
                 28 => {
                     achievement.skill_req_count = {
-                        let count = buffer.read_unsigned_byte() as usize;
-                        Some(iter::repeat_with(|| buffer.read_unsigned_byte()).take(count).collect())
+                        let count = buffer.get_u8() as usize;
+                        Some(iter::repeat_with(|| buffer.get_u8()).take(count).collect())
                     }
                 }
-                29 => achievement.unknown_29 = Some(buffer.read_unsigned_byte()),
+                29 => achievement.unknown_29 = Some(buffer.get_u8()),
                 30 => {
                     achievement.sub_req_count = {
-                        let count = buffer.read_unsigned_byte() as usize;
-                        Some(iter::repeat_with(|| buffer.read_unsigned_smart()).take(count).collect())
+                        let count = buffer.get_u8() as usize;
+                        Some(iter::repeat_with(|| buffer.get_unsigned_smart()).take(count).collect())
                     }
                 }
-                31 => achievement.unknown_31 = Some(buffer.read_unsigned_byte()),
-                32 => achievement.unknown_32 = Some([buffer.read_unsigned_byte(), buffer.read_unsigned_byte(), buffer.read_unsigned_byte()]),
+                31 => achievement.unknown_31 = Some(buffer.get_u8()),
+                32 => achievement.unknown_32 = Some([buffer.get_u8(), buffer.get_u8(), buffer.get_u8()]),
                 35 => achievement.unknown_35 = Some(true),
-                37 => achievement.unknown_37 = Some(buffer.read_unsigned_byte()),
-                38 => achievement.unknown_38 = Some(buffer.read_unsigned_byte()),
+                37 => achievement.unknown_37 = Some(buffer.get_u8()),
+                38 => achievement.unknown_38 = Some(buffer.get_u8()),
                 missing => unimplemented!(
                     "Achievement::deserialize cannot deserialize opcode {} in id {}: \n {}",
                     missing,
@@ -252,11 +252,12 @@ pub mod achievement_fields_impl {
     #![allow(missing_docs)]
     use std::iter;
 
+    use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
 
-    use crate::{cache::buf::Buffer, types::variables::Varbit};
+    use crate::{cache::buf::BufExtra, types::variables::Varbit};
 
     #[cfg_eval]
     #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
@@ -270,12 +271,12 @@ pub mod achievement_fields_impl {
     }
 
     impl VarbitRequirement {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let _type = buffer.read_unsigned_byte();
-            let value = buffer.read_unsigned_smart();
-            let description = buffer.read_padded_string();
-            let step_size = buffer.read_unsigned_byte();
-            let varbit = Varbit::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let _type = buffer.get_u8();
+            let value = buffer.get_unsigned_smart();
+            let description = buffer.get_padded_string();
+            let step_size = buffer.get_u8();
+            let varbit = Varbit::new(buffer.get_u16());
             Self {
                 description,
                 value,
@@ -297,12 +298,12 @@ pub mod achievement_fields_impl {
     }
 
     impl VarbitRequirement10 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let _type = buffer.read_unsigned_byte();
-            let value = buffer.read_smart32().unwrap();
-            let description = buffer.read_padded_string();
-            let step_size = buffer.read_unsigned_byte();
-            let varbit = Varbit::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let _type = buffer.get_u8();
+            let value = buffer.get_smart32().unwrap();
+            let description = buffer.get_padded_string();
+            let step_size = buffer.get_u8();
+            let varbit = Varbit::new(buffer.get_u16());
             Self {
                 description,
                 value,
@@ -323,15 +324,15 @@ pub mod achievement_fields_impl {
     }
 
     impl SkillRequirement {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let r#type = buffer.read_unsigned_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let r#type = buffer.get_u8();
             assert_eq!(r#type, 0);
-            let level = buffer.read_unsigned_byte();
-            let description = buffer.read_padded_string();
-            let r#type2 = buffer.read_unsigned_byte();
+            let level = buffer.get_u8();
+            let description = buffer.get_padded_string();
+            let r#type2 = buffer.get_u8();
             assert_eq!(r#type2, 1);
 
-            let skill = buffer.read_unsigned_short();
+            let skill = buffer.get_u16();
             Self { description, level, skill }
         }
     }
@@ -348,16 +349,16 @@ pub mod achievement_fields_impl {
     }
 
     impl MaybeIronmanSkillRequirement {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let is_ironman = buffer.read_unsigned_byte() == 1;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let is_ironman = buffer.get_u8() == 1;
 
-            let level = buffer.read_unsigned_byte();
-            let description = buffer.read_padded_string();
+            let level = buffer.get_u8();
+            let description = buffer.get_padded_string();
 
-            let r#type = buffer.read_unsigned_byte();
+            let r#type = buffer.get_u8();
             assert_eq!(r#type, 1);
 
-            let skill = buffer.read_unsigned_short();
+            let skill = buffer.get_u16();
             Self {
                 is_ironman,
                 description,
@@ -377,12 +378,12 @@ pub mod achievement_fields_impl {
     }
 
     impl MultipleVarbitsRequirement {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let _type = buffer.read_unsigned_byte();
-            let value = buffer.read_smart32().unwrap();
-            let description = buffer.read_padded_string();
-            let count = buffer.read_unsigned_byte() as usize;
-            let varbits = iter::repeat_with(|| Varbit::new(buffer.read_unsigned_short())).take(count).collect();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let _type = buffer.get_u8();
+            let value = buffer.get_smart32().unwrap();
+            let description = buffer.get_padded_string();
+            let count = buffer.get_u8() as usize;
+            let varbits = iter::repeat_with(|| Varbit::new(buffer.get_u16())).take(count).collect();
             Self { value, description, varbits }
         }
     }
@@ -399,12 +400,12 @@ pub mod achievement_fields_impl {
     }
 
     impl PartialVarbitRequirement {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let _type = buffer.read_unsigned_byte();
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let step_size = buffer.read_unsigned_byte();
-            let description = buffer.read_padded_string();
-            let value = buffer.read_smart32().unwrap();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let _type = buffer.get_u8();
+            let varbit = Varbit::new(buffer.get_u16());
+            let step_size = buffer.get_u8();
+            let description = buffer.get_padded_string();
+            let value = buffer.get_smart32().unwrap();
 
             Self {
                 value,
@@ -427,12 +428,12 @@ pub mod achievement_fields_impl {
     }
 
     impl PackedVarbitRequirement {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let _type = buffer.read_unsigned_byte();
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let value = buffer.read_unsigned_byte();
-            let description = buffer.read_padded_string();
-            let value2 = buffer.read_unsigned_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let _type = buffer.get_u8();
+            let varbit = Varbit::new(buffer.get_u16());
+            let value = buffer.get_u8();
+            let description = buffer.get_padded_string();
+            let value2 = buffer.get_u8();
 
             Self {
                 value,

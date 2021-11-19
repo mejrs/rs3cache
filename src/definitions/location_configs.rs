@@ -4,6 +4,7 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
@@ -11,7 +12,7 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use rayon::iter::{ParallelBridge, ParallelIterator};
 #[cfg(feature = "osrs")]
 use rs3cache_core::indextype::ConfigType;
-use rs3cache_core::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
+use rs3cache_core::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};
 use serde::Serialize;
 
 use crate::structures::paramtable::ParamTable;
@@ -167,114 +168,113 @@ impl LocationConfig {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut loc = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert!(!buffer.has_remaining());
                     break loc;
                 }
                 1 => loc.models = Some(Models::deserialize(&mut buffer)),
-                2 => loc.name = Some(buffer.read_string()),
+                2 => loc.name = Some(buffer.get_string()),
                 #[cfg(feature = "osrs")]
                 5 => loc.models_2 = Some(Models2::deserialize(&mut buffer)),
-                14 => loc.dim_x = Some(buffer.read_unsigned_byte()),
-                15 => loc.dim_y = Some(buffer.read_unsigned_byte()),
+                14 => loc.dim_x = Some(buffer.get_u8()),
+                15 => loc.dim_y = Some(buffer.get_u8()),
                 17 => loc.unknown_17 = Some(false),
                 18 => loc.is_transparent = Some(true),
-                19 => loc.unknown_19 = Some(buffer.read_unsigned_byte()),
+                19 => loc.unknown_19 = Some(buffer.get_u8()),
                 21 => loc.unknown_21 = Some(true),
                 22 => loc.unknown_22 = Some(true),
                 23 => loc.occludes_1 = Some(false),
-                24 => loc.unknown_24 = buffer.read_smart32(),
+                24 => loc.unknown_24 = buffer.get_smart32(),
                 27 => loc.unknown_27 = Some(false),
-                28 => loc.unknown_28 = Some(buffer.read_unsigned_byte()),
-                29 => loc.ambient = Some(buffer.read_byte()),
+                28 => loc.unknown_28 = Some(buffer.get_u8()),
+                29 => loc.ambient = Some(buffer.get_i8()),
                 opcode @ 30..=34 => {
                     let actions = loc.actions.get_or_insert([None, None, None, None, None]);
-                    actions[opcode as usize - 30] = Some(buffer.read_string());
+                    actions[opcode as usize - 30] = Some(buffer.get_string());
                 }
-                39 => loc.contrast = Some(buffer.read_byte()),
+                39 => loc.contrast = Some(buffer.get_i8()),
                 40 => loc.colour_replacements = Some(ColourReplacements::deserialize(&mut buffer)),
                 41 => loc.textures = Some(Textures::deserialize(&mut buffer)),
-                44 => loc.unknown_44 = Some(buffer.read_masked_index()),
-                45 => loc.unknown_45 = Some(buffer.read_masked_index()),
+                44 => loc.unknown_44 = Some(buffer.get_masked_index()),
+                45 => loc.unknown_45 = Some(buffer.get_masked_index()),
                 // changed at some point after 2015
                 // used to be mapscenes
                 // see https://discordapp.com/channels/177206626514632704/269673599554551808/872603876384178206
                 #[cfg(feature = "osrs")]
-                60 => loc.mapscene = Some(buffer.read_unsigned_short()),
+                60 => loc.mapscene = Some(buffer.get_u16()),
 
                 #[cfg(feature = "osrs")]
-                61 => loc.category = Some(buffer.read_unsigned_short()),
+                61 => loc.category = Some(buffer.get_u16()),
                 62 => loc.mirror = Some(true),
                 64 => loc.model = Some(false),
-                65 => loc.scale_x = Some(buffer.read_unsigned_short()),
-                66 => loc.scale_y = Some(buffer.read_unsigned_short()),
-                67 => loc.scale_z = Some(buffer.read_unsigned_short()),
+                65 => loc.scale_x = Some(buffer.get_u16()),
+                66 => loc.scale_y = Some(buffer.get_u16()),
+                67 => loc.scale_z = Some(buffer.get_u16()),
                 #[cfg(feature = "osrs")]
-                68 => loc.mapscene = Some(buffer.read_unsigned_short()),
-                69 => loc.unknown_69 = Some(buffer.read_unsigned_byte()),
-                70 => loc.translate_x = Some(buffer.read_unsigned_short()),
-                71 => loc.translate_y = Some(buffer.read_unsigned_short()),
-                72 => loc.translate_z = Some(buffer.read_unsigned_short()),
+                68 => loc.mapscene = Some(buffer.get_u16()),
+                69 => loc.unknown_69 = Some(buffer.get_u8()),
+                70 => loc.translate_x = Some(buffer.get_u16()),
+                71 => loc.translate_y = Some(buffer.get_u16()),
+                72 => loc.translate_z = Some(buffer.get_u16()),
                 73 => loc.unknown_73 = Some(true),
                 74 => loc.blocks_ranged = Some(true),
-                75 => loc.unknown_75 = Some(buffer.read_unsigned_byte()),
+                75 => loc.unknown_75 = Some(buffer.get_u8()),
                 77 => loc.morphs_1 = Some(LocationMorphTable::deserialize(&mut buffer)),
                 78 => loc.unknown_78 = Some(Unknown78::deserialize(&mut buffer)),
                 79 => loc.unknown_79 = Some(Unknown79::deserialize(&mut buffer)),
-                81 => loc.unknown_81 = Some(buffer.read_unsigned_byte()),
+                81 => loc.unknown_81 = Some(buffer.get_u8()),
                 #[cfg(feature = "rs3")]
                 82 => loc.unknown_82 = Some(true),
                 #[cfg(feature = "osrs")]
-                82 => loc.maparea_id = Some(buffer.read_unsigned_short()),
+                82 => loc.maparea_id = Some(buffer.get_u16()),
                 88 => loc.unknown_88 = Some(false),
                 89 => loc.unknown_89 = Some(false),
                 91 => loc.is_members = Some(true),
                 92 => loc.morphs_2 = Some(ExtendedLocationMorphTable::deserialize(&mut buffer)),
-                93 => loc.unknown_93 = Some(buffer.read_unsigned_short()),
+                93 => loc.unknown_93 = Some(buffer.get_u16()),
                 94 => loc.unknown_94 = Some(true),
-                95 => loc.unknown_95 = Some(buffer.read_unsigned_short()),
+                95 => loc.unknown_95 = Some(buffer.get_u16()),
                 97 => loc.unknown_97 = Some(true),
                 98 => loc.unknown_98 = Some(true),
                 #[cfg(feature = "rs3")]
-                102 => loc.mapscene = Some(buffer.read_unsigned_short()),
-                104 => loc.unknown_104 = Some(buffer.read_unsigned_byte()),
+                102 => loc.mapscene = Some(buffer.get_u16()),
+                104 => loc.unknown_104 = Some(buffer.get_u8()),
                 106 => loc.headmodels = Some(HeadModels::deserialize(&mut buffer)),
-                107 => loc.mapfunction = Some(buffer.read_unsigned_short()),
+                107 => loc.mapfunction = Some(buffer.get_u16()),
                 103 => loc.occludes_2 = Some(false),
                 opcode @ 150..=154 => {
                     let actions = loc.member_actions.get_or_insert([None, None, None, None, None]);
-                    actions[opcode as usize - 150] = Some(buffer.read_string());
+                    actions[opcode as usize - 150] = Some(buffer.get_string());
                 }
                 160 => loc.unknown_160 = Some(Unknown160::deserialize(&mut buffer)),
-                162 => loc.unknown_162 = Some(buffer.read_int()),
+                162 => loc.unknown_162 = Some(buffer.get_i32()),
                 163 => loc.unknown_163 = Some(Unknown163::deserialize(&mut buffer)),
-                164 => loc.unknown_164 = Some(buffer.read_unsigned_short()),
-                165 => loc.unknown_166 = Some(buffer.read_unsigned_short()),
-                167 => loc.unknown_167 = Some(buffer.read_unsigned_short()),
-                170 => loc.unknown_170 = Some(buffer.read_unsigned_smart()),
-                171 => loc.unknown_171 = Some(buffer.read_unsigned_smart()),
+                164 => loc.unknown_164 = Some(buffer.get_u16()),
+                165 => loc.unknown_166 = Some(buffer.get_u16()),
+                167 => loc.unknown_167 = Some(buffer.get_u16()),
+                170 => loc.unknown_170 = Some(buffer.get_unsigned_smart()),
+                171 => loc.unknown_171 = Some(buffer.get_unsigned_smart()),
                 173 => loc.unknown_173 = Some(Unknown173::deserialize(&mut buffer)),
                 177 => loc.unknown_177 = Some(true),
-                178 => loc.unknown_178 = Some(buffer.read_unsigned_byte()),
-                186 => loc.unknown_186 = Some(buffer.read_unsigned_byte()),
+                178 => loc.unknown_178 = Some(buffer.get_u8()),
+                186 => loc.unknown_186 = Some(buffer.get_u8()),
                 188 => loc.unknown_188 = Some(true),
                 189 => loc.unknown_189 = Some(true),
                 opcode @ 190..=195 => {
                     let actions = loc.cursors.get_or_insert([None, None, None, None, None, None]);
-                    actions[opcode as usize - 190] = Some(buffer.read_unsigned_short());
+                    actions[opcode as usize - 190] = Some(buffer.get_u16());
                 }
-                196 => loc.unknown_196 = Some(buffer.read_unsigned_byte()),
-                197 => loc.unknown_196 = Some(buffer.read_unsigned_byte()),
+                196 => loc.unknown_196 = Some(buffer.get_u8()),
+                197 => loc.unknown_196 = Some(buffer.get_u8()),
                 198 => loc.unknown_198 = Some(true),
                 199 => loc.unknown_199 = Some(true),
                 201 => loc.unknown_201 = Some(Unknown201::deserialize(&mut buffer)),
-                202 => loc.unknown_202 = Some(buffer.read_unsigned_smart()),
+                202 => loc.unknown_202 = Some(buffer.get_unsigned_smart()),
                 249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
                 missing => unimplemented!("LocationConfig::deserialize cannot deserialize opcode {} in id {}", missing, id),
             }
@@ -287,12 +287,13 @@ pub mod location_config_fields {
     #![allow(missing_docs)]
     use std::{collections::BTreeMap, iter};
 
+    use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
 
     use crate::{
-        cache::buf::Buffer,
+        cache::buf::BufExtra,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
@@ -316,27 +317,27 @@ pub mod location_config_fields {
     impl LocationMorphTable {
         /// Constructor for [`LocationMorphTable`]
         #[cfg(feature = "rs3")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let count = buffer.read_unsigned_smart() as usize;
+            let count = buffer.get_unsigned_smart() as usize;
 
-            let ids = iter::repeat_with(|| buffer.read_smart32()).take(count + 1).collect::<Vec<_>>();
+            let ids = iter::repeat_with(|| buffer.get_smart32()).take(count + 1).collect::<Vec<_>>();
 
             Self { var, ids }
         }
 
         #[cfg(feature = "osrs")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let count = buffer.read_unsigned_byte() as usize;
+            let count = buffer.get_u8() as usize;
 
-            let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
+            let ids = iter::repeat_with(|| match buffer.get_u16() {
                 0xFFFF => None,
                 id => Some(id),
             })
@@ -377,35 +378,35 @@ pub mod location_config_fields {
     impl ExtendedLocationMorphTable {
         /// Constructor for [`ExtendedLocationMorphTable`]
         #[cfg(feature = "rs3")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default = buffer.read_smart32();
+            let default = buffer.get_smart32();
 
-            let count = buffer.read_unsigned_smart() as usize;
+            let count = buffer.get_unsigned_smart() as usize;
 
-            let ids = iter::repeat_with(|| buffer.read_smart32()).take(count + 1).collect::<Vec<_>>();
+            let ids = iter::repeat_with(|| buffer.get_smart32()).take(count + 1).collect::<Vec<_>>();
             Self { var, ids, default }
         }
 
         #[cfg(feature = "osrs")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default = match buffer.read_unsigned_short() {
+            let default = match buffer.get_u16() {
                 0xFFFF => None,
                 id => Some(id),
             };
 
-            let count = buffer.read_unsigned_byte() as usize;
+            let count = buffer.get_u8() as usize;
 
-            let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
+            let ids = iter::repeat_with(|| match buffer.get_u16() {
                 0xFFFF => None,
                 id => Some(id),
             })
@@ -423,11 +424,9 @@ pub mod location_config_fields {
     }
 
     impl ColourReplacements {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let colours = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
-                .take(count)
-                .collect::<Vec<_>>();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let colours = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16())).take(count).collect::<Vec<_>>();
             Self { colours }
         }
     }
@@ -444,8 +443,8 @@ pub mod location_config_fields {
 
     impl Models {
         #[cfg(feature = "rs3")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Models {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Models {
+            let count = buffer.get_u8() as usize;
 
             let models = iter::repeat_with(|| Models::sub_deserialize(buffer))
                 .take(count)
@@ -454,12 +453,12 @@ pub mod location_config_fields {
         }
 
         #[cfg(feature = "osrs")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Models {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Models {
+            let count = buffer.get_u8() as usize;
 
             let models = iter::repeat_with(|| {
-                let model = buffer.read_unsigned_short();
-                let r#type = buffer.read_unsigned_byte();
+                let model = buffer.get_u16();
+                let r#type = buffer.get_u8();
                 (r#type, model)
             })
             .take(count)
@@ -468,10 +467,10 @@ pub mod location_config_fields {
         }
 
         #[cfg(feature = "rs3")]
-        fn sub_deserialize(buffer: &mut Buffer<Vec<u8>>) -> (i8, Vec<Option<u32>>) {
-            let ty = buffer.read_byte();
-            let count = buffer.read_unsigned_byte() as usize;
-            let values = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
+        fn sub_deserialize(buffer: &mut Bytes) -> (i8, Vec<Option<u32>>) {
+            let ty = buffer.get_i8();
+            let count = buffer.get_u8() as usize;
+            let values = iter::repeat_with(|| buffer.get_smart32()).take(count).collect::<Vec<_>>();
             (ty, values)
         }
     }
@@ -486,10 +485,10 @@ pub mod location_config_fields {
 
     #[cfg(feature = "osrs")]
     impl Models2 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
 
-            let models = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect();
+            let models = iter::repeat_with(|| buffer.get_u16()).take(count).collect();
             Self { models }
         }
     }
@@ -502,9 +501,9 @@ pub mod location_config_fields {
     }
 
     impl Textures {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Textures {
-            let count = buffer.read_unsigned_byte() as usize;
-            let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
+        pub fn deserialize(buffer: &mut Bytes) -> Textures {
+            let count = buffer.get_u8() as usize;
+            let textures = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16()))
                 .take(count)
                 .collect::<BTreeMap<_, _>>();
             Textures { textures }
@@ -525,14 +524,14 @@ pub mod location_config_fields {
     }
 
     impl Unknown79 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown79 {
-            let unknown_1 = buffer.read_unsigned_short();
-            let unknown_2 = buffer.read_unsigned_short();
-            let unknown_3 = buffer.read_unsigned_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Unknown79 {
+            let unknown_1 = buffer.get_u16();
+            let unknown_2 = buffer.get_u16();
+            let unknown_3 = buffer.get_u8();
 
-            let count = buffer.read_unsigned_byte() as usize;
+            let count = buffer.get_u8() as usize;
 
-            let values = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
+            let values = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
 
             Unknown79 {
                 unknown_1,
@@ -553,9 +552,9 @@ pub mod location_config_fields {
     }
 
     impl Unknown173 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown173 {
-            let unknown_1 = buffer.read_unsigned_short();
-            let unknown_2 = buffer.read_unsigned_short();
+        pub fn deserialize(buffer: &mut Bytes) -> Unknown173 {
+            let unknown_1 = buffer.get_u16();
+            let unknown_2 = buffer.get_u16();
 
             Unknown173 { unknown_1, unknown_2 }
         }
@@ -575,11 +574,11 @@ pub mod location_config_fields {
     }
 
     impl Unknown163 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown163 {
-            let unknown_1 = buffer.read_byte();
-            let unknown_2 = buffer.read_byte();
-            let unknown_3 = buffer.read_byte();
-            let unknown_4 = buffer.read_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Unknown163 {
+            let unknown_1 = buffer.get_i8();
+            let unknown_2 = buffer.get_i8();
+            let unknown_3 = buffer.get_i8();
+            let unknown_4 = buffer.get_i8();
 
             Unknown163 {
                 unknown_1,
@@ -600,9 +599,9 @@ pub mod location_config_fields {
     }
 
     impl Unknown78 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let unknown_1 = buffer.read_unsigned_short();
-            let unknown_2 = buffer.read_unsigned_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let unknown_1 = buffer.get_u16();
+            let unknown_2 = buffer.get_u8();
 
             Self { unknown_1, unknown_2 }
         }
@@ -616,9 +615,9 @@ pub mod location_config_fields {
     }
 
     impl Unknown160 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let values = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let values = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
             Self { values }
         }
     }
@@ -641,13 +640,13 @@ pub mod location_config_fields {
     }
 
     impl Unknown201 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Unknown201 {
-            let unknown_1 = buffer.read_unsigned_smart();
-            let unknown_2 = buffer.read_unsigned_smart();
-            let unknown_3 = buffer.read_unsigned_smart();
-            let unknown_4 = buffer.read_unsigned_smart();
-            let unknown_5 = buffer.read_unsigned_smart();
-            let unknown_6 = buffer.read_unsigned_smart();
+        pub fn deserialize(buffer: &mut Bytes) -> Unknown201 {
+            let unknown_1 = buffer.get_unsigned_smart();
+            let unknown_2 = buffer.get_unsigned_smart();
+            let unknown_3 = buffer.get_unsigned_smart();
+            let unknown_4 = buffer.get_unsigned_smart();
+            let unknown_5 = buffer.get_unsigned_smart();
+            let unknown_6 = buffer.get_unsigned_smart();
 
             Unknown201 {
                 unknown_1,
@@ -668,9 +667,9 @@ pub mod location_config_fields {
     }
 
     impl HeadModels {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> HeadModels {
-            let count = buffer.read_unsigned_byte() as usize;
-            let headmodels = iter::repeat_with(|| (buffer.read_smart32(), buffer.read_unsigned_byte()))
+        pub fn deserialize(buffer: &mut Bytes) -> HeadModels {
+            let count = buffer.get_u8() as usize;
+            let headmodels = iter::repeat_with(|| (buffer.get_smart32(), buffer.get_u8()))
                 .take(count)
                 .collect::<Vec<_>>();
             HeadModels { headmodels }

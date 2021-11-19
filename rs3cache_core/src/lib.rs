@@ -1,11 +1,9 @@
 //! Core cache interpreting utilities.
 
 #![feature(backtrace, error_iter, cfg_eval)]
-#![allow(non_snake_case)]
+#![allow(non_snake_case, unused_imports)]
 #![warn(
-    unused_crate_dependencies,
-    unused_imports,
-    unused_qualifications,
+     unused_qualifications,
     unused_import_braces,
     unused_extern_crates,
     rustdoc::broken_intra_doc_links,

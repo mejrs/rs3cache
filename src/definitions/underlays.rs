@@ -4,6 +4,7 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
@@ -11,7 +12,7 @@ use serde::Serialize;
 use serde_with::skip_serializing_none;
 
 use crate::cache::{
-    buf::Buffer,
+    buf::BufExtra,
     error::CacheResult,
     index::CacheIndex,
     indextype::{ConfigType, IndexType},
@@ -48,22 +49,21 @@ impl Underlay {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Underlay {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> Underlay {
         let mut underlay = Underlay { id, ..Default::default() };
 
         loop {
-            let opcode = buffer.read_unsigned_byte();
+            let opcode = buffer.get_u8();
             match opcode {
                 0 => {
-                    assert_eq!(buffer.remaining(), 0);
+                    assert!(!buffer.has_remaining());
                     break underlay;
                 }
-                1 => underlay.colour = Some(buffer.read_rgb()),
+                1 => underlay.colour = Some(buffer.get_rgb()),
                 #[cfg(feature = "rs3")]
-                2 => underlay.op_2 = Some(buffer.read_unsigned_short()),
+                2 => underlay.op_2 = Some(buffer.get_u16()),
                 #[cfg(feature = "rs3")]
-                3 => underlay.op_3 = Some(buffer.read_unsigned_short()),
+                3 => underlay.op_3 = Some(buffer.get_u16()),
                 #[cfg(feature = "rs3")]
                 4 => underlay.op_4 = Some(true),
                 #[cfg(feature = "rs3")]

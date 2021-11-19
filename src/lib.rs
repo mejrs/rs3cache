@@ -8,9 +8,8 @@
     bench_black_box,
     doc_cfg
 )]
-#![allow(non_snake_case)]
+#![allow(non_snake_case, unused_imports)]
 #![warn(
-    unused_imports,
     unused_qualifications,
     unused_import_braces,
     unused_extern_crates,

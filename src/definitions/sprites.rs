@@ -1,12 +1,18 @@
-use std::{collections::BTreeMap, io::SeekFrom, iter};
+use std::{
+    collections::BTreeMap,
+    io::{Cursor, Seek, SeekFrom},
+    iter,
+};
 
+use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+use rs3cache_core::buf::BufExtra;
 
-use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
+use crate::cache::{error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 /// Type alias for a rgba image.
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
@@ -85,11 +91,12 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
     Ok(sprites)
 }
 
-fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
-    let mut buffer = Buffer::new(file);
+fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
+    let mut buffer = Cursor::new(buffer);
+
     buffer.seek(SeekFrom::End(-2))?;
 
-    let data = buffer.read_unsigned_short();
+    let data = buffer.get_u16();
     let format = data >> 15;
     let count = (data & 0x7FFF) as usize;
 
@@ -97,34 +104,34 @@ fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
         0 => {
             buffer.seek(SeekFrom::End(-7 - (count as i64) * 8))?;
 
-            let _big_width = buffer.read_unsigned_short();
-            let _big_height = buffer.read_unsigned_short();
-            let palette_count = buffer.read_unsigned_byte() as usize;
+            let _big_width = buffer.get_u16();
+            let _big_height = buffer.get_u16();
+            let palette_count = buffer.get_u8() as usize;
 
-            let _min_xs = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
-            let _min_ys = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
-            let widths = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
-            let heights = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
+            let _min_xs = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
+            let _min_ys = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
+            let widths = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
+            let heights = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
 
             let pos = -7 - (count as i64) * 8 - (palette_count as i64) * 3;
 
             buffer.seek(SeekFrom::End(pos))?;
 
-            let palette = iter::repeat_with(|| buffer.read_rgb()).take(palette_count).collect::<Vec<_>>();
+            let palette = iter::repeat_with(|| buffer.get_rgb()).take(palette_count).collect::<Vec<_>>();
 
             buffer.seek(SeekFrom::Start(0))?;
 
             izip!(0..count, widths, heights)
                 .filter_map(|(index, width, height)| {
                     let pixel_count = width as usize * height as usize;
-                    let [transposed, alpha, ..] = buffer.read_bitflags();
+                    let [transposed, alpha, ..] = buffer.get_bitflags();
                     if pixel_count != 0 {
-                        let base = buffer.read_n_bytes(pixel_count);
+                        let base = buffer.copy_to_bytes(pixel_count);
 
                         let mask = if alpha {
-                            buffer.read_n_bytes(pixel_count)
+                            buffer.copy_to_bytes(pixel_count)
                         } else {
-                            vec![255_u8; pixel_count]
+                            vec![255_u8; pixel_count].into()
                         };
                         let mut img = if !transposed {
                             RgbaImage::new(width as u32, height as u32)
@@ -158,20 +165,20 @@ fn deserialize(file: Vec<u8>) -> CacheResult<BTreeMap<usize, Sprite>> {
         }
         1 => {
             buffer.seek(SeekFrom::Start(0))?;
-            let ty = buffer.read_unsigned_byte();
+            let ty = buffer.get_u8();
             assert_eq!(ty, 0, "Unknown image type.");
 
-            let [alpha, ..] = buffer.read_bitflags();
-            let width = buffer.read_unsigned_short();
-            let height = buffer.read_unsigned_short();
+            let [alpha, ..] = buffer.get_bitflags();
+            let width = buffer.get_u16();
+            let height = buffer.get_u16();
             let pixel_count = width as usize * height as usize;
 
-            let base = iter::repeat_with(|| buffer.read_rgb()).take(pixel_count).collect::<Vec<_>>();
+            let base = iter::repeat_with(|| buffer.get_rgb()).take(pixel_count).collect::<Vec<_>>();
 
             let mask = if alpha {
-                buffer.read_n_bytes(pixel_count)
+                buffer.copy_to_bytes(pixel_count)
             } else {
-                vec![255_u8; pixel_count]
+                vec![255_u8; pixel_count].into()
             };
 
             let mut img = RgbaImage::new(width as u32, height as u32);

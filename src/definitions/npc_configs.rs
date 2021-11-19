@@ -4,6 +4,7 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
@@ -12,7 +13,7 @@ use serde::Serialize;
 #[cfg(feature = "osrs")]
 use crate::cache::indextype::ConfigType;
 use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
 };
 
@@ -142,54 +143,53 @@ impl NpcConfig {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut npc = Self { id, ..Default::default() };
-        let mut buffer = Buffer::new(file);
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
                     debug_assert_eq!(buffer.remaining(), 0, "The buffer was not fully read. {}", npc);
                     break npc;
                 }
                 1 => npc.models = Some(NpcModels::deserialize(&mut buffer)),
-                2 => npc.name = Some(buffer.read_string()),
-                12 => npc.size = Some(buffer.read_unsigned_byte()),
+                2 => npc.name = Some(buffer.get_string()),
+                12 => npc.size = Some(buffer.get_u8()),
                 #[cfg(feature = "osrs")]
-                13 => npc.standing_animation = Some(buffer.read_unsigned_short()),
+                13 => npc.standing_animation = Some(buffer.get_u16()),
                 #[cfg(feature = "osrs")]
-                14 => npc.walking_animation = Some(buffer.read_unsigned_short()),
+                14 => npc.walking_animation = Some(buffer.get_u16()),
                 #[cfg(feature = "osrs")]
                 17 => {
-                    npc.walking_animation = Some(buffer.read_unsigned_short());
-                    npc.rotate_180_animation = Some(buffer.read_unsigned_short());
-                    npc.rotate_90_right_animation = Some(buffer.read_unsigned_short());
-                    npc.rotate_90_left_animation = Some(buffer.read_unsigned_short());
+                    npc.walking_animation = Some(buffer.get_u16());
+                    npc.rotate_180_animation = Some(buffer.get_u16());
+                    npc.rotate_90_right_animation = Some(buffer.get_u16());
+                    npc.rotate_90_left_animation = Some(buffer.get_u16());
                 }
                 #[cfg(feature = "osrs")]
-                18 => npc.category = Some(buffer.read_unsigned_short()),
+                18 => npc.category = Some(buffer.get_u16()),
                 opcode @ 30..=34 => {
                     let actions = npc.actions.get_or_insert([None, None, None, None, None]);
-                    actions[opcode as usize - 30] = Some(buffer.read_string());
+                    actions[opcode as usize - 30] = Some(buffer.get_string());
                 }
                 40 => npc.colour_replacements = Some(ColourReplacements::deserialize(&mut buffer)),
                 41 => npc.texture_replacements = Some(Textures::deserialize(&mut buffer)),
                 42 => npc.recolour_palette = Some(RecolourPalette::deserialize(&mut buffer)),
-                44 => npc.recolour_indices = Some(buffer.read_masked_index()),
-                45 => npc.retexture_indices = Some(buffer.read_masked_index()),
+                44 => npc.recolour_indices = Some(buffer.get_masked_index()),
+                45 => npc.retexture_indices = Some(buffer.get_masked_index()),
                 60 => npc.head_models = Some(HeadModels::deserialize(&mut buffer)),
                 93 => npc.draw_map_dot = Some(false),
-                95 => npc.combat = Some(buffer.read_unsigned_short()),
-                97 => npc.scale_xz = Some(buffer.read_unsigned_short()),
-                98 => npc.scale_y = Some(buffer.read_unsigned_short()),
+                95 => npc.combat = Some(buffer.get_u16()),
+                97 => npc.scale_xz = Some(buffer.get_u16()),
+                98 => npc.scale_y = Some(buffer.get_u16()),
                 99 => npc.unknown_99 = Some(false),
-                100 => npc.ambience = Some(buffer.read_byte()),
-                101 => npc.ambience = Some(buffer.read_byte()),
+                100 => npc.ambience = Some(buffer.get_i8()),
+                101 => npc.ambience = Some(buffer.get_i8()),
                 #[cfg(feature = "rs3")]
-                102 => npc.head_icon_data = Some(buffer.read_masked_data()),
+                102 => npc.head_icon_data = Some(buffer.get_masked_data()),
                 #[cfg(feature = "osrs")]
-                102 => npc.head_icon_data = Some(buffer.read_unsigned_short()),
-                103 => npc.unknown_103 = Some(buffer.read_unsigned_short()),
+                102 => npc.head_icon_data = Some(buffer.get_u16()),
+                103 => npc.unknown_103 = Some(buffer.get_u16()),
                 106 => npc.morphs_1 = Some(NpcMorphTable::deserialize(&mut buffer)),
                 107 => npc.unknown_107 = Some(false),
                 109 => npc.slow_walk = Some(false),
@@ -197,45 +197,45 @@ impl NpcConfig {
                 113 => npc.shadow = Some(Shadow::deserialize(&mut buffer)),
                 114 => npc.shadow_alpha_intensity = Some(ShadowIntensity::deserialize(&mut buffer)),
                 118 => npc.morphs_2 = Some(ExtendedNpcMorphTable::deserialize(&mut buffer)),
-                119 => npc.movement_capabilities = Some(buffer.read_byte()),
+                119 => npc.movement_capabilities = Some(buffer.get_i8()),
                 121 => npc.translations = Some(Translations::deserialize(&mut buffer)),
-                123 => npc.icon_height = Some(buffer.read_unsigned_short()),
-                125 => npc.respawn_direction = Some(buffer.read_byte()),
-                127 => npc.animation_group = Some(buffer.read_unsigned_short()),
-                128 => npc.movement_type = Some(buffer.read_byte()),
+                123 => npc.icon_height = Some(buffer.get_u16()),
+                125 => npc.respawn_direction = Some(buffer.get_i8()),
+                127 => npc.animation_group = Some(buffer.get_u16()),
+                128 => npc.movement_type = Some(buffer.get_i8()),
                 134 => npc.ambient_sound = Some(AmbientSounds::deserialize(&mut buffer)),
                 135 => npc.old_cursor = Some(OldCursors::deserialize(&mut buffer)),
                 136 => npc.old_cursor_2 = Some(OldCursors::deserialize(&mut buffer)),
-                137 => npc.attack_cursor = Some(buffer.read_unsigned_short()),
-                138 => npc.army_icon = Some(buffer.read_smart32().unwrap()),
-                140 => npc.unknown_140 = Some(buffer.read_unsigned_byte()),
+                137 => npc.attack_cursor = Some(buffer.get_u16()),
+                138 => npc.army_icon = Some(buffer.get_smart32().unwrap()),
+                140 => npc.unknown_140 = Some(buffer.get_u8()),
                 141 => npc.animate_idle = Some(true),
-                142 => npc.mapfunction = Some(buffer.read_unsigned_short()),
+                142 => npc.mapfunction = Some(buffer.get_u16()),
                 143 => npc.unknown_143 = Some(true),
                 opcode @ 150..=154 => {
                     let actions = npc.member_actions.get_or_insert([None, None, None, None, None]);
-                    actions[opcode as usize - 150] = Some(buffer.read_string());
+                    actions[opcode as usize - 150] = Some(buffer.get_string());
                 }
                 155 => npc.unknown_155 = Some(Unknown155::deserialize(&mut buffer)),
                 158 => npc.unknown_158 = Some(true),
                 159 => npc.unknown_159 = Some(false),
                 160 => npc.quests = Some(Quests::deserialize(&mut buffer)),
                 162 => npc.unknown_162 = Some(true),
-                163 => npc.unknown_163 = Some(buffer.read_unsigned_byte()),
+                163 => npc.unknown_163 = Some(buffer.get_u8()),
                 164 => npc.unknown_164 = Some(Unknown164::deserialize(&mut buffer)),
-                165 => npc.unknown_165 = Some(buffer.read_unsigned_byte()),
-                168 => npc.unknown_168 = Some(buffer.read_unsigned_byte()),
+                165 => npc.unknown_165 = Some(buffer.get_u8()),
+                168 => npc.unknown_168 = Some(buffer.get_u8()),
                 169 => npc.unknown_169 = Some(false),
                 opcode @ 170..=175 => {
                     let actions = npc.action_cursors.get_or_insert([None, None, None, None, None, None]);
-                    actions[opcode as usize - 170] = Some(buffer.read_unsigned_short());
+                    actions[opcode as usize - 170] = Some(buffer.get_u16());
                 }
                 178 => npc.unknown_178 = Some(true),
                 179 => npc.unknown_179 = Some(Unknown179::deserialize(&mut buffer)),
                 180 => unimplemented!(),
                 181 => unimplemented!(),
                 182 => npc.unknown_182 = Some(true),
-                184 => npc.unknown_184 = Some(buffer.read_unsigned_smart()),
+                184 => npc.unknown_184 = Some(buffer.get_unsigned_smart()),
                 249 => npc.params = Some(ParamTable::deserialize(&mut buffer)),
                 missing => {
                     unimplemented!("NpcConfig::deserialize cannot deserialize opcode {} in npc: \n {}\n", missing, npc)
@@ -271,12 +271,13 @@ pub mod npc_config_fields {
 
     use std::{collections::BTreeMap, iter};
 
+    use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
 
     use crate::{
-        cache::buf::Buffer,
+        cache::buf::BufExtra,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
 
@@ -292,18 +293,18 @@ pub mod npc_config_fields {
 
     impl NpcMorphTable {
         /// Constructor for [`NpcMorphTable`]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
             let var = VarpOrVarbit::new(varp, varbit);
 
             let count = if cfg!(feature = "rs3") {
-                buffer.read_unsigned_smart() as usize
+                buffer.get_unsigned_smart() as usize
             } else {
-                buffer.read_unsigned_byte() as usize
+                buffer.get_u8() as usize
             };
 
-            let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
+            let ids = iter::repeat_with(|| match buffer.get_u16() {
                 u16::MAX => None,
                 id => Some(id as u32),
             })
@@ -326,21 +327,21 @@ pub mod npc_config_fields {
 
     impl ExtendedNpcMorphTable {
         /// Constructor for [`ExtendedNpcMorphTable`]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default_id = buffer.read_smart32();
+            let default_id = buffer.get_smart32();
 
             let count = if cfg!(feature = "rs3") {
-                buffer.read_unsigned_smart() as usize
+                buffer.get_unsigned_smart() as usize
             } else {
-                buffer.read_unsigned_byte() as usize
+                buffer.get_u8() as usize
             };
 
-            let ids = iter::repeat_with(|| match buffer.read_unsigned_short() {
+            let ids = iter::repeat_with(|| match buffer.get_u16() {
                 u16::MAX => None,
                 id => Some(id as u32),
             })
@@ -359,18 +360,18 @@ pub mod npc_config_fields {
 
     impl NpcModels {
         #[cfg(feature = "rs3")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_i8() as usize;
 
-            let models = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
+            let models = iter::repeat_with(|| buffer.get_smart32()).take(count).collect::<Vec<_>>();
             Self { models }
         }
 
         #[cfg(feature = "osrs")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
 
-            let models = iter::repeat_with(|| match buffer.read_unsigned_short() {
+            let models = iter::repeat_with(|| match buffer.get_u16() {
                 u16::MAX => None,
                 other => Some(other as u32),
             })
@@ -389,9 +390,9 @@ pub mod npc_config_fields {
     }
 
     impl ShadowIntensity {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let src_colour = buffer.read_byte();
-            let dst_colour = buffer.read_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let src_colour = buffer.get_i8();
+            let dst_colour = buffer.get_i8();
             Self { src_colour, dst_colour }
         }
     }
@@ -405,9 +406,9 @@ pub mod npc_config_fields {
     }
 
     impl Shadow {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let src_colour = buffer.read_unsigned_short();
-            let dst_colour = buffer.read_unsigned_short();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let src_colour = buffer.get_u16();
+            let dst_colour = buffer.get_u16();
             Self { src_colour, dst_colour }
         }
     }
@@ -423,18 +424,18 @@ pub mod npc_config_fields {
 
     impl HeadModels {
         #[cfg(feature = "rs3")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_i8() as usize;
 
-            let models = iter::repeat_with(|| buffer.read_smart32()).take(count).collect::<Vec<_>>();
+            let models = iter::repeat_with(|| buffer.get_smart32()).take(count).collect::<Vec<_>>();
             Self { models }
         }
 
         #[cfg(feature = "osrs")]
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
 
-            let models = iter::repeat_with(|| match buffer.read_unsigned_short() {
+            let models = iter::repeat_with(|| match buffer.get_u16() {
                 u16::MAX => None,
                 other => Some(other),
             })
@@ -450,11 +451,9 @@ pub mod npc_config_fields {
     }
 
     impl ColourReplacements {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let colour_replacements = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
-                .take(count)
-                .collect::<Vec<_>>();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let colour_replacements = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16())).take(count).collect::<Vec<_>>();
             Self { colour_replacements }
         }
     }
@@ -466,9 +465,9 @@ pub mod npc_config_fields {
     }
 
     impl Textures {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let textures = iter::repeat_with(|| (buffer.read_unsigned_short(), buffer.read_unsigned_short()))
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let textures = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16()))
                 .take(count)
                 .collect::<BTreeMap<_, _>>();
             Self { textures }
@@ -490,12 +489,12 @@ pub mod npc_config_fields {
     }
 
     impl AmbientSounds {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let unknown_1 = buffer.read_unsigned_short();
-            let unknown_2 = buffer.read_unsigned_short();
-            let unknown_3 = buffer.read_unsigned_short();
-            let unknown_4 = buffer.read_unsigned_short();
-            let unknown_5 = buffer.read_unsigned_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let unknown_1 = buffer.get_u16();
+            let unknown_2 = buffer.get_u16();
+            let unknown_3 = buffer.get_u16();
+            let unknown_4 = buffer.get_u16();
+            let unknown_5 = buffer.get_u8();
 
             Self {
                 unknown_1,
@@ -513,18 +512,11 @@ pub mod npc_config_fields {
     }
 
     impl Translations {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let translations = iter::repeat_with(|| {
-                [
-                    buffer.read_unsigned_byte(),
-                    buffer.read_unsigned_byte(),
-                    buffer.read_unsigned_byte(),
-                    buffer.read_unsigned_byte(),
-                ]
-            })
-            .take(count)
-            .collect::<Vec<_>>();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let translations = iter::repeat_with(|| [buffer.get_u8(), buffer.get_u8(), buffer.get_u8(), buffer.get_u8()])
+                .take(count)
+                .collect::<Vec<_>>();
 
             Self { translations }
         }
@@ -537,10 +529,10 @@ pub mod npc_config_fields {
     }
 
     impl RecolourPalette {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
 
-            let recolour_palette = iter::repeat_with(|| buffer.read_byte()).take(count).collect::<Vec<_>>();
+            let recolour_palette = iter::repeat_with(|| buffer.get_i8()).take(count).collect::<Vec<_>>();
             Self { recolour_palette }
         }
     }
@@ -554,9 +546,9 @@ pub mod npc_config_fields {
     }
 
     impl OldCursors {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let op = buffer.read_unsigned_byte();
-            let cursor = buffer.read_unsigned_short();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let op = buffer.get_u8();
+            let cursor = buffer.get_u16();
             Self { op, cursor }
         }
     }
@@ -571,11 +563,11 @@ pub mod npc_config_fields {
     }
 
     impl Unknown155 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let unknown_1 = buffer.read_byte();
-            let unknown_2 = buffer.read_byte();
-            let unknown_3 = buffer.read_byte();
-            let unknown_4 = buffer.read_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let unknown_1 = buffer.get_i8();
+            let unknown_2 = buffer.get_i8();
+            let unknown_3 = buffer.get_i8();
+            let unknown_4 = buffer.get_i8();
 
             Self {
                 unknown_1,
@@ -598,13 +590,13 @@ pub mod npc_config_fields {
     }
 
     impl Unknown179 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let unknown_1 = buffer.read_unsigned_smart();
-            let unknown_2 = buffer.read_unsigned_smart();
-            let unknown_3 = buffer.read_unsigned_smart();
-            let unknown_4 = buffer.read_unsigned_smart();
-            let unknown_5 = buffer.read_unsigned_smart();
-            let unknown_6 = buffer.read_unsigned_smart();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let unknown_1 = buffer.get_unsigned_smart();
+            let unknown_2 = buffer.get_unsigned_smart();
+            let unknown_3 = buffer.get_unsigned_smart();
+            let unknown_4 = buffer.get_unsigned_smart();
+            let unknown_5 = buffer.get_unsigned_smart();
+            let unknown_6 = buffer.get_unsigned_smart();
 
             Self {
                 unknown_1,
@@ -625,9 +617,9 @@ pub mod npc_config_fields {
     }
 
     impl Unknown164 {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let unknown_1 = buffer.read_unsigned_short();
-            let unknown_2 = buffer.read_unsigned_short();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let unknown_1 = buffer.get_u16();
+            let unknown_2 = buffer.get_u16();
 
             Self { unknown_1, unknown_2 }
         }
@@ -640,9 +632,9 @@ pub mod npc_config_fields {
     }
 
     impl Quests {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let count = buffer.read_unsigned_byte() as usize;
-            let quests = iter::repeat_with(|| buffer.read_unsigned_short()).take(count).collect::<Vec<_>>();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let count = buffer.get_u8() as usize;
+            let quests = iter::repeat_with(|| buffer.get_u16()).take(count).collect::<Vec<_>>();
             Self { quests }
         }
     }

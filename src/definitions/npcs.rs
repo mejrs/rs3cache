@@ -1,7 +1,7 @@
+use bytes::{Buf, Bytes};
 use serde::Serialize;
 
-use crate::cache::buf::Buffer;
-
+use crate::cache::buf::BufExtra;
 /// A non player character.
 #[derive(Copy, Clone, Debug, Serialize)]
 pub struct Npc {
@@ -26,27 +26,26 @@ pub struct Npc {
 
 impl Npc {
     /// Constructor for [`Npc`].
-    pub fn deserialize(i: u8, j: u8, file: Vec<u8>) -> Vec<Npc> {
-        let length = file.len();
+    pub fn deserialize(i: u8, j: u8, mut buffer: Bytes) -> Vec<Npc> {
+        let length = buffer.remaining();
 
-        let mut buffer = Buffer::new(file);
         let mut npcs = Vec::with_capacity(length / 4);
 
         for _ in 0..(length / 4) {
-            let value = buffer.read_unsigned_short();
+            let value = buffer.get_u16();
 
             let plane = (value >> 14) as u8;
             let x = (value >> 7 & 0x3F) as u8;
             let y = (value & 0x3F) as u8;
 
-            let id = buffer.read_unsigned_short() as u32;
+            let id = buffer.get_u16() as u32;
 
             let npc = Npc { plane, i, j, x, y, id };
 
             npcs.push(npc);
         }
 
-        debug_assert_eq!(buffer.remaining(), 0);
+        debug_assert!(!buffer.has_remaining());
 
         npcs
     }

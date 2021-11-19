@@ -10,22 +10,25 @@
 
 use std::collections::{BTreeMap, HashSet};
 
+use bytes::{Buf, Bytes};
 use itertools::izip;
 #[cfg(feature = "pyo3")]
 use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol};
 
 use crate::{
-    buf::Buffer,
+    buf::BufExtra,
     error::{CacheError, CacheResult},
     meta::Metadata,
 };
 
 /// A collection of files.
+#[cfg_eval]
 #[cfg_attr(feature = "pyo3", pyclass)]
+#[derive(Clone, Default)]
 pub struct Archive {
     index_id: u32,
     archive_id: u32,
-    files: BTreeMap<u32, Vec<u8>>,
+    files: BTreeMap<u32, Bytes>,
     poison_state: HashSet<u32>,
 }
 
@@ -50,7 +53,7 @@ impl Archive {
         self.archive_id
     }
 
-    pub(crate) fn deserialize(metadata: &Metadata, data: Vec<u8>) -> Archive {
+    pub(crate) fn deserialize(metadata: &Metadata, data: Bytes) -> Archive {
         let index_id = metadata.index_id();
         let archive_id = metadata.archive_id();
         let files = match metadata.child_count() {
@@ -65,46 +68,38 @@ impl Archive {
             child_count => {
                 use crate::utils::adapters::Pairwisor;
 
-                let mut buffer = Buffer::new(&data);
+                assert_eq!(data[0], 1);
 
-                let first = buffer.read_unsigned_byte();
-                assert_eq!(first, 1);
+                let mut offset_data = data.slice(1..((child_count + 1) * 4 + 1) as usize);
 
-                let offsets = std::iter::repeat_with(|| buffer.read_int())
+                let offsets = std::iter::repeat_with(|| offset_data.get_i32() as usize)
                     .take(child_count as usize + 1)
-                    .pairwise()
-                    .collect::<Vec<_>>();
+                    .pairwise();
 
                 let files = izip!(metadata.child_indices(), offsets)
-                    .map(|(i, (start, end))| (*i, buffer.read_n_bytes((end - start) as usize)))
+                    .map(|(i, (start, end))| (*i, data.slice(start..end)))
                     .collect::<BTreeMap<_, _>>();
 
-                assert_eq!(buffer.remaining(), 0);
                 files
             }
 
             #[cfg(feature = "osrs")]
             child_count => {
-                use std::io::SeekFrom::*;
-
                 use crate::utils::adapters::Accumulator;
 
-                let mut buffer = Buffer::new(&data);
+                let mut data: Bytes = data.into();
 
-                buffer.seek(End(-1)).unwrap();
-                let n_chunks = buffer.read_unsigned_byte() as i64;
-                let seek = -1 - (4 * n_chunks * (child_count as i64));
-                buffer.seek(Current(seek)).unwrap();
+                let n_chunks = *data.last().unwrap() as usize;
 
-                let offsets = std::iter::repeat_with(|| buffer.read_int())
+                let offset_start = data.len().checked_sub(4 * n_chunks * (child_count as usize) + 1).unwrap();
+                let mut offset_data = data.split_off(offset_start);
+
+                let offsets = std::iter::repeat_with(|| offset_data.get_i32())
                     .take(child_count as usize)
-                    .accumulate(|x, y| x + y)
-                    .collect::<Vec<_>>();
-
-                buffer.seek(Start(0)).unwrap();
+                    .accumulate(|x, y| x + y);
 
                 let files = izip!(metadata.child_indices(), offsets)
-                    .map(|(i, n)| (*i, buffer.read_n_bytes(n.try_into().unwrap())))
+                    .map(|(i, n)| (*i, data.split_to(n.try_into().unwrap())))
                     .collect::<BTreeMap<_, _>>();
                 files
             }
@@ -123,7 +118,7 @@ impl Archive {
     /// # Panics
     ///
     /// This function will panic if file `file_id` has already been removed.
-    pub fn take_file(&mut self, file_id: &u32) -> CacheResult<Vec<u8>> {
+    pub fn take_file(&mut self, file_id: &u32) -> CacheResult<Bytes> {
         if self.poison_state.insert(*file_id) {
             self.files
                 .remove(file_id)
@@ -138,7 +133,7 @@ impl Archive {
     /// # Panics
     ///
     /// This function will panic if [`take_file`](Archive::take_file) has been called prior.
-    pub fn take_files(self) -> BTreeMap<u32, Vec<u8>> {
+    pub fn take_files(self) -> BTreeMap<u32, Bytes> {
         if self.poison_state.is_empty() {
             self.files
         } else {

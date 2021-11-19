@@ -4,11 +4,12 @@ use std::{
     process::Command,
 };
 
+use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
 use path_macro::path;
 
 use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
     definitions::enums::{Enum, Value},
 };
 
@@ -95,21 +96,20 @@ pub struct ChunkDescriptor {
     archive_id: u32,
 }
 
-fn decode_first(data: Vec<u8>) -> (Jaga, Vec<u8>) {
-    let mut buf = Buffer::new(data);
-    let signature = buf.read_array::<4>();
+fn decode_first(mut buffer: Bytes) -> (Jaga, Bytes) {
+    let signature = buffer.get_array::<4>();
     assert_eq!(&signature, b"JAGA");
 
-    let int_1 = buf.read_unsigned_int();
-    let int_2 = buf.read_unsigned_int();
-    let sample_frequency = buf.read_unsigned_int();
-    let int_3 = buf.read_unsigned_int();
-    let chunk_count = buf.read_unsigned_int();
+    let int_1 = buffer.get_u32();
+    let int_2 = buffer.get_u32();
+    let sample_frequency = buffer.get_u32();
+    let int_3 = buffer.get_u32();
+    let chunk_count = buffer.get_u32();
     let chunks = (0..chunk_count)
         .map(|position| ChunkDescriptor {
             position,
-            length: buf.read_unsigned_int(),
-            archive_id: buf.read_unsigned_int(),
+            length: buffer.get_u32(),
+            archive_id: buffer.get_u32(),
         })
         .collect();
     (
@@ -120,6 +120,6 @@ fn decode_first(data: Vec<u8>) -> (Jaga, Vec<u8>) {
             int_3,
             chunks,
         },
-        buf.remainder(),
+        buffer,
     )
 }

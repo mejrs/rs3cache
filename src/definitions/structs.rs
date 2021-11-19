@@ -6,13 +6,14 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
 };
 
@@ -50,14 +51,13 @@ impl Struct {
         Ok(locations)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut r#struct = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert!(!buffer.has_remaining());
                     break r#struct;
                 }
                 249 => r#struct.params = Some(ParamTable::deserialize(&mut buffer)),

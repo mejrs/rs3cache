@@ -6,12 +6,13 @@ use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
     fs::{self, File},
-    io::{Read, SeekFrom, Write},
+    io::{Cursor, Read, Seek, SeekFrom, Write},
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
 };
 
+use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
 use itertools::iproduct;
 use path_macro::path;
@@ -20,7 +21,7 @@ use path_macro::path;
 use crate::xtea::Xtea;
 use crate::{
     arc::Archive,
-    buf::Buffer,
+    buf::BufExtra,
     decoder,
     error::{CacheError, CacheResult},
     indextype::IndexType,
@@ -95,7 +96,7 @@ where
             .metadatas()
             .get(&archive_id)
             .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
-        let data = self.get_file(metadata)?;
+        let data = self.get_file(metadata)?.into();
 
         Ok(Archive::deserialize(metadata, data))
     }
@@ -150,7 +151,7 @@ where
     /// Loads the [`Metadata`] of `self`.
     #[allow(unused_variables)]
     #[cfg(not(feature = "mockdata"))]
-    fn get_raw_metadata(index_id: u32, connection: &sqlite::Connection) -> CacheResult<Vec<u8>> {
+    fn get_raw_metadata(index_id: u32, connection: &sqlite::Connection) -> CacheResult<Bytes> {
         let encoded_data = {
             let query = "SELECT DATA FROM cache_index";
             let mut statement = connection.prepare(query)?;
@@ -182,7 +183,7 @@ where
 
     /// Executes a sql command to retrieve an archive from the cache.
     #[cfg(not(feature = "mockdata"))]
-    fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
+    fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let encoded_data = {
             let query = format!("SELECT DATA, CRC, VERSION FROM cache WHERE KEY={}", metadata.archive_id());
 
@@ -230,11 +231,9 @@ where
     }
     /// Grabs mock data from disk.
     #[cfg(feature = "mockdata")]
-    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
+    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let filename = format!("tests/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
-        let mut file = File::open(&filename)?;
-        let mut encoded_data = Vec::new();
-        file.read_to_end(&mut encoded_data)?;
+        let encoded_data = fs::read(&filename)?;
         Ok(decoder::decompress(encoded_data, metadata.size())?)
     }
 
@@ -301,8 +300,8 @@ impl CacheIndex<Initial> {
         match fs::metadata(&file) {
             Ok(_) => {
                 let connection = sqlite::open(file)?;
-                let raw_metadata = Self::get_raw_metadata(index_id, &connection)?;
-                let metadatas = IndexMetadata::deserialize(index_id, Buffer::new(raw_metadata))?;
+                let raw_metadata: Bytes = Self::get_raw_metadata(index_id, &connection)?.into();
+                let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
 
                 Ok(Self {
                     index_id,
@@ -341,13 +340,13 @@ where
     fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
         let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
         let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
-        let mut buf = Buffer::new(entry_data);
+        let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
-        Ok((buf.read_3_unsigned_bytes(), buf.read_3_unsigned_bytes()))
+        Ok((buf.get_uint(3) as u32, buf.get_uint(3) as u32))
     }
 
     fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {
-        let mut buffer = Buffer::new(&self.file);
+        let mut buffer = Cursor::new(&self.file);
 
         let (length, mut sector) = Self::get_entry(a, b, &self.path)?;
 
@@ -358,14 +357,14 @@ where
         while sector != 0 {
             buffer.seek(SeekFrom::Start((sector * 520) as _))?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
-                (10, buffer.read_int(), 510.min(length - read_count))
+                (10, buffer.get_i32(), 510.min(length - read_count))
             } else {
-                (8, buffer.read_unsigned_short() as _, 512.min(length - read_count))
+                (8, buffer.get_u16() as _, 512.min(length - read_count))
             };
 
-            let current_part = buffer.read_unsigned_short();
-            let new_sector = buffer.read_3_unsigned_bytes();
-            let current_index = buffer.read_unsigned_byte();
+            let current_part = buffer.get_u16();
+            let new_sector = buffer.get_uint(3) as u32;
+            let current_index = buffer.get_u8();
 
             assert_eq!(a, current_index as u32);
             assert_eq!(b, current_archive as u32);
@@ -375,12 +374,12 @@ where
             read_count += block_size;
             sector = new_sector;
 
-            data.extend(buffer.read_n_bytes(block_size as _));
+            data.extend(buffer.copy_to_bytes(block_size as _));
         }
         Ok(data)
     }
 
-    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Vec<u8>> {
+    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
         Ok(decoder::decompress(data, None, None)?)
     }
@@ -399,7 +398,7 @@ where
         Ok(Archive::deserialize(metadata, data))
     }
 
-    pub fn archive_by_name(&self, name: String) -> CacheResult<Vec<u8>> {
+    pub fn archive_by_name(&self, name: String) -> CacheResult<Bytes> {
         let hash = crate::hash::hash_djb2(&name);
         for (_, m) in self.metadatas.iter() {
             if m.name() == Some(hash) {
@@ -446,7 +445,7 @@ impl CacheIndex<Initial> {
         let metadatas = {
             let data = s.read_index(255, index_id)?;
             let data = decoder::decompress(data, None, None)?;
-            IndexMetadata::deserialize(index_id, Buffer::new(data))?
+            IndexMetadata::deserialize(index_id, data)?
         };
 
         s.metadatas = metadatas;

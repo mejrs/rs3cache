@@ -11,8 +11,9 @@ use path_macro::path;
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
+use bytes::{Buf, Bytes};
 use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::{BufExtra,Buffer}, error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
 };
 
@@ -49,14 +50,14 @@ impl <Name> {
         Ok(<Name>s)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
+        
         let mut <Name> = Self { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert!(!buffer.has_remaining());
                     break <Name>;
                 }
                 249 => <Name>.params = Some(ParamTable::deserialize(&mut buffer)),

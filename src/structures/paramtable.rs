@@ -1,10 +1,11 @@
 use std::{collections::BTreeMap, iter};
 
+use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use serde::Serialize;
 
-use crate::cache::buf::Buffer;
+use crate::cache::buf::BufExtra;
 
 /// [`LocationConfig`](crate::definitions::location_configs::LocationConfig)s,
 /// items and
@@ -20,20 +21,20 @@ pub struct ParamTable {
 
 impl ParamTable {
     /// Constructor for [`ParamTable`]
-    pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-        let count = buffer.read_unsigned_byte().into();
+    pub fn deserialize(buffer: &mut Bytes) -> Self {
+        let count = buffer.get_u8().into();
         let params = iter::repeat_with(|| Self::sub_deserialize(buffer)).take(count).collect();
         Self { params }
     }
 
-    fn sub_deserialize(buffer: &mut Buffer<Vec<u8>>) -> (u32, Param) {
-        let r#type = buffer.read_unsigned_byte();
+    fn sub_deserialize(buffer: &mut Bytes) -> (u32, Param) {
+        let r#type = buffer.get_u8();
 
-        let key = buffer.read_3_unsigned_bytes();
+        let key = buffer.get_uint(3) as u32;
 
         let value = match r#type {
-            0 => Param::Integer(buffer.read_int()),
-            1 => Param::String(buffer.read_string()),
+            0 => Param::Integer(buffer.get_i32()),
+            1 => Param::String(buffer.get_string()),
             other => unimplemented!("Cannot decode unknown type {}", other),
         };
         (key, value)

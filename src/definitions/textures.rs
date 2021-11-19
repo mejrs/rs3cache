@@ -6,12 +6,13 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use serde::Serialize;
 
-use crate::cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType};
+use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};
 
 /// Describes the properties of a given item.
 
@@ -39,12 +40,10 @@ impl TextureConfig {
         Ok(locations)
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
-
-        let field1777 = buffer.read_unsigned_short();
-        let field1778 = buffer.read_byte() != 0;
-        let _count = buffer.read_unsigned_byte();
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
+        let field1777 = buffer.get_u16();
+        let field1778 = buffer.get_i8() != 0;
+        let _count = buffer.get_u8();
 
         // todo: a lot of fields I dont care about
 

@@ -9,33 +9,65 @@ use std::{
     ops::Add,
 };
 
+use bytes::{Buf, Bytes};
 use itertools::izip;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
-use serde::Serialize;
+use serde::{Serialize, Serializer};
 
-use crate::{buf::Buffer, error::CacheResult, utils::adapters::Accumulator};
+use crate::{buf::BufExtra, error::CacheResult, utils::adapters::Accumulator};
 
 /// Metadata about [`Archive`](crate::arc::Archive)s.
 
 #[cfg_eval]
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Metadata {
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     index_id: u32,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     archive_id: u32,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     name: Option<i32>,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     crc: i32,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     version: i32,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     unknown: Option<i32>,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     compressed_size: Option<u32>,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     size: Option<u32>,
-    digest: Option<Vec<u8>>,
+    #[serde(serialize_with = "bytes_to_vec")]
+    digest: Option<Bytes>,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     child_count: u32,
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     child_indices: Vec<u32>,
+}
+
+#[pymethods]
+impl Metadata {
+    #[getter(digest)]
+    fn py_digest(&self, py: Python) -> Py<PyAny> {
+        match self.digest {
+            Some(ref b) => pyo3::types::PyBytes::new(py, b).into(),
+            None => py.None(),
+        }
+    }
+}
+
+pub fn bytes_to_vec<S>(bytes: &Option<Bytes>, s: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    match *bytes {
+        Some(ref value) => s.serialize_some(&**value),
+        None => s.serialize_none(),
+    }
 }
 
 impl Metadata {
@@ -130,101 +162,86 @@ impl IndexMetadata {
     }
 
     /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_core::indextype::IndexType).
-    pub(crate) fn deserialize(index_id: u32, mut buffer: Buffer<Vec<u8>>) -> CacheResult<Self> {
-        let format = buffer.read_byte();
-
-        let _index_utc_stamp = if format > 5 { Some(buffer.read_int()) } else { None };
-
-        let [named, hashed, unk4, ..] = buffer.read_bitflags();
-
+    pub(crate) fn deserialize(index_id: u32, mut buffer: Bytes) -> CacheResult<Self> {
+        let format = buffer.get_i8();
+        let _index_utc_stamp = if format > 5 { Some(buffer.get_i32()) } else { None };
+        let [named, hashed, unk4, ..] = buffer.get_bitflags();
         let entry_count = if format >= 7 {
-            buffer.read_smart32().unwrap() as usize
+            buffer.get_smart32().unwrap() as usize
         } else {
-            buffer.read_unsigned_short() as usize
+            buffer.get_u16() as usize
         };
 
         let archive_ids = iter::repeat_with(|| {
-            Ok({
-                if format >= 7 {
-                    buffer.read_smart32().unwrap()
-                } else {
-                    buffer.read_unsigned_short() as u32
-                }
-            })
+            if format >= 7 {
+                buffer.get_smart32().unwrap()
+            } else {
+                buffer.get_u16() as u32
+            }
         })
         .take(entry_count)
-        .collect::<CacheResult<Vec<u32>>>()?
-        .into_iter()
         .accumulate(Add::add)
         .collect::<Vec<u32>>();
 
         let names = if named {
-            iter::repeat_with(|| Some(buffer.read_int()))
+            iter::repeat_with(|| Some(buffer.get_i32()))
                 .take(entry_count)
                 .collect::<Vec<Option<i32>>>()
         } else {
             vec![None; entry_count]
         };
 
-        let crcs = iter::repeat_with(|| buffer.read_int()).take(entry_count).collect::<Vec<i32>>();
+        let crcs = iter::repeat_with(|| buffer.get_i32()).take(entry_count).collect::<Vec<i32>>();
 
         let unknowns = if unk4 {
-            iter::repeat_with(|| Some(buffer.read_int()))
+            iter::repeat_with(|| Some(buffer.get_i32()))
                 .take(entry_count)
                 .collect::<Vec<Option<i32>>>()
         } else {
             vec![None; entry_count]
         };
 
-        let digests: Vec<Option<Vec<u8>>> = if hashed {
-            iter::repeat_with(|| Some(buffer.read_n_bytes(64))).take(entry_count).collect()
+        let digests = if hashed {
+            iter::repeat_with(|| Some(buffer.copy_to_bytes(64))).take(entry_count).collect()
         } else {
             vec![None; entry_count]
         };
 
         let (compressed_sizes, sizes): (Vec<_>, Vec<_>) = if unk4 {
-            iter::repeat_with(|| (Some(buffer.read_unsigned_int()), Some(buffer.read_unsigned_int())))
+            iter::repeat_with(|| (Some(buffer.get_u32()), Some(buffer.get_u32())))
                 .take(entry_count)
                 .unzip()
         } else {
             (vec![None; entry_count], vec![None; entry_count])
         };
 
-        let versions = iter::repeat_with(|| buffer.read_int()).take(entry_count).collect::<Vec<i32>>();
+        let versions = iter::repeat_with(|| buffer.get_i32()).take(entry_count).collect::<Vec<i32>>();
 
         let child_counts = iter::repeat_with(|| {
-            Ok({
-                if format >= 7 {
-                    buffer.read_smart32().unwrap()
-                } else {
-                    buffer.read_unsigned_short() as u32
-                }
-            })
+            if format >= 7 {
+                buffer.get_smart32().unwrap()
+            } else {
+                buffer.get_u16() as u32
+            }
         })
         .take(entry_count)
-        .collect::<CacheResult<Vec<u32>>>()?;
+        .collect::<Vec<u32>>();
 
         let child_indices = child_counts
             .iter()
             .map(|count| {
-                Ok({
-                    iter::repeat_with(|| {
-                        Ok({
-                            if format >= 7 {
-                                buffer.read_smart32().unwrap()
-                            } else {
-                                buffer.read_unsigned_short() as u32
-                            }
-                        })
-                    })
-                    .take(*count as usize)
-                    .collect::<CacheResult<Vec<u32>>>()?
-                    .into_iter()
-                    .accumulate(Add::add)
-                    .collect::<Vec<u32>>()
+                iter::repeat_with(|| {
+                    if format >= 7 {
+                        buffer.get_smart32().unwrap()
+                    } else {
+                        buffer.get_u16() as u32
+                    }
                 })
+                .take(*count as usize)
+                .accumulate(Add::add)
+                .collect::<Vec<u32>>()
             })
-            .collect::<CacheResult<Vec<Vec<u32>>>>()?;
+            .collect::<Vec<Vec<u32>>>();
 
         let metadatas = izip!(
             archive_ids,
@@ -258,7 +275,9 @@ impl IndexMetadata {
                 )
             },
         )
-        .collect::<BTreeMap<_, _>>();
+        .collect();
+
+        //assert!(!buffer.buf.has_remaining());
 
         Ok(Self { metadatas })
     }

@@ -7,12 +7,13 @@ use std::{
     iter,
 };
 
+use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
 use path_macro::path;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::Buffer, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
     types::coordinate::Coordinate,
 };
 
@@ -55,23 +56,22 @@ impl MapZone {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buf = Buffer::new(file);
-        let internal_name = buf.read_string();
-        let name = buf.read_string();
-        let center = buf.read_unsigned_int().try_into().unwrap();
-        let unknown_1 = buf.read_unsigned_int();
-        let show = match buf.read_unsigned_byte() {
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
+        let internal_name = buffer.get_string();
+        let name = buffer.get_string();
+        let center = buffer.get_u32().try_into().unwrap();
+        let unknown_1 = buffer.get_u32();
+        let show = match buffer.get_u8() {
             0 => false,
             1 => true,
             other => unimplemented!("Cannot convert value {} for 'show' to boolean", other),
         };
-        let default_zoom = buf.read_unsigned_byte();
-        let unknown_2 = buf.read_unsigned_byte();
-        let count = buf.read_unsigned_byte() as usize;
-        let bounds = iter::repeat_with(|| BoundDef::deserialize(&mut buf)).take(count).collect();
+        let default_zoom = buffer.get_u8();
+        let unknown_2 = buffer.get_u8();
+        let count = buffer.get_u8() as usize;
+        let bounds = iter::repeat_with(|| BoundDef::deserialize(&mut buffer)).take(count).collect();
 
-        debug_assert_eq!(buf.remaining(), 0);
+        debug_assert_eq!(buffer.remaining(), 0);
 
         Self {
             id,
@@ -129,9 +129,10 @@ impl MapZone {
 
 mod mapzone_fields_impl {
     #![allow(missing_docs)]
+    use bytes::{Buf, Bytes};
     use serde::Serialize;
 
-    use crate::cache::buf::Buffer;
+    use crate::cache::buf::BufExtra;
 
     #[derive(Debug, Serialize)]
     pub struct BoundDef {
@@ -141,10 +142,10 @@ mod mapzone_fields_impl {
     }
 
     impl BoundDef {
-        pub fn deserialize(buf: &mut Buffer<Vec<u8>>) -> Self {
-            let plane = buf.read_unsigned_byte();
-            let src = Bound::deserialize(buf);
-            let dst = Bound::deserialize(buf);
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let plane = buffer.get_u8();
+            let src = Bound::deserialize(buffer);
+            let dst = Bound::deserialize(buffer);
             Self { plane, src, dst }
         }
     }
@@ -159,11 +160,11 @@ mod mapzone_fields_impl {
     }
 
     impl Bound {
-        pub fn deserialize(buf: &mut Buffer<Vec<u8>>) -> Self {
-            let west = buf.read_unsigned_short();
-            let south = buf.read_unsigned_short();
-            let east = buf.read_unsigned_short();
-            let north = buf.read_unsigned_short();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let west = buffer.get_u16();
+            let south = buffer.get_u16();
+            let east = buffer.get_u16();
+            let north = buffer.get_u16();
 
             Self { west, south, east, north }
         }
@@ -198,20 +199,19 @@ impl MapPastes {
     }
 
     /// Constructor for [`MapPastes`].
-    pub fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buf = Buffer::new(file);
+    pub fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut pastes = Vec::new();
 
-        let square_count = buf.read_unsigned_short() as usize;
-        let square_pastes = iter::repeat_with(|| Paste::deserialize_square(&mut buf)).take(square_count);
+        let square_count = buffer.get_u16() as usize;
+        let square_pastes = iter::repeat_with(|| Paste::deserialize_square(&mut buffer)).take(square_count);
         pastes.extend(square_pastes);
 
-        let chunk_count = buf.read_unsigned_short() as usize;
-        let chunk_pastes = iter::repeat_with(|| Paste::deserialize_chunk(&mut buf)).take(chunk_count);
+        let chunk_count = buffer.get_u16() as usize;
+        let chunk_pastes = iter::repeat_with(|| Paste::deserialize_chunk(&mut buffer)).take(chunk_count);
         pastes.extend(chunk_pastes);
-        let dim_i = buf.read_unsigned_byte();
-        let dim_j = buf.read_unsigned_byte();
-        debug_assert_eq!(buf.remaining(), 0);
+        let dim_i = buffer.get_u8();
+        let dim_j = buffer.get_u8();
+        debug_assert_eq!(buffer.remaining(), 0);
 
         Self { id, dim_i, dim_j, pastes }
     }
@@ -219,9 +219,10 @@ impl MapPastes {
 
 mod mappaste_fields_impl {
     #![allow(missing_docs)]
+    use bytes::{Buf, Bytes};
     use serde::Serialize;
 
-    use crate::cache::buf::Buffer;
+    use crate::cache::buf::BufExtra;
 
     #[derive(Debug, Serialize)]
     pub struct Paste {
@@ -239,15 +240,15 @@ mod mappaste_fields_impl {
     }
 
     impl Paste {
-        pub fn deserialize_square(buf: &mut Buffer<Vec<u8>>) -> Self {
-            let src_plane = buf.read_unsigned_byte();
-            let n_planes = buf.read_unsigned_byte();
-            let src_i = buf.read_unsigned_short();
-            let src_j = buf.read_unsigned_short();
+        pub fn deserialize_square(buffer: &mut Bytes) -> Self {
+            let src_plane = buffer.get_u8();
+            let n_planes = buffer.get_u8();
+            let src_i = buffer.get_u16();
+            let src_j = buffer.get_u16();
 
-            let dst_plane = buf.read_unsigned_byte();
-            let dst_i = buf.read_unsigned_short();
-            let dst_j = buf.read_unsigned_short();
+            let dst_plane = buffer.get_u8();
+            let dst_i = buffer.get_u16();
+            let dst_j = buffer.get_u16();
 
             Self {
                 src_plane,
@@ -264,17 +265,17 @@ mod mappaste_fields_impl {
             }
         }
 
-        pub fn deserialize_chunk(buf: &mut Buffer<Vec<u8>>) -> Self {
-            let src_plane = buf.read_unsigned_byte();
-            let n_planes = buf.read_unsigned_byte();
-            let src_i = buf.read_unsigned_short();
-            let src_j = buf.read_unsigned_short();
-            let src_chunk = Chunk::deserialize(buf);
+        pub fn deserialize_chunk(buffer: &mut Bytes) -> Self {
+            let src_plane = buffer.get_u8();
+            let n_planes = buffer.get_u8();
+            let src_i = buffer.get_u16();
+            let src_j = buffer.get_u16();
+            let src_chunk = Chunk::deserialize(buffer);
 
-            let dst_plane = buf.read_unsigned_byte();
-            let dst_i = buf.read_unsigned_short();
-            let dst_j = buf.read_unsigned_short();
-            let dst_chunk = Chunk::deserialize(buf);
+            let dst_plane = buffer.get_u8();
+            let dst_i = buffer.get_u16();
+            let dst_j = buffer.get_u16();
+            let dst_chunk = Chunk::deserialize(buffer);
 
             Self {
                 src_plane,
@@ -299,9 +300,9 @@ mod mappaste_fields_impl {
     }
 
     impl Chunk {
-        pub fn deserialize(buf: &mut Buffer<Vec<u8>>) -> Self {
-            let x = buf.read_unsigned_byte();
-            let y = buf.read_unsigned_byte();
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let x = buffer.get_u8();
+            let y = buffer.get_u8();
             Self { x, y }
         }
     }
@@ -357,10 +358,9 @@ pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
         .archive(WorldMapType::BIG)?
         .take_files();
 
-    for (id, data) in files {
-        let mut buf = Buffer::new(data);
-        let size = buf.read_unsigned_int() as usize;
-        let img = buf.read_n_bytes(size);
+    for (id, mut buffer) in files {
+        let size = buffer.get_u32() as usize;
+        let img = buffer.copy_to_bytes(size);
 
         let filename = path!(config.output / "world_map_big" / f!("{id}.png"));
         let mut file = File::create(filename)?;

@@ -9,13 +9,14 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::cache::{
-    buf::Buffer,
+    buf::BufExtra,
     error::CacheResult,
     index::CacheIndex,
     indextype::{ConfigType, IndexType},
@@ -50,18 +51,16 @@ impl VarbitConfig {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> Self {
-        let mut buffer = Buffer::new(file);
-
+    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut unknown_1 = None;
         let mut index = None;
         let mut least_significant_bit = None;
         let mut most_significant_bit = None;
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    assert_eq!(buffer.remaining(), 0);
+                    assert!(!buffer.has_remaining());
                     break Self {
                         id,
                         unknown_1: unknown_1.expect("opcode 1 was not read"),
@@ -71,12 +70,12 @@ impl VarbitConfig {
                     };
                 }
                 1 => {
-                    unknown_1 = Some(buffer.read_unsigned_byte());
-                    index = Some(buffer.read_unsigned_short());
+                    unknown_1 = Some(buffer.get_u8());
+                    index = Some(buffer.get_u16());
                 }
                 2 => {
-                    least_significant_bit = Some(buffer.read_unsigned_byte());
-                    most_significant_bit = Some(buffer.read_unsigned_byte());
+                    least_significant_bit = Some(buffer.get_u8());
+                    most_significant_bit = Some(buffer.get_u8());
                 }
                 opcode => unimplemented!("unknown varbit_config opcode {}", opcode),
             }

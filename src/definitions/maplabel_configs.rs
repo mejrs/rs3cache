@@ -4,6 +4,7 @@ use std::{
     io::Write,
 };
 
+use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
@@ -11,7 +12,7 @@ use serde::Serialize;
 
 use crate::{
     cache::{
-        buf::Buffer,
+        buf::BufExtra,
         error::CacheResult,
         index::CacheIndex,
         indextype::{ConfigType, IndexType},
@@ -61,9 +62,9 @@ pub struct MapLabelConfig {
     /// Describes the polygon drawn on the map, if present.
     pub polygon: Option<Polygon>,
     /// Unknown field.
-    pub unknown_21: Option<Vec<u8>>,
+    pub unknown_21: Option<[u8; 4]>,
     /// Unknown field.
-    pub unknown_22: Option<Vec<u8>>,
+    pub unknown_22: Option<[u8; 4]>,
     /// Unknown field.
     pub unknown_28: Option<u8>,
     /// Unknown field.
@@ -92,36 +93,35 @@ impl MapLabelConfig {
             .collect())
     }
 
-    fn deserialize(id: u32, file: Vec<u8>) -> MapLabelConfig {
-        let mut buffer = Buffer::new(file);
+    fn deserialize(id: u32, mut buffer: Bytes) -> MapLabelConfig {
         let mut maplabel = MapLabelConfig { id, ..Default::default() };
 
         loop {
-            match buffer.read_unsigned_byte() {
+            match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0);
+                    debug_assert!(!buffer.has_remaining());
                     break maplabel;
                 }
-                1 => maplabel.sprite = Some(buffer.read_smart32().unwrap()),
-                2 => maplabel.hover_sprite = Some(buffer.read_smart32().unwrap()),
-                3 => maplabel.text = Some(buffer.read_string()),
-                4 => maplabel.label_colour_1 = Some(buffer.read_rgb()),
-                5 => maplabel.label_colour_2 = Some(buffer.read_rgb()),
-                6 => maplabel.font_size = Some(buffer.read_unsigned_byte()),
-                7 => maplabel.unknown_7 = Some(buffer.read_unsigned_byte()),
-                8 => maplabel.unknown_8 = Some(buffer.read_unsigned_byte()),
+                1 => maplabel.sprite = Some(buffer.get_smart32().unwrap()),
+                2 => maplabel.hover_sprite = Some(buffer.get_smart32().unwrap()),
+                3 => maplabel.text = Some(buffer.get_string()),
+                4 => maplabel.label_colour_1 = Some(buffer.get_rgb()),
+                5 => maplabel.label_colour_2 = Some(buffer.get_rgb()),
+                6 => maplabel.font_size = Some(buffer.get_u8()),
+                7 => maplabel.unknown_7 = Some(buffer.get_u8()),
+                8 => maplabel.unknown_8 = Some(buffer.get_u8()),
                 9 => maplabel.toggle_1 = Some(Toggle::deserialize(&mut buffer)),
-                10 => maplabel.rightclick_1 = Some(buffer.read_string()),
+                10 => maplabel.rightclick_1 = Some(buffer.get_string()),
                 15 => maplabel.polygon = Some(Polygon::deserialize(&mut buffer)),
-                17 => maplabel.rightclick_2 = Some(buffer.read_string()),
-                19 => maplabel.category = Some(buffer.read_unsigned_short()),
+                17 => maplabel.rightclick_2 = Some(buffer.get_string()),
+                19 => maplabel.category = Some(buffer.get_u16()),
                 20 => maplabel.toggle_2 = Some(Toggle::deserialize(&mut buffer)),
-                21 => maplabel.unknown_21 = Some(buffer.read_n_bytes(4)),
-                22 => maplabel.unknown_22 = Some(buffer.read_n_bytes(4)),
-                25 => maplabel.background_sprite = Some(buffer.read_smart32().unwrap()),
+                21 => maplabel.unknown_21 = Some(buffer.get_array()),
+                22 => maplabel.unknown_22 = Some(buffer.get_array()),
+                25 => maplabel.background_sprite = Some(buffer.get_smart32().unwrap()),
                 26 => maplabel.legacy_switch = Some(LegacySwitch::deserialize(&mut buffer)),
-                28 => maplabel.unknown_28 = Some(buffer.read_unsigned_byte()),
-                30 => maplabel.unknown_30 = Some(buffer.read_unsigned_byte()),
+                28 => maplabel.unknown_28 = Some(buffer.get_u8()),
+                30 => maplabel.unknown_30 = Some(buffer.get_u8()),
                 249 => maplabel.params = Some(ParamTable::deserialize(&mut buffer)),
                 other => unimplemented!("{}", other),
             }
@@ -146,13 +146,14 @@ pub mod maplabel_config_fields {
     #![allow(missing_docs)]
     use std::iter;
 
+    use bytes::{Buf, Bytes};
     use itertools::izip;
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
 
     use crate::{
-        cache::buf::Buffer,
+        cache::buf::BufExtra,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
     /// A polygon
@@ -172,28 +173,18 @@ pub mod maplabel_config_fields {
     }
 
     impl Polygon {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Polygon {
-            let point_count = buffer.read_unsigned_byte() as usize;
-            let xy = iter::repeat_with(|| (buffer.read_short(), buffer.read_short()))
+        pub fn deserialize(buffer: &mut Bytes) -> Polygon {
+            let point_count = buffer.get_u8() as usize;
+            let xy = iter::repeat_with(|| (buffer.get_i16(), buffer.get_i16()))
                 .take(point_count)
                 .collect::<Vec<(i16, i16)>>();
 
-            let colour = [
-                buffer.read_unsigned_byte(),
-                buffer.read_unsigned_byte(),
-                buffer.read_unsigned_byte(),
-                buffer.read_unsigned_byte(),
-            ];
-            assert_eq!(buffer.read_unsigned_byte(), 1_u8);
+            let colour = [buffer.get_u8(), buffer.get_u8(), buffer.get_u8(), buffer.get_u8()];
+            assert_eq!(buffer.get_u8(), 1_u8);
 
-            let background_colour = [
-                buffer.read_unsigned_byte(),
-                buffer.read_unsigned_byte(),
-                buffer.read_unsigned_byte(),
-                buffer.read_unsigned_byte(),
-            ];
+            let background_colour = [buffer.get_u8(), buffer.get_u8(), buffer.get_u8(), buffer.get_u8()];
 
-            let planes = iter::repeat_with(|| buffer.read_unsigned_byte()).take(point_count).collect::<Vec<_>>();
+            let planes = iter::repeat_with(|| buffer.get_u8()).take(point_count).collect::<Vec<_>>();
             let points = izip!(planes, xy).map(|(plane, (dx, dy))| PolygonPoint { plane, dx, dy }).collect();
 
             Polygon {
@@ -221,13 +212,13 @@ pub mod maplabel_config_fields {
     }
 
     impl Toggle {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let lower = buffer.read_unsigned_int();
-            let upper = buffer.read_unsigned_int();
+            let lower = buffer.get_u32();
+            let upper = buffer.get_u32();
 
             Self { var, lower, upper }
         }
@@ -253,15 +244,15 @@ pub mod maplabel_config_fields {
     }
 
     impl LegacySwitch {
-        pub fn deserialize(buffer: &mut Buffer<Vec<u8>>) -> Self {
-            let varbit = Varbit::new(buffer.read_unsigned_short());
-            let varp = Varp::new(buffer.read_unsigned_short());
+        pub fn deserialize(buffer: &mut Bytes) -> Self {
+            let varbit = Varbit::new(buffer.get_u16());
+            let varp = Varp::new(buffer.get_u16());
             let var = VarpOrVarbit::new(varp, varbit);
 
             // always 0 or 1 (boolean)
-            let value = buffer.read_unsigned_byte();
-            let default_reference = buffer.read_unsigned_short();
-            let legacy_reference = buffer.read_unsigned_short();
+            let value = buffer.get_u8();
+            let default_reference = buffer.get_u16();
+            let legacy_reference = buffer.get_u16();
 
             Self {
                 var,
