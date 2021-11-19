@@ -82,12 +82,15 @@
 <span id="82">82</span>
 <span id="83">83</span>
 <span id="84">84</span>
+<span id="85">85</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::BTreeMap</span>;
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
+
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{
-    <span class="ident">buf::Buffer</span>,
+    <span class="ident">buf::BufExtra</span>,
     <span class="ident">error::CacheResult</span>,
     <span class="ident">index::CacheIndex</span>,
     <span class="ident">indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
@@ -120,19 +123,18 @@
             .<span class="ident">collect</span>())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MapScene</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MapScene</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mapscene</span> <span class="op">=</span> <span class="ident">MapScene</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
 
         <span class="kw">loop</span> {
-            <span class="kw">let</span> <span class="ident">opcode</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+            <span class="kw">let</span> <span class="ident">opcode</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">match</span> <span class="ident">opcode</span> {
                 <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+                    <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
                     <span class="kw">break</span> <span class="ident">mapscene</span>;
                 }
-                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">sprite_id</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_smart32</span>(),
-                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">op_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_3_unsigned_bytes</span>()),
+                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">sprite_id</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>(),
+                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">op_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>),
                 <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">op_3</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                 <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">op_4</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                 <span class="number">5</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mapscene</span>.<span class="ident">op_5</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),

@@ -292,21 +292,13 @@
 <span id="292">292</span>
 <span id="293">293</span>
 <span id="294">294</span>
-<span id="295">295</span>
-<span id="296">296</span>
-<span id="297">297</span>
-<span id="298">298</span>
-<span id="299">299</span>
-<span id="300">300</span>
-<span id="301">301</span>
-<span id="302">302</span>
-<span id="303">303</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
     <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
     <span class="ident">io::Write</span>,
 };
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">path_macro::path</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
@@ -314,7 +306,7 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">cache</span>::{
-        <span class="ident">buf::Buffer</span>,
+        <span class="ident">buf::BufExtra</span>,
         <span class="ident">error::CacheResult</span>,
         <span class="ident">index::CacheIndex</span>,
         <span class="ident">indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
@@ -364,9 +356,9 @@
     <span class="doccomment">/// Describes the polygon drawn on the map, if present.</span>
     <span class="kw">pub</span> <span class="ident">polygon</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Polygon</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_21</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">unknown_21</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>,
     <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_22</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">unknown_22</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>,
     <span class="doccomment">/// Unknown field.</span>
     <span class="kw">pub</span> <span class="ident">unknown_28</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Unknown field.</span>
@@ -395,36 +387,35 @@
             .<span class="ident">collect</span>())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MapLabelConfig</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">MapLabelConfig</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">maplabel</span> <span class="op">=</span> <span class="ident">MapLabelConfig</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
 
         <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() {
+            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
                 <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+                    <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
                     <span class="kw">break</span> <span class="ident">maplabel</span>;
                 }
-                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">hover_sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">text</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>()),
-                <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">label_colour_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_rgb</span>()),
-                <span class="number">5</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">label_colour_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_rgb</span>()),
-                <span class="number">6</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">font_size</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
-                <span class="number">7</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_7</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
-                <span class="number">8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_8</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
+                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
+                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">hover_sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
+                <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">text</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
+                <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">label_colour_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_rgb</span>()),
+                <span class="number">5</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">label_colour_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_rgb</span>()),
+                <span class="number">6</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">font_size</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
+                <span class="number">7</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_7</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
+                <span class="number">8</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_8</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
                 <span class="number">9</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">toggle_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Toggle::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)),
-                <span class="number">10</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">rightclick_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>()),
+                <span class="number">10</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">rightclick_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
                 <span class="number">15</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">polygon</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Polygon::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)),
-                <span class="number">17</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">rightclick_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>()),
-                <span class="number">19</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()),
+                <span class="number">17</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">rightclick_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
+                <span class="number">19</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
                 <span class="number">20</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">toggle_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Toggle::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)),
-                <span class="number">21</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_21</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_n_bytes</span>(<span class="number">4</span>)),
-                <span class="number">22</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_22</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_n_bytes</span>(<span class="number">4</span>)),
-                <span class="number">25</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">background_sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>()),
+                <span class="number">21</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_21</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_array</span>()),
+                <span class="number">22</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_22</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_array</span>()),
+                <span class="number">25</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">background_sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
                 <span class="number">26</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">legacy_switch</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">LegacySwitch::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)),
-                <span class="number">28</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_28</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
-                <span class="number">30</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_30</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
+                <span class="number">28</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_28</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
+                <span class="number">30</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">unknown_30</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
                 <span class="number">249</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">maplabel</span>.<span class="ident">params</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ParamTable::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)),
                 <span class="ident">other</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unimplemented!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">other</span>),
             }
@@ -449,13 +440,14 @@
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="kw">use</span> <span class="ident">std::iter</span>;
 
+    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
     <span class="kw">use</span> <span class="ident">itertools::izip</span>;
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
     <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
     <span class="kw">use</span> <span class="kw">crate</span>::{
-        <span class="ident">cache::buf::Buffer</span>,
+        <span class="ident">cache::buf::BufExtra</span>,
         <span class="ident">types::variables</span>::{<span class="ident">Varbit</span>, <span class="ident">Varp</span>, <span class="ident">VarpOrVarbit</span>},
     };
     <span class="doccomment">/// A polygon</span>
@@ -475,28 +467,18 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Polygon</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Polygon</span> {
-            <span class="kw">let</span> <span class="ident">point_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">xy</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">read_short</span>(), <span class="ident">buffer</span>.<span class="ident">read_short</span>()))
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Polygon</span> {
+            <span class="kw">let</span> <span class="ident">point_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let</span> <span class="ident">xy</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_i16</span>(), <span class="ident">buffer</span>.<span class="ident">get_i16</span>()))
                 .<span class="ident">take</span>(<span class="ident">point_count</span>)
                 .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i16</span>, <span class="ident">i16</span>)<span class="op">&gt;</span><span class="op">&gt;</span>();
 
-            <span class="kw">let</span> <span class="ident">colour</span> <span class="op">=</span> [
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-            ];
-            <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(), <span class="number">1_u8</span>);
+            <span class="kw">let</span> <span class="ident">colour</span> <span class="op">=</span> [<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()];
+            <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="number">1_u8</span>);
 
-            <span class="kw">let</span> <span class="ident">background_colour</span> <span class="op">=</span> [
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-                <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(),
-            ];
+            <span class="kw">let</span> <span class="ident">background_colour</span> <span class="op">=</span> [<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()];
 
-            <span class="kw">let</span> <span class="ident">planes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()).<span class="ident">take</span>(<span class="ident">point_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">planes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>()).<span class="ident">take</span>(<span class="ident">point_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
             <span class="kw">let</span> <span class="ident">points</span> <span class="op">=</span> <span class="macro">izip!</span>(<span class="ident">planes</span>, <span class="ident">xy</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">plane</span>, (<span class="ident">dx</span>, <span class="ident">dy</span>))<span class="op">|</span> <span class="ident">PolygonPoint</span> { <span class="ident">plane</span>, <span class="ident">dx</span>, <span class="ident">dy</span> }).<span class="ident">collect</span>();
 
             <span class="ident">Polygon</span> {
@@ -524,13 +506,13 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Toggle</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
-            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
             <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
 
-            <span class="kw">let</span> <span class="ident">lower</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_int</span>();
-            <span class="kw">let</span> <span class="ident">upper</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_int</span>();
+            <span class="kw">let</span> <span class="ident">lower</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
+            <span class="kw">let</span> <span class="ident">upper</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
 
             <span class="self">Self</span> { <span class="ident">var</span>, <span class="ident">lower</span>, <span class="ident">upper</span> }
         }
@@ -556,15 +538,15 @@
     }
 
     <span class="kw">impl</span> <span class="ident">LegacySwitch</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
-            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
             <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
 
             <span class="comment">// always 0 or 1 (boolean)</span>
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">default_reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">legacy_reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">default_reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">legacy_reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
 
             <span class="self">Self</span> {
                 <span class="ident">var</span>,

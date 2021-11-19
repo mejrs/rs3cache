@@ -378,12 +378,13 @@
     <span class="ident">iter</span>,
 };
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
 <span class="kw">use</span> <span class="ident">path_macro::path</span>;
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::Buffer</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>},
+    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>},
     <span class="ident">types::coordinate::Coordinate</span>,
 };
 
@@ -426,23 +427,22 @@
             .<span class="ident">collect</span>())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
-        <span class="kw">let</span> <span class="ident">internal_name</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_string</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_string</span>();
-        <span class="kw">let</span> <span class="ident">center</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_int</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_int</span>();
-        <span class="kw">let</span> <span class="ident">show</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>() {
+    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">internal_name</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_string</span>();
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_string</span>();
+        <span class="kw">let</span> <span class="ident">center</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
+        <span class="kw">let</span> <span class="ident">show</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
             <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
             <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             <span class="ident">other</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unimplemented!</span>(<span class="string">&quot;Cannot convert value {} for &#39;show&#39; to boolean&quot;</span>, <span class="ident">other</span>),
         };
-        <span class="kw">let</span> <span class="ident">default_zoom</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-        <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BoundDef::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">default_zoom</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+        <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BoundDef::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
 
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">buf</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
 
         <span class="self">Self</span> {
             <span class="ident">id</span>,
@@ -500,9 +500,10 @@
 
 <span class="kw">mod</span> <span class="ident">mapzone_fields_impl</span> {
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::Buffer</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
 
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BoundDef</span> {
@@ -512,10 +513,10 @@
     }
 
     <span class="kw">impl</span> <span class="ident">BoundDef</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">plane</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buf</span>);
-            <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buf</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buffer</span>);
+            <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buffer</span>);
             <span class="self">Self</span> { <span class="ident">plane</span>, <span class="ident">src</span>, <span class="ident">dst</span> }
         }
     }
@@ -530,11 +531,11 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Bound</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">west</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">south</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">east</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">north</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">west</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">south</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">east</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">north</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
 
             <span class="self">Self</span> { <span class="ident">west</span>, <span class="ident">south</span>, <span class="ident">east</span>, <span class="ident">north</span> }
         }
@@ -569,20 +570,19 @@
     }
 
     <span class="doccomment">/// Constructor for [`MapPastes`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pastes</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
-        <span class="kw">let</span> <span class="ident">square_count</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">square_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_square</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>)).<span class="ident">take</span>(<span class="ident">square_count</span>);
+        <span class="kw">let</span> <span class="ident">square_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="ident">square_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_square</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">square_count</span>);
         <span class="ident">pastes</span>.<span class="ident">extend</span>(<span class="ident">square_pastes</span>);
 
-        <span class="kw">let</span> <span class="ident">chunk_count</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">chunk_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_chunk</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>)).<span class="ident">take</span>(<span class="ident">chunk_count</span>);
+        <span class="kw">let</span> <span class="ident">chunk_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="ident">chunk_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_chunk</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">chunk_count</span>);
         <span class="ident">pastes</span>.<span class="ident">extend</span>(<span class="ident">chunk_pastes</span>);
-        <span class="kw">let</span> <span class="ident">dim_i</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-        <span class="kw">let</span> <span class="ident">dim_j</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">buf</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">dim_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+        <span class="kw">let</span> <span class="ident">dim_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+        <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
 
         <span class="self">Self</span> { <span class="ident">id</span>, <span class="ident">dim_i</span>, <span class="ident">dim_j</span>, <span class="ident">pastes</span> }
     }
@@ -590,9 +590,10 @@
 
 <span class="kw">mod</span> <span class="ident">mappaste_fields_impl</span> {
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::Buffer</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
 
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Paste</span> {
@@ -610,15 +611,15 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Paste</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_square</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">src_j</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_square</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">src_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
 
-            <span class="kw">let</span> <span class="ident">dst_plane</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">dst_i</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">dst_j</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
+            <span class="kw">let</span> <span class="ident">dst_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">dst_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">dst_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
 
             <span class="self">Self</span> {
                 <span class="ident">src_plane</span>,
@@ -635,17 +636,17 @@
             }
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_chunk</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">src_j</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">src_chunk</span> <span class="op">=</span> <span class="ident">Chunk::deserialize</span>(<span class="ident">buf</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_chunk</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">src_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">src_chunk</span> <span class="op">=</span> <span class="ident">Chunk::deserialize</span>(<span class="ident">buffer</span>);
 
-            <span class="kw">let</span> <span class="ident">dst_plane</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">dst_i</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">dst_j</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">dst_chunk</span> <span class="op">=</span> <span class="ident">Chunk::deserialize</span>(<span class="ident">buf</span>);
+            <span class="kw">let</span> <span class="ident">dst_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">dst_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">dst_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">dst_chunk</span> <span class="op">=</span> <span class="ident">Chunk::deserialize</span>(<span class="ident">buffer</span>);
 
             <span class="self">Self</span> {
                 <span class="ident">src_plane</span>,
@@ -670,9 +671,9 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Chunk</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_byte</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="self">Self</span> { <span class="ident">x</span>, <span class="ident">y</span> }
         }
     }
@@ -728,10 +729,9 @@
         .<span class="ident">archive</span>(<span class="ident">WorldMapType::BIG</span>)<span class="question-mark">?</span>
         .<span class="ident">take_files</span>();
 
-    <span class="kw">for</span> (<span class="ident">id</span>, <span class="ident">data</span>) <span class="kw">in</span> <span class="ident">files</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">data</span>);
-        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_unsigned_int</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">read_n_bytes</span>(<span class="ident">size</span>);
+    <span class="kw">for</span> (<span class="ident">id</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>) <span class="kw">in</span> <span class="ident">files</span> {
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">size</span>);
 
         <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_big&quot;</span> <span class="op">/</span> <span class="macro">f!</span>(<span class="string">&quot;{id}.png&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="ident">filename</span>)<span class="question-mark">?</span>;

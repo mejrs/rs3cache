@@ -107,7 +107,6 @@
 <span id="107">107</span>
 <span id="108">108</span>
 <span id="109">109</span>
-<span id="110">110</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Bitpacked player variables.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!</span>
@@ -119,13 +118,14 @@
     <span class="ident">io::Write</span>,
 };
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">path_macro::path</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">PyObjectProtocol</span>};
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{
-    <span class="ident">buf::Buffer</span>,
+    <span class="ident">buf::BufExtra</span>,
     <span class="ident">error::CacheResult</span>,
     <span class="ident">index::CacheIndex</span>,
     <span class="ident">indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
@@ -160,18 +160,16 @@
             .<span class="ident">collect</span>())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
-
+    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">least_significant_bit</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">most_significant_bit</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
         <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() {
+            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
                 <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+                    <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
                     <span class="kw">break</span> <span class="self">Self</span> {
                         <span class="ident">id</span>,
                         <span class="ident">unknown_1</span>: <span class="ident">unknown_1</span>.<span class="ident">expect</span>(<span class="string">&quot;opcode 1 was not read&quot;</span>),
@@ -181,12 +179,12 @@
                     };
                 }
                 <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="ident">unknown_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
-                    <span class="ident">index</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
+                    <span class="ident">unknown_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
+                    <span class="ident">index</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
                 }
                 <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="ident">least_significant_bit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
-                    <span class="ident">most_significant_bit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
+                    <span class="ident">least_significant_bit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
+                    <span class="ident">most_significant_bit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
                 }
                 <span class="ident">opcode</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unimplemented!</span>(<span class="string">&quot;unknown varbit_config opcode {}&quot;</span>, <span class="ident">opcode</span>),
             }

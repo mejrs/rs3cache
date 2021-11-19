@@ -229,16 +229,15 @@
 <span id="229">229</span>
 <span id="230">230</span>
 <span id="231">231</span>
-<span id="232">232</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::hash::Hash</span>;
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">PyObjectProtocol</span>};
-<span class="kw">use</span> <span class="ident">rs3cache_core::buf::Buffer</span>;
+<span class="kw">use</span> <span class="ident">rs3cache_core::buf::BufExtra</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::definitions::tiles::TileArray</span>;
-
 <span class="doccomment">/// Describes whether this location is on the contained plane.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Watery</span> {
@@ -343,27 +342,26 @@
 <span class="kw">impl</span> <span class="ident">Location</span> {
     <span class="comment">// todo: fix this with water tiles</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dump_water_locations</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dump_water_locations</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">blanks</span> <span class="op">=</span> <span class="ident">TileArray::default</span>((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>));
-        <span class="ident"><span class="self">Self</span>::dump</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="kw-2">&amp;</span><span class="ident">blanks</span>, <span class="ident">file</span>)
+        <span class="ident"><span class="self">Self</span>::dump</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="kw-2">&amp;</span><span class="ident">blanks</span>, <span class="ident">buffer</span>)
     }
 
     <span class="doccomment">/// Constructor for [`Location`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">tiles</span>: <span class="kw-2">&amp;</span><span class="ident">TileArray</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">tiles</span>: <span class="kw-2">&amp;</span><span class="ident">TileArray</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">locations</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">id</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>;
 
         <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_smarts</span>() <span class="kw">as</span> <span class="ident">i32</span> {
+            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_smarts</span>() <span class="kw">as</span> <span class="ident">i32</span> {
                 <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span> <span class="ident">locations</span>,
                 <span class="ident">id_increment</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">id</span> <span class="op">+</span><span class="op">=</span> <span class="ident">id_increment</span>;
 
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="number">0</span>;
                     <span class="kw">loop</span> {
-                        <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() {
+                        <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() {
                             <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>,
                             <span class="ident">location_increment</span> <span class="op">=</span><span class="op">&gt;</span> {
                                 <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">location_increment</span> <span class="op">-</span> <span class="number">1</span>;
@@ -372,41 +370,41 @@
                                 <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="ident">location</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">6</span> <span class="op">&amp;</span> <span class="number">0x3F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
                                 <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> (<span class="ident">location</span> <span class="op">&amp;</span> <span class="number">0x3F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
 
-                                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+                                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
                                 <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">data</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">2</span> <span class="op">&amp;</span> <span class="number">0x1F</span>;
                                 <span class="kw">let</span> <span class="ident">rotation</span> <span class="op">=</span> <span class="ident">data</span> <span class="op">&amp;</span> <span class="number">0x3</span>;
 
                                 <span class="comment">// some objects have offsets; not using this data atm</span>
                                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
                                 <span class="kw">if</span> <span class="ident">data</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0x80</span> {
-                                    <span class="kw">let</span> <span class="ident">sub_data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+                                    <span class="kw">let</span> <span class="ident">sub_data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
                                     <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
                                         <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                         }
                                         <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                         }
                                         <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x4</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                         }
                                         <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x8</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                         }
                                         <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x10</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                            <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                            <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                         } <span class="kw">else</span> {
                                             <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x20</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                                <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                                <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                             }
                                             <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x40</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                                <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                                <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                             }
                                             <span class="kw">if</span> <span class="ident">sub_data</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                                                <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+                                                <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
                                             }
                                         }
                                     }

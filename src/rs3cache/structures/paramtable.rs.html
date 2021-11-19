@@ -77,13 +77,15 @@
 <span id="77">77</span>
 <span id="78">78</span>
 <span id="79">79</span>
+<span id="80">80</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">iter</span>};
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::Buffer</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
 
 <span class="doccomment">/// [`LocationConfig`](crate::definitions::location_configs::LocationConfig)s,</span>
 <span class="doccomment">/// items and</span>
@@ -99,20 +101,20 @@
 
 <span class="kw">impl</span> <span class="ident">ParamTable</span> {
     <span class="doccomment">/// Constructor for [`ParamTable`]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>().<span class="ident">into</span>();
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident"><span class="self">Self</span>::sub_deserialize</span>(<span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
         <span class="self">Self</span> { <span class="ident">params</span> }
     }
 
-    <span class="kw">fn</span> <span class="ident">sub_deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">u32</span>, <span class="ident">Param</span>) {
-        <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+    <span class="kw">fn</span> <span class="ident">sub_deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">u32</span>, <span class="ident">Param</span>) {
+        <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
 
-        <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_3_unsigned_bytes</span>();
+        <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>;
 
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r#type</span> {
-            <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Param::Integer</span>(<span class="ident">buffer</span>.<span class="ident">read_int</span>()),
-            <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Param::String</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>()),
+            <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Param::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>()),
+            <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Param::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
             <span class="ident">other</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unimplemented!</span>(<span class="string">&quot;Cannot decode unknown type {}&quot;</span>, <span class="ident">other</span>),
         };
         (<span class="ident">key</span>, <span class="ident">value</span>)

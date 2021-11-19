@@ -50,11 +50,10 @@
 <span id="50">50</span>
 <span id="51">51</span>
 <span id="52">52</span>
-<span id="53">53</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
+<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::Buffer</span>;
-
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
 <span class="doccomment">/// A non player character.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Npc</span> {
@@ -79,27 +78,26 @@
 
 <span class="kw">impl</span> <span class="ident">Npc</span> {
     <span class="doccomment">/// Constructor for [`Npc`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Npc</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">len</span>();
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Npc</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">remaining</span>();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">npcs</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">length</span> <span class="op">/</span> <span class="number">4</span>);
 
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..(<span class="ident">length</span> <span class="op">/</span> <span class="number">4</span>) {
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
 
             <span class="kw">let</span> <span class="ident">plane</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">14</span>) <span class="kw">as</span> <span class="ident">u8</span>;
             <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span> <span class="op">&amp;</span> <span class="number">0x3F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
             <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&amp;</span> <span class="number">0x3F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
 
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">u32</span>;
 
             <span class="kw">let</span> <span class="ident">npc</span> <span class="op">=</span> <span class="ident">Npc</span> { <span class="ident">plane</span>, <span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">id</span> };
 
             <span class="ident">npcs</span>.<span class="ident">push</span>(<span class="ident">npc</span>);
         }
 
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+        <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
 
         <span class="ident">npcs</span>
     }

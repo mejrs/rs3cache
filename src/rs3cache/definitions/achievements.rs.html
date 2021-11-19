@@ -492,6 +492,7 @@
 <span id="492">492</span>
 <span id="493">493</span>
 <span id="494">494</span>
+<span id="495">495</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.</span>
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
@@ -500,12 +501,13 @@
     <span class="ident">iter</span>,
 };
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">path_macro::path</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">PyObjectProtocol</span>};
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">buf::Buffer</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
 
 <span class="doccomment">/// Describes the properties of a given Achievement.</span>
 <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
@@ -591,35 +593,34 @@
         <span class="prelude-val">Ok</span>(<span class="ident">Achievements</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">achievement</span> <span class="op">=</span> <span class="self">Self</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
 
         <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() {
+            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
                 <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">achievement</span>);
                     <span class="kw">break</span> <span class="ident">achievement</span>;
                 }
-                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_padded_string</span>()),
+                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>()),
                 <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">is_ironman</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(), <span class="number">0</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
+                    <span class="kw">let</span> <span class="ident">is_ironman</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+                    <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="number">0</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
 
-                    <span class="ident">achievement</span>.<span class="ident">description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_padded_string</span>());
+                    <span class="ident">achievement</span>.<span class="ident">description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>());
                     <span class="kw">if</span> <span class="ident">is_ironman</span> <span class="op">=</span><span class="op">=</span> <span class="number">2</span> {
-                        <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(), <span class="number">1</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
-                        <span class="ident">achievement</span>.<span class="ident">ironman_description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_padded_string</span>());
+                        <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="number">1</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
+                        <span class="ident">achievement</span>.<span class="ident">ironman_description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>());
                     }
                 }
-                <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()),
-                <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">sprite_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">5</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">points</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
-                <span class="number">6</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_6</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()),
-                <span class="number">7</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">reward</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_padded_string</span>()),
+                <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
+                <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">sprite_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
+                <span class="number">5</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">points</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
+                <span class="number">6</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_6</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
+                <span class="number">7</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">reward</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>()),
                 <span class="number">8</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">skill_requirements_1</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(
                             <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">MaybeIronmanSkillRequirement::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>))
                                 .<span class="ident">take</span>(<span class="ident">count</span>)
@@ -629,31 +630,31 @@
                 }
                 <span class="number">9</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">unknown_9</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">VarbitRequirement10::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
                 <span class="number">10</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">unknown_10</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">VarbitRequirement10::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
                 <span class="number">11</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">previous_achievements</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_3_unsigned_bytes</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
                 <span class="number">12</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">skill_requirements_2</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SkillRequirement::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
                 <span class="number">13</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">unknown_13</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(
                             <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">MultipleVarbitsRequirement::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>))
                                 .<span class="ident">take</span>(<span class="ident">count</span>)
@@ -663,7 +664,7 @@
                 }
                 <span class="number">14</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">subreqs_14</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(
                             <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">MultipleVarbitsRequirement::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>))
                                 .<span class="ident">take</span>(<span class="ident">count</span>)
@@ -673,28 +674,28 @@
                 }
                 <span class="number">15</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">sub_achievements</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_3_unsigned_bytes</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
-                <span class="number">16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">sub_category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()),
-                <span class="number">18</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">hidden</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
+                <span class="number">16</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">sub_category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
+                <span class="number">18</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">hidden</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
                 <span class="number">19</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">free_to_play</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                 <span class="number">20</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">quest_req_for_miniquests</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_3_unsigned_bytes</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
                 <span class="number">21</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">required_quest_ids</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_3_unsigned_bytes</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
                 <span class="number">23</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">reqs_23</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(
                             <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PackedVarbitRequirement::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>))
                                 .<span class="ident">take</span>(<span class="ident">count</span>)
@@ -704,7 +705,7 @@
                 }
                 <span class="number">25</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">reqs_25</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Some</span>(
                             <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PackedVarbitRequirement::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>))
                                 .<span class="ident">take</span>(<span class="ident">count</span>)
@@ -715,22 +716,22 @@
                 <span class="number">27</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_27</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                 <span class="number">28</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">skill_req_count</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
-                <span class="number">29</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_29</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
+                <span class="number">29</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_29</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
                 <span class="number">30</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">achievement</span>.<span class="ident">sub_req_count</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
                     }
                 }
-                <span class="number">31</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_31</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
-                <span class="number">32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_32</span> <span class="op">=</span> <span class="prelude-val">Some</span>([<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(), <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>(), <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()]),
+                <span class="number">31</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_31</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
+                <span class="number">32</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_32</span> <span class="op">=</span> <span class="prelude-val">Some</span>([<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()]),
                 <span class="number">35</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_35</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">37</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_37</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
-                <span class="number">38</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_38</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>()),
+                <span class="number">37</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_37</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
+                <span class="number">38</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">achievement</span>.<span class="ident">unknown_38</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
                 <span class="ident">missing</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unimplemented!</span>(
                     <span class="string">&quot;Achievement::deserialize cannot deserialize opcode {} in id {}: \n {}&quot;</span>,
                     <span class="ident">missing</span>,
@@ -746,11 +747,12 @@
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="kw">use</span> <span class="ident">std::iter</span>;
 
+    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
     <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">cache::buf::Buffer</span>, <span class="ident">types::variables::Varbit</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">cache::buf::BufExtra</span>, <span class="ident">types::variables::Varbit</span>};
 
     <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
@@ -764,12 +766,12 @@
     }
 
     <span class="kw">impl</span> <span class="ident">VarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
             <span class="self">Self</span> {
                 <span class="ident">description</span>,
                 <span class="ident">value</span>,
@@ -791,12 +793,12 @@
     }
 
     <span class="kw">impl</span> <span class="ident">VarbitRequirement10</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
             <span class="self">Self</span> {
                 <span class="ident">description</span>,
                 <span class="ident">value</span>,
@@ -817,15 +819,15 @@
     }
 
     <span class="kw">impl</span> <span class="ident">SkillRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="macro">assert_eq!</span>(<span class="ident">r#type</span>, <span class="number">0</span>);
-            <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">r#type2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+            <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">r#type2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="macro">assert_eq!</span>(<span class="ident">r#type2</span>, <span class="number">1</span>);
 
-            <span class="kw">let</span> <span class="ident">skill</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+            <span class="kw">let</span> <span class="ident">skill</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
             <span class="self">Self</span> { <span class="ident">description</span>, <span class="ident">level</span>, <span class="ident">skill</span> }
         }
     }
@@ -842,16 +844,16 @@
     }
 
     <span class="kw">impl</span> <span class="ident">MaybeIronmanSkillRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">is_ironman</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">is_ironman</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span>;
 
-            <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
 
-            <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+            <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="macro">assert_eq!</span>(<span class="ident">r#type</span>, <span class="number">1</span>);
 
-            <span class="kw">let</span> <span class="ident">skill</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+            <span class="kw">let</span> <span class="ident">skill</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
             <span class="self">Self</span> {
                 <span class="ident">is_ironman</span>,
                 <span class="ident">description</span>,
@@ -871,12 +873,12 @@
     }
 
     <span class="kw">impl</span> <span class="ident">MultipleVarbitsRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">varbits</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>())).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let</span> <span class="ident">varbits</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>())).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
             <span class="self">Self</span> { <span class="ident">value</span>, <span class="ident">description</span>, <span class="ident">varbits</span> }
         }
     }
@@ -893,12 +895,12 @@
     }
 
     <span class="kw">impl</span> <span class="ident">PartialVarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
-            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_smart32</span>().<span class="ident">unwrap</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>();
 
             <span class="self">Self</span> {
                 <span class="ident">value</span>,
@@ -921,12 +923,12 @@
     }
 
     <span class="kw">impl</span> <span class="ident">PackedVarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>());
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">value2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let</span> <span class="ident">value2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
 
             <span class="self">Self</span> {
                 <span class="ident">value</span>,

@@ -244,15 +244,28 @@
 <span id="244">244</span>
 <span id="245">245</span>
 <span id="246">246</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">io::SeekFrom</span>, <span class="ident">iter</span>};
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">collections::BTreeMap</span>,
+    <span class="ident">io</span>::{<span class="ident">Cursor</span>, <span class="ident">Seek</span>, <span class="ident">SeekFrom</span>},
+    <span class="ident">iter</span>,
+};
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
 <span class="kw">use</span> <span class="ident">image</span>::{<span class="ident">imageops</span>, <span class="ident">ImageBuffer</span>, <span class="ident">Rgba</span>, <span class="ident">RgbaImage</span>};
 <span class="kw">use</span> <span class="ident">itertools::izip</span>;
 <span class="kw">use</span> <span class="ident">path_macro::path</span>;
 <span class="kw">use</span> <span class="ident">rayon::iter</span>::{<span class="ident">ParallelBridge</span>, <span class="ident">ParallelIterator</span>};
+<span class="kw">use</span> <span class="ident">rs3cache_core::buf::BufExtra</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">buf::Buffer</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
 
 <span class="doccomment">/// Type alias for a rgba image.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Sprite</span> <span class="op">=</span> <span class="ident">ImageBuffer</span><span class="op">&lt;</span><span class="ident">Rgba</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>;
@@ -331,11 +344,12 @@
     <span class="prelude-val">Ok</span>(<span class="ident">sprites</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Sprite</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+<span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Sprite</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Cursor::new</span>(<span class="ident">buffer</span>);
+
     <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="op">-</span><span class="number">2</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
     <span class="kw">let</span> <span class="ident">format</span> <span class="op">=</span> <span class="ident">data</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">15</span>;
     <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> (<span class="ident">data</span> <span class="op">&amp;</span> <span class="number">0x7FFF</span>) <span class="kw">as</span> <span class="ident">usize</span>;
 
@@ -343,34 +357,34 @@
         <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="op">-</span><span class="number">7</span> <span class="op">-</span> (<span class="ident">count</span> <span class="kw">as</span> <span class="ident">i64</span>) <span class="op">*</span> <span class="number">8</span>))<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="ident">_big_width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">_big_height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">palette_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let</span> <span class="ident">_big_width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">_big_height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">palette_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
 
-            <span class="kw">let</span> <span class="ident">_min_xs</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">_min_ys</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">widths</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">heights</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">_min_xs</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">_min_ys</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">widths</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">heights</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
             <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="op">-</span><span class="number">7</span> <span class="op">-</span> (<span class="ident">count</span> <span class="kw">as</span> <span class="ident">i64</span>) <span class="op">*</span> <span class="number">8</span> <span class="op">-</span> (<span class="ident">palette_count</span> <span class="kw">as</span> <span class="ident">i64</span>) <span class="op">*</span> <span class="number">3</span>;
 
             <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="ident">pos</span>))<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="ident">palette</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_rgb</span>()).<span class="ident">take</span>(<span class="ident">palette_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">palette</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_rgb</span>()).<span class="ident">take</span>(<span class="ident">palette_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
             <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::Start</span>(<span class="number">0</span>))<span class="question-mark">?</span>;
 
             <span class="macro">izip!</span>(<span class="number">0</span>..<span class="ident">count</span>, <span class="ident">widths</span>, <span class="ident">heights</span>)
                 .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">index</span>, <span class="ident">width</span>, <span class="ident">height</span>)<span class="op">|</span> {
                     <span class="kw">let</span> <span class="ident">pixel_count</span> <span class="op">=</span> <span class="ident">width</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="ident">height</span> <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="kw">let</span> [<span class="ident">transposed</span>, <span class="ident">alpha</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_bitflags</span>();
+                    <span class="kw">let</span> [<span class="ident">transposed</span>, <span class="ident">alpha</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
                     <span class="kw">if</span> <span class="ident">pixel_count</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                        <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_n_bytes</span>(<span class="ident">pixel_count</span>);
+                        <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">pixel_count</span>);
 
                         <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">alpha</span> {
-                            <span class="ident">buffer</span>.<span class="ident">read_n_bytes</span>(<span class="ident">pixel_count</span>)
+                            <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">pixel_count</span>)
                         } <span class="kw">else</span> {
-                            <span class="macro">vec!</span>[<span class="number">255_u8</span>; <span class="ident">pixel_count</span>]
+                            <span class="macro">vec!</span>[<span class="number">255_u8</span>; <span class="ident">pixel_count</span>].<span class="ident">into</span>()
                         };
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">img</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">transposed</span> {
                             <span class="ident">RgbaImage::new</span>(<span class="ident">width</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">height</span> <span class="kw">as</span> <span class="ident">u32</span>)
@@ -404,20 +418,20 @@
         }
         <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::Start</span>(<span class="number">0</span>))<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>();
+            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="macro">assert_eq!</span>(<span class="ident">ty</span>, <span class="number">0</span>, <span class="string">&quot;Unknown image type.&quot;</span>);
 
-            <span class="kw">let</span> [<span class="ident">alpha</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_bitflags</span>();
-            <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-            <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
+            <span class="kw">let</span> [<span class="ident">alpha</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
+            <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
             <span class="kw">let</span> <span class="ident">pixel_count</span> <span class="op">=</span> <span class="ident">width</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="ident">height</span> <span class="kw">as</span> <span class="ident">usize</span>;
 
-            <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">read_rgb</span>()).<span class="ident">take</span>(<span class="ident">pixel_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_rgb</span>()).<span class="ident">take</span>(<span class="ident">pixel_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
             <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">alpha</span> {
-                <span class="ident">buffer</span>.<span class="ident">read_n_bytes</span>(<span class="ident">pixel_count</span>)
+                <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">pixel_count</span>)
             } <span class="kw">else</span> {
-                <span class="macro">vec!</span>[<span class="number">255_u8</span>; <span class="ident">pixel_count</span>]
+                <span class="macro">vec!</span>[<span class="number">255_u8</span>; <span class="ident">pixel_count</span>].<span class="ident">into</span>()
             };
 
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">RgbaImage::new</span>(<span class="ident">width</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">height</span> <span class="kw">as</span> <span class="ident">u32</span>);

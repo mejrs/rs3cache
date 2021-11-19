@@ -117,16 +117,12 @@
 <span id="117">117</span>
 <span id="118">118</span>
 <span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">ndarray</span>::{<span class="ident">Array</span>, <span class="ident">ArrayBase</span>, <span class="ident">Dim</span>, <span class="ident">OwnedRepr</span>};
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
+<span class="kw">use</span> <span class="ident">ndarray</span>::{<span class="ident">Array</span>, <span class="ident">ArrayBase</span>, <span class="ident">Dim</span>, <span class="ident">OwnedRepr</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::Buffer</span>;
-
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
 <span class="doccomment">/// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TileArray</span> <span class="op">=</span> <span class="ident">ArrayBase</span><span class="op">&lt;</span><span class="ident">OwnedRepr</span><span class="op">&lt;</span><span class="ident">Tile</span><span class="op">&gt;</span>, <span class="ident">Dim</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">3</span>]<span class="op">&gt;</span><span class="op">&gt;</span>;
 
@@ -180,29 +176,27 @@
 <span class="kw">impl</span> <span class="ident">Tile</span> {
     <span class="doccomment">/// Constructor for a sequence of [`Tile`]s.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TileArray</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
-
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TileArray</span> {
         <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">Array::from_shape_simple_fn</span>((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>), <span class="op">|</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tile</span> <span class="op">=</span> <span class="ident">Tile::default</span>();
 
-            <span class="kw">let</span> [<span class="ident">flag_1</span>, <span class="ident">flag_2</span>, <span class="ident">flag_3</span>, <span class="ident">flag_4</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_bitflags</span>();
+            <span class="kw">let</span> [<span class="ident">flag_1</span>, <span class="ident">flag_2</span>, <span class="ident">flag_3</span>, <span class="ident">flag_4</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
 
             <span class="kw">if</span> <span class="ident">flag_1</span> {
-                <span class="ident">tile</span>.<span class="ident">shape</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
-                <span class="ident">tile</span>.<span class="ident">overlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>());
+                <span class="ident">tile</span>.<span class="ident">shape</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
+                <span class="ident">tile</span>.<span class="ident">overlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>());
             }
 
             <span class="kw">if</span> <span class="ident">flag_2</span> {
-                <span class="ident">tile</span>.<span class="ident">settings</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
+                <span class="ident">tile</span>.<span class="ident">settings</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
             }
 
             <span class="kw">if</span> <span class="ident">flag_3</span> {
-                <span class="ident">tile</span>.<span class="ident">underlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_smart</span>());
+                <span class="ident">tile</span>.<span class="ident">underlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>());
             }
 
             <span class="kw">if</span> <span class="ident">flag_4</span> {
-                <span class="ident">tile</span>.<span class="ident">height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
+                <span class="ident">tile</span>.<span class="ident">height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
             }
 
             <span class="ident">tile</span>
@@ -215,22 +209,20 @@
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TileArray</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
-
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TileArray</span> {
         <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">Array::from_shape_simple_fn</span>((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>), <span class="op">|</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tile</span> <span class="op">=</span> <span class="ident">Tile::default</span>();
 
             <span class="kw">loop</span> {
-                <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() {
+                <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
                     <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span> <span class="ident">tile</span>,
                     <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="ident">tile</span>.<span class="ident">height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>());
+                        <span class="ident">tile</span>.<span class="ident">height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
                         <span class="kw">break</span> <span class="ident">tile</span>;
                     }
                     <span class="ident">opcode</span> <span class="kw">if</span> <span class="ident">opcode</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">49</span> <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="ident">tile</span>.<span class="ident">shape</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">opcode</span> <span class="op">-</span> <span class="number">2</span>);
-                        <span class="ident">tile</span>.<span class="ident">overlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() <span class="kw">as</span> <span class="ident">u16</span>);
+                        <span class="ident">tile</span>.<span class="ident">overlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">u16</span>);
                     }
                     <span class="ident">opcode</span> <span class="kw">if</span> <span class="ident">opcode</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">81</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tile</span>.<span class="ident">settings</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">opcode</span> <span class="op">-</span> <span class="number">49</span>),
                     <span class="ident">opcode</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tile</span>.<span class="ident">underlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">opcode</span> <span class="op">-</span> <span class="number">81</span>) <span class="kw">as</span> <span class="ident">u16</span>),

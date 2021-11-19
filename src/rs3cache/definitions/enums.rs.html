@@ -328,12 +328,13 @@
     <span class="ident">iter</span>,
 };
 
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">path_macro::path</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">PyObjectProtocol</span>};
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">buf::Buffer</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">KeyType</span> {
@@ -555,46 +556,45 @@
         <span class="prelude-val">Ok</span>(<span class="ident">enums</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">file</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Buffer::new</span>(<span class="ident">file</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r#enum</span> <span class="op">=</span> <span class="self">Self</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
 
         <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>() {
+            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
                 <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+                    <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
 
                     <span class="kw">break</span> <span class="ident">r#enum</span>;
                 }
-                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">key_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">value_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">101</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">key_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">102</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">value_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_byte</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">default</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>())),
-                <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">default</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">read_int</span>())),
+                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">key_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
+                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">value_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
+                <span class="number">101</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">key_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
+                <span class="number">102</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">value_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
+                <span class="number">3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">default</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())),
+                <span class="number">4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">r#enum</span>.<span class="ident">default</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>())),
                 <span class="number">5</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">read_int</span>(), <span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>())))
+                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_i32</span>(), <span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())))
                         .<span class="ident">take</span>(<span class="ident">count</span>)
                         .<span class="ident">collect</span>();
                 }
                 <span class="number">6</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">read_int</span>(), <span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">read_int</span>())))
+                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_i32</span>(), <span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>())))
                         .<span class="ident">take</span>(<span class="ident">count</span>)
                         .<span class="ident">collect</span>();
                 }
                 <span class="number">7</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">_max</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">read_string</span>())))
+                    <span class="kw">let</span> <span class="ident">_max</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())))
                         .<span class="ident">take</span>(<span class="ident">count</span>)
                         .<span class="ident">collect</span>();
                 }
                 <span class="number">8</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">_max</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>();
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">read_unsigned_short</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">read_int</span>())))
+                    <span class="kw">let</span> <span class="ident">_max</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>())))
                         .<span class="ident">take</span>(<span class="ident">count</span>)
                         .<span class="ident">collect</span>();
                 }

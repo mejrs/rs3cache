@@ -235,11 +235,6 @@
 <span id="235">235</span>
 <span id="236">236</span>
 <span id="237">237</span>
-<span id="238">238</span>
-<span id="239">239</span>
-<span id="240">240</span>
-<span id="241">241</span>
-<span id="242">242</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -338,12 +333,7 @@
                 <span class="ident">definitions::enums::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
                 <span class="ident">definitions::textures::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-                <span class="ident">definitions::music::export_each</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
-
-                <span class="ident">definitions::mapsquares::export_locations_by_id</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
                 <span class="ident">definitions::location_configs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
-                <span class="ident">definitions::location_configs::export_each</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
 
                 <span class="ident">definitions::sprites::save_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
             }
