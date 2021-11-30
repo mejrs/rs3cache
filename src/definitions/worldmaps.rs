@@ -132,8 +132,6 @@ mod mapzone_fields_impl {
     use bytes::{Buf, Bytes};
     use serde::Serialize;
 
-    use crate::cache::buf::BufExtra;
-
     #[derive(Debug, Serialize)]
     pub struct BoundDef {
         plane: u8,
@@ -221,8 +219,6 @@ mod mappaste_fields_impl {
     #![allow(missing_docs)]
     use bytes::{Buf, Bytes};
     use serde::Serialize;
-
-    use crate::cache::buf::BufExtra;
 
     #[derive(Debug, Serialize)]
     pub struct Paste {

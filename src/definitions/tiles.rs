@@ -3,7 +3,6 @@ use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 
-use crate::cache::buf::BufExtra;
 /// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 
@@ -58,6 +57,8 @@ impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
     #[cfg(feature = "rs3")]
     pub fn dump(mut buffer: Bytes) -> TileArray {
+        use rs3cache_core::buf::BufExtra;
+
         let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();
 

@@ -152,10 +152,7 @@ pub mod maplabel_config_fields {
     use pyo3::prelude::*;
     use serde::Serialize;
 
-    use crate::{
-        cache::buf::BufExtra,
-        types::variables::{Varbit, Varp, VarpOrVarbit},
-    };
+    use crate::types::variables::{Varbit, Varp, VarpOrVarbit};
     /// A polygon
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Debug, Clone, Default, Serialize)]

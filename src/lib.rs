@@ -6,9 +6,10 @@
     option_result_unwrap_unchecked,
     once_cell,
     bench_black_box,
-    doc_cfg
+    doc_cfg,
+    result_cloned
 )]
-#![allow(non_snake_case, unused_imports)]
+#![allow(non_snake_case)]
 #![warn(
     unused_qualifications,
     unused_import_braces,

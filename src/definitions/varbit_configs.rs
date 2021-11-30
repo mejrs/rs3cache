@@ -16,7 +16,6 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::cache::{
-    buf::BufExtra,
     error::CacheResult,
     index::CacheIndex,
     indextype::{ConfigType, IndexType},

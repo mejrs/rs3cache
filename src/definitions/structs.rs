@@ -13,7 +13,7 @@ use pyo3::{prelude::*, PyObjectProtocol};
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{error::CacheResult, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
 };
 

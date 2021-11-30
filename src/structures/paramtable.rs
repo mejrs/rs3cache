@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, iter};
 
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
-use pyo3::prelude::*;
+use pyo3::{prelude::*, exceptions::PyKeyError};
 use serde::Serialize;
 
 use crate::cache::buf::BufExtra;
@@ -46,6 +46,9 @@ impl ParamTable {
 impl ParamTable {
     fn get(&self, id: u32) -> PyResult<Option<&Param>> {
         Ok(self.params.get(&id))
+    }
+    fn __getitem__(&self, id: u32) -> PyResult<&Param> {
+        self.params.get(&id).ok_or_else(|| PyKeyError::new_err("key not in table"))
     }
 }
 

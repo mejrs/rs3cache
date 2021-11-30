@@ -221,8 +221,6 @@ pub mod item_config_fields {
     use pyo3::prelude::*;
     use serde::Serialize;
 
-    use crate::cache::buf::BufExtra;
-
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
     pub struct Rotation {

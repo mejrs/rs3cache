@@ -91,7 +91,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
     Ok(sprites)
 }
 
-fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
+pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
     let mut buffer = Cursor::new(buffer);
 
     buffer.seek(SeekFrom::End(-2))?;

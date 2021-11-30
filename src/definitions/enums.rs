@@ -18,27 +18,34 @@ use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indexty
 
 #[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
 pub enum KeyType {
-    Uninit,
-    Int_0,
-    Int_9,
-    Int_10,
-    Int_17,
-    Int_22,
-    Int_23,
-    Int_25,
-    Int_26,
-    Int_30,
-    Int_32,
-    Int_33,
-    Int_39,
-    Int_41,
-    Int_42,
-    Int_73,
-    Int_74,
-    Int_105,
-    Int_115,
-    Int_126,
-    Int_128,
+    Uninit = -1,
+    Int_0 = 0,
+    Int_9 = 9,
+    Int_10 = 10,
+    Int_17 = 17,
+    Int_22 = 22,
+    Int_23 = 23,
+    Int_25 = 25,
+    Int_26 = 26,
+    Int_30 = 30,
+    Int_32 = 32,
+    Int_33 = 33,
+    Int_39 = 39,
+    Int_41 = 41,
+    Int_42 = 42,
+    Int_73 = 73,
+    Int_74 = 74,
+    Int_105 = 105,
+    Int_115 = 115,
+    Int_126 = 126,
+    Int_128 = 128,
+}
+
+#[cfg(feature = "pyo3")]
+impl IntoPy<PyObject> for KeyType {
+    fn into_py(self, py: Python) -> PyObject {
+        (self as i32).into_py(py)
+    }
 }
 
 impl TryFrom<u8> for KeyType {
@@ -83,44 +90,52 @@ impl Default for KeyType {
 
 #[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
 pub enum ValueType {
-    Uninit,
-    Int_0,
-    Int_1,
-    Int_3,
-    Int_6,
-    Int_8,
-    Int_9,
-    Int_10,
-    Int_11,
-    Int_17,
-    Int_21,
-    COORDINATE,
-    Int_23,
-    Int_24,
-    Int_25,
-    Int_26,
-    Int_28,
-    Int_29,
-    Int_30,
-    Int_31,
-    Int_32,
-    Int_33,
-    STRING_36,
-    Int_37,
-    Int_39,
-    Int_41,
-    Int_42,
-    Int_57,
-    Int_73,
-    Int_74,
-    Int_97,
-    Int_99,
-    Int_102,
-    Int_105,
-    Int_115,
-    Int_126,
-    Int_128,
+    Uninit = -1,
+    Int_0 = 0,
+    Int_1 = 1,
+    Int_3 = 3,
+    Int_6 = 6,
+    Int_8 = 8,
+    Int_9 = 9,
+    Int_10 = 10,
+    Int_11 = 11,
+    Int_17 = 17,
+    Int_21 = 21,
+    COORDINATE = 22,
+    Int_23 = 23,
+    Int_24 = 24,
+    Int_25 = 25,
+    Int_26 = 26,
+    Int_28 = 28,
+    Int_29 = 29,
+    Int_30 = 30,
+    Int_31 = 31,
+    Int_32 = 32,
+    Int_33 = 33,
+    STRING_36 = 36,
+    Int_37 = 37,
+    Int_39 = 39,
+    Int_41 = 41,
+    Int_42 = 42,
+    Int_57 = 57,
+    Int_73 = 73,
+    Int_74 = 74,
+    Int_97 = 97,
+    Int_99 = 99,
+    Int_102 = 102,
+    Int_105 = 105,
+    Int_115 = 115,
+    Int_126 = 126,
+    Int_128 = 128,
 }
+
+#[cfg(feature = "pyo3")]
+impl IntoPy<PyObject> for ValueType {
+    fn into_py(self, py: Python) -> PyObject {
+        (self as i32).into_py(py)
+    }
+}
+
 impl TryFrom<u8> for ValueType {
     type Error = String;
     fn try_from(discriminant: u8) -> Result<Self, Self::Error> {
@@ -209,10 +224,13 @@ pub struct Enum {
     pub id: u32,
     pub unknown_131: Option<bool>,
     #[serde(skip_serializing_if = "KeyType::is_init")]
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     key_type: KeyType,
     #[serde(skip_serializing_if = "ValueType::is_init")]
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     value_type: ValueType,
     #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    #[cfg_attr(feature = "pyo3", pyo3(get))]
     pub variants: BTreeMap<i32, Value>,
     pub default: Option<Value>,
 }

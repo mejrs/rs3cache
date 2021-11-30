@@ -1,7 +1,6 @@
 use bytes::{Buf, Bytes};
 use serde::Serialize;
 
-use crate::cache::buf::BufExtra;
 /// A non player character.
 #[derive(Copy, Clone, Debug, Serialize)]
 pub struct Npc {
