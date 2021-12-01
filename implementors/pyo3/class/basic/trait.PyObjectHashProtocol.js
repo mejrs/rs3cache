@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["rs3cache"] = [{"text":"impl&lt;'p&gt; PyObjectHashProtocol&lt;'p&gt; for <a class=\"struct\" href=\"rs3cache/definitions/locations/struct.Location.html\" title=\"struct rs3cache::definitions::locations::Location\">Location</a>","synthetic":false,"types":["rs3cache::definitions::locations::Location"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

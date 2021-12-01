@@ -318,10 +318,6 @@
 <span id="318">318</span>
 <span id="319">319</span>
 <span id="320">320</span>
-<span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Metadata about the cache itself.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -336,7 +332,7 @@
 <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">itertools::izip</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">PyObjectProtocol</span>};
+<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">utils::adapters::Accumulator</span>};
@@ -382,6 +378,14 @@
             <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">b</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">pyo3::types::PyBytes::new</span>(<span class="ident">py</span>, <span class="ident">b</span>).<span class="ident">into</span>(),
             <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">py</span>.<span class="prelude-val">None</span>(),
         }
+    }
+
+    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+    }
+
+    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
     }
 }
 
@@ -632,18 +636,6 @@
 
     <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::IntoIter</span> {
         <span class="self">self</span>.<span class="ident">metadatas</span>.<span class="ident">into_iter</span>()
-    }
-}
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pyproto</span>]</span>
-<span class="kw">impl</span> <span class="ident">PyObjectProtocol</span> <span class="kw">for</span> <span class="ident">Metadata</span> {
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
-    }
-
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
     }
 }
 </code></pre></div>
