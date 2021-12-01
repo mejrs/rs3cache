@@ -12,7 +12,7 @@ use std::{
 use bytes::{Buf, Bytes};
 use itertools::izip;
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::prelude::*;
 use serde::{Serialize, Serializer};
 
 use crate::{buf::BufExtra, error::CacheResult, utils::adapters::Accumulator};
@@ -59,7 +59,7 @@ impl Metadata {
             None => py.None(),
         }
     }
-    
+
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Metadata({})", serde_json::to_string(self).unwrap()))
     }

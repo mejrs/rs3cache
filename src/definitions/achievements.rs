@@ -9,7 +9,7 @@ use std::{
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::prelude::*;
 use serde::Serialize;
 
 use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};

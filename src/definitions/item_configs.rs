@@ -9,7 +9,7 @@ use std::{
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::prelude::*;
 use serde::Serialize;
 
 use crate::{
@@ -201,7 +201,7 @@ impl Display for ItemConfig {
 
 #[cfg(feature = "pyo3")]
 #[pymethods]
-impl  ItemConfig {
+impl ItemConfig {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("ItemConfig({})", serde_json::to_string(self).unwrap()))
     }

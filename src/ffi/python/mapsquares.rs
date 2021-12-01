@@ -5,7 +5,6 @@ use pyo3::{
     exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyTypeError},
     prelude::*,
     types::PyInt,
-    PyIterProtocol, PyObjectProtocol,
 };
 
 use crate::{

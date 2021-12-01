@@ -4,7 +4,6 @@ use pyo3::{
     exceptions::{PyKeyError, PyReferenceError},
     prelude::*,
     types::PyBytes,
-    PyIterProtocol,
 };
 
 use crate::{

@@ -8,7 +8,7 @@ use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 #[cfg(feature = "osrs")]
 use rs3cache_core::indextype::ConfigType;

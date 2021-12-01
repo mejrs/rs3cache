@@ -1,6 +1,6 @@
 use std::{collections::btree_map, path::PathBuf};
 
-use pyo3::{exceptions::PyReferenceError, prelude::*, PyIterProtocol, PyObjectProtocol};
+use pyo3::{exceptions::PyReferenceError, prelude::*};
 
 use crate::{
     cache::{

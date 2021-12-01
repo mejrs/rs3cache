@@ -13,7 +13,7 @@ use std::collections::{BTreeMap, HashSet};
 use bytes::{Buf, Bytes};
 use itertools::izip;
 #[cfg(feature = "pyo3")]
-use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, PyObjectProtocol};
+use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes};
 
 use crate::{
     buf::BufExtra,

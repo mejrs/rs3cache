@@ -47,7 +47,7 @@ impl ParamTable {
     fn get(&self, id: u32) -> PyResult<Option<&Param>> {
         Ok(self.params.get(&id))
     }
-    
+
     fn __getitem__(&self, id: u32) -> PyResult<&Param> {
         self.params.get(&id).ok_or_else(|| PyKeyError::new_err("key not in table"))
     }

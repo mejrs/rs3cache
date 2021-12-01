@@ -8,7 +8,7 @@ use std::{
 
 use path_macro::path;
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::{prelude::*};
 use serde::Serialize;
 
 use bytes::{Buf, Bytes};

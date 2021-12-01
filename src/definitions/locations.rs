@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::prelude::*;
 use rs3cache_core::buf::BufExtra;
 use serde::{Serialize, Serializer};
 
@@ -205,7 +205,7 @@ impl Location {
 
 #[cfg(feature = "pyo3")]
 #[pymethods]
-impl  Location {
+impl Location {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Location({})", serde_json::to_string(self).unwrap()))
     }

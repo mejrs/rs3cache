@@ -9,7 +9,7 @@ use std::{
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, PyObjectProtocol};
+use pyo3::prelude::*;
 use serde::Serialize;
 
 use crate::{
@@ -77,7 +77,7 @@ impl Display for Struct {
 
 #[cfg(feature = "pyo3")]
 #[pymethods]
-impl  Struct {
+impl Struct {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Struct({})", serde_json::to_string(self).unwrap()))
     }
