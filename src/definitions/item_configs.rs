@@ -200,8 +200,8 @@ impl Display for ItemConfig {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for ItemConfig {
+#[pymethods]
+impl  ItemConfig {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("ItemConfig({})", serde_json::to_string(self).unwrap()))
     }

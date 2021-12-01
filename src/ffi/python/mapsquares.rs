@@ -86,10 +86,7 @@ impl PyMapSquares {
             Ok(PyMapSquare { inner: sq })
         }
     }
-}
 
-#[pyproto]
-impl PyIterProtocol for PyMapSquares {
     fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyMapSquaresIter>> {
         let inner = std::mem::take(&mut (*slf).mapsquares);
         let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
@@ -106,8 +103,8 @@ pub struct PyMapSquaresIter {
     inner: MapSquareIterator,
 }
 
-#[pyproto]
-impl PyIterProtocol for PyMapSquaresIter {
+#[pymethods]
+impl PyMapSquaresIter {
     fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
         slf
     }
@@ -160,10 +157,7 @@ impl PyMapSquare {
         let map: BTreeMap<(u8, u8, u8), Tile> = tiles.indexed_iter().map(|((p, x, y), &t)| ((p as u8, x as u8, y as u8), t)).collect();
         Ok(map)
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for PyMapSquare {
     fn __repr__(&self) -> String {
         format!("MapSquare({},{})", self.inner.i(), self.inner.j())
     }

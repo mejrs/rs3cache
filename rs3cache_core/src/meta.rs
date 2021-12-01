@@ -59,6 +59,14 @@ impl Metadata {
             None => py.None(),
         }
     }
+    
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("Metadata({})", serde_json::to_string(self).unwrap()))
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        Ok(format!("Metadata({})", serde_json::to_string(self).unwrap()))
+    }
 }
 
 pub fn bytes_to_vec<S>(bytes: &Option<Bytes>, s: S) -> Result<S::Ok, S::Error>
@@ -308,17 +316,5 @@ impl IntoIterator for IndexMetadata {
 
     fn into_iter(self) -> Self::IntoIter {
         self.metadatas.into_iter()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for Metadata {
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("Metadata({})", serde_json::to_string(self).unwrap()))
-    }
-
-    fn __str__(&self) -> PyResult<String> {
-        Ok(format!("Metadata({})", serde_json::to_string(self).unwrap()))
     }
 }

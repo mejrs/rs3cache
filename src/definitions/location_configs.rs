@@ -709,8 +709,8 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for LocationConfig {
+#[pymethods]
+impl LocationConfig {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("LocationConfig({})", serde_json::to_string(self).unwrap()))
     }

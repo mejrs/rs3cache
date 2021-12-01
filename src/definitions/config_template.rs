@@ -71,8 +71,8 @@ impl <Name> {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for <Name> {
+#[pymethods]
+impl  <Name> {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("<Name>({})", serde_json::to_string(self).unwrap()))
     }

@@ -64,10 +64,7 @@ impl PyCacheIndex {
 
         Ok(PyIndexMetadata { inner: Some(meta) })
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for PyCacheIndex {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!(
             "Index({})",
@@ -87,10 +84,7 @@ impl PyObjectProtocol for PyCacheIndex {
                 .index_id()
         ))
     }
-}
 
-#[pyproto]
-impl PyIterProtocol for PyCacheIndex {
     fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyCacheIndexIter>> {
         let inner = std::mem::take(&mut (*slf).inner);
         let inner = inner
@@ -108,8 +102,8 @@ pub struct PyCacheIndexIter {
     inner: index::IntoIter,
 }
 
-#[pyproto]
-impl PyIterProtocol for PyCacheIndexIter {
+#[pymethods]
+impl PyCacheIndexIter {
     fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
         slf
     }
@@ -125,8 +119,8 @@ pub struct PyIndexMetadata {
     pub(crate) inner: Option<IndexMetadata>,
 }
 
-#[pyproto]
-impl PyObjectProtocol for PyIndexMetadata {
+#[pymethods]
+impl PyIndexMetadata {
     fn __repr__(&self) -> PyResult<String> {
         let inner = self
             .inner
@@ -144,10 +138,7 @@ impl PyObjectProtocol for PyIndexMetadata {
             .metadatas();
         Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
     }
-}
 
-#[pyproto]
-impl PyIterProtocol for PyIndexMetadata {
     fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyIndexMetadataIter>> {
         let inner = std::mem::take(&mut (*slf).inner);
         let inner = inner
@@ -165,8 +156,8 @@ pub struct PyIndexMetadataIter {
     inner: btree_map::IntoIter<u32, Metadata>,
 }
 
-#[pyproto]
-impl PyIterProtocol for PyIndexMetadataIter {
+#[pymethods]
+impl PyIndexMetadataIter {
     fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
         slf
     }

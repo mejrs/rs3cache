@@ -313,8 +313,8 @@ impl Display for Enum {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for Enum {
+#[pymethods]
+impl Enum {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Enum({})", serde_json::to_string(self).unwrap()))
     }

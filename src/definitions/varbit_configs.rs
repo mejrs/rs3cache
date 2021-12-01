@@ -96,8 +96,8 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for VarbitConfig {
+#[pymethods]
+impl VarbitConfig {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("VarbitConfig({})", serde_json::to_string(self).unwrap()))
     }

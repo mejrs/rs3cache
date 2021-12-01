@@ -456,8 +456,8 @@ impl Display for Achievement {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for Achievement {
+#[pymethods]
+impl Achievement {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Achievement({})", serde_json::to_string(self).unwrap()))
     }

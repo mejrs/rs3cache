@@ -246,8 +246,8 @@ impl NpcConfig {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for NpcConfig {
+#[pymethods]
+impl NpcConfig {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("NpcConfig({})", serde_json::to_string(self).unwrap()))
     }

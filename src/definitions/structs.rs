@@ -76,8 +76,8 @@ impl Display for Struct {
 }
 
 #[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for Struct {
+#[pymethods]
+impl  Struct {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Struct({})", serde_json::to_string(self).unwrap()))
     }

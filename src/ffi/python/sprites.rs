@@ -136,10 +136,7 @@ impl PySprites {
 
         Ok(PyIndexMetadata { inner: Some(meta) })
     }
-}
 
-#[pyproto]
-impl PyIterProtocol for PySprites {
     fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PySpritesIter>> {
         let inner = std::mem::take(&mut (*slf).inner);
         let inner = inner
@@ -161,8 +158,8 @@ pub struct PySpritesIter {
     inner: index::IntoIter,
 }
 
-#[pyproto]
-impl PyIterProtocol for PySpritesIter {
+#[pymethods]
+impl PySpritesIter {
     fn __iter__(slf: PyRef<Self>) -> PyRef<Self> {
         slf
     }

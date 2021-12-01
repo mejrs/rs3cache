@@ -160,11 +160,7 @@ impl Archive {
     fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
         Ok(self.files.iter().map(|(&id, file)| (id, PyBytes::new(py, file))).collect())
     }
-}
 
-#[cfg(feature = "pyo3")]
-#[pyproto]
-impl PyObjectProtocol for Archive {
     fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Archive({}, {})", self.index_id(), self.archive_id()))
     }
