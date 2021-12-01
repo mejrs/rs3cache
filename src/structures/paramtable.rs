@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, iter};
 
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
-use pyo3::{prelude::*, exceptions::PyKeyError};
+use pyo3::{exceptions::PyKeyError, prelude::*};
 use serde::Serialize;
 
 use crate::cache::buf::BufExtra;

@@ -35,7 +35,6 @@ impl PySprite {
     fn __getitem__(&self, id: usize) -> PyResult<PyFrame> {
         self.get(id)
     }
-
 }
 
 #[pyclass(name = "Frame")]
