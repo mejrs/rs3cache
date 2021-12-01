@@ -253,14 +253,14 @@
         ))
     }
 
-    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">mut</span> <span class="ident">slf</span>: <span class="ident">PyRefMut</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyCacheIndexIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> (<span class="kw-2">*</span><span class="ident">slf</span>).<span class="ident">inner</span>);
+    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyCacheIndexIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>);
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">inner</span>
             .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PyReferenceError::new_err</span>(<span class="string">&quot;CacheIndex is not available after using `iter()`&quot;</span>))<span class="question-mark">?</span>
             .<span class="ident">into_iter</span>();
 
         <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">PyCacheIndexIter</span> { <span class="ident">inner</span> };
-        <span class="ident">Py::new</span>(<span class="ident">slf</span>.<span class="ident">py</span>(), <span class="ident">iter</span>)
+        <span class="ident">Py::new</span>(<span class="ident">py</span>, <span class="ident">iter</span>)
     }
 }
 
@@ -276,9 +276,9 @@
         <span class="ident">slf</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">mut</span> <span class="ident">slf</span>: <span class="ident">PyRefMut</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
         <span class="comment">// no archive currently expose can fail here once fully loaded</span>
-        <span class="ident">slf</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
     }
 }
 
@@ -307,14 +307,14 @@
         <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;IndexMetadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="ident">inner</span>).<span class="ident">unwrap</span>()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">mut</span> <span class="ident">slf</span>: <span class="ident">PyRefMut</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyIndexMetadataIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> (<span class="kw-2">*</span><span class="ident">slf</span>).<span class="ident">inner</span>);
+    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyIndexMetadataIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>);
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">inner</span>
             .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PyReferenceError::new_err</span>(<span class="string">&quot;IndexMetadata is not available after using `iter()`&quot;</span>))<span class="question-mark">?</span>
             .<span class="ident">into_iter</span>();
 
         <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">PyIndexMetadataIter</span> { <span class="ident">inner</span> };
-        <span class="ident">Py::new</span>(<span class="ident">slf</span>.<span class="ident">py</span>(), <span class="ident">iter</span>)
+        <span class="ident">Py::new</span>(<span class="ident">py</span>, <span class="ident">iter</span>)
     }
 }
 
@@ -330,8 +330,8 @@
         <span class="ident">slf</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">mut</span> <span class="ident">slf</span>: <span class="ident">PyRefMut</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">Metadata</span>)<span class="op">&gt;</span> {
-        <span class="ident">slf</span>.<span class="ident">inner</span>.<span class="ident">next</span>()
+    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">Metadata</span>)<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>()
     }
 }
 </code></pre></div>
