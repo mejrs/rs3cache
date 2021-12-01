@@ -365,10 +365,6 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
-<span id="371">371</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -503,8 +499,6 @@
     <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
-
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BoundDef</span> {
         <span class="ident">plane</span>: <span class="ident">u8</span>,
@@ -592,8 +586,6 @@
     <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
-
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::buf::BufExtra</span>;
 
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Paste</span> {

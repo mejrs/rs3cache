@@ -289,9 +289,6 @@
 <span id="289">289</span>
 <span id="290">290</span>
 <span id="291">291</span>
-<span id="292">292</span>
-<span id="293">293</span>
-<span id="294">294</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
     <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
@@ -446,10 +443,7 @@
     <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-    <span class="kw">use</span> <span class="kw">crate</span>::{
-        <span class="ident">cache::buf::BufExtra</span>,
-        <span class="ident">types::variables</span>::{<span class="ident">Varbit</span>, <span class="ident">Varp</span>, <span class="ident">VarpOrVarbit</span>},
-    };
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::variables</span>::{<span class="ident">Varbit</span>, <span class="ident">Varp</span>, <span class="ident">VarpOrVarbit</span>};
     <span class="doccomment">/// A polygon</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Serialize</span>)]</span>

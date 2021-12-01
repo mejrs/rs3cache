@@ -318,6 +318,24 @@
 <span id="318">318</span>
 <span id="319">319</span>
 <span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of enums.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>, <span class="ident">missing_docs</span>)]</span>
 
@@ -338,27 +356,34 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">KeyType</span> {
-    <span class="ident">Uninit</span>,
-    <span class="ident">Int_0</span>,
-    <span class="ident">Int_9</span>,
-    <span class="ident">Int_10</span>,
-    <span class="ident">Int_17</span>,
-    <span class="ident">Int_22</span>,
-    <span class="ident">Int_23</span>,
-    <span class="ident">Int_25</span>,
-    <span class="ident">Int_26</span>,
-    <span class="ident">Int_30</span>,
-    <span class="ident">Int_32</span>,
-    <span class="ident">Int_33</span>,
-    <span class="ident">Int_39</span>,
-    <span class="ident">Int_41</span>,
-    <span class="ident">Int_42</span>,
-    <span class="ident">Int_73</span>,
-    <span class="ident">Int_74</span>,
-    <span class="ident">Int_105</span>,
-    <span class="ident">Int_115</span>,
-    <span class="ident">Int_126</span>,
-    <span class="ident">Int_128</span>,
+    <span class="ident">Uninit</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>,
+    <span class="ident">Int_0</span> <span class="op">=</span> <span class="number">0</span>,
+    <span class="ident">Int_9</span> <span class="op">=</span> <span class="number">9</span>,
+    <span class="ident">Int_10</span> <span class="op">=</span> <span class="number">10</span>,
+    <span class="ident">Int_17</span> <span class="op">=</span> <span class="number">17</span>,
+    <span class="ident">Int_22</span> <span class="op">=</span> <span class="number">22</span>,
+    <span class="ident">Int_23</span> <span class="op">=</span> <span class="number">23</span>,
+    <span class="ident">Int_25</span> <span class="op">=</span> <span class="number">25</span>,
+    <span class="ident">Int_26</span> <span class="op">=</span> <span class="number">26</span>,
+    <span class="ident">Int_30</span> <span class="op">=</span> <span class="number">30</span>,
+    <span class="ident">Int_32</span> <span class="op">=</span> <span class="number">32</span>,
+    <span class="ident">Int_33</span> <span class="op">=</span> <span class="number">33</span>,
+    <span class="ident">Int_39</span> <span class="op">=</span> <span class="number">39</span>,
+    <span class="ident">Int_41</span> <span class="op">=</span> <span class="number">41</span>,
+    <span class="ident">Int_42</span> <span class="op">=</span> <span class="number">42</span>,
+    <span class="ident">Int_73</span> <span class="op">=</span> <span class="number">73</span>,
+    <span class="ident">Int_74</span> <span class="op">=</span> <span class="number">74</span>,
+    <span class="ident">Int_105</span> <span class="op">=</span> <span class="number">105</span>,
+    <span class="ident">Int_115</span> <span class="op">=</span> <span class="number">115</span>,
+    <span class="ident">Int_126</span> <span class="op">=</span> <span class="number">126</span>,
+    <span class="ident">Int_128</span> <span class="op">=</span> <span class="number">128</span>,
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">PyObject</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">KeyType</span> {
+    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyObject</span> {
+        (<span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into_py</span>(<span class="ident">py</span>)
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">KeyType</span> {
@@ -403,44 +428,52 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ValueType</span> {
-    <span class="ident">Uninit</span>,
-    <span class="ident">Int_0</span>,
-    <span class="ident">Int_1</span>,
-    <span class="ident">Int_3</span>,
-    <span class="ident">Int_6</span>,
-    <span class="ident">Int_8</span>,
-    <span class="ident">Int_9</span>,
-    <span class="ident">Int_10</span>,
-    <span class="ident">Int_11</span>,
-    <span class="ident">Int_17</span>,
-    <span class="ident">Int_21</span>,
-    <span class="ident">COORDINATE</span>,
-    <span class="ident">Int_23</span>,
-    <span class="ident">Int_24</span>,
-    <span class="ident">Int_25</span>,
-    <span class="ident">Int_26</span>,
-    <span class="ident">Int_28</span>,
-    <span class="ident">Int_29</span>,
-    <span class="ident">Int_30</span>,
-    <span class="ident">Int_31</span>,
-    <span class="ident">Int_32</span>,
-    <span class="ident">Int_33</span>,
-    <span class="ident">STRING_36</span>,
-    <span class="ident">Int_37</span>,
-    <span class="ident">Int_39</span>,
-    <span class="ident">Int_41</span>,
-    <span class="ident">Int_42</span>,
-    <span class="ident">Int_57</span>,
-    <span class="ident">Int_73</span>,
-    <span class="ident">Int_74</span>,
-    <span class="ident">Int_97</span>,
-    <span class="ident">Int_99</span>,
-    <span class="ident">Int_102</span>,
-    <span class="ident">Int_105</span>,
-    <span class="ident">Int_115</span>,
-    <span class="ident">Int_126</span>,
-    <span class="ident">Int_128</span>,
+    <span class="ident">Uninit</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>,
+    <span class="ident">Int_0</span> <span class="op">=</span> <span class="number">0</span>,
+    <span class="ident">Int_1</span> <span class="op">=</span> <span class="number">1</span>,
+    <span class="ident">Int_3</span> <span class="op">=</span> <span class="number">3</span>,
+    <span class="ident">Int_6</span> <span class="op">=</span> <span class="number">6</span>,
+    <span class="ident">Int_8</span> <span class="op">=</span> <span class="number">8</span>,
+    <span class="ident">Int_9</span> <span class="op">=</span> <span class="number">9</span>,
+    <span class="ident">Int_10</span> <span class="op">=</span> <span class="number">10</span>,
+    <span class="ident">Int_11</span> <span class="op">=</span> <span class="number">11</span>,
+    <span class="ident">Int_17</span> <span class="op">=</span> <span class="number">17</span>,
+    <span class="ident">Int_21</span> <span class="op">=</span> <span class="number">21</span>,
+    <span class="ident">COORDINATE</span> <span class="op">=</span> <span class="number">22</span>,
+    <span class="ident">Int_23</span> <span class="op">=</span> <span class="number">23</span>,
+    <span class="ident">Int_24</span> <span class="op">=</span> <span class="number">24</span>,
+    <span class="ident">Int_25</span> <span class="op">=</span> <span class="number">25</span>,
+    <span class="ident">Int_26</span> <span class="op">=</span> <span class="number">26</span>,
+    <span class="ident">Int_28</span> <span class="op">=</span> <span class="number">28</span>,
+    <span class="ident">Int_29</span> <span class="op">=</span> <span class="number">29</span>,
+    <span class="ident">Int_30</span> <span class="op">=</span> <span class="number">30</span>,
+    <span class="ident">Int_31</span> <span class="op">=</span> <span class="number">31</span>,
+    <span class="ident">Int_32</span> <span class="op">=</span> <span class="number">32</span>,
+    <span class="ident">Int_33</span> <span class="op">=</span> <span class="number">33</span>,
+    <span class="ident">STRING_36</span> <span class="op">=</span> <span class="number">36</span>,
+    <span class="ident">Int_37</span> <span class="op">=</span> <span class="number">37</span>,
+    <span class="ident">Int_39</span> <span class="op">=</span> <span class="number">39</span>,
+    <span class="ident">Int_41</span> <span class="op">=</span> <span class="number">41</span>,
+    <span class="ident">Int_42</span> <span class="op">=</span> <span class="number">42</span>,
+    <span class="ident">Int_57</span> <span class="op">=</span> <span class="number">57</span>,
+    <span class="ident">Int_73</span> <span class="op">=</span> <span class="number">73</span>,
+    <span class="ident">Int_74</span> <span class="op">=</span> <span class="number">74</span>,
+    <span class="ident">Int_97</span> <span class="op">=</span> <span class="number">97</span>,
+    <span class="ident">Int_99</span> <span class="op">=</span> <span class="number">99</span>,
+    <span class="ident">Int_102</span> <span class="op">=</span> <span class="number">102</span>,
+    <span class="ident">Int_105</span> <span class="op">=</span> <span class="number">105</span>,
+    <span class="ident">Int_115</span> <span class="op">=</span> <span class="number">115</span>,
+    <span class="ident">Int_126</span> <span class="op">=</span> <span class="number">126</span>,
+    <span class="ident">Int_128</span> <span class="op">=</span> <span class="number">128</span>,
 }
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">PyObject</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ValueType</span> {
+    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyObject</span> {
+        (<span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into_py</span>(<span class="ident">py</span>)
+    }
+}
+
 <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ValueType</span> {
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">String</span>;
     <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">discriminant</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
@@ -529,10 +562,13 @@
     <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
     <span class="kw">pub</span> <span class="ident">unknown_131</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;KeyType::is_init&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
     <span class="ident">key_type</span>: <span class="ident">KeyType</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;ValueType::is_init&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
     <span class="ident">value_type</span>: <span class="ident">ValueType</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;BTreeMap::is_empty&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
     <span class="kw">pub</span> <span class="ident">variants</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Value</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>,
 }
