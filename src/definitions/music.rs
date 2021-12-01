@@ -82,17 +82,17 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
 
 #[derive(Debug, Clone)]
 pub struct Jaga {
-    int_1: u32,
-    int_2: u32,
-    sample_frequency: u32,
-    int_3: u32,
+    _int_1: u32,
+    _int_2: u32,
+    _sample_frequency: u32,
+    _int_3: u32,
     chunks: Vec<ChunkDescriptor>,
 }
 
 #[derive(Debug, Clone)]
 pub struct ChunkDescriptor {
-    position: u32,
-    length: u32,
+    _position: u32,
+    _length: u32,
     archive_id: u32,
 }
 
@@ -100,24 +100,24 @@ fn decode_first(mut buffer: Bytes) -> (Jaga, Bytes) {
     let signature = buffer.get_array::<4>();
     assert_eq!(&signature, b"JAGA");
 
-    let int_1 = buffer.get_u32();
-    let int_2 = buffer.get_u32();
-    let sample_frequency = buffer.get_u32();
-    let int_3 = buffer.get_u32();
+    let _int_1 = buffer.get_u32();
+    let _int_2 = buffer.get_u32();
+    let _sample_frequency = buffer.get_u32();
+    let _int_3 = buffer.get_u32();
     let chunk_count = buffer.get_u32();
     let chunks = (0..chunk_count)
-        .map(|position| ChunkDescriptor {
-            position,
-            length: buffer.get_u32(),
+        .map(|_position| ChunkDescriptor {
+            _position,
+            _length: buffer.get_u32(),
             archive_id: buffer.get_u32(),
         })
         .collect();
     (
         Jaga {
-            int_1,
-            int_2,
-            sample_frequency,
-            int_3,
+            _int_1,
+            _int_2,
+            _sample_frequency,
+            _int_3,
             chunks,
         },
         buffer,

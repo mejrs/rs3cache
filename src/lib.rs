@@ -3,7 +3,6 @@
     cfg_eval,
     option_result_contains,
     option_get_or_insert_default,
-    option_result_unwrap_unchecked,
     once_cell,
     bench_black_box,
     doc_cfg,
