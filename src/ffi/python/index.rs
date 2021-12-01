@@ -85,14 +85,14 @@ impl PyCacheIndex {
         ))
     }
 
-    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyCacheIndexIter>> {
-        let inner = std::mem::take(&mut (*slf).inner);
+    fn __iter__(&mut self, py: Python) -> PyResult<Py<PyCacheIndexIter>> {
+        let inner = std::mem::take(&mut self.inner);
         let inner = inner
             .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
             .into_iter();
 
         let iter = PyCacheIndexIter { inner };
-        Py::new(slf.py(), iter)
+        Py::new(py, iter)
     }
 }
 
@@ -108,9 +108,9 @@ impl PyCacheIndexIter {
         slf
     }
 
-    fn __next__(mut slf: PyRefMut<Self>) -> Option<Archive> {
+    fn __next__(&mut self) -> Option<Archive> {
         // no archive currently expose can fail here once fully loaded
-        slf.inner.next().map(Result::unwrap)
+        self.inner.next().map(Result::unwrap)
     }
 }
 
@@ -139,14 +139,14 @@ impl PyIndexMetadata {
         Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
     }
 
-    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyIndexMetadataIter>> {
-        let inner = std::mem::take(&mut (*slf).inner);
+    fn __iter__(&mut self, py: Python) -> PyResult<Py<PyIndexMetadataIter>> {
+        let inner = std::mem::take(&mut self.inner);
         let inner = inner
             .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
             .into_iter();
 
         let iter = PyIndexMetadataIter { inner };
-        Py::new(slf.py(), iter)
+        Py::new(py, iter)
     }
 }
 
@@ -162,7 +162,7 @@ impl PyIndexMetadataIter {
         slf
     }
 
-    fn __next__(mut slf: PyRefMut<Self>) -> Option<(u32, Metadata)> {
-        slf.inner.next()
+    fn __next__(&mut self) -> Option<(u32, Metadata)> {
+        self.inner.next()
     }
 }

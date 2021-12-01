@@ -86,13 +86,13 @@ impl PyMapSquares {
         }
     }
 
-    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PyMapSquaresIter>> {
-        let inner = std::mem::take(&mut (*slf).mapsquares);
+    fn __iter__(&mut self, py: Python) -> PyResult<Py<PyMapSquaresIter>> {
+        let inner = std::mem::take(&mut self.mapsquares);
         let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
         let inner = inner.into_iter();
 
         let iter = PyMapSquaresIter { inner };
-        Py::new(slf.py(), iter)
+        Py::new(py, iter)
     }
 }
 
@@ -108,8 +108,8 @@ impl PyMapSquaresIter {
         slf
     }
 
-    fn __next__(mut slf: PyRefMut<Self>) -> Option<PyMapSquare> {
-        (*slf).inner.next().map(|sq| PyMapSquare { inner: sq })
+    fn __next__(&mut self) -> Option<PyMapSquare> {
+        self.inner.next().map(|sq| PyMapSquare { inner: sq })
     }
 }
 

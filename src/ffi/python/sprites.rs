@@ -136,17 +136,17 @@ impl PySprites {
         Ok(PyIndexMetadata { inner: Some(meta) })
     }
 
-    fn __iter__(mut slf: PyRefMut<Self>) -> PyResult<Py<PySpritesIter>> {
-        let inner = std::mem::take(&mut (*slf).inner);
+    fn __iter__(&mut self, py: Python) -> PyResult<Py<PySpritesIter>> {
+        let inner = std::mem::take(&mut self.inner);
         let inner = inner
             .ok_or_else(|| PyReferenceError::new_err("PySprites is not available after using `iter()`"))?
             .into_iter();
 
         let iter = PySpritesIter {
-            constructor: slf.constructor.clone_ref(slf.py()),
+            constructor: self.constructor.clone_ref(py),
             inner,
         };
-        Py::new(slf.py(), iter)
+        Py::new(py, iter)
     }
 }
 
@@ -163,9 +163,9 @@ impl PySpritesIter {
         slf
     }
 
-    fn __next__(mut slf: PyRefMut<Self>) -> Option<PySprite> {
+    fn __next__(&mut self, py: Python) -> Option<PySprite> {
         // no archive currently expose can fail here once fully loaded
-        slf.inner.next().map(Result::unwrap).map(|mut archive| {
+        self.inner.next().map(Result::unwrap).map(|mut archive| {
             archive
                 .take_file(&0)
                 .and_then(sprites::deserialize)
@@ -177,7 +177,7 @@ impl PySpritesIter {
                             (
                                 id,
                                 PyFrame {
-                                    constructor: slf.constructor.clone_ref(slf.py()),
+                                    constructor: self.constructor.clone_ref(py),
                                     id,
                                     im,
                                 },
