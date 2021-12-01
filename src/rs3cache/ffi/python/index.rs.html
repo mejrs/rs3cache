@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;ffi&#x2F;python&#x2F;index.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>index.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../rs3cache/index.html'><div class='logo-container rust-logo'><img src='../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;ffi&#x2F;python&#x2F;index.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>index.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css"disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css"disabled><link rel="stylesheet" type="text/css" href="../../../../light.css"id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../rs3cache/index.html'><div class='logo-container rust-logo'><img src='../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -199,7 +200,7 @@
     <span class="doccomment">/// Constructor of [`PyCacheIndex`].</span>
     <span class="attribute">#[<span class="ident">new</span>]</span>
     <span class="attribute">#[<span class="ident">args</span>(<span class="ident">index_id</span>, <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;None&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">index_id</span>: <span class="ident">u32</span>, <span class="ident">path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">index_id</span>: <span class="ident">u32</span>, <span class="ident">path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">Config::env</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">path</span> {
             <span class="ident">config</span>.<span class="ident">input</span> <span class="op">=</span> <span class="ident">path</span>
@@ -213,7 +214,7 @@
     <span class="doccomment">/// Get a specific [`Archive`].</span>
     <span class="doccomment">/// # Exceptions</span>
     <span class="doccomment">/// Raises `ValueError` if the archive cannot be found.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">archive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">archive_id</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">archive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">archive_id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="self">self</span>
             .<span class="ident">inner</span>
             .<span class="ident">as_ref</span>()
@@ -222,7 +223,7 @@
     }
 
     <span class="doccomment">/// Returns the [`Metadata`] of all archives in `self`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadatas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">PyIndexMetadata</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadatas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">PyIndexMetadata</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">meta</span>: <span class="ident">IndexMetadata</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">inner</span>
             .<span class="ident">as_ref</span>()
@@ -233,7 +234,7 @@
         <span class="prelude-val">Ok</span>(<span class="ident">PyIndexMetadata</span> { <span class="ident">inner</span>: <span class="prelude-val">Some</span>(<span class="ident">meta</span>) })
     }
 
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(
             <span class="string">&quot;Index({})&quot;</span>,
             <span class="self">self</span>.<span class="ident">inner</span>
@@ -243,7 +244,7 @@
         ))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(
             <span class="string">&quot;Index({})&quot;</span>,
             <span class="self">self</span>.<span class="ident">inner</span>
@@ -253,8 +254,8 @@
         ))
     }
 
-    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyCacheIndexIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>);
+    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyCacheIndexIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">inner</span>);
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">inner</span>
             .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PyReferenceError::new_err</span>(<span class="string">&quot;CacheIndex is not available after using `iter()`&quot;</span>))<span class="question-mark">?</span>
             .<span class="ident">into_iter</span>();
@@ -272,11 +273,11 @@
 
 <span class="attribute">#[<span class="ident">pymethods</span>]</span>
 <span class="kw">impl</span> <span class="ident">PyCacheIndexIter</span> {
-    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="ident">slf</span>: <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="ident">slf</span>: <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) -&gt; <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="ident">slf</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
         <span class="comment">// no archive currently expose can fail here once fully loaded</span>
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
     }
@@ -289,7 +290,7 @@
 
 <span class="attribute">#[<span class="ident">pymethods</span>]</span>
 <span class="kw">impl</span> <span class="ident">PyIndexMetadata</span> {
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">inner</span>
             .<span class="ident">as_ref</span>()
@@ -298,7 +299,7 @@
         <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;IndexMetadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="ident">inner</span>).<span class="ident">unwrap</span>()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">inner</span>
             .<span class="ident">as_ref</span>()
@@ -307,8 +308,8 @@
         <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;IndexMetadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="ident">inner</span>).<span class="ident">unwrap</span>()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyIndexMetadataIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>);
+    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyIndexMetadataIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">inner</span>);
         <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">inner</span>
             .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PyReferenceError::new_err</span>(<span class="string">&quot;IndexMetadata is not available after using `iter()`&quot;</span>))<span class="question-mark">?</span>
             .<span class="ident">into_iter</span>();
@@ -326,15 +327,14 @@
 
 <span class="attribute">#[<span class="ident">pymethods</span>]</span>
 <span class="kw">impl</span> <span class="ident">PyIndexMetadataIter</span> {
-    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="ident">slf</span>: <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__iter__</span>(<span class="ident">slf</span>: <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) -&gt; <span class="ident">PyRef</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="ident">slf</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">Metadata</span>)<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">Metadata</span>)<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>()
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="rs3cache" data-search-index-js="../../../../search-index.js" data-search-js="../../../../search.js"></div>
-    <script src="../../../../main.js"></script><script src="../../../../source-script.js"></script><script src="../../../../source-files.js"></script>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0-nightly (db9d361a4 2021-11-28)" ></div>
 </body></html>

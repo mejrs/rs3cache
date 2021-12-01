@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;definitions&#x2F;worldmaps.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>worldmaps.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../rs3cache/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;definitions&#x2F;worldmaps.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>worldmaps.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css"disabled><link rel="stylesheet" type="text/css" href="../../../dark.css"disabled><link rel="stylesheet" type="text/css" href="../../../light.css"id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../rs3cache/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -414,7 +415,7 @@
 
 <span class="kw">impl</span> <span class="ident">MapZone</span> {
     <span class="doccomment">/// Returns a mapping of all [`MapZone`] configurations.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
             .<span class="ident">archive</span>(<span class="ident">WorldMapType::ZONES</span>)<span class="question-mark">?</span>
             .<span class="ident">take_files</span>()
@@ -423,20 +424,20 @@
             .<span class="ident">collect</span>())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">internal_name</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_string</span>();
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_string</span>();
         <span class="kw">let</span> <span class="ident">center</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
         <span class="kw">let</span> <span class="ident">show</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-            <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-            <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-            <span class="ident">other</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unimplemented!</span>(<span class="string">&quot;Cannot convert value {} for &#39;show&#39; to boolean&quot;</span>, <span class="ident">other</span>),
+            <span class="number">0</span> =&gt; <span class="bool-val">false</span>,
+            <span class="number">1</span> =&gt; <span class="bool-val">true</span>,
+            <span class="ident">other</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Cannot convert value {} for &#39;show&#39; to boolean&quot;</span>, <span class="ident">other</span>),
         };
         <span class="kw">let</span> <span class="ident">default_zoom</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
         <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
         <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BoundDef::deserialize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BoundDef::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
 
         <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
 
@@ -454,42 +455,42 @@
     }
 
     <span class="doccomment">/// Get a reference to the map zone&#39;s internal name.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">internal_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">internal_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">internal_name</span>
     }
 
     <span class="doccomment">/// Get a reference to the map zone&#39;s internal name.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>
     }
 
     <span class="doccomment">/// Get the map zone&#39;s center coordinate.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">center</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Coordinate</span> {
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">center</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Coordinate</span> {
         <span class="self">self</span>.<span class="ident">center</span>
     }
 
     <span class="doccomment">/// Whether the mapzone is shown.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">show</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">show</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">show</span>
     }
 
     <span class="doccomment">/// Get a reference to the map zone&#39;s unknown 1.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown_1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown_1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
         <span class="self">self</span>.<span class="ident">unknown_1</span>
     }
 
     <span class="doccomment">/// The map zone&#39;s default zoom.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">default_zoom</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">default_zoom</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
         <span class="self">self</span>.<span class="ident">default_zoom</span>
     }
 
     <span class="doccomment">/// Get a reference to the map zone&#39;s unknown 2.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown_2</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown_2</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
         <span class="self">self</span>.<span class="ident">unknown_2</span>
     }
 
     <span class="doccomment">/// Get a reference to the map zone&#39;s bounds.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bounds</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">BoundDef</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bounds</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">BoundDef</span>] {
         <span class="self">self</span>.<span class="ident">bounds</span>.<span class="ident">as_slice</span>()
     }
 }
@@ -507,7 +508,7 @@
     }
 
     <span class="kw">impl</span> <span class="ident">BoundDef</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
             <span class="kw">let</span> <span class="ident">plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buffer</span>);
             <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buffer</span>);
@@ -525,7 +526,7 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Bound</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
             <span class="kw">let</span> <span class="ident">west</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
             <span class="kw">let</span> <span class="ident">south</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
             <span class="kw">let</span> <span class="ident">east</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
@@ -554,7 +555,7 @@
 
 <span class="kw">impl</span> <span class="ident">MapPastes</span> {
     <span class="doccomment">/// Returns a mapping of all [`MapPastes`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
             .<span class="ident">archive</span>(<span class="ident">WorldMapType::PASTES</span>)<span class="question-mark">?</span>
             .<span class="ident">take_files</span>()
@@ -564,15 +565,15 @@
     }
 
     <span class="doccomment">/// Constructor for [`MapPastes`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pastes</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
         <span class="kw">let</span> <span class="ident">square_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">square_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_square</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">square_count</span>);
+        <span class="kw">let</span> <span class="ident">square_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_square</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">square_count</span>);
         <span class="ident">pastes</span>.<span class="ident">extend</span>(<span class="ident">square_pastes</span>);
 
         <span class="kw">let</span> <span class="ident">chunk_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">chunk_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_chunk</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">chunk_count</span>);
+        <span class="kw">let</span> <span class="ident">chunk_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_chunk</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">chunk_count</span>);
         <span class="ident">pastes</span>.<span class="ident">extend</span>(<span class="ident">chunk_pastes</span>);
         <span class="kw">let</span> <span class="ident">dim_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
         <span class="kw">let</span> <span class="ident">dim_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
@@ -603,7 +604,7 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Paste</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_square</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_square</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
             <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
@@ -628,7 +629,7 @@
             }
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_chunk</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_chunk</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
             <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
@@ -663,7 +664,7 @@
     }
 
     <span class="kw">impl</span> <span class="ident">Chunk</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
             <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
             <span class="self">Self</span> { <span class="ident">x</span>, <span class="ident">y</span> }
@@ -673,7 +674,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mappaste_fields_impl</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Exports all world map pastes to `out/map_pastes.json`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_pastes</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_pastes</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
     <span class="comment">// btreemap has deterministic order</span>
     <span class="kw">let</span> <span class="ident">map_pastes</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">MapPastes</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">MapPastes::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>();
@@ -685,7 +686,7 @@
 }
 
 <span class="doccomment">/// Exports all world map zones to `out/map_zones.json`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_zones</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_zones</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map_zones</span> <span class="op">=</span> <span class="ident">MapZone::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
@@ -698,7 +699,7 @@
 }
 
 <span class="doccomment">/// Exports small images of world maps to `out/world_map_small`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_small</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_small</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="ident">fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_small&quot;</span>))<span class="question-mark">?</span>;
 
     <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
@@ -714,7 +715,7 @@
 }
 
 <span class="doccomment">/// Exports big images of world maps to `out/world_map_big`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_big</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_big</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="ident">fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_big&quot;</span>))<span class="question-mark">?</span>;
 
     <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
@@ -733,6 +734,5 @@
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0-nightly (db9d361a4 2021-11-28)" ></div>
 </body></html>
