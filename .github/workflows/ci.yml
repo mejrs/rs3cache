@@ -33,6 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
       - run: cargo test --features=rs3,mockdata
       - run: cargo test --features=osrs,mockdata
   maturin:
