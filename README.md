@@ -57,7 +57,7 @@ OPTIONS:
    ```text
    git clone https://github.com/mejrs/rs3cache
    ```
-- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
+- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.7 or newer.
     - Check that pip is installed (`python -m pip --version`).
     - Install maturin: `pip install maturin`.
 - [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
@@ -80,7 +80,7 @@ The following instructions are only tested on **windows**. If you run into issue
    ```text
    git clone https://github.com/mejrs/rs3cache
    ```
-- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
+- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.7 or newer..
     - Check that pip is installed (`python -m pip --version`).
     - Install setuptools: `pip install setuptools`.
     - Install setuptools-rust: `pip install setuptools-rust`.
