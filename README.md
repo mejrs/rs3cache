@@ -51,24 +51,6 @@ OPTIONS:
 
 ## Building as a Python library.
 
-### Using `setuptools-rust`
-
-The following instructions are only tested on **windows**. If you run into issues on other platforms, try following [here](https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux "setuptools-rust") or build with [maturin](https://pypi.org/project/maturin/ "maturin") instead.
-
-- Clone the repository:
-   ```text
-   git clone https://github.com/mejrs/rs3cache
-   ```
-- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
-    - Check that pip is installed (`python -m pip --version`).
-    - Install setuptools: `pip install setuptools`.
-    - Install setuptools-rust: `pip install setuptools-rust`.
-- [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
-- Navigate to the `/rs3_py` folder and build a Python wheel with 
-    ```text
-    python setup.py install
-    ```
-
 ### Using `maturin`
 
 - Clone the repository:
@@ -88,4 +70,24 @@ The following instructions are only tested on **windows**. If you run into issue
     pip install <path to wheel>
     ```
 
-- For examples, see `rs3cache/examples.py`.
+- For examples, see `rs3cache/examples`.
+
+### Using `setuptools-rust`
+
+The following instructions are only tested on **windows**. If you run into issues on other platforms, try following [here](https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux "setuptools-rust") or build with [maturin](https://pypi.org/project/maturin/ "maturin") instead.
+
+- Clone the repository:
+   ```text
+   git clone https://github.com/mejrs/rs3cache
+   ```
+- Install [Python](https://www.python.org/downloads/ "Download Python"), version 3.9 (lower versions may work).
+    - Check that pip is installed (`python -m pip --version`).
+    - Install setuptools: `pip install setuptools`.
+    - Install setuptools-rust: `pip install setuptools-rust`.
+- [Install the Rust compiler](https://doc.rust-lang.org/stable/book/ch01-01-installation.html "Installation - The Rust Programming Language").
+- Navigate to the `/rs3_py` folder and build a Python wheel with 
+    ```text
+    python setup.py install
+    ```
+
+- For examples, see `rs3cache/examples`.
