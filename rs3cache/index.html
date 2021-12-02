@@ -41,21 +41,7 @@ OPTIONS:
             Allowed values: [all, map]
 
             This exports them as small tiles, formatted as `&lt;layer&gt;/&lt;mapid&gt;/&lt;zoom&gt;/&lt;plane&gt;_&lt;x&gt;_&lt;y&gt;.png`, suitable for
-            use with interactive map libraries such as https://leafletjs.com/, as seen on https://mejrs.github.io/</code></pre></div><h3 id="building-as-a-python-library" class="section-header"><a href="#building-as-a-python-library">Building as a Python library.</a></h3><h4 id="using-setuptools-rust" class="section-header"><a href="#using-setuptools-rust">Using <code>setuptools-rust</code></a></h4>
-<p>The following instructions are only tested on <strong>windows</strong>. If you run into issues on other platforms, try following <a href="https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux" title="setuptools-rust">here</a> or build with <a href="https://pypi.org/project/maturin/" title="maturin">maturin</a> instead.</p>
-<ul>
-<li>Clone the repository:<div class="example-wrap"><pre class="language-text"><code>git clone https://github.com/mejrs/rs3cache</code></pre></div></li>
-<li>Install <a href="https://www.python.org/downloads/" title="Download Python">Python</a>, version 3.9 (lower versions may work).
-<ul>
-<li>Check that pip is installed (<code>python -m pip --version</code>).</li>
-<li>Install setuptools: <code>pip install setuptools</code>.</li>
-<li>Install setuptools-rust: <code>pip install setuptools-rust</code>.</li>
-</ul>
-</li>
-<li><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</li>
-<li>Navigate to the <code>/rs3_py</code> folder and build a Python wheel with <div class="example-wrap"><pre class="language-text"><code>python setup.py install</code></pre></div></li>
-</ul>
-<h4 id="using-maturin" class="section-header"><a href="#using-maturin">Using <code>maturin</code></a></h4>
+            use with interactive map libraries such as https://leafletjs.com/, as seen on https://mejrs.github.io/</code></pre></div><h3 id="building-as-a-python-library" class="section-header"><a href="#building-as-a-python-library">Building as a Python library.</a></h3><h4 id="using-maturin" class="section-header"><a href="#using-maturin">Using <code>maturin</code></a></h4>
 <ul>
 <li>
 <p>Clone the repository:</p>
@@ -77,7 +63,31 @@ OPTIONS:
 <p>Using the wheel from above, run</p>
 <div class="example-wrap"><pre class="language-text"><code>pip install &lt;path to wheel&gt;</code></pre></div></li>
 <li>
-<p>For examples, see <code>rs3cache/examples.py</code>.</p>
+<p>For examples, see <code>rs3cache/examples</code>.</p>
+</li>
+</ul>
+<h4 id="using-setuptools-rust" class="section-header"><a href="#using-setuptools-rust">Using <code>setuptools-rust</code></a></h4>
+<p>The following instructions are only tested on <strong>windows</strong>. If you run into issues on other platforms, try following <a href="https://github.com/PyO3/setuptools-rust#binary-wheels-on-linux" title="setuptools-rust">here</a> or build with <a href="https://pypi.org/project/maturin/" title="maturin">maturin</a> instead.</p>
+<ul>
+<li>
+<p>Clone the repository:</p>
+<div class="example-wrap"><pre class="language-text"><code>git clone https://github.com/mejrs/rs3cache</code></pre></div></li>
+<li>
+<p>Install <a href="https://www.python.org/downloads/" title="Download Python">Python</a>, version 3.9 (lower versions may work).</p>
+<ul>
+<li>Check that pip is installed (<code>python -m pip --version</code>).</li>
+<li>Install setuptools: <code>pip install setuptools</code>.</li>
+<li>Install setuptools-rust: <code>pip install setuptools-rust</code>.</li>
+</ul>
+</li>
+<li>
+<p><a href="https://doc.rust-lang.org/stable/book/ch01-01-installation.html" title="Installation - The Rust Programming Language">Install the Rust compiler</a>.</p>
+</li>
+<li>
+<p>Navigate to the <code>/rs3_py</code> folder and build a Python wheel with </p>
+<div class="example-wrap"><pre class="language-text"><code>python setup.py install</code></pre></div></li>
+<li>
+<p>For examples, see <code>rs3cache/examples</code>.</p>
 </li>
 </ul>
 </div></details><h2 id="reexports" class="section-header"><a href="#reexports">Re-exports</a></h2>
