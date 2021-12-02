@@ -81,11 +81,11 @@ mod tests {
             key: [-729586325, 659151050, 316388445, -2117896833],
         };
 
-        let input = std::fs::read("tests/xtea/encrypted.dat").unwrap();
+        let input = std::fs::read("test_data/xtea/encrypted.dat").unwrap();
 
         let output = Xtea::decrypt(input, xtea);
 
-        let should_be_output = std::fs::read("tests/xtea/decrypted.dat").unwrap();
+        let should_be_output = std::fs::read("test_data/xtea/decrypted.dat").unwrap();
 
         itertools::izip!(&output, &should_be_output).enumerate().for_each(|(count, (a, b))| {
             assert_eq!(a, b, "Mismatch at position {}.", count);

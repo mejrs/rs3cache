@@ -2,8 +2,8 @@
 *.jcache
 *.JCACHE
 /out
-/tests/tiles
-/tests/sprites
+/test_data/tiles
+/test_data/sprites
 *.egg-info
 __pycache__
 *.pyd

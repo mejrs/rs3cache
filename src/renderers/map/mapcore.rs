@@ -157,7 +157,7 @@ pub fn render_tile(
 
     #[cfg(test)]
     {
-        let filename = format!("tests/tiles/{}_{}_{}.png", 0, squares.core_i(), squares.core_j());
+        let filename = format!("test_data/tiles/{}_{}_{}.png", 0, squares.core_i(), squares.core_j());
         imgs[0].save(filename).unwrap();
     }
 
@@ -276,7 +276,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
 #[cfg(feature = "rs3")]
 pub fn render_bench() -> CacheResult<()> {
     let config = crate::cli::Config::default();
-    let path = "tests/tiles";
+    let path = "test_data/tiles";
     fs::create_dir_all(path)?;
     let coordinates: Vec<(u8, u8)> = iproduct!(45..55, 45..55).collect();
 
@@ -295,7 +295,7 @@ mod map_tests {
     fn render_some() -> CacheResult<()> {
         let config = crate::cli::Config::default();
 
-        let path = "tests/tiles";
+        let path = "test_data/tiles";
         fs::create_dir_all(path)?;
         let coordinates: Vec<(u8, u8)> = vec![(50, 50), (41, 63), (47, 50), (56, 49), (34, 66), (33, 72), (49, 108), (43, 46)];
 

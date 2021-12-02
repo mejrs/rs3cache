@@ -217,12 +217,12 @@ mod sprite_tests {
             Ok(images.remove(&(frame as usize)).unwrap())
         }
 
-        std::fs::create_dir_all("tests/sprites/method_0".to_string())?;
+        std::fs::create_dir_all("test_data/sprites/method_0".to_string())?;
 
         for id in vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 3034] {
             let frame = 0;
             let sprite = dump(id, frame)?;
-            let filename = format!("tests/sprites/method_0/{}-{}.png", id, frame);
+            let filename = format!("test_data/sprites/method_0/{}-{}.png", id, frame);
             sprite.save(filename).expect("Error saving image");
         }
         Ok(())

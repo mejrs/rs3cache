@@ -225,7 +225,7 @@ impl Config {
     #[cfg(all(feature = "osrs", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: PathBuf::from("tests/osrs_cache"),
+            input: PathBuf::from("test_data/osrs_cache"),
             ..Default::default()
         }
     }

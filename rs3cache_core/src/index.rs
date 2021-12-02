@@ -161,8 +161,8 @@ where
 
         #[cfg(feature = "save_mockdata")]
         {
-            std::fs::create_dir_all("tests/mockdata".to_string()).unwrap();
-            let filename = format!("tests/mockdata/cache_index_{}", index_id);
+            std::fs::create_dir_all("test_data/mockdata".to_string()).unwrap();
+            let filename = format!("test_data/mockdata/cache_index_{}", index_id);
             let mut file = File::create(&filename).unwrap();
             file.write_all(&encoded_data).unwrap();
         }
@@ -172,7 +172,7 @@ where
     /// Grabs mock data from disk.
     #[cfg(feature = "mockdata")]
     fn get_raw_metadata(index_id: u32) -> CacheResult<Bytes> {
-        let filename = format!("tests/mockdata/cache_index_{}", index_id);
+        let filename = format!("test_data/mockdata/cache_index_{}", index_id);
 
         let mut file = File::open(&filename)?;
         let mut encoded_data = Vec::new();
@@ -222,8 +222,8 @@ where
 
         #[cfg(feature = "save_mockdata")]
         {
-            std::fs::create_dir_all("tests/mockdata".to_string()).unwrap();
-            let filename = format!("tests/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
+            std::fs::create_dir_all("test_data/mockdata".to_string()).unwrap();
+            let filename = format!("test_data/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
             let mut file = File::create(&filename).unwrap();
             file.write_all(&encoded_data).unwrap()
         }
@@ -232,7 +232,7 @@ where
     /// Grabs mock data from disk.
     #[cfg(feature = "mockdata")]
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let filename = format!("tests/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
+        let filename = format!("test_data/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
         let encoded_data = fs::read(&filename)?;
         Ok(decoder::decompress(encoded_data, metadata.size())?)
     }
