@@ -713,8 +713,8 @@
 
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;save_mockdata&quot;</span>)]</span>
         {
-            <span class="ident">std::fs::create_dir_all</span>(<span class="string">&quot;tests/mockdata&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;tests/mockdata/cache_index_{}&quot;</span>, <span class="ident">index_id</span>);
+            <span class="ident">std::fs::create_dir_all</span>(<span class="string">&quot;test_data/mockdata&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;test_data/mockdata/cache_index_{}&quot;</span>, <span class="ident">index_id</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>).<span class="ident">unwrap</span>();
             <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">encoded_data</span>).<span class="ident">unwrap</span>();
         }
@@ -724,7 +724,7 @@
     <span class="doccomment">/// Grabs mock data from disk.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mockdata&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">get_raw_metadata</span>(<span class="ident">index_id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;tests/mockdata/cache_index_{}&quot;</span>, <span class="ident">index_id</span>);
+        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;test_data/mockdata/cache_index_{}&quot;</span>, <span class="ident">index_id</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded_data</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
@@ -774,8 +774,8 @@
 
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;save_mockdata&quot;</span>)]</span>
         {
-            <span class="ident">std::fs::create_dir_all</span>(<span class="string">&quot;tests/mockdata&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;tests/mockdata/index_{}_archive_{}&quot;</span>, <span class="self">self</span>.<span class="ident">index_id</span>(), <span class="ident">metadata</span>.<span class="ident">archive_id</span>());
+            <span class="ident">std::fs::create_dir_all</span>(<span class="string">&quot;test_data/mockdata&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;test_data/mockdata/index_{}_archive_{}&quot;</span>, <span class="self">self</span>.<span class="ident">index_id</span>(), <span class="ident">metadata</span>.<span class="ident">archive_id</span>());
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>).<span class="ident">unwrap</span>();
             <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">encoded_data</span>).<span class="ident">unwrap</span>()
         }
@@ -784,7 +784,7 @@
     <span class="doccomment">/// Grabs mock data from disk.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mockdata&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;tests/mockdata/index_{}_archive_{}&quot;</span>, <span class="self">self</span>.<span class="ident">index_id</span>(), <span class="ident">metadata</span>.<span class="ident">archive_id</span>());
+        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;test_data/mockdata/index_{}_archive_{}&quot;</span>, <span class="self">self</span>.<span class="ident">index_id</span>(), <span class="ident">metadata</span>.<span class="ident">archive_id</span>());
         <span class="kw">let</span> <span class="ident">encoded_data</span> <span class="op">=</span> <span class="ident">fs::read</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">decoder::decompress</span>(<span class="ident">encoded_data</span>, <span class="ident">metadata</span>.<span class="ident">size</span>())<span class="question-mark">?</span>)
     }
