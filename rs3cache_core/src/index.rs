@@ -6,7 +6,7 @@ use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
     fs::{self, File},
-    io::{Cursor, Read, Seek, SeekFrom, Write},
+    io::{self, Cursor, Read, Seek, SeekFrom, Write},
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
@@ -417,13 +417,30 @@ impl CacheIndex<Initial> {
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
     pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(folder / "cache" / "main_file_cache.dat2");
+        let file =  path!(folder / "cache" / "main_file_cache.dat2");
 
         let file = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?.into_boxed_slice();
-        let xteas = if index_id == 5 {
+        let xteas = if index_id == IndexType::MAPSV2 {
             let path = path!(folder / "xteas.json");
 
-            Some(Xtea::load(path)?)
+            // Try to laod either xteas.json or keys.json
+            match Xtea::load(&path) {
+                Ok(file) => Some(file),
+                Err(CacheError::IoError(e1)) if e1.kind() == io::ErrorKind::NotFound => {
+                    let alt_path = path!(folder / "keys.json");
+                    Some(Xtea::load(&alt_path).map_err(|e2| {
+                        let path = path.to_string_lossy();
+                        let alt_path = alt_path.to_string_lossy();
+                        let e1 = e1.to_string();
+                        let e2 = e2.to_string();
+                        io::Error::new(
+                            io::ErrorKind::NotFound,
+                            f!("Cannot to find xtea keys at either {path} or {alt_path}: {e1} \n {e2}"),
+                        )
+                    })?)
+                }
+                Err(other) => return Err(other),
+            }
         } else {
             None
         };
