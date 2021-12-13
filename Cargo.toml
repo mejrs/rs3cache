@@ -3,7 +3,7 @@ name = "rs3cache"
 version = "0.1.0"
 authors = ["mejrs"]
 edition = "2021"
-default-run = "rs3cache"
+default-run = "osrscache"
 
 [workspace]
 members = ["rs3cache_core", "rs3cache_macros", "rs3cache_utils", "rs3_py", "osrs_py"]
@@ -56,5 +56,5 @@ save_mockdata = ["rs3cache_core/save_mockdata"]
 fast = []
 rs3 = ["rs3cache_core/rs3", "filetime"]
 osrs = ["rs3cache_core/osrs"]
-377 = []
+old_shim = ["rs3cache_core/old_shim"]
 

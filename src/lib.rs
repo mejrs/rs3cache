@@ -22,22 +22,22 @@
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
 
-#[cfg(not(any(feature = "rs3", feature = "osrs", feature = "377")))]
-compile_error!("You must use one and only one of the rs3, osrs or 377 feature flags");
+#[cfg(not(any(feature = "rs3", feature = "osrs")))]
+compile_error!("You must use one and only one of the rs3 or osrs");
 
 #[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
 compile_error!("mockdata and save_mockdata are incompatible");
 
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(any(feature = "rs3", feature = "osrs"))]
 pub mod cli;
 
 /// Tools for decoding the cache itself.
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(any(feature = "rs3", feature = "osrs"))]
 pub use rs3cache_core as cache;
 use rs3cache_utils as utils;
 
 /// Various data types
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(any(feature = "rs3", feature = "osrs"))]
 pub mod types {
     pub mod coordinate;
     /// Player variables
@@ -45,7 +45,7 @@ pub mod types {
 }
 
 /// Entities that can be deserialized from cache data.
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(any(feature = "rs3", feature = "osrs"))]
 pub mod definitions {
     /// Configurations of Achievements
     #[cfg(feature = "rs3")]
@@ -111,14 +111,14 @@ pub mod renderers {
 }
 
 /// Contains structures that are used in multiple different configs.
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(any(feature = "rs3", feature = "osrs"))]
 pub mod structures {
     /// A mapping of keys to properties.
     pub mod paramtable;
 }
 
 /// Foreign function interfaces to `rs3cache`.
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "377"))]
+#[cfg(any(feature = "rs3", feature = "osrs"))]
 pub mod ffi {
     pub mod python;
 }

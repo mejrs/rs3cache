@@ -2,6 +2,11 @@
 
 #![allow(unused_imports)] // varies based on mock config flags
 
+/// This contains the game-specific implementations.
+#[cfg_attr(feature = "rs3", path = "index/rs3.rs")]
+#[cfg_attr(feature = "osrs", path = "index/osrs.rs")]
+mod index_impl;
+
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
@@ -14,6 +19,7 @@ use std::{
 
 use bytes::{Buf, Bytes};
 use fstrings::{f, format_args_f};
+pub use index_impl::*;
 use itertools::iproduct;
 use path_macro::path;
 
@@ -44,8 +50,7 @@ mod states {
     impl IndexState for Truncated {}
 }
 
-pub use states::Initial;
-use states::{IndexState, Truncated};
+pub use states::{IndexState, Initial, Truncated};
 
 /// Container of [`Archive`]s.
 pub struct CacheIndex<S: IndexState> {
@@ -143,335 +148,6 @@ impl CacheIndex<Initial> {
     }
 }
 
-#[cfg(feature = "rs3")]
-impl<S> CacheIndex<S>
-where
-    S: IndexState,
-{
-    /// Loads the [`Metadata`] of `self`.
-    #[allow(unused_variables)]
-    #[cfg(not(feature = "mockdata"))]
-    fn get_raw_metadata(index_id: u32, connection: &sqlite::Connection) -> CacheResult<Bytes> {
-        let encoded_data = {
-            let query = "SELECT DATA FROM cache_index";
-            let mut statement = connection.prepare(query)?;
-            statement.next()?;
-            statement.read::<Vec<u8>>(0)?
-        };
-
-        #[cfg(feature = "save_mockdata")]
-        {
-            std::fs::create_dir_all("test_data/mockdata".to_string()).unwrap();
-            let filename = format!("test_data/mockdata/cache_index_{}", index_id);
-            let mut file = File::create(&filename).unwrap();
-            file.write_all(&encoded_data).unwrap();
-        }
-        Ok(decoder::decompress(encoded_data, None)?)
-    }
-
-    /// Grabs mock data from disk.
-    #[cfg(feature = "mockdata")]
-    fn get_raw_metadata(index_id: u32) -> CacheResult<Bytes> {
-        let filename = format!("test_data/mockdata/cache_index_{}", index_id);
-
-        let mut file = File::open(&filename)?;
-        let mut encoded_data = Vec::new();
-        file.read_to_end(&mut encoded_data)?;
-
-        Ok(decoder::decompress(encoded_data, None)?)
-    }
-
-    /// Executes a sql command to retrieve an archive from the cache.
-    #[cfg(not(feature = "mockdata"))]
-    fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let encoded_data = {
-            let query = format!("SELECT DATA, CRC, VERSION FROM cache WHERE KEY={}", metadata.archive_id());
-
-            let mut statement = self.connection.prepare(&query)?;
-            statement.next()?;
-            let crc = statement.read::<i64>(1)?;
-            let version = statement.read::<i64>(2)?;
-
-            // wut
-            let crc_offset = match self.index_id() {
-                IndexType::SPRITES => 2_i64,
-                IndexType::MODELSRT7 => 2_i64,
-                _ => 1_i64,
-            };
-
-            if crc == 0 && version == 0 {
-                Err(CacheError::ArchiveNotFoundError(metadata.index_id(), metadata.archive_id()))
-            } else if metadata.crc() as i64 + crc_offset != crc {
-                Err(CacheError::CrcError(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.crc() as i64 + crc_offset,
-                    crc,
-                ))
-            } else if metadata.version() as i64 != version {
-                Err(CacheError::VersionError(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.version() as i64,
-                    version,
-                ))
-            } else {
-                Ok(statement.read::<Vec<u8>>(0)?)
-            }
-        }?;
-
-        #[cfg(feature = "save_mockdata")]
-        {
-            std::fs::create_dir_all("test_data/mockdata".to_string()).unwrap();
-            let filename = format!("test_data/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
-            let mut file = File::create(&filename).unwrap();
-            file.write_all(&encoded_data).unwrap()
-        }
-        Ok(decoder::decompress(encoded_data, metadata.size())?)
-    }
-    /// Grabs mock data from disk.
-    #[cfg(feature = "mockdata")]
-    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let filename = format!("test_data/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
-        let encoded_data = fs::read(&filename)?;
-        Ok(decoder::decompress(encoded_data, metadata.size())?)
-    }
-
-    /// Assert whether the cache held by `self` is in a coherent state.
-    ///
-    /// # Errors
-    ///
-    /// May raise [`CrcError`](CacheError::CrcError), [`VersionError`](CacheError::VersionError) or [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError)
-    /// if the cache is not in a logical state.
-    ///
-    /// # Notes
-    /// Indices `VORBIS`, `AUDIOSTREAMS`, `TEXTURES_PNG_MIPPED` and `TEXTURES_ETC` tend to never complete.
-    /// For these, simply ignore [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError).
-    #[cfg(not(any(feature = "mockdata", feature = "save_mockdata")))]
-    pub fn assert_coherence(&self) -> CacheResult<()> {
-        for (archive_id, metadata) in self.metadatas().iter() {
-            let query = format!("SELECT CRC, VERSION FROM cache WHERE KEY={}", archive_id);
-
-            let mut statement = self.connection.prepare(&query)?;
-            statement.next()?;
-            let crc = statement.read::<i64>(0)?;
-            let version = statement.read::<i64>(1)?;
-
-            // wut
-            let crc_offset = match self.index_id() {
-                IndexType::SPRITES => 2_i64,
-                IndexType::MODELSRT7 => 2_i64,
-                _ => 1_i64,
-            };
-            if crc == 0 && version == 0 {
-                return Err(CacheError::ArchiveNotFoundError(metadata.index_id(), metadata.archive_id()));
-            } else if metadata.crc() as i64 + crc_offset != crc {
-                return Err(CacheError::CrcError(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.crc() as i64 + crc_offset,
-                    crc,
-                ));
-            } else if metadata.version() as i64 != version {
-                return Err(CacheError::VersionError(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.version() as i64,
-                    version,
-                ));
-            }
-        }
-        Ok(())
-    }
-}
-
-#[cfg(feature = "rs3")]
-impl CacheIndex<Initial> {
-    /// Constructor for [`CacheIndex`].
-    ///
-    /// # Errors
-    ///
-    /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    #[cfg(not(feature = "mockdata"))]
-    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(folder / f!("js5-{index_id}.jcache"));
-
-        // check if database exists (without creating blank sqlite databases)
-        match fs::metadata(&file) {
-            Ok(_) => {
-                let connection = sqlite::open(file)?;
-                let raw_metadata: Bytes = Self::get_raw_metadata(index_id, &connection)?;
-                let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
-
-                Ok(Self {
-                    index_id,
-                    metadatas,
-                    connection,
-                    path: folder.as_ref().to_path_buf(),
-                    state: Initial {},
-                })
-            }
-            //_ => panic!(),
-            Err(e) => Err(CacheError::CacheNotFoundError(e, file)),
-        }
-    }
-
-    /// Mock constructor for `CacheIndex`.
-    #[cfg(feature = "mockdata")]
-    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<Self> {
-        let raw_metadata = Self::get_raw_metadata(index_id)?;
-        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
-
-        Ok(CacheIndex {
-            index_id,
-            path: folder.as_ref().to_path_buf(),
-            connection: PhantomData,
-            metadatas,
-            state: Initial {},
-        })
-    }
-}
-
-#[cfg(feature = "osrs")]
-impl<S> CacheIndex<S>
-where
-    S: IndexState,
-{
-    fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
-        let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
-        let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
-        let mut buf = Cursor::new(entry_data);
-        buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
-        Ok((buf.get_uint(3) as u32, buf.get_uint(3) as u32))
-    }
-
-    fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {
-        let mut buffer = Cursor::new(&self.file);
-
-        let (length, mut sector) = Self::get_entry(a, b, &self.path)?;
-
-        let mut read_count = 0;
-        let mut part = 0;
-        let mut data = Vec::with_capacity(length as _);
-
-        while sector != 0 {
-            buffer.seek(SeekFrom::Start((sector * 520) as _))?;
-            let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
-                (10, buffer.get_i32(), 510.min(length - read_count))
-            } else {
-                (8, buffer.get_u16() as _, 512.min(length - read_count))
-            };
-
-            let current_part = buffer.get_u16();
-            let new_sector = buffer.get_uint(3) as u32;
-            let current_index = buffer.get_u8();
-
-            assert_eq!(a, current_index as u32);
-            assert_eq!(b, current_archive as u32);
-            assert_eq!(part, current_part as u32);
-
-            part += 1;
-            read_count += block_size;
-            sector = new_sector;
-
-            data.extend(buffer.copy_to_bytes(block_size as _));
-        }
-        Ok(data)
-    }
-
-    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        Ok(decoder::decompress(data, None, None)?)
-    }
-
-    pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>> {
-        &self.xteas
-    }
-
-    pub fn archive_with_xtea(&self, archive_id: u32, xtea: Option<Xtea>) -> CacheResult<Archive> {
-        let metadata = self
-            .metadatas()
-            .get(&archive_id)
-            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
-        let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        let data = decoder::decompress(data, None, xtea)?;
-        Ok(Archive::deserialize(metadata, data))
-    }
-
-    pub fn archive_by_name(&self, name: String) -> CacheResult<Bytes> {
-        let hash = crate::hash::hash_djb2(&name);
-        for (_, m) in self.metadatas.iter() {
-            if m.name() == Some(hash) {
-                return self.get_file(m);
-            }
-        }
-        Err(CacheError::ArchiveNotFoundError(0, 0))
-    }
-}
-
-#[cfg(feature = "osrs")]
-impl CacheIndex<Initial> {
-    /// Constructor for [`CacheIndex`].
-    ///
-    /// # Errors
-    ///
-    /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file =  path!(folder / "cache" / "main_file_cache.dat2");
-
-        let file = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?.into_boxed_slice();
-        let xteas = if index_id == IndexType::MAPSV2 {
-            let path = path!(folder / "xteas.json");
-
-            // Try to laod either xteas.json or keys.json
-            match Xtea::load(&path) {
-                Ok(file) => Some(file),
-                Err(CacheError::IoError(e1)) if e1.kind() == io::ErrorKind::NotFound => {
-                    let alt_path = path!(folder / "keys.json");
-                    Some(Xtea::load(&alt_path).map_err(|e2| {
-                        let path = path.to_string_lossy();
-                        let alt_path = alt_path.to_string_lossy();
-                        let e1 = e1.to_string();
-                        let e2 = e2.to_string();
-                        io::Error::new(
-                            io::ErrorKind::NotFound,
-                            f!("Cannot to find xtea keys at either {path} or {alt_path}: {e1} \n {e2}"),
-                        )
-                    })?)
-                }
-                Err(other) => return Err(other),
-            }
-        } else {
-            None
-        };
-
-        // `s` is in a partially initialized state here
-        let mut s = Self {
-            path: folder.as_ref().to_path_buf(),
-            index_id,
-            metadatas: IndexMetadata::empty(),
-            #[cfg(feature = "rs3")]
-            connection,
-            #[cfg(feature = "osrs")]
-            file,
-            #[cfg(feature = "osrs")]
-            xteas,
-            state: Initial {},
-        };
-
-        let metadatas = {
-            let data = s.read_index(255, index_id)?;
-            let data = decoder::decompress(data, None, None)?;
-            IndexMetadata::deserialize(index_id, data)?
-        };
-
-        s.metadatas = metadatas;
-        // `s` is now fully initialized
-
-        Ok(s)
-    }
-}
-
 impl IntoIterator for CacheIndex<Initial> {
     type Item = CacheResult<Archive>;
 
@@ -547,22 +223,4 @@ impl Iterator for IntoIter {
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.feed.size_hint()
     }
-}
-
-/// Asserts whether all indices' metadata match their contents.
-/// Indices 14, 40, 54, 55 are not necessarily complete.
-///
-/// Exposed as `--assert coherence`.
-///
-/// # Panics
-/// Panics if compiled with feature `mockdata`.
-#[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
-pub fn assert_coherence(folder: impl AsRef<Path>) -> CacheResult<()> {
-    for index_id in IndexType::iterator() {
-        match CacheIndex::new(index_id, &folder)?.assert_coherence() {
-            Ok(_) => println!("Index {} is coherent!", index_id),
-            Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
-        }
-    }
-    Ok(())
 }
