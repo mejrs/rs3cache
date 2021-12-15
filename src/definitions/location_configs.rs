@@ -10,7 +10,7 @@ use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-#[cfg(feature = "osrs")]
+#[cfg(any(feature = "osrs", feature = "legacy"))]
 use rs3cache_core::indextype::ConfigType;
 use rs3cache_core::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};
 use serde::Serialize;
@@ -168,6 +168,14 @@ impl LocationConfig {
             .collect())
     }
 
+    #[cfg(feature = "legacy")]
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        CacheIndex::new(0, &config.input)?;
+
+        todo!()
+
+    }
+
     fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut loc = Self { id, ..Default::default() };
 
@@ -296,6 +304,13 @@ pub mod location_config_fields {
         cache::buf::BufExtra,
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
+
+    #[cfg(feature = "rs3")]
+    type IdType = u32;
+
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
+    type IdType = u16;
+
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
     #[cfg_eval]
     #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
@@ -304,14 +319,7 @@ pub mod location_config_fields {
     pub struct LocationMorphTable {
         #[serde(flatten)]
         pub var: VarpOrVarbit,
-
-        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
-        #[cfg(feature = "rs3")]
-        pub ids: Vec<Option<u32>>,
-
-        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
-        #[cfg(feature = "osrs")]
-        pub ids: Vec<Option<u16>>,
+        pub ids: Vec<Option<IdType>>,
     }
 
     impl LocationMorphTable {
@@ -329,7 +337,7 @@ pub mod location_config_fields {
             Self { var, ids }
         }
 
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub fn deserialize(buffer: &mut Bytes) -> Self {
             let varbit = Varbit::new(buffer.get_u16());
             let varp = Varp::new(buffer.get_u16());
@@ -359,20 +367,11 @@ pub mod location_config_fields {
         pub var: VarpOrVarbit,
 
         /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
-        #[cfg(feature = "rs3")]
-        pub ids: Vec<Option<u32>>,
+        pub ids: Vec<Option<IdType>>,
 
         /// This [`LocationConfig`](super::LocationConfig)'s default id.
-        #[cfg(feature = "rs3")]
-        pub default: Option<u32>,
+        pub default: Option<IdType>,
 
-        /// The possible ids this [`LocationConfig`](super::LocationConfig) can be.
-        #[cfg(feature = "osrs")]
-        pub ids: Vec<Option<u16>>,
-
-        /// This [`LocationConfig`](super::LocationConfig)'s default id.
-        #[cfg(feature = "osrs")]
-        pub default: Option<u16>,
     }
 
     impl ExtendedLocationMorphTable {
@@ -392,7 +391,7 @@ pub mod location_config_fields {
             Self { var, ids, default }
         }
 
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub fn deserialize(buffer: &mut Bytes) -> Self {
             let varbit = Varbit::new(buffer.get_u16());
             let varp = Varp::new(buffer.get_u16());
@@ -437,7 +436,7 @@ pub mod location_config_fields {
     pub struct Models {
         #[cfg(feature = "rs3")]
         pub models: BTreeMap<i8, Vec<Option<u32>>>,
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub models: Vec<(u8, u16)>,
     }
 
@@ -452,7 +451,7 @@ pub mod location_config_fields {
             Models { models }
         }
 
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub fn deserialize(buffer: &mut Bytes) -> Models {
             let count = buffer.get_u8() as usize;
 

@@ -10,7 +10,7 @@
 
 #[cfg_attr(feature = "rs3", path = "mapsquares/iter_rs3.rs")]
 #[cfg_attr(feature = "osrs", path = "mapsquares/iter_osrs.rs")]
-#[cfg_attr(feature = "377", path = "mapsquares/iter_377.rs")]
+#[cfg_attr(feature = "legacy", path = "mapsquares/iter_legacy.rs")]
 mod iterator;
 
 use std::{
@@ -184,67 +184,6 @@ pub struct MapSquares {
     mapping: std::collections::BTreeMap<(&'static str, u8, u8), u32>,
 }
 
-#[cfg(feature = "rs3")]
-impl MapSquares {
-    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
-        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
-
-        Ok(MapSquares { index })
-    }
-
-    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
-        let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = self.index.archive(archive_id).ok()?;
-
-        Some(MapSquare::from_archive(archive))
-    }
-}
-
-#[cfg(feature = "osrs")]
-impl MapSquares {
-    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
-        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
-        let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)), (i, j)))
-            .collect();
-        let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::TILES, i, j)), (i, j)))
-            .collect();
-        let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::ENVIRONMENT, i, j)), (i, j)))
-            .collect();
-
-        let mapping = index
-            .metadatas()
-            .iter()
-            .map(|(_, m)| {
-                let name_hash = m.name().unwrap();
-
-                if let Some((i, j)) = land_hashes.get(&name_hash) {
-                    (("l", *i, *j), m.archive_id())
-                } else if let Some((i, j)) = map_hashes.get(&name_hash) {
-                    (("m", *i, *j), m.archive_id())
-                } else if let Some((i, j)) = env_hashes.get(&name_hash) {
-                    (("e", *i, *j), m.archive_id())
-                } else {
-                    unreachable!()
-                }
-            })
-            .collect();
-
-        Ok(MapSquares { index, mapping })
-    }
-
-    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
-        let land = self.mapping.get(&("l", i, j))?;
-        let map = self.mapping.get(&("m", i, j))?;
-        let env = self.mapping.get(&("e", i, j)).copied();
-        let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
-
-        MapSquare::new(&self.index, xtea.copied(), *land, *map, env, i, j).ok()
-    }
-}
-
 impl IntoIterator for MapSquares {
     type Item = MapSquare;
     type IntoIter = MapSquareIterator;
@@ -271,6 +210,11 @@ impl IntoIterator for MapSquares {
             .collect::<Vec<_>>()
             .into_iter();
         MapSquareIterator { mapsquares: self, state }
+    }
+
+    #[cfg(feature = "legacy")]
+    fn into_iter(self) -> Self::IntoIter {
+        todo!()
     }
 }
 

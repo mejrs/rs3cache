@@ -146,7 +146,7 @@ impl ConfigType {
     /// Contains [`MapScene`](../../rs3cache/definitions/mapscenes/struct.MapScene.html).
     #[cfg(feature = "rs3")]
     pub const MAPSCENES: u32 = 34;
-    #[cfg(feature = "osrs")]
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     pub const MAPLABELS: u32 = 35;
     /// Unimplemented.
     #[cfg(feature = "rs3")]

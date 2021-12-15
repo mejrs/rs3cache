@@ -173,6 +173,7 @@ pub struct Config {
     ///  environment variable and then to the current folder if not set.
     #[cfg_attr(feature = "rs3", structopt(long, env = "RS3_CACHE_INPUT_FOLDER", default_value = ""))]
     #[cfg_attr(feature = "osrs", structopt(long, env = "OSRS_CACHE_INPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "legacy", structopt(long))]
     pub input: PathBuf,
 
     /// The path where to place output.
@@ -182,6 +183,7 @@ pub struct Config {
     ///  environment variable and then to the current folder if not set.
     #[cfg_attr(feature = "rs3", structopt(long, env = "RS3_CACHE_OUTPUT_FOLDER", default_value = ""))]
     #[cfg_attr(feature = "osrs", structopt(long, env = "OSRS_CACHE_OUTPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "legacy", structopt(long))]
     pub output: PathBuf,
 
     /// Allowed values: [all, map]

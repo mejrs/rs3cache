@@ -143,6 +143,11 @@ impl NpcConfig {
             .collect())
     }
 
+    #[cfg(feature = "legacy")]
+    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        todo!()
+    }
+
     fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut npc = Self { id, ..Default::default() };
 
@@ -367,7 +372,7 @@ pub mod npc_config_fields {
             Self { models }
         }
 
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub fn deserialize(buffer: &mut Bytes) -> Self {
             let count = buffer.get_u8() as usize;
 
@@ -418,7 +423,7 @@ pub mod npc_config_fields {
     pub struct HeadModels {
         #[cfg(feature = "rs3")]
         pub models: Vec<Option<u32>>,
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub models: Vec<Option<u16>>,
     }
 
@@ -431,7 +436,7 @@ pub mod npc_config_fields {
             Self { models }
         }
 
-        #[cfg(feature = "osrs")]
+        #[cfg(any(feature = "osrs", feature = "legacy"))]
         pub fn deserialize(buffer: &mut Bytes) -> Self {
             let count = buffer.get_u8() as usize;
 

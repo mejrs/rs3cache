@@ -9,14 +9,25 @@ use crate::{
         index::{self, CacheIndex},
         indextype::IndexType,
     },
-    definitions::mapsquares::{GroupMapSquare, MapSquare},
+    definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares, MapFileType},
 };
+impl MapSquares {
+    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
+        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
 
-/// Iterates over all [`MapSquare`]s in arbitrary order.
+        Ok(MapSquares { index })
+    }
 
+    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+        let archive_id = (i as u32) | (j as u32) << 7;
+        let archive = self.index.archive(archive_id).ok()?;
+
+        Some(MapSquare::from_archive(archive))
+    }
+}
 /// Iterates over all [`MapSquare`]s in arbitrary order.
 pub struct MapSquareIterator {
-    pub(crate) mapsquares: crate::definitions::mapsquares::MapSquares,
+    pub(crate) mapsquares: MapSquares,
     pub(crate) state: std::vec::IntoIter<(u8, u8)>,
 }
 

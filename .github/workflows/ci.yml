@@ -26,6 +26,7 @@ jobs:
       - run: cargo clippy --features=osrs,python -- -D warnings
       - run: cargo clippy --features=rs3,mockdata -- -D warnings
       - run: cargo clippy --features=osrs,mockdata -- -D warnings
+      - run: cargo check --features=legacy
       - run: |
          rustup target add wasm32-unknown-unknown
          cargo clippy --target=wasm32-unknown-unknown --features=osrs -- -D warnings

@@ -5,6 +5,7 @@
 /// This contains the game-specific implementations.
 #[cfg_attr(feature = "rs3", path = "index/rs3.rs")]
 #[cfg_attr(feature = "osrs", path = "index/osrs.rs")]
+#[cfg_attr(feature = "legacy", path = "index/legacy.rs")]
 mod index_impl;
 
 use std::{
@@ -66,7 +67,7 @@ pub struct CacheIndex<S: IndexState> {
     #[cfg(all(feature = "rs3", feature = "mockdata"))]
     connection: PhantomData<sqlite::Connection>,
 
-    #[cfg(feature = "osrs")]
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     file: Box<[u8]>,
 
     #[cfg(feature = "osrs")]
@@ -124,7 +125,7 @@ impl CacheIndex<Initial> {
             path,
             #[cfg(feature = "rs3")]
             connection,
-            #[cfg(feature = "osrs")]
+            #[cfg(any(feature = "osrs", feature = "legacy"))]
             file,
             index_id,
             metadatas,
@@ -137,7 +138,7 @@ impl CacheIndex<Initial> {
             path,
             #[cfg(feature = "rs3")]
             connection,
-            #[cfg(feature = "osrs")]
+            #[cfg(any(feature = "osrs", feature = "legacy"))]
             file,
             index_id,
             metadatas,
@@ -170,7 +171,7 @@ impl IntoIterator for CacheIndex<Truncated> {
             path,
             #[cfg(feature = "rs3")]
             connection,
-            #[cfg(feature = "osrs")]
+            #[cfg(any(feature = "osrs", feature = "legacy"))]
             file,
             index_id,
             metadatas,
@@ -183,7 +184,7 @@ impl IntoIterator for CacheIndex<Truncated> {
             path,
             #[cfg(feature = "rs3")]
             connection,
-            #[cfg(feature = "osrs")]
+            #[cfg(any(feature = "osrs", feature = "legacy"))]
             file,
             index_id,
             metadatas,

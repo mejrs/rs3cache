@@ -3,7 +3,7 @@ name = "rs3cache"
 version = "0.1.0"
 authors = ["mejrs"]
 edition = "2021"
-default-run = "osrscache"
+default-run = "rs3cache"
 
 [workspace]
 members = ["rs3cache_core", "rs3cache_macros", "rs3cache_utils", "rs3_py", "osrs_py"]
@@ -26,6 +26,10 @@ name = "osrscache"
 path = "src/main.rs"
 required-features = ["osrs"]
 
+[[bin]]
+name = "legacy"
+path = "src/main.rs"
+required-features = ["legacy"]
 
 [dependencies]
 rs3cache_macros = { path = "rs3cache_macros", version = "0.1.0", optional = true  }
@@ -56,5 +60,5 @@ save_mockdata = ["rs3cache_core/save_mockdata"]
 fast = []
 rs3 = ["rs3cache_core/rs3", "filetime"]
 osrs = ["rs3cache_core/osrs"]
-old_shim = ["rs3cache_core/old_shim"]
+legacy = ["rs3cache_core/legacy"]
 

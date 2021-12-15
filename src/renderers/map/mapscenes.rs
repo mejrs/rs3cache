@@ -40,6 +40,9 @@ pub fn put(
                         // 22 is missing and indicates the empty mapscene, which is why this does not index
                         sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
                     }
+
+                    #[cfg(feature = "legacy")]
+                    {sprites.get(&(todo!(), todo!())).map(|s| (loc, s))}
                 })
             } else {
                 None

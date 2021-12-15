@@ -109,6 +109,9 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
     #[cfg(feature = "osrs")]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
+    #[cfg(feature = "legacy")]
+    let sprites: BTreeMap<(u32, u32), Sprite> = todo!();
+
     iter.progress().par_bridge().for_each(|gsq| {
         render_tile(
             &folder,

@@ -83,7 +83,7 @@ impl Archive {
                 files
             }
 
-            #[cfg(feature = "osrs")]
+            #[cfg(any(feature = "osrs", feature = "legacy"))]
             child_count => {
                 use crate::utils::adapters::Accumulator;
                 let mut data = data;

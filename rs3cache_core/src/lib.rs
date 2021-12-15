@@ -14,7 +14,7 @@
     unreachable_pub
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
-#![cfg(any(feature = "rs3", feature = "osrs"))]
+#![cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
 
 use rs3cache_utils as utils;
 

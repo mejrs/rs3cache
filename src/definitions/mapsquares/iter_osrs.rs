@@ -8,13 +8,58 @@ use crate::{
         error::CacheResult,
         index::{self, CacheIndex},
         indextype::IndexType,
+
     },
-    definitions::mapsquares::{GroupMapSquare, MapSquare},
+    definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares, MapFileType},
 };
+
+impl MapSquares {
+    pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
+        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+        let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)), (i, j)))
+            .collect();
+        let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::TILES, i, j)), (i, j)))
+            .collect();
+        let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::ENVIRONMENT, i, j)), (i, j)))
+            .collect();
+
+        let mapping = index
+            .metadatas()
+            .iter()
+            .map(|(_, m)| {
+                let name_hash = m.name().unwrap();
+
+                if let Some((i, j)) = land_hashes.get(&name_hash) {
+                    (("l", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = map_hashes.get(&name_hash) {
+                    (("m", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = env_hashes.get(&name_hash) {
+                    (("e", *i, *j), m.archive_id())
+                } else {
+                    unreachable!()
+                }
+            })
+            .collect();
+
+        Ok(MapSquares { index, mapping })
+    }
+
+    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+        let land = self.mapping.get(&("l", i, j))?;
+        let map = self.mapping.get(&("m", i, j))?;
+        let env = self.mapping.get(&("e", i, j)).copied();
+        let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
+
+        MapSquare::new(&self.index, xtea.copied(), *land, *map, env, i, j).ok()
+    }
+}
 
 /// Iterates over all [`MapSquare`]s in arbitrary order.
 pub struct MapSquareIterator {
-    pub(crate) mapsquares: crate::definitions::mapsquares::MapSquares,
+    pub(crate) mapsquares: MapSquares,
     pub(crate) state: std::vec::IntoIter<(u8, u8)>,
 }
 
