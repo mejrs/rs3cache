@@ -304,6 +304,9 @@
 <span id="303">303</span>
 <span id="304">304</span>
 <span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">fs</span>, <span class="ident">path::Path</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -414,6 +417,9 @@
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
     <span class="kw">let</span> <span class="ident">sprites</span> <span class="op">=</span> <span class="ident">sprites::dumps</span>(<span class="ident">CONFIG</span>.<span class="ident">scale</span>, <span class="macro">vec!</span>[<span class="number">317</span>], <span class="ident">config</span>)<span class="question-mark">?</span>; <span class="comment">// 317 is the sprite named &quot;mapscene&quot;</span>
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
+    <span class="kw">let</span> <span class="ident">sprites</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">u32</span>), <span class="ident">Sprite</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">todo!</span>();
 
     <span class="ident">iter</span>.<span class="ident">progress</span>().<span class="ident">par_bridge</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">gsq</span><span class="op">|</span> {
         <span class="ident">render_tile</span>(

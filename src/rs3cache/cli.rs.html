@@ -236,6 +236,8 @@
 <span id="235">235</span>
 <span id="236">236</span>
 <span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -411,6 +413,7 @@
     <span class="doccomment">///  environment variable and then to the current folder if not set.</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">env</span> <span class="op">=</span> <span class="string">&quot;RS3_CACHE_INPUT_FOLDER&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>))]</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">env</span> <span class="op">=</span> <span class="string">&quot;OSRS_CACHE_INPUT_FOLDER&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>, <span class="ident">structopt</span>(<span class="ident">long</span>))]</span>
     <span class="kw">pub</span> <span class="ident">input</span>: <span class="ident">PathBuf</span>,
 
     <span class="doccomment">/// The path where to place output.</span>
@@ -420,6 +423,7 @@
     <span class="doccomment">///  environment variable and then to the current folder if not set.</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">env</span> <span class="op">=</span> <span class="string">&quot;RS3_CACHE_OUTPUT_FOLDER&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>))]</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">env</span> <span class="op">=</span> <span class="string">&quot;OSRS_CACHE_OUTPUT_FOLDER&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>, <span class="ident">structopt</span>(<span class="ident">long</span>))]</span>
     <span class="kw">pub</span> <span class="ident">output</span>: <span class="ident">PathBuf</span>,
 
     <span class="doccomment">/// Allowed values: [all, map]</span>

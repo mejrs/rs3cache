@@ -76,6 +76,11 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::BTreeMap</span>;
 
 <span class="kw">use</span> <span class="ident">image</span>::{<span class="ident">GenericImage</span>, <span class="ident">GenericImageView</span>, <span class="ident">RgbaImage</span>};
@@ -117,6 +122,11 @@
                         <span class="comment">// 317 is the sprite named &quot;mapscene&quot;, whose frames form all the mapscenes.</span>
                         <span class="comment">// 22 is missing and indicates the empty mapscene, which is why this does not index</span>
                         <span class="ident">sprites</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="number">317</span>, <span class="ident">mapscene_id</span> <span class="kw">as</span> <span class="ident">u32</span>)).<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> (<span class="ident">loc</span>, <span class="ident">s</span>))
+                    }
+
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
+                    {
+                        <span class="ident">sprites</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="macro">todo!</span>(), <span class="macro">todo!</span>())).<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> (<span class="ident">loc</span>, <span class="ident">s</span>))
                     }
                 })
             } <span class="kw">else</span> {
