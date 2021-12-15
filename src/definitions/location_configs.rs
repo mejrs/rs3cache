@@ -173,7 +173,6 @@ impl LocationConfig {
         CacheIndex::new(0, &config.input)?;
 
         todo!()
-
     }
 
     fn deserialize(id: u32, mut buffer: Bytes) -> Self {
@@ -371,7 +370,6 @@ pub mod location_config_fields {
 
         /// This [`LocationConfig`](super::LocationConfig)'s default id.
         pub default: Option<IdType>,
-
     }
 
     impl ExtendedLocationMorphTable {

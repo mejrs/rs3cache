@@ -23,11 +23,10 @@ use crate::{
     utils::rangeclamp::RangeClamp,
 };
 
-
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
         todo!()
-   }
+    }
 
     pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
         todo!()
@@ -72,7 +71,7 @@ pub struct GroupMapSquareIterator {
 
 impl GroupMapSquareIterator {
     /// Constructor for [`GroupMapSquareIterator`].
-    pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>,  config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
+    pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
         todo!()
     }
 }

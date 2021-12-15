@@ -8,9 +8,8 @@ use crate::{
         error::CacheResult,
         index::{self, CacheIndex},
         indextype::IndexType,
-
     },
-    definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares, MapFileType},
+    definitions::mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
 };
 
 impl MapSquares {

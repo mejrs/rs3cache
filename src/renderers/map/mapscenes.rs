@@ -42,7 +42,9 @@ pub fn put(
                     }
 
                     #[cfg(feature = "legacy")]
-                    {sprites.get(&(todo!(), todo!())).map(|s| (loc, s))}
+                    {
+                        sprites.get(&(todo!(), todo!())).map(|s| (loc, s))
+                    }
                 })
             } else {
                 None

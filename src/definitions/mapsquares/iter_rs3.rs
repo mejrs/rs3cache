@@ -9,7 +9,7 @@ use crate::{
         index::{self, CacheIndex},
         indextype::IndexType,
     },
-    definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares, MapFileType},
+    definitions::mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
 };
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
