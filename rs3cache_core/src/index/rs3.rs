@@ -38,7 +38,6 @@ where
         Ok(decoder::decompress(encoded_data, None)?)
     }
 
-
     /// Executes a sql command to retrieve an archive from the cache.
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let encoded_data = {
