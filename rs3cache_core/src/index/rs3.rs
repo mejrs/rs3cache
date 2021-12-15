@@ -28,40 +28,18 @@ where
     S: IndexState,
 {
     /// Loads the [`Metadata`] of `self`.
-    #[allow(unused_variables)]
-    #[cfg(not(feature = "mockdata"))]
-    fn get_raw_metadata(index_id: u32, connection: &sqlite::Connection) -> CacheResult<Bytes> {
+    fn get_raw_metadata(connection: &sqlite::Connection) -> CacheResult<Bytes> {
         let encoded_data = {
             let query = "SELECT DATA FROM cache_index";
             let mut statement = connection.prepare(query)?;
             statement.next()?;
             statement.read::<Vec<u8>>(0)?
         };
-
-        #[cfg(feature = "save_mockdata")]
-        {
-            std::fs::create_dir_all("test_data/mockdata".to_string()).unwrap();
-            let filename = format!("test_data/mockdata/cache_index_{}", index_id);
-            let mut file = File::create(&filename).unwrap();
-            file.write_all(&encoded_data).unwrap();
-        }
         Ok(decoder::decompress(encoded_data, None)?)
     }
 
-    /// Grabs mock data from disk.
-    #[cfg(feature = "mockdata")]
-    fn get_raw_metadata(index_id: u32) -> CacheResult<Bytes> {
-        let filename = format!("test_data/mockdata/cache_index_{}", index_id);
-
-        let mut file = File::open(&filename)?;
-        let mut encoded_data = Vec::new();
-        file.read_to_end(&mut encoded_data)?;
-
-        Ok(decoder::decompress(encoded_data, None)?)
-    }
 
     /// Executes a sql command to retrieve an archive from the cache.
-    #[cfg(not(feature = "mockdata"))]
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let encoded_data = {
             let query = format!("SELECT DATA, CRC, VERSION FROM cache WHERE KEY={}", metadata.archive_id());
@@ -99,20 +77,6 @@ where
             }
         }?;
 
-        #[cfg(feature = "save_mockdata")]
-        {
-            std::fs::create_dir_all("test_data/mockdata".to_string()).unwrap();
-            let filename = format!("test_data/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
-            let mut file = File::create(&filename).unwrap();
-            file.write_all(&encoded_data).unwrap()
-        }
-        Ok(decoder::decompress(encoded_data, metadata.size())?)
-    }
-    /// Grabs mock data from disk.
-    #[cfg(feature = "mockdata")]
-    pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let filename = format!("test_data/mockdata/index_{}_archive_{}", self.index_id(), metadata.archive_id());
-        let encoded_data = fs::read(&filename)?;
         Ok(decoder::decompress(encoded_data, metadata.size())?)
     }
 
@@ -126,7 +90,6 @@ where
     /// # Notes
     /// Indices `VORBIS`, `AUDIOSTREAMS`, `TEXTURES_PNG_MIPPED` and `TEXTURES_ETC` tend to never complete.
     /// For these, simply ignore [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError).
-    #[cfg(not(any(feature = "mockdata", feature = "save_mockdata")))]
     pub fn assert_coherence(&self) -> CacheResult<()> {
         for (archive_id, metadata) in self.metadatas().iter() {
             let query = format!("SELECT CRC, VERSION FROM cache WHERE KEY={}", archive_id);
@@ -170,7 +133,6 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    #[cfg(not(feature = "mockdata"))]
     pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(folder / f!("js5-{index_id}.jcache"));
 
@@ -178,7 +140,7 @@ impl CacheIndex<Initial> {
         match fs::metadata(&file) {
             Ok(_) => {
                 let connection = sqlite::open(file)?;
-                let raw_metadata: Bytes = Self::get_raw_metadata(index_id, &connection)?;
+                let raw_metadata: Bytes = Self::get_raw_metadata(&connection)?;
                 let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
 
                 Ok(Self {
@@ -189,24 +151,8 @@ impl CacheIndex<Initial> {
                     state: Initial {},
                 })
             }
-            //_ => panic!(),
             Err(e) => Err(CacheError::CacheNotFoundError(e, file)),
         }
-    }
-
-    /// Mock constructor for `CacheIndex`.
-    #[cfg(feature = "mockdata")]
-    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<Self> {
-        let raw_metadata = Self::get_raw_metadata(index_id)?;
-        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
-
-        Ok(CacheIndex {
-            index_id,
-            path: folder.as_ref().to_path_buf(),
-            connection: PhantomData,
-            metadatas,
-            state: Initial {},
-        })
     }
 }
 
@@ -216,8 +162,9 @@ impl CacheIndex<Initial> {
 /// Exposed as `--assert coherence`.
 ///
 /// # Panics
+///
 /// Panics if compiled with feature `mockdata`.
-#[cfg(all(feature = "rs3", not(any(feature = "mockdata", feature = "save_mockdata"))))]
+#[cfg(not(feature = "mockdata"))]
 pub fn assert_coherence(folder: impl AsRef<Path>) -> CacheResult<()> {
     for index_id in IndexType::iterator() {
         match CacheIndex::new(index_id, &folder)?.assert_coherence() {

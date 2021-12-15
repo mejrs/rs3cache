@@ -26,7 +26,6 @@ path-absolutize = "3.0.10"
 [features]
 python = ["pyo3", "rs3cache_macros",]
 mockdata = []
-save_mockdata = []
 dont_save = []
 fast = []
 rs3 = ["sqlite"]

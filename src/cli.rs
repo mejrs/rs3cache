@@ -234,6 +234,9 @@ impl Config {
 
     #[cfg(all(feature = "rs3", feature = "mockdata"))]
     pub fn env() -> Self {
-        Self::default()
+        Self {
+            input: PathBuf::from("test_data/rs3_cache"),
+            ..Default::default()
+        }
     }
 }

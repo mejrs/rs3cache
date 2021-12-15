@@ -56,7 +56,6 @@ bytes = "1.1.0"
 [features]
 python = ["pyo3", "rs3cache_core/python", "rs3cache_macros"]
 mockdata = ["rs3cache_core/mockdata"]
-save_mockdata = ["rs3cache_core/save_mockdata"]
 fast = []
 rs3 = ["rs3cache_core/rs3", "filetime"]
 osrs = ["rs3cache_core/osrs"]

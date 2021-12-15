@@ -60,12 +60,8 @@ pub struct CacheIndex<S: IndexState> {
     state: S,
     path: PathBuf,
 
-    #[cfg(all(feature = "rs3", not(feature = "mockdata")))]
+    #[cfg(feature = "rs3")]
     connection: sqlite::Connection,
-
-    // correctly derive things like !Sync
-    #[cfg(all(feature = "rs3", feature = "mockdata"))]
-    connection: PhantomData<sqlite::Connection>,
 
     #[cfg(any(feature = "osrs", feature = "legacy"))]
     file: Box<[u8]>,
