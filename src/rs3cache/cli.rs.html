@@ -238,6 +238,9 @@
 <span id="237">237</span>
 <span id="238">238</span>
 <span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -474,7 +477,10 @@
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mockdata&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">env</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::default</span>()
+        <span class="self">Self</span> {
+            <span class="ident">input</span>: <span class="ident">PathBuf::from</span>(<span class="string">&quot;test_data/rs3_cache&quot;</span>),
+            ..<span class="ident">Default::default</span>()
+        }
     }
 }
 </code></pre></div>
