@@ -99,7 +99,6 @@ pub struct LocationConfig {
     pub unknown_93: Option<u16>,
     pub unknown_94: Option<bool>,
     #[cfg(any(feature = "rs3", feature = "2011_shim"))]
-    
     pub unknown_95: Option<u16>,
     #[cfg(all(feature = "2008_shim", not(feature = "2011_shim")))]
     pub unknown_95: Option<bool>,
@@ -190,16 +189,16 @@ impl LocationConfig {
 
         loop {
             let opcode = buffer.get_u8();
-            if id == 8844{
+            if id == 8844 {
                 dbg!(opcode);
             }
-            if false &&  id == 8844 && opcode == 1 {
+            if false && id == 8844 && opcode == 1 {
                 dbg!(&buffer[..]);
             }
 
             match opcode {
                 #[cfg(feature = "2011_shim")]
-                37  | 10 | 146 | 12  => {
+                37 | 10 | 146 | 12 => {
                     buffer.get_u8();
                 }
                 #[cfg(feature = "2011_shim")]
@@ -210,13 +209,11 @@ impl LocationConfig {
                 #[cfg(feature = "2011_shim")]
                 187 | 185 | 5 => break loc,
 
-
-
                 #[cfg(feature = "2011_shim")]
                 42 | 168 | 169 => {}
 
                 0 => {
-                    if buffer.has_remaining(){
+                    if buffer.has_remaining() {
                         println!("{}", &loc);
                         dbg!(&buffer[..]);
                         panic!();
