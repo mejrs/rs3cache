@@ -28,13 +28,13 @@ pub struct Underlay {
     pub id: u32,
     /// Ground colour of this tile type
     pub colour: Option<[u8; 3]>,
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     op_2: Option<u16>,
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     op_3: Option<u16>,
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     op_4: Option<bool>,
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2011_shim"))]
     op_5: Option<bool>,
 }
 
@@ -60,13 +60,13 @@ impl Underlay {
                     break underlay;
                 }
                 1 => underlay.colour = Some(buffer.get_rgb()),
-                #[cfg(feature = "rs3")]
+                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
                 2 => underlay.op_2 = Some(buffer.get_u16()),
-                #[cfg(feature = "rs3")]
+                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
                 3 => underlay.op_3 = Some(buffer.get_u16()),
-                #[cfg(feature = "rs3")]
+                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
                 4 => underlay.op_4 = Some(true),
-                #[cfg(feature = "rs3")]
+                #[cfg(any(feature = "rs3", feature = "2011_shim"))]
                 5 => underlay.op_5 = Some(true),
 
                 missing => unimplemented!("Underlay::deserialize cannot deserialize opcode {} in id {}", missing, id),

@@ -1,5 +1,3 @@
-#![cfg(feature = "rs3")]
-
 use std::collections::BTreeMap;
 
 use bytes::{Buf, Bytes};

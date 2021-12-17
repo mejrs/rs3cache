@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use image::{GenericImage, GenericImageView, RgbaImage};
 use itertools::iproduct;
 
-#[cfg(feature = "rs3")]
+#[cfg(any(feature = "rs3", feature = "2008_shim"))]
 use crate::definitions::mapscenes::MapScene;
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare, sprites::Sprite},
@@ -17,7 +17,7 @@ pub fn put(
     img: &mut RgbaImage,
     squares: &GroupMapSquare,
     location_config: &BTreeMap<u32, LocationConfig>,
-    #[cfg(feature = "rs3")] mapscenes: &BTreeMap<u32, MapScene>,
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))] mapscenes: &BTreeMap<u32, MapScene>,
     sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     squares
@@ -25,7 +25,7 @@ pub fn put(
         .filter_map(|loc| {
             if loc.plane.matches(&(plane as u8)) {
                 location_config[&(loc.id)].mapscene.and_then(|mapscene_id| {
-                    #[cfg(feature = "rs3")]
+                    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
                     {
                         mapscenes[&(mapscene_id as u32)]
                             .sprite_id
@@ -34,7 +34,7 @@ pub fn put(
                             .map(|sprite_id| (loc, &sprites[&(sprite_id, 0)]))
                     }
 
-                    #[cfg(feature = "osrs")]
+                    #[cfg(all(feature = "osrs", not(feature = "2008_shim")))]
                     {
                         // 317 is the sprite named "mapscene", whose frames form all the mapscenes.
                         // 22 is missing and indicates the empty mapscene, which is why this does not index

@@ -32,6 +32,10 @@ pub fn decompress(
     filesize: Option<u32>,
     #[cfg(feature = "osrs")] xtea: Option<crate::xtea::Xtea>,
 ) -> Result<Bytes, DecodeError> {
+    #[cfg(feature = "2008_shim")]
+    if encoded_data.len() < 3 {
+        return Ok(vec![0; 1000000].into());
+    }
     match &encoded_data[0..3] {
         Compression::ZLIB => {
             let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;

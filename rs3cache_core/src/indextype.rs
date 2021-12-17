@@ -29,7 +29,7 @@ impl IndexType {
     /// Unimplemented.
     pub const VORBIS: u32 = 14;
     /// Contains the [`LocationConfig`](../../rs3cache/definitions/location_configs/struct.LocationConfig.html) definitions.
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     pub const LOC_CONFIG: u32 = 16;
     /// Unimplemented.
     pub const ENUM_CONFIG: u32 = 17;
@@ -144,15 +144,16 @@ impl ConfigType {
     /// Unimplemented.
     pub const CURSORS: u32 = 33;
     /// Contains [`MapScene`](../../rs3cache/definitions/mapscenes/struct.MapScene.html).
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     pub const MAPSCENES: u32 = 34;
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
+
+    #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2008_shim")))]
     pub const MAPLABELS: u32 = 35;
     /// Unimplemented.
     #[cfg(feature = "rs3")]
     pub const QUESTS: u32 = 35;
     /// Contains [`MapLabelConfig`](../../rs3cache/definitions/maplabel_configs/struct.MapLabelConfig.html).
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     pub const MAPLABELS: u32 = 36;
     /// Unimplemented.
     pub const DBTABLE: u32 = 40;

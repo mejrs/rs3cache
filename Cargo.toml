@@ -60,4 +60,6 @@ fast = []
 rs3 = ["rs3cache_core/rs3", "filetime"]
 osrs = ["rs3cache_core/osrs"]
 legacy = ["rs3cache_core/legacy"]
+2008_shim = ["osrs", "rs3cache_core/2008_shim"]
+2011_shim = ["2008_shim"]
 

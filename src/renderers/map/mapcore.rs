@@ -7,7 +7,7 @@ use itertools::iproduct;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 
-#[cfg(feature = "rs3")]
+#[cfg(any(feature = "rs3", feature = "2008_shim"))]
 use crate::definitions::mapscenes::MapScene;
 use crate::{
     cache::error::CacheResult,
@@ -94,10 +94,10 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
     let overlay_definitions = Overlay::dump_all(config)?;
     let underlay_definitions = Underlay::dump_all(config)?;
 
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     let mapscenes = MapScene::dump_all(config)?;
 
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     let sprites = sprites::dumps(
         CONFIG.scale,
         mapscenes.values().filter_map(|mapscene| mapscene.sprite_id).collect::<Vec<_>>(),
@@ -106,7 +106,7 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
 
     let folder = path!(config.output / "mapsquares");
 
-    #[cfg(feature = "osrs")]
+    #[cfg(all(feature = "osrs", not(feature = "2008_shim")))]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
     #[cfg(feature = "legacy")]
@@ -119,7 +119,7 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
             &location_definitions,
             &overlay_definitions,
             &underlay_definitions,
-            #[cfg(feature = "rs3")]
+            #[cfg(any(feature = "rs3", feature = "2008_shim"))]
             &mapscenes,
             &sprites,
         );
@@ -134,7 +134,7 @@ pub fn render_tile(
     location_config: &BTreeMap<u32, LocationConfig>,
     overlay_definitions: &BTreeMap<u32, Overlay>,
     underlay_definitions: &BTreeMap<u32, Underlay>,
-    #[cfg(feature = "rs3")] mapscenes: &BTreeMap<u32, MapScene>,
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))] mapscenes: &BTreeMap<u32, MapScene>,
     sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     let func = |plane| {
@@ -149,7 +149,7 @@ pub fn render_tile(
             &mut img,
             &squares,
             location_config,
-            #[cfg(feature = "rs3")]
+            #[cfg(any(feature = "rs3", feature = "2008_shim"))]
             mapscenes,
             sprites,
         );

@@ -102,7 +102,7 @@ impl MapSquare {
     #[cfg(feature = "osrs")]
     fn new(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
         let land = index.archive_with_xtea(land, xtea).and_then(|mut arch| arch.take_file(&0));
-        let tiles = index.archive(tiles).unwrap().take_file(&0).unwrap();
+        let tiles = index.archive(tiles)?.take_file(&0)?;
         let _env = env.map(|k| index.archive(k));
 
         let tiles = Tile::dump(tiles);
@@ -245,8 +245,8 @@ impl GroupMapSquare {
     }
 
     /// Returns a reference to the central [`MapSquare`].
-    pub fn core(&self) -> &MapSquare {
-        &self.mapsquares[&(self.core_i, self.core_j)]
+    pub fn core(&self) -> Option<&MapSquare> {
+        self.mapsquares.get(&(self.core_i, self.core_j))
     }
 
     /// Iterates over all [`MapSquare`]s of `self` in arbitrary order.

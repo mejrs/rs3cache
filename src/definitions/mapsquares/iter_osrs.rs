@@ -38,7 +38,7 @@ impl MapSquares {
                 } else if let Some((i, j)) = env_hashes.get(&name_hash) {
                     (("e", *i, *j), m.archive_id())
                 } else {
-                    unreachable!()
+                    (("ul_or_um_dont_care", 0, 0), m.archive_id())
                 }
             })
             .collect();
@@ -96,6 +96,9 @@ impl GroupMapSquareIterator {
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{}_{}", i, j)), (i, j)))
             .collect();
         let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("ul{}_{}", i, j)), (i, j)))
+            .collect();
+        let env_hashes2: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{}_{}", i, j)), (i, j)))
             .collect();
 
@@ -112,7 +115,7 @@ impl GroupMapSquareIterator {
                 } else if let Some((i, j)) = env_hashes.get(&name_hash) {
                     (("e", *i, *j), m.archive_id())
                 } else {
-                    unreachable!()
+                    (("ul_or_um_dont_care", 0, 0), m.archive_id())
                 }
             })
             .collect();
@@ -154,7 +157,9 @@ impl Iterator for GroupMapSquareIterator {
                 })
                 .map(|sq| ((sq.i, sq.j), sq))
                 .collect();
-            assert!(mapsquares.contains_key(&(core_i, core_j)));
+            if !(mapsquares.contains_key(&(core_i, core_j))) {
+                println!("failed reading mapsquare {}, {}", core_i, core_j);
+            };
 
             GroupMapSquare { core_i, core_j, mapsquares }
         })

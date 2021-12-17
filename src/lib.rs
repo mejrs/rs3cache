@@ -66,6 +66,7 @@ pub mod definitions {
     pub mod npcs;
 
     /// Describes text, sprites and polygons drawn on the map.
+    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
     pub mod maplabel_configs;
 
     /// Configuration of images drawn on the world map.
