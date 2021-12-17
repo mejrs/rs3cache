@@ -109,7 +109,8 @@ pub struct LocationConfig {
     pub unknown_99: Option<()>,
     pub unknown_101: Option<u8>,
     /// Reference to a [`MapScene`](super::mapscenes::MapScene) that is drawn on the map.
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    ///
+    /// This works differently between rs3 and osrs
     pub mapscene: Option<u16>,
     pub occludes_2: Option<bool>,
     pub unknown_104: Option<u8>,
@@ -189,12 +190,6 @@ impl LocationConfig {
 
         loop {
             let opcode = buffer.get_u8();
-            if id == 8844 {
-                dbg!(opcode);
-            }
-            if false && id == 8844 && opcode == 1 {
-                dbg!(&buffer[..]);
-            }
 
             match opcode {
                 #[cfg(feature = "2011_shim")]
