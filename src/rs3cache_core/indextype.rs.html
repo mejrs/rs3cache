@@ -239,6 +239,7 @@
 <span id="238">238</span>
 <span id="239">239</span>
 <span id="240">240</span>
+<span id="241">241</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The names of various indexes and archives.</span>
 
 <span class="doccomment">/// Enumeration of all index types.</span>
@@ -270,7 +271,7 @@
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VORBIS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">14</span>;
     <span class="doccomment">/// Contains the [`LocationConfig`](../../rs3cache/definitions/location_configs/struct.LocationConfig.html) definitions.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">16</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ENUM_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">17</span>;
@@ -385,15 +386,16 @@
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CURSORS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">33</span>;
     <span class="doccomment">/// Contains [`MapScene`](../../rs3cache/definitions/mapscenes/struct.MapScene.html).</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPSCENES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">34</span>;
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPLABELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">35</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">QUESTS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">35</span>;
     <span class="doccomment">/// Contains [`MapLabelConfig`](../../rs3cache/definitions/maplabel_configs/struct.MapLabelConfig.html).</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPLABELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">36</span>;
     <span class="doccomment">/// Unimplemented.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DBTABLE</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">40</span>;
