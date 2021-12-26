@@ -34,6 +34,8 @@ pub enum CacheError {
     ArchiveNotFoundError(u32, u32),
     /// Raised if a file is not in an [`Archive`](crate::arc::Archive).
     FileNotFoundError(u32, u32, u32),
+    /// Raised if reading from a buffer fails
+    ReadError(crate::buf::ReadError),
 }
 
 #[cfg(feature = "rs3")]
@@ -161,6 +163,7 @@ impl std::error::Error for CacheError {
             Self::JsonDecodeError(_, ref e, _) => Some(e),
             Self::ImageError(ref e) => Some(e),
             Self::ParseIntError(e) => Some(e),
+            Self::ReadError(e) => Some(e),
             _ => None,
         }
     }

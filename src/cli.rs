@@ -50,6 +50,7 @@ pub enum Dump {
     Sprites,
     Locations,
     LocationsEach,
+    TilesEach,
     LocationConfigs,
     LocationConfigsEach,
     NpcConfig,
@@ -105,6 +106,7 @@ impl Dump {
             #[cfg(feature = "rs3")]
             Dump::Achievements => definitions::achievements::export(config)?,
             Dump::Sprites => definitions::sprites::save_all(config)?,
+            Dump::TilesEach => definitions::mapsquares::export_tiles_by_square(config)?,
             Dump::Locations => definitions::mapsquares::export_locations_by_id(config)?,
             Dump::LocationsEach => definitions::mapsquares::export_locations_by_square(config)?,
             Dump::LocationConfigs => definitions::location_configs::export(config)?,
@@ -144,6 +146,7 @@ impl FromStr for Dump {
             "achievements" => Ok(Self::Achievements),
             "sprites" => Ok(Self::Sprites),
             "locations" => Ok(Self::Locations),
+            "tiles_each" => Ok(Self::TilesEach),
             "locations_each" => Ok(Self::LocationsEach),
             "location_configs" => Ok(Self::LocationConfigs),
             "location_configs_each" => Ok(Self::LocationConfigsEach),

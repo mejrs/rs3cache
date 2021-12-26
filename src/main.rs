@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use rs3cache::cli::Config;
 use structopt::StructOpt;
@@ -23,7 +23,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         map.call(&config)?;
     }
 
-    println!("\nFinished program in {} s.", start.elapsed().as_secs());
+    let dt = start.elapsed();
+
+    if dt > Duration::from_secs(1) {
+        println!("\nFinished program in {} s.", dt.as_secs());
+    } else {
+        println!("\nFinished program in {} ms.", dt.as_millis());
+    }
 
     Ok(())
 }

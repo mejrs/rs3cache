@@ -2,6 +2,7 @@ use bytes::{Buf, Bytes};
 use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use serde::Serialize;
 
 /// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
@@ -10,7 +11,7 @@ pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 #[cfg_eval]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass)]
-#[derive(Default, Debug, Copy, Clone)]
+#[derive(Default, Debug, Copy, Clone, Serialize)]
 pub struct Tile {
     /// Reference to a [shape](crate::renderers::map::tileshape).
     pub shape: Option<u8>,

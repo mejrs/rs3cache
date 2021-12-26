@@ -155,6 +155,11 @@ impl MapSquare {
         self.tiles.as_ref()
     }
 
+    /// Returns a view over the `tiles` field, if present
+    pub fn take_tiles(self) -> Result<TileArray, CacheError> {
+        self.tiles
+    }
+
     /// Returns a view over the `locations` field, if present.
     pub fn get_locations(&self) -> Result<&Vec<Location>, &CacheError> {
         self.locations.as_ref()
@@ -344,7 +349,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
 
 /// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
 pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()> {
-    let out = path_macro::path!(config.output / "mapsquares");
+    let out = path_macro::path!(config.output / "locations");
 
     fs::create_dir_all(&out)?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
@@ -354,6 +359,26 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
             if !locations.is_empty() {
                 let mut file = File::create(path!(&out / f!("{i}_{j}.json"))).unwrap();
                 let data = serde_json::to_string_pretty(&locations).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
+            }
+        }
+    });
+
+    Ok(())
+}
+
+/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
+    let out = path_macro::path!(config.output / "tiles");
+
+    fs::create_dir_all(&out)?;
+    MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
+        let i = sq.i;
+        let j = sq.j;
+        if let Ok(tiles) = sq.take_tiles() {
+            if !tiles.is_empty() {
+                let mut file = File::create(path!(&out / f!("{i}_{j}.json"))).unwrap();
+                let data = serde_json::to_string_pretty(&tiles).unwrap();
                 file.write_all(data.as_bytes()).unwrap();
             }
         }
