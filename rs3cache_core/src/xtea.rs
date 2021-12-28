@@ -1,4 +1,4 @@
-#![cfg(feature = "osrs")]
+#![cfg(feature = "dat2")]
 
 use std::{array, backtrace::Backtrace, collections::HashMap, fs::File, io::BufReader, path::Path};
 

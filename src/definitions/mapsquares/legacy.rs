@@ -13,7 +13,7 @@ use crate::{
         arc::Archive,
         error::{CacheError, CacheResult},
         index::{self, CacheIndex},
-        indextype::IndexType,
+        indextype::{IndexType, MapFileType},
     },
     definitions::{
         locations::Location,
@@ -25,7 +25,31 @@ use crate::{
 
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
-        todo!()
+        let index = CacheIndex::new(4, &config.input)?;
+        let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)), (i, j)))
+            .collect();
+        let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::TILES, i, j)), (i, j)))
+            .collect();
+
+        let mapping = index
+            .metadatas()
+            .iter()
+            .map(|(_, m)| {
+                let name_hash = m.name().unwrap();
+
+                if let Some((i, j)) = land_hashes.get(&name_hash) {
+                    (("l", *i, *j), m.archive_id())
+                } else if let Some((i, j)) = map_hashes.get(&name_hash) {
+                    (("m", *i, *j), m.archive_id())
+                } else {
+                    (("ul_or_um_dont_care", 0, 0), m.archive_id())
+                }
+            })
+            .collect();
+
+        Ok(MapSquares { index, mapping })
     }
 
     pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {

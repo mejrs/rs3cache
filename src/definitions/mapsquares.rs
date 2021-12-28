@@ -8,9 +8,9 @@
 //! These coordinates are referred to as `x` and `y`.
 //! They have four elevations, referred to as `p` or `plane`.
 
-#[cfg_attr(feature = "rs3", path = "mapsquares/iter_rs3.rs")]
-#[cfg_attr(feature = "osrs", path = "mapsquares/iter_osrs.rs")]
-#[cfg_attr(feature = "legacy", path = "mapsquares/iter_legacy.rs")]
+#[cfg_attr(feature = "rs3", path = "mapsquares/rs3.rs")]
+#[cfg_attr(feature = "osrs", path = "mapsquares/osrs.rs")]
+#[cfg_attr(feature = "legacy", path = "mapsquares/legacy.rs")]
 mod iterator;
 
 use std::{
@@ -185,7 +185,7 @@ impl MapSquare {
 
 pub struct MapSquares {
     index: CacheIndex<Initial>,
-    #[cfg(feature = "osrs")]
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     mapping: std::collections::BTreeMap<(&'static str, u8, u8), u32>,
 }
 

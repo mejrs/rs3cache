@@ -24,11 +24,10 @@ memchr = "2.4.1"
 path-absolutize = "3.0.10"
 
 [features]
-python = ["pyo3", "rs3cache_macros",]
+python = ["pyo3", "rs3cache_macros"]
+dat2 = []
+dat = []
 mockdata = []
 dont_save = []
-fast = []
-rs3 = ["sqlite"]
-osrs = []
 legacy = []
-2008_shim = ["osrs"]
+2008_shim = ["dat2"]

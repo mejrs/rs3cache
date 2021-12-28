@@ -11,14 +11,14 @@ impl IndexType {
     pub const CONFIG: u32 = 2;
     /// Unimplemented.
     pub const INTERFACES: u32 = 3;
-    /// Contains [`MapSquare`](../../rs3cache/definitions/mapsquares/struct.MapSquares.html) definitions.
+    /// Contains [`MapSquare`](../../sqlitecache/definitions/mapsquares/struct.MapSquares.html) definitions.
     pub const MAPSV2: u32 = 5;
     /// Discontinued.
     const MODELS: u32 = 7;
-    /// Contains [`sprite`](../../rs3cache/definitions/sprites/index.html) definitions.
+    /// Contains [`sprite`](../../sqlitecache/definitions/sprites/index.html) definitions.
     pub const SPRITES: u32 = 8;
     /// Unimplemented.
-    #[cfg(feature = "osrs")]
+    #[cfg(feature = "dat2")]
     pub const TEXTURES: u32 = 9;
     /// Unimplemented.
     pub const BINARY: u32 = 10;
@@ -28,13 +28,13 @@ impl IndexType {
     pub const FONTMETRICS: u32 = 13;
     /// Unimplemented.
     pub const VORBIS: u32 = 14;
-    /// Contains the [`LocationConfig`](../../rs3cache/definitions/location_configs/struct.LocationConfig.html) definitions.
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    /// Contains the [`LocationConfig`](../../sqlitecache/definitions/location_configs/struct.LocationConfig.html) definitions.
+    #[cfg(any(feature = "sqlite", feature = "2008_shim"))]
     pub const LOC_CONFIG: u32 = 16;
     /// Unimplemented.
     pub const ENUM_CONFIG: u32 = 17;
-    /// Contains the [`NpcConfig`](../../rs3cache/definitions/npc_configs/struct.NpcConfig.html) definitions.
-    #[cfg(feature = "rs3")]
+    /// Contains the [`NpcConfig`](../../sqlitecache/definitions/npc_configs/struct.NpcConfig.html) definitions.
+    #[cfg(feature = "sqlite")]
     pub const NPC_CONFIG: u32 = 18;
     /// Unimplemented.
     pub const OBJ_CONFIG: u32 = 19;
@@ -44,8 +44,8 @@ impl IndexType {
     pub const SPOT_CONFIG: u32 = 21;
     /// Unimplemented.
     pub const STRUCT_CONFIG: u32 = 22;
-    /// Contains [`MapZone`](../../rs3cache/definitions/worldmaps/struct.MapZone.html),
-    /// [`MapPastes`](../../rs3cache/definitions/worldmaps/struct.MapPastes.html) definitions,
+    /// Contains [`MapZone`](../../sqlitecache/definitions/worldmaps/struct.MapZone.html),
+    /// [`MapPastes`](../../sqlitecache/definitions/worldmaps/struct.MapPastes.html) definitions,
     /// as well as PNG images of the world map.
     pub const WORLDMAP: u32 = 23;
     /// Unimplemented.
@@ -85,7 +85,7 @@ impl IndexType {
     /// Unimplemented.
     pub const DBTABLEINDEX: u32 = 49;
     /// Unimplemented.
-    #[cfg(feature = "rs3")]
+    #[cfg(feature = "sqlite")]
     pub const TEXTURES: u32 = 52;
     /// Unimplemented.
     pub const TEXTURES_PNG: u32 = 53;
@@ -113,23 +113,23 @@ impl IndexType {
 pub struct ConfigType;
 
 impl ConfigType {
-    /// Contains [`Underlay`](../../rs3cache/definitions/underlays/struct.Underlay.html) definitions.
+    /// Contains [`Underlay`](../../sqlitecache/definitions/underlays/struct.Underlay.html) definitions.
     pub const UNDERLAYS: u32 = 1;
     /// Unimplemented.
     pub const HUNT: u32 = 2;
     /// Unimplemented.
     pub const IDENTITY_KIT: u32 = 3;
-    /// Contains [`Overlay`](../../rs3cache/definitions/overlays/struct.Overlay.html) definitions.
+    /// Contains [`Overlay`](../../sqlitecache/definitions/overlays/struct.Overlay.html) definitions.
     pub const OVERLAYS: u32 = 4;
     /// Unimplemented.
     pub const INVENTORY: u32 = 5;
 
-    #[cfg(feature = "osrs")]
+    #[cfg(feature = "dat2")]
     pub const LOC_CONFIG: u32 = 6;
     /// Unimplemented.
     pub const UNKNOWN_7: u32 = 7;
     /// Unimplemented.
-    #[cfg(feature = "osrs")]
+    #[cfg(feature = "dat2")]
     pub const NPC_CONFIG: u32 = 9;
 
     pub const TOOLTIPS: u32 = 11;
@@ -143,17 +143,17 @@ impl ConfigType {
     pub const BASE_ANIMATION_SET: u32 = 32;
     /// Unimplemented.
     pub const CURSORS: u32 = 33;
-    /// Contains [`MapScene`](../../rs3cache/definitions/mapscenes/struct.MapScene.html).
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    /// Contains [`MapScene`](../../sqlitecache/definitions/mapscenes/struct.MapScene.html).
+    #[cfg(any(feature = "sqlite", feature = "2008_shim"))]
     pub const MAPSCENES: u32 = 34;
 
-    #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2008_shim")))]
+    #[cfg(all(any(feature = "dat2", feature = "dat"), not(feature = "2008_shim")))]
     pub const MAPLABELS: u32 = 35;
     /// Unimplemented.
-    #[cfg(feature = "rs3")]
+    #[cfg(feature = "sqlite")]
     pub const QUESTS: u32 = 35;
-    /// Contains [`MapLabelConfig`](../../rs3cache/definitions/maplabel_configs/struct.MapLabelConfig.html).
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    /// Contains [`MapLabelConfig`](../../sqlitecache/definitions/maplabel_configs/struct.MapLabelConfig.html).
+    #[cfg(any(feature = "sqlite", feature = "2008_shim"))]
     pub const MAPLABELS: u32 = 36;
     /// Unimplemented.
     pub const DBTABLE: u32 = 40;
@@ -209,7 +209,7 @@ impl ConfigType {
 pub struct MapFileType;
 
 #[allow(missing_docs)]
-#[cfg(feature = "osrs")]
+#[cfg(any(feature = "dat2", feature = "dat"))]
 impl MapFileType {
     /// Deserializes to the sequence of [`Location`]s in `self`.
     pub const LOCATIONS: &'static str = "l";
@@ -219,7 +219,7 @@ impl MapFileType {
 }
 
 #[allow(missing_docs)]
-#[cfg(feature = "rs3")]
+#[cfg(feature = "sqlite")]
 impl MapFileType {
     /// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.
     pub const LOCATIONS: u32 = 0;

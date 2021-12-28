@@ -73,10 +73,10 @@ impl ReadError {
         }
     }
 
-    pub fn add_decode_context(self, opcodes: Vec<u8>, remainder: Bytes, parsed: String) -> Self {
+    pub fn add_decode_context(self, #[cfg(debug_assertions)] opcodes: Vec<u8>, remainder: Bytes, parsed: String) -> Self {
         Self {
             location: self.location,
-            kind: Kind::DecodeContext(opcodes, remainder, parsed, Box::new(self)),
+            kind: Kind::DecodeContext( #[cfg(debug_assertions)] opcodes, remainder, parsed, Box::new(self)),
         }
     }
 }

@@ -26,11 +26,10 @@ impl Compression {
 /// Decompresses index files.
 ///
 /// Used internally by [`CacheIndex`](crate::index::CacheIndex).
-#[track_caller]
 pub fn decompress(
     encoded_data: Vec<u8>,
     filesize: Option<u32>,
-    #[cfg(feature = "osrs")] xtea: Option<crate::xtea::Xtea>,
+    #[cfg(feature = "dat2")] xtea: Option<crate::xtea::Xtea>,
 ) -> Result<Bytes, DecodeError> {
     #[cfg(feature = "2008_shim")]
     if encoded_data.len() < 3 {
@@ -63,7 +62,7 @@ pub fn decompress(
             Ok(decoded_data.into())
         }
 
-        #[cfg(feature = "osrs")]
+        #[cfg(feature = "dat2")]
         &[Compression::GZIP, ..] if xtea.is_some() => {
             let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
 
@@ -99,7 +98,7 @@ pub enum DecodeError {
     IoError(std::io::Error),
     /// Wraps [`bzip2_rs::decoder::DecoderError`].
     BZip2Error(bzip2_rs::decoder::DecoderError),
-    #[cfg(feature = "osrs")]
+    #[cfg(feature = "dat2")]
     XteaError,
     Other(String),
 }
@@ -122,7 +121,7 @@ impl Display for DecodeError {
             Self::BZip2Error(e) => Display::fmt(&e, f),
             Self::IoError(e) => Display::fmt(&e, f),
             Self::Other(e) => Display::fmt(&e, f),
-            #[cfg(feature = "osrs")]
+            #[cfg(feature = "dat2")]
             Self::XteaError => Display::fmt("XteaError", f),
         }
     }

@@ -158,7 +158,7 @@ pub struct IndexMetadata {
 }
 
 impl IndexMetadata {
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
+    #[cfg(any(feature = "dat2", feature = "dat"))]
     pub(crate) fn empty() -> Self {
         Self {
             metadatas: BTreeMap::default(),

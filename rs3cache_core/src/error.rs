@@ -7,7 +7,7 @@ pub type CacheResult<T> = Result<T, CacheError>;
 /// An error type for things that can go wrong when reading from the cache.
 pub enum CacheError {
     /// Wraps [`sqlite::Error`].
-    #[cfg(feature = "rs3")]
+    #[cfg(feature = "sqlite")]
     SqliteError(sqlite::Error),
     DecodeError(DecodeError),
     /// Wraps [`io.error`](std::io::Error).
@@ -38,7 +38,7 @@ pub enum CacheError {
     ReadError(crate::buf::ReadError),
 }
 
-#[cfg(feature = "rs3")]
+#[cfg(feature = "sqlite")]
 impl From<sqlite::Error> for CacheError {
     fn from(cause: sqlite::Error) -> Self {
         Self::SqliteError(cause)
@@ -156,7 +156,7 @@ impl Display for CacheError {
 impl std::error::Error for CacheError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
-            #[cfg(feature = "rs3")]
+            #[cfg(feature = "sqlite")]
             Self::SqliteError(ref e) => Some(e),
             Self::DecodeError(ref e) => Some(e),
             Self::IoError(ref e) => Some(e),

@@ -3,9 +3,9 @@
 #![allow(unused_imports)] // varies based on mock config flags
 
 /// This contains the game-specific implementations.
-#[cfg_attr(feature = "rs3", path = "index/rs3.rs")]
-#[cfg_attr(feature = "osrs", path = "index/osrs.rs")]
-#[cfg_attr(feature = "legacy", path = "index/legacy.rs")]
+#[cfg_attr(feature = "sqlite", path = "index/sqlite.rs")]
+#[cfg_attr(feature = "dat2", path = "index/dat2.rs")]
+#[cfg_attr(feature = "dat", path = "index/dat.rs")]
 mod index_impl;
 
 use std::{
@@ -24,7 +24,7 @@ pub use index_impl::*;
 use itertools::iproduct;
 use path_macro::path;
 
-#[cfg(feature = "osrs")]
+#[cfg(feature = "dat2")]
 use crate::xtea::Xtea;
 use crate::{
     arc::Archive,
@@ -60,13 +60,13 @@ pub struct CacheIndex<S: IndexState> {
     state: S,
     path: PathBuf,
 
-    #[cfg(feature = "rs3")]
+    #[cfg(feature = "sqlite")]
     connection: sqlite::Connection,
 
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
+    #[cfg(any(feature = "dat2", feature = "dat"))]
     file: Box<[u8]>,
 
-    #[cfg(feature = "osrs")]
+    #[cfg(feature = "dat2")]
     xteas: Option<HashMap<u32, Xtea>>,
 }
 
@@ -119,26 +119,26 @@ impl CacheIndex<Initial> {
         }
         let Self {
             path,
-            #[cfg(feature = "rs3")]
+            #[cfg(feature = "sqlite")]
             connection,
-            #[cfg(any(feature = "osrs", feature = "legacy"))]
+            #[cfg(any(feature = "dat2", feature = "dat"))]
             file,
             index_id,
             metadatas,
-            #[cfg(feature = "osrs")]
+            #[cfg(feature = "dat2")]
             xteas,
             ..
         } = self;
 
         CacheIndex {
             path,
-            #[cfg(feature = "rs3")]
+            #[cfg(feature = "sqlite")]
             connection,
-            #[cfg(any(feature = "osrs", feature = "legacy"))]
+            #[cfg(any(feature = "dat2", feature = "dat"))]
             file,
             index_id,
             metadatas,
-            #[cfg(feature = "osrs")]
+            #[cfg(feature = "dat2")]
             xteas,
             state: Truncated { feed: ids },
         }
@@ -165,26 +165,26 @@ impl IntoIterator for CacheIndex<Truncated> {
     fn into_iter(self) -> Self::IntoIter {
         let Self {
             path,
-            #[cfg(feature = "rs3")]
+            #[cfg(feature = "sqlite")]
             connection,
-            #[cfg(any(feature = "osrs", feature = "legacy"))]
+            #[cfg(any(feature = "dat2", feature = "dat"))]
             file,
             index_id,
             metadatas,
-            #[cfg(feature = "osrs")]
+            #[cfg(feature = "dat2")]
             xteas,
             state,
         } = self;
 
         let index = CacheIndex {
             path,
-            #[cfg(feature = "rs3")]
+            #[cfg(feature = "sqlite")]
             connection,
-            #[cfg(any(feature = "osrs", feature = "legacy"))]
+            #[cfg(any(feature = "dat2", feature = "dat"))]
             file,
             index_id,
             metadatas,
-            #[cfg(feature = "osrs")]
+            #[cfg(feature = "dat2")]
             xteas,
             state: Initial {},
         };

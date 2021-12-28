@@ -14,7 +14,7 @@
     unreachable_pub
 )]
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
-#![cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
+#![cfg(any(feature = "sqlite", feature = "dat2", feature = "dat"))]
 
 use rs3cache_utils as utils;
 
@@ -26,5 +26,5 @@ pub mod hash;
 pub mod index;
 pub mod indextype;
 pub mod meta;
-#[cfg(feature = "osrs")]
+#[cfg(feature = "dat2")]
 pub mod xtea;

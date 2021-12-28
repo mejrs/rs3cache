@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "rs3"
-crate-type = ["lib", "cdylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 rs3cache = { path = "..", version = "0.1.0", features=["rs3", "python"] }

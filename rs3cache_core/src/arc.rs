@@ -64,7 +64,7 @@ impl Archive {
                 files
             }
 
-            #[cfg(feature = "rs3")]
+            #[cfg(feature = "sqlite")]
             child_count => {
                 use crate::utils::adapters::Pairwisor;
 
@@ -83,7 +83,7 @@ impl Archive {
                 files
             }
 
-            #[cfg(any(feature = "osrs", feature = "legacy"))]
+            #[cfg(any(feature = "dat2", feature = "dat"))]
             child_count => {
                 use crate::utils::adapters::Accumulator;
                 let mut data = data;

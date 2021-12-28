@@ -27,18 +27,18 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
-        let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
+    fn get_entry(b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
+        let file = path!(folder / format!("cache/main_file_cache.idx{b}"));
         let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((buf.get_uint(3) as u32, buf.get_uint(3) as u32))
     }
 
-    fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {
+    fn read_index(&self, b: u32) -> CacheResult<Vec<u8>> {
         let mut buffer = Cursor::new(&self.file);
 
-        let (length, mut sector) = Self::get_entry(a, b, &self.path)?;
+        let (length, mut sector) = Self::get_entry(b, &self.path)?;
 
         let mut read_count = 0;
         let mut part = 0;
@@ -56,7 +56,6 @@ where
             let new_sector = buffer.get_uint(3) as u32;
             let current_index = buffer.get_u8();
 
-            assert_eq!(a, current_index as u32);
             assert_eq!(b, current_archive as u32);
             assert_eq!(part, current_part as u32);
 
@@ -70,7 +69,7 @@ where
     }
 
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
+        let data = self.read_index(metadata.index_id())?;
         Ok(decoder::decompress(data, None)?)
     }
 
@@ -106,7 +105,7 @@ impl CacheIndex<Initial> {
         };
 
         let metadatas = {
-            let data = s.read_index(255, index_id)?;
+            let data = s.read_index(index_id)?;
             let data = decoder::decompress(data, None)?;
             IndexMetadata::deserialize(index_id, data)?
         };
