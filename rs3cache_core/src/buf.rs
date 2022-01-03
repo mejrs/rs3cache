@@ -76,7 +76,13 @@ impl ReadError {
     pub fn add_decode_context(self, #[cfg(debug_assertions)] opcodes: Vec<u8>, remainder: Bytes, parsed: String) -> Self {
         Self {
             location: self.location,
-            kind: Kind::DecodeContext( #[cfg(debug_assertions)] opcodes, remainder, parsed, Box::new(self)),
+            kind: Kind::DecodeContext(
+                #[cfg(debug_assertions)]
+                opcodes,
+                remainder,
+                parsed,
+                Box::new(self),
+            ),
         }
     }
 }
@@ -158,7 +164,7 @@ pub trait BufExtra: Buf {
             Err(ReadError::eof())
         }
     }
-
+    #[track_caller]
     fn try_get_i8(&mut self) -> Result<i8, ReadError> {
         if self.remaining() >= 1 {
             Ok(self.get_i8())
@@ -166,7 +172,7 @@ pub trait BufExtra: Buf {
             Err(ReadError::eof())
         }
     }
-
+    #[track_caller]
     fn try_get_u16(&mut self) -> Result<u16, ReadError> {
         if self.remaining() >= 2 {
             Ok(self.get_u16())
@@ -175,6 +181,7 @@ pub trait BufExtra: Buf {
         }
     }
 
+    #[track_caller]
     fn try_get_i32(&mut self) -> Result<i32, ReadError> {
         if self.remaining() >= 4 {
             Ok(self.get_i32())
@@ -182,10 +189,19 @@ pub trait BufExtra: Buf {
             Err(ReadError::eof())
         }
     }
-
+    #[track_caller]
     fn try_get_u32(&mut self) -> Result<u32, ReadError> {
         if self.remaining() >= 4 {
             Ok(self.get_u32())
+        } else {
+            Err(ReadError::eof())
+        }
+    }
+
+    #[track_caller]
+    fn try_get_uint(&mut self, nbytes: usize) -> Result<u64, ReadError> {
+        if self.remaining() >= nbytes {
+            Ok(self.get_uint(nbytes))
         } else {
             Err(ReadError::eof())
         }
@@ -231,7 +247,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads one or two unsigned bytes as an 16-bit unsigned integer.
-    #[inline(always)]
+    #[inline]
     fn try_get_unsigned_smart(&mut self) -> Result<u16, ReadError> {
         let mut i = self.try_get_u8()? as u16;
         let ret = if i >= 0x80 {
@@ -244,7 +260,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads one or two unsigned bytes as an 16-bit unsigned integer.
-    #[inline(always)]
+    #[inline]
     fn get_unsigned_smart(&mut self) -> u16 {
         let mut i = self.get_u8() as u16;
         if i >= 0x80 {
@@ -279,7 +295,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads a multiple of two bytes as an 32-bit unsigned integer.
-    #[inline(always)]
+    #[inline]
     fn get_smarts(&mut self) -> u32 {
         let mut value: u32 = 0;
         loop {
@@ -291,7 +307,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads one byte, returning 8 boolean bitflags.
-    #[inline(always)]
+    #[inline]
     fn get_bitflags(&mut self) -> [bool; 8] {
         let flags = self.get_u8();
         [
@@ -307,9 +323,11 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads a 0-terminated String from the buffer
-    #[inline(always)]
+    #[inline]
     fn try_get_string(&mut self) -> Result<String, ReadError> {
-        let nul_pos = memchr::memchr(0, self.chunk()).ok_or_else(ReadError::not_nul_terminated)?;
+        let terminator = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
+
+        let nul_pos = memchr::memchr(terminator, self.chunk()).ok_or_else(ReadError::not_nul_terminated)?;
 
         // this string format is not utf8, of course :)
         let s = self.chunk()[0..nul_pos].iter().map(|&i| i as char).collect::<String>();
@@ -318,36 +336,38 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads a 0-terminated String from the buffer
-    #[inline(always)]
+    #[inline]
     fn get_string(&mut self) -> String {
-        let nul_pos = memchr::memchr(0, self.chunk()).unwrap();
+        let terminator = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
+
+        let nul_pos = memchr::memchr(terminator, self.chunk()).unwrap();
         let s = self.chunk()[0..nul_pos].iter().map(|&i| i as char).collect::<String>();
         self.advance(nul_pos + 1);
         s
     }
 
     /// Reads a 0-start and 0-terminated String from the buffer.
-    #[inline(always)]
+    #[inline]
     fn get_padded_string(&mut self) -> String {
         self.get_u8();
         self.get_string()
     }
 
     /// Reads three unsigned bytes , returning a `[red, blue, green]` array.
-    #[inline(always)]
+    #[inline]
     fn get_rgb(&mut self) -> [u8; 3] {
         self.get_array()
     }
 
     /// Reads two obfuscated bytes.
-    #[inline(always)]
+    #[inline]
     fn try_get_masked_index(&mut self) -> Result<u16, ReadError> {
         // big TODO
         self.try_get_u16()
     }
 
     /// Reads two obfuscated bytes.
-    #[inline(always)]
+    #[inline]
     fn get_masked_index(&mut self) -> u16 {
         // big TODO
         self.get_u16()

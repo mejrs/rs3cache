@@ -93,6 +93,7 @@ where
     /// # Errors
     ///
     /// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.
+    #[cfg(any(feature = "sqlite", feature = "dat2"))]
     pub fn archive(&self, archive_id: u32) -> CacheResult<Archive> {
         let metadata = self
             .metadatas()
@@ -101,6 +102,35 @@ where
         let data = self.get_file(metadata)?;
 
         Ok(Archive::deserialize(metadata, data))
+    }
+
+    #[cfg(feature = "dat")]
+    pub fn archive(&self, archive_id: u32) -> CacheResult<Archive> {
+        // FIXME
+        let metadata = Metadata {
+            index_id: self.index_id,
+            archive_id,
+            child_count: 1,
+            child_indices: vec![0],
+            ..Default::default()
+        };
+
+        let data = self.get_file(&metadata)?;
+
+        if self.index_id == 0 {
+            Ok(Archive::deserialize_jag(&metadata, data)?)
+        } else {
+            Ok(Archive {
+                index_id: self.index_id,
+                archive_id,
+                files: {
+                    let mut files = BTreeMap::new();
+                    files.insert(metadata.child_indices()[0], data);
+                    files
+                },
+                files_named: BTreeMap::new(),
+            })
+        }
     }
 }
 

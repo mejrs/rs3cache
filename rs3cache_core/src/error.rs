@@ -1,6 +1,6 @@
 use std::{backtrace::Backtrace, path::PathBuf};
 
-use crate::decoder::DecodeError;
+use crate::{buf::ReadError, decoder::DecodeError};
 /// Result wrapper for [`CacheError`].
 pub type CacheResult<T> = Result<T, CacheError>;
 
@@ -35,7 +35,7 @@ pub enum CacheError {
     /// Raised if a file is not in an [`Archive`](crate::arc::Archive).
     FileNotFoundError(u32, u32, u32),
     /// Raised if reading from a buffer fails
-    ReadError(crate::buf::ReadError),
+    ReadError(ReadError),
 }
 
 #[cfg(feature = "sqlite")]
@@ -76,6 +76,12 @@ impl From<serde_json::Error> for CacheError {
 impl From<DecodeError> for CacheError {
     fn from(cause: DecodeError) -> Self {
         Self::DecodeError(cause)
+    }
+}
+
+impl From<ReadError> for CacheError {
+    fn from(cause: ReadError) -> Self {
+        Self::ReadError(cause)
     }
 }
 

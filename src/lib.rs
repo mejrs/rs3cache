@@ -27,9 +27,6 @@
 #[cfg(not(any(feature = "rs3", feature = "osrs", feature = "legacy")))]
 compile_error!("You must use one and only one of the rs3 or osrs");
 
-#[cfg(all(feature = "mockdata", feature = "save_mockdata"))]
-compile_error!("mockdata and save_mockdata are incompatible");
-
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
 pub mod cli;
 
@@ -52,6 +49,9 @@ pub mod definitions {
     /// Configurations of Achievements
     #[cfg(feature = "rs3")]
     pub mod achievements;
+
+    #[cfg(feature = "legacy")]
+    pub mod flo;
 
     /// Configuration of game locations.
     pub mod location_configs;
@@ -80,6 +80,7 @@ pub mod definitions {
     pub mod music;
 
     /// Describes the colours of tiles.
+    #[cfg(any(feature = "rs3", feature = "osrs"))]
     pub mod overlays;
     /// Images displayed by the game client.
     pub mod sprites;
@@ -92,6 +93,7 @@ pub mod definitions {
     /// Describes the properties of game surface tiles.
     pub mod tiles;
     /// Describes the ground colours of tiles.
+    #[cfg(any(feature = "rs3", feature = "osrs"))]
     pub mod underlays;
 
     pub mod varbit_configs;

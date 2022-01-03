@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, path::PathBuf};
 
 use fstrings::{f, format_args_f};
 use pyo3::{
-    exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyTypeError},
+    exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::*,
     types::PyInt,
 };
@@ -80,7 +80,7 @@ impl PyMapSquares {
                 .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
                 .get(i, j)
-                .ok_or_else(|| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
+                .map_err(|_| PyKeyError::new_err(f!("Mapsquare {i}, {j} is not present.")))?;
 
             Ok(PyMapSquare { inner: sq })
         }
@@ -108,8 +108,15 @@ impl PyMapSquaresIter {
         slf
     }
 
-    fn __next__(&mut self) -> Option<PyMapSquare> {
-        self.inner.next().map(|sq| PyMapSquare { inner: sq })
+    fn __next__(&mut self, py: Python) -> Option<PyMapSquare> {
+        match self.inner.next() {
+            Some(Ok(sq)) => Some(PyMapSquare { inner: sq }),
+            Some(Err(e)) => {
+                PyRuntimeError::new_err("Error").restore(py);
+                None
+            }
+            None => None,
+        }
     }
 }
 

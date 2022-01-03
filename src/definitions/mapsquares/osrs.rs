@@ -46,13 +46,14 @@ impl MapSquares {
         Ok(MapSquares { index, mapping })
     }
 
-    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
-        let land = self.mapping.get(&("l", i, j))?;
-        let map = self.mapping.get(&("m", i, j))?;
+    pub fn get(&self, i: u8, j: u8) -> CacheResult<MapSquare> {
+        let land = self.mapping.get(&("l", i, j)).unwrap();
+        let map = self.mapping.get(&("m", i, j)).unwrap();
         let env = self.mapping.get(&("e", i, j)).copied();
         let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
 
-        MapSquare::new(&self.index, xtea.copied(), *land, *map, env, i, j).ok()
+        let sq = MapSquare::new(&self.index, xtea.copied(), *land, *map, env, i, j)?;
+        Ok(sq)
     }
 }
 
@@ -63,10 +64,10 @@ pub struct MapSquareIterator {
 }
 
 impl Iterator for MapSquareIterator {
-    type Item = MapSquare;
+    type Item = CacheResult<MapSquare>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.state.next().map(|(i, j)| self.mapsquares.get(i, j).unwrap())
+        self.state.next().map(|(i, j)| self.mapsquares.get(i, j))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {

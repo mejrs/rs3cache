@@ -18,11 +18,11 @@ impl MapSquares {
         Ok(MapSquares { index })
     }
 
-    pub fn get(&self, i: u8, j: u8) -> Option<MapSquare> {
+    pub fn get(&self, i: u8, j: u8) -> CacheResult<MapSquare> {
         let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = self.index.archive(archive_id).ok()?;
+        let archive = self.index.archive(archive_id)?;
 
-        Some(MapSquare::from_archive(archive))
+        Ok(MapSquare::from_archive(archive))
     }
 }
 /// Iterates over all [`MapSquare`]s in arbitrary order.
@@ -32,10 +32,10 @@ pub struct MapSquareIterator {
 }
 
 impl Iterator for MapSquareIterator {
-    type Item = MapSquare;
+    type Item = CacheResult<MapSquare>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.state.next().map(|(i, j)| self.mapsquares.get(i, j).unwrap())
+        self.state.next().map(|(i, j)| self.mapsquares.get(i, j))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {

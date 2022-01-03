@@ -43,7 +43,7 @@ pub fn put(
 
                     #[cfg(feature = "legacy")]
                     {
-                        sprites.get(&(todo!(), todo!())).map(|s| (loc, s))
+                        sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
                     }
                 })
             } else {

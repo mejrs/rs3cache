@@ -91,7 +91,7 @@ impl Tile {
         tiles
     }
 
-    #[cfg(feature = "osrs")]
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     pub fn dump(mut buffer: Bytes) -> TileArray {
         let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();

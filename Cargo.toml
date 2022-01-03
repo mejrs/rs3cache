@@ -12,7 +12,6 @@ members = [
     "rs3cache_utils",
     "rs3_py",
     "osrs_py",
-    "xtask"
 ]
 
 [profile.release]
@@ -42,7 +41,6 @@ required-features = ["legacy"]
 rs3cache_macros = { path = "rs3cache_macros", version = "0.1.0", optional = true  }
 rs3cache_core = { path = "rs3cache_core", version = "0.1.0" }
 rs3cache_utils = { path = "rs3cache_utils", version = "0.1.0" }
-xtask = { path = "xtask", version = "0.1.0" }
 itertools = "0.10.1"
 ndarray = {version = "0.15.3", features = ["serde"] }
 image = "0.23.14"

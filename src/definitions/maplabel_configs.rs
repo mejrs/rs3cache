@@ -99,7 +99,7 @@ impl MapLabelConfig {
         loop {
             match buffer.get_u8() {
                 0 => {
-                    debug_assert!(!buffer.has_remaining());
+                    debug_assert!(!buffer.has_remaining(), "{:?}", buffer);
                     break maplabel;
                 }
                 1 => maplabel.sprite = Some(buffer.get_smart32().unwrap()),
@@ -277,7 +277,7 @@ pub mod maplabel_config_fields {
 
 use maplabel_config_fields::*;
 
-#[cfg(test)]
+#[cfg(all(test, any(feature = "rs3", feature = "osrs")))]
 mod tests {
     use super::*;
 

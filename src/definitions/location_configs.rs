@@ -37,7 +37,9 @@ pub struct LocationConfig {
     pub models: Option<Models>,
     /// Its name, if present.
     pub name: Option<String>,
-    #[cfg(feature = "osrs")]
+    #[cfg(feature = "legacy")]
+    pub description: Option<String>,
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     pub models_2: Option<Models2>,
     /// Its west-east dimension, defaulting to 1 if not present.
     ///
@@ -176,7 +178,7 @@ impl LocationConfig {
         Ok(locations)
     }
 
-    #[cfg(all(feature = "osrs", not(feature = "2008_shim")))]
+    #[cfg(all(feature = "osrs", not(feature = "2008_shim"), not(feature = "legacy")))]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let locations = CacheIndex::new(IndexType::CONFIG, &config.input)?
             .archive(ConfigType::LOC_CONFIG)?
@@ -191,9 +193,24 @@ impl LocationConfig {
 
     #[cfg(feature = "legacy")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        CacheIndex::new(0, &config.input)?;
+        let cache = CacheIndex::new(0, &config.input).unwrap();
+        let archive = cache.archive(2).unwrap();
+        let mut file = archive.file_named("loc.dat").unwrap();
 
-        todo!()
+        let count = file.try_get_u16().unwrap();
+        let mut offset_data = archive.file_named("loc.idx").unwrap();
+
+        let mut locations = BTreeMap::new();
+
+        let len = offset_data.try_get_u16().unwrap();
+        for id in 0..len {
+            let piece_len = offset_data.try_get_u16().unwrap();
+            let data = file.split_to(piece_len as usize);
+            let loc = LocationConfig::deserialize(id as u32, data).unwrap();
+            locations.insert(id as u32, loc);
+        }
+
+        Ok(locations)
     }
 
     fn deserialize(id: u32, mut buffer: Bytes) -> Result<Self, ReadError> {
@@ -237,7 +254,9 @@ impl LocationConfig {
                     }
                     1 => loc.models = Some(Models::deserialize(&mut buffer)?),
                     2 => loc.name = Some(buffer.try_get_string()?),
-                    #[cfg(feature = "osrs")]
+                    #[cfg(feature = "legacy")]
+                    3 => loc.description = Some(buffer.try_get_string()?),
+                    #[cfg(any(feature = "osrs", feature = "legacy"))]
                     5 => loc.models_2 = Some(Models2::deserialize(&mut buffer)?),
                     14 => loc.dim_x = Some(buffer.try_get_u8()?),
                     15 => loc.dim_y = Some(buffer.try_get_u8()?),
@@ -267,8 +286,8 @@ impl LocationConfig {
                     // changed at some point after 2015
                     // used to be mapscenes
                     // see https://discordapp.com/channels/177206626514632704/269673599554551808/872603876384178206
-                    #[cfg(feature = "osrs")]
-                    60 => loc.mapscene = Some(buffer.try_get_u16()?),
+                    #[cfg(any(feature = "osrs", feature = "legacy"))]
+                    60 => loc.mapfunction = Some(buffer.try_get_u16()?),
 
                     #[cfg(feature = "osrs")]
                     61 => loc.category = Some(buffer.try_get_u16()?),
@@ -277,7 +296,7 @@ impl LocationConfig {
                     65 => loc.scale_x = Some(buffer.try_get_u16()?),
                     66 => loc.scale_y = Some(buffer.try_get_u16()?),
                     67 => loc.scale_z = Some(buffer.try_get_u16()?),
-                    #[cfg(feature = "osrs")]
+                    #[cfg(any(feature = "osrs", feature = "legacy"))]
                     68 => loc.mapscene = Some(buffer.try_get_u16()?),
                     69 => loc.unknown_69 = Some(buffer.try_get_u8()?),
                     70 => loc.translate_x = Some(buffer.try_get_u16()?),
@@ -321,6 +340,7 @@ impl LocationConfig {
                     103 => loc.occludes_2 = Some(false),
                     104 => loc.unknown_104 = Some(buffer.try_get_u8()?),
                     106 => loc.headmodels = Some(HeadModels::deserialize(&mut buffer)?),
+                    #[cfg(feature = "rs3")]
                     107 => loc.mapfunction = Some(buffer.try_get_u16()?),
                     #[cfg(not(feature = "2011_shim"))]
                     opcode @ 136..=140 => {
@@ -586,14 +606,14 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg(feature = "osrs")]
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models2 {
         pub models: Vec<u16>,
     }
 
-    #[cfg(feature = "osrs")]
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
     impl Models2 {
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let count = buffer.try_get_u8()? as usize;
@@ -828,6 +848,48 @@ impl LocationConfig {
     }
 }
 
+#[cfg(all(test, feature = "legacy"))]
+mod legacy {
+    use std::path::PathBuf;
+
+    use rs3cache_core::index::CacheIndex;
+
+    use super::*;
+    use crate::cli::Config;
+
+    #[test]
+    fn decode_locations() {
+        let path = "test_data/2005_cache";
+        let location_count = 7389;
+        let first_section = 0..45;
+
+        let cache = CacheIndex::new(0, path).unwrap();
+        let archive = cache.archive(2).unwrap();
+        let mut file = archive.file_named("loc.dat").unwrap();
+
+        let count = file.try_get_u16().unwrap();
+
+        assert_eq!(
+            &file[first_section],
+            b"\x1eSearch\n\x05\x01\x08]\x02Crate\n\x03I wonder what's inside.\n\0"
+        );
+        assert_eq!(count, location_count);
+
+        let mut offset_data = archive.file_named("loc.idx").unwrap();
+
+        let len = offset_data.try_get_u16().unwrap();
+        for id in 0..len {
+            let piece_len = offset_data.try_get_u16().unwrap();
+            let data = file.split_to(piece_len as usize);
+            let loc = LocationConfig::deserialize(id as u32, data).unwrap();
+            //println!("{}", loc);
+        }
+        assert_eq!(offset_data, &[].as_slice());
+        assert_eq!(file, &[].as_slice());
+        //panic!();
+    }
+}
+
 #[cfg(test)]
 mod map_tests {
     use super::*;
@@ -838,14 +900,11 @@ mod map_tests {
         let config = Config::env();
 
         let loc_config = LocationConfig::dump_all(&config)?;
-        let loc = loc_config.get(&36687).unwrap();
-        let name = loc.name.as_ref().unwrap();
+        let loc = loc_config.get(&3263).expect("Swamp not present");
+        let name = loc.name.as_ref().expect("Swamp has no name");
 
-        #[cfg(feature = "rs3")]
-        assert_eq!(name, "Trapdoor", "{:?}", loc);
+        assert_eq!(name, "Swamp", "{:?}", loc);
 
-        #[cfg(feature = "osrs")]
-        assert_eq!(name, "Tree stump", "{:?}", loc);
         Ok(())
     }
 

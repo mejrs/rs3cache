@@ -113,6 +113,14 @@ impl Overlay {
     }
 }
 
+use std::fmt::{self, Display, Formatter};
+
+impl Display for Overlay {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap())
+    }
+}
+
 ///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(&config.output)?;

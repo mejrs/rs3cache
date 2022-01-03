@@ -61,7 +61,9 @@ pub enum Dump {
     VarbitConfigs,
     Structs,
     Enums,
+    #[cfg(any(feature = "rs3", feature = "osrs"))]
     Underlays,
+    #[cfg(any(feature = "rs3", feature = "osrs"))]
     Overlays,
     #[cfg(feature = "osrs")]
     Textures,
@@ -78,7 +80,9 @@ impl Dump {
                 #[cfg(feature = "rs3")]
                 definitions::item_configs::export(config)?;
                 definitions::maplabel_configs::export(config)?;
+                #[cfg(any(feature = "rs3", feature = "osrs"))]
                 definitions::overlays::export(config)?;
+                #[cfg(any(feature = "rs3", feature = "osrs"))]
                 definitions::underlays::export(config)?;
 
                 #[cfg(feature = "rs3")]
@@ -124,7 +128,9 @@ impl Dump {
             Dump::VarbitConfigs => definitions::varbit_configs::export(config)?,
             Dump::Structs => definitions::structs::export(config)?,
             Dump::Enums => definitions::enums::export(config)?,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
             Dump::Underlays => definitions::underlays::export(config)?,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
             Dump::Overlays => definitions::overlays::export(config)?,
             #[cfg(feature = "osrs")]
             Dump::Textures => definitions::textures::export(config)?,
@@ -158,7 +164,9 @@ impl FromStr for Dump {
             "varbit_configs" => Ok(Self::VarbitConfigs),
             "structs" => Ok(Self::Structs),
             "enums" => Ok(Self::Enums),
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
             "underlays" => Ok(Self::Underlays),
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
             "overlays" => Ok(Self::Overlays),
             #[cfg(feature = "osrs")]
             "textures" => Ok(Self::Textures),
@@ -239,6 +247,14 @@ impl Config {
     pub fn env() -> Self {
         Self {
             input: PathBuf::from("test_data/rs3_cache"),
+            ..Default::default()
+        }
+    }
+
+    #[cfg(all(feature = "legacy", feature = "mockdata"))]
+    pub fn env() -> Self {
+        Self {
+            input: PathBuf::from("test_data/2005_cache"),
             ..Default::default()
         }
     }

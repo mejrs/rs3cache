@@ -15,9 +15,9 @@ use crate::{
 
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
     let enum_archives = CacheIndex::new(IndexType::ENUM_CONFIG, &config.input)?;
-    let mut archive = enum_archives.archive(5)?;
-    let music_names = Enum::deserialize(5 << 8 | 65, archive.take_file(&65)?);
-    let music_indices = Enum::deserialize(5 << 8 | 71, archive.take_file(&71)?);
+    let archive = enum_archives.archive(5)?;
+    let music_names = Enum::deserialize(5 << 8 | 65, archive.file(&65)?);
+    let music_indices = Enum::deserialize(5 << 8 | 71, archive.file(&71)?);
     let audio_archives = CacheIndex::new(IndexType::AUDIOSTREAMS, &config.input)?;
 
     for (archive_id, name) in music_names.variants.into_iter() {
@@ -40,7 +40,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
         };
 
         let first = match audio_archives.archive(music_archive_id) {
-            Ok(mut file) => file.take_file(&0).unwrap(),
+            Ok(file) => file.file(&0).unwrap(),
             _ => {
                 // Seems like things are lazily loaded.
                 println!("Unable to create \"{}\".", name);
@@ -66,7 +66,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
         // The first one is the one that's already written
         for chunk in jaga.chunks.iter().skip(1) {
             let archive_id = chunk.archive_id;
-            let more_data = audio_archives.archive(archive_id).unwrap().take_file(&0).unwrap();
+            let more_data = audio_archives.archive(archive_id).unwrap().file(&0).unwrap();
             let file_name = path!(&out / f!("{archive_id}.ogg"));
             let mut file = File::create(&file_name).unwrap();
             file.write_all(&more_data).unwrap();

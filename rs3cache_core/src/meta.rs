@@ -15,7 +15,11 @@ use itertools::izip;
 use pyo3::prelude::*;
 use serde::{Serialize, Serializer};
 
-use crate::{buf::BufExtra, error::CacheResult, utils::adapters::Accumulator};
+use crate::{
+    buf::{BufExtra, ReadError},
+    error::CacheResult,
+    utils::adapters::Accumulator,
+};
 
 /// Metadata about [`Archive`](crate::arc::Archive)s.
 
@@ -26,27 +30,27 @@ use crate::{buf::BufExtra, error::CacheResult, utils::adapters::Accumulator};
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Metadata {
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    index_id: u32,
+    pub index_id: u32,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    archive_id: u32,
+    pub archive_id: u32,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    name: Option<i32>,
+    pub name: Option<i32>,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    crc: i32,
+    pub crc: i32,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    version: i32,
+    pub version: i32,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    unknown: Option<i32>,
+    pub unknown: Option<i32>,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    compressed_size: Option<u32>,
+    pub compressed_size: Option<u32>,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    size: Option<u32>,
+    pub size: Option<u32>,
     #[serde(serialize_with = "bytes_to_vec")]
-    digest: Option<Bytes>,
+    pub digest: Option<Bytes>,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    child_count: u32,
+    pub child_count: u32,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
-    child_indices: Vec<u32>,
+    pub child_indices: Vec<u32>,
 }
 
 #[cfg(feature = "pyo3")]
@@ -171,41 +175,49 @@ impl IndexMetadata {
     }
 
     /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_core::indextype::IndexType).
+    #[cfg(any(feature = "sqlite", feature = "dat2"))]
     pub(crate) fn deserialize(index_id: u32, mut buffer: Bytes) -> CacheResult<Self> {
-        let format = buffer.get_i8();
-        let _index_utc_stamp = if format > 5 { Some(buffer.get_i32()) } else { None };
+        let format = buffer.try_get_i8()?;
+
+        let _index_utc_stamp = if format > 5 { Some(buffer.try_get_i32()?) } else { None };
+
         let [named, hashed, unk4, ..] = buffer.get_bitflags();
+
         let entry_count = if format >= 7 {
-            buffer.get_smart32().unwrap() as usize
+            buffer.try_get_smart32()?.unwrap() as usize
         } else {
-            buffer.get_u16() as usize
+            buffer.try_get_u16()? as usize
         };
 
-        let archive_ids = iter::repeat_with(|| {
+        let archive_ids = iter::repeat_with(|| try {
             if format >= 7 {
-                buffer.get_smart32().unwrap()
+                buffer.try_get_smart32()?.unwrap()
             } else {
-                buffer.get_u16() as u32
+                buffer.try_get_u16()? as u32
             }
         })
         .take(entry_count)
+        .collect::<Result<Vec<u32>, ReadError>>()?
+        .into_iter()
         .accumulate(Add::add)
         .collect::<Vec<u32>>();
 
         let names = if named {
-            iter::repeat_with(|| Some(buffer.get_i32()))
+            iter::repeat_with(|| try { Some(buffer.try_get_i32()?) })
                 .take(entry_count)
-                .collect::<Vec<Option<i32>>>()
+                .collect::<Result<Vec<Option<i32>>, ReadError>>()?
         } else {
             vec![None; entry_count]
         };
 
-        let crcs = iter::repeat_with(|| buffer.get_i32()).take(entry_count).collect::<Vec<i32>>();
+        let crcs = iter::repeat_with(|| buffer.try_get_i32())
+            .take(entry_count)
+            .collect::<Result<Vec<i32>, ReadError>>()?;
 
         let unknowns = if unk4 {
-            iter::repeat_with(|| Some(buffer.get_i32()))
+            iter::repeat_with(|| try { Some(buffer.try_get_i32()?) })
                 .take(entry_count)
-                .collect::<Vec<Option<i32>>>()
+                .collect::<Result<Vec<Option<i32>>, ReadError>>()?
         } else {
             vec![None; entry_count]
         };

@@ -33,7 +33,7 @@ where
         let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
-        Ok((buf.get_uint(3) as u32, buf.get_uint(3) as u32))
+        Ok((buf.try_get_uint(3)? as u32, buf.try_get_uint(3)? as u32))
     }
 
     fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {

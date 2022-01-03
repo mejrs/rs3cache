@@ -7,16 +7,18 @@ use itertools::iproduct;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 
+#[cfg(feature = "legacy")]
+use crate::definitions::flo::Flo;
 #[cfg(any(feature = "rs3", feature = "2008_shim"))]
 use crate::definitions::mapscenes::MapScene;
+#[cfg(any(feature = "rs3", feature = "osrs"))]
+use crate::definitions::{overlays::Overlay, underlays::Underlay};
 use crate::{
     cache::error::CacheResult,
     definitions::{
         location_configs::LocationConfig,
         mapsquares::{GroupMapSquare, GroupMapSquareIterator},
-        overlays::Overlay,
         sprites::{self, Sprite},
-        underlays::Underlay,
     },
     renderers::{map::*, scale, zoom},
     utils::color::Color,
@@ -91,7 +93,10 @@ pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
 
 fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> CacheResult<()> {
     let location_definitions = LocationConfig::dump_all(config)?;
+
+    #[cfg(any(feature = "rs3", feature = "osrs"))]
     let overlay_definitions = Overlay::dump_all(config)?;
+    #[cfg(any(feature = "rs3", feature = "osrs"))]
     let underlay_definitions = Underlay::dump_all(config)?;
 
     #[cfg(any(feature = "rs3", feature = "2008_shim"))]
@@ -110,17 +115,24 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
     #[cfg(feature = "legacy")]
-    let sprites: BTreeMap<(u32, u32), Sprite> = todo!();
+    let sprites: BTreeMap<(u32, u32), Sprite> = sprites::get_mapscenes(CONFIG.scale, config)?;
+
+    #[cfg(feature = "legacy")]
+    let flos = Flo::dump_all(config)?;
 
     iter.progress().par_bridge().for_each(|gsq| {
         render_tile(
             &folder,
             gsq,
             &location_definitions,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
             &overlay_definitions,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
             &underlay_definitions,
             #[cfg(any(feature = "rs3", feature = "2008_shim"))]
             &mapscenes,
+            #[cfg(feature = "legacy")]
+            &flos,
             &sprites,
         );
     });
@@ -132,9 +144,10 @@ pub fn render_tile(
     folder: impl AsRef<Path>,
     squares: GroupMapSquare,
     location_config: &BTreeMap<u32, LocationConfig>,
-    overlay_definitions: &BTreeMap<u32, Overlay>,
-    underlay_definitions: &BTreeMap<u32, Underlay>,
+    #[cfg(any(feature = "rs3", feature = "osrs"))] overlay_definitions: &BTreeMap<u32, Overlay>,
+    #[cfg(any(feature = "rs3", feature = "osrs"))] underlay_definitions: &BTreeMap<u32, Underlay>,
     #[cfg(any(feature = "rs3", feature = "2008_shim"))] mapscenes: &BTreeMap<u32, MapScene>,
+    #[cfg(feature = "legacy")] flos: &BTreeMap<u32, Flo>,
     sprites: &BTreeMap<(u32, u32), Sprite>,
 ) {
     let func = |plane| {
@@ -142,7 +155,17 @@ pub fn render_tile(
 
         let mut img = RgbaImage::from_pixel(CONFIG.dim, CONFIG.dim, backfill);
 
-        base::put(plane, &mut img, &squares, underlay_definitions, overlay_definitions);
+        base::put(
+            plane,
+            &mut img,
+            &squares,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
+            underlay_definitions,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
+            overlay_definitions,
+            #[cfg(feature = "legacy")]
+            flos,
+        );
         lines::put(plane, &mut img, &squares, location_config);
         mapscenes::put(
             plane,

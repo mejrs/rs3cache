@@ -14,7 +14,7 @@
 mod iterator;
 
 use std::{
-    collections::{hash_map, HashMap},
+    collections::{hash_map, BTreeMap, HashMap},
     fs::{self, File},
     io::Write,
     iter::Zip,
@@ -101,8 +101,8 @@ impl MapSquare {
 
     #[cfg(feature = "osrs")]
     fn new(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
-        let land = index.archive_with_xtea(land, xtea).and_then(|mut arch| arch.take_file(&0));
-        let tiles = index.archive(tiles)?.take_file(&0)?;
+        let land = index.archive_with_xtea(land, xtea).and_then(|arch| arch.file(&0));
+        let tiles = index.archive(tiles)?.file(&0)?;
         let _env = env.map(|k| index.archive(k));
 
         let tiles = Tile::dump(tiles);
@@ -120,19 +120,35 @@ impl MapSquare {
         })
     }
 
+    #[cfg(feature = "legacy")]
+    fn new(index: &CacheIndex<Initial>, loc: u32, map: u32, i: u8, j: u8) -> CacheResult<MapSquare> {
+        let land = index.archive(loc)?.file(&0)?;
+        let tiles = index.archive(map)?.file(&0)?;
+
+        let tiles = Tile::dump(tiles);
+        let locations = Location::dump(i, j, &tiles, land);
+
+        Ok(MapSquare {
+            i,
+            j,
+            tiles: Ok(tiles),
+            locations: Ok(locations),
+        })
+    }
+
     #[cfg(feature = "rs3")]
-    pub(crate) fn from_archive(mut archive: Archive) -> MapSquare {
+    pub(crate) fn from_archive(archive: Archive) -> MapSquare {
         let i = (archive.archive_id() & 0x7F) as u8;
         let j = (archive.archive_id() >> 7) as u8;
-        let tiles = archive.take_file(&MapFileType::TILES).map(Tile::dump);
+        let tiles = archive.file(&MapFileType::TILES).map(Tile::dump);
         let locations = match tiles {
-            Ok(ref t) => archive.take_file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
+            Ok(ref t) => archive.file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
             // can't generally clone or copy error
             Err(CacheError::FileNotFoundError(i, a, f)) => Err(CacheError::FileNotFoundError(i, a, f)),
             _ => unreachable!(),
         };
         let water_locations = archive
-            .take_file(&MapFileType::WATER_LOCATIONS)
+            .file(&MapFileType::WATER_LOCATIONS)
             .map(|file| Location::dump_water_locations(i, j, file));
 
         MapSquare {
@@ -185,12 +201,14 @@ impl MapSquare {
 
 pub struct MapSquares {
     index: CacheIndex<Initial>,
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
-    mapping: std::collections::BTreeMap<(&'static str, u8, u8), u32>,
+    #[cfg(feature = "osrs")]
+    mapping: BTreeMap<(&'static str, u8, u8), u32>,
+    #[cfg(feature = "legacy")]
+    meta: BTreeMap<(u8, u8), rs3cache_core::index::MapsquareMeta>,
 }
 
 impl IntoIterator for MapSquares {
-    type Item = MapSquare;
+    type Item = CacheResult<MapSquare>;
     type IntoIter = MapSquareIterator;
 
     #[cfg(feature = "rs3")]
@@ -202,7 +220,6 @@ impl IntoIterator for MapSquares {
             .map(|id| ((id & 0x7F) as u8, (id >> 7) as u8))
             .collect::<Vec<_>>()
             .into_iter();
-
         MapSquareIterator { mapsquares: self, state }
     }
 
@@ -219,7 +236,8 @@ impl IntoIterator for MapSquares {
 
     #[cfg(feature = "legacy")]
     fn into_iter(self) -> Self::IntoIter {
-        todo!()
+        let state = self.meta.keys().copied().collect::<Vec<_>>().into_iter();
+        MapSquareIterator { mapsquares: self, state }
     }
 }
 
@@ -311,7 +329,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
     let last_id = {
         let squares = MapSquares::new(config)?.into_iter();
         squares
-            .filter_map(|sq| sq.take_locations().ok())
+            .filter_map(|sq| sq.expect("error deserializing mapsquare").take_locations().ok())
             .filter(|locs| !locs.is_empty())
             .map(|locs| locs.last().expect("locations stopped existing").id)
             .max()
@@ -320,7 +338,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
 
     let squares = MapSquares::new(config)?.into_iter();
     let mut locs: Vec<_> = squares
-        .filter_map(|sq| sq.take_locations().ok())
+        .filter_map(|sq| sq.expect("error deserializing mapsquare").take_locations().ok())
         .map(|locs| locs.into_iter().peekable())
         .collect();
 
@@ -353,6 +371,7 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
 
     fs::create_dir_all(&out)?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
+        let sq = sq.expect("error deserializing mapsquare");
         let i = sq.i;
         let j = sq.j;
         if let Ok(locations) = sq.take_locations() {
@@ -373,6 +392,7 @@ pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
 
     fs::create_dir_all(&out)?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
+        let sq = sq.expect("error deserializing mapsquare");
         let i = sq.i;
         let j = sq.j;
         if let Ok(tiles) = sq.take_tiles() {
@@ -385,6 +405,48 @@ pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
     });
 
     Ok(())
+}
+
+#[cfg(all(test, feature = "legacy"))]
+mod legacy {
+    use super::*;
+    use crate::cli::Config;
+    #[test]
+    fn decode_50_50() {
+        let config = Config::env();
+
+        let mut cache = CacheIndex::new(4, &config.input).unwrap();
+        let index = cache.get_index();
+        let meta = index[&(50, 50)];
+        dbg!(meta);
+        let locs = cache.archive(meta.locfile as u32).unwrap().file(&0).unwrap();
+        let map = cache.archive(meta.mapfile as u32).unwrap().file(&0).unwrap();
+    }
+}
+
+#[cfg(all(test, feature = "legacy"))]
+mod mapsquare_iter {
+
+    use super::*;
+    #[test]
+    fn traverse() -> CacheResult<()> {
+        let config = crate::cli::Config::env();
+        let sqs = MapSquares::new(&config)?.into_iter();
+
+        for sq in sqs {
+            if let Ok(locations) = sq.expect("error deserializing mapsquare").get_locations() {
+                for loc in locations {
+                    if loc.id == 3263 {
+                        println!("{} {} {} {}", loc.i, loc.i, loc.x, loc.y);
+                        if loc.i == 56 && loc.j == 54 && loc.x == 62 && loc.y == 53 {
+                            return Ok(());
+                        }
+                    }
+                }
+            }
+        }
+        panic!("swamp not found");
+    }
 }
 
 #[cfg(all(test, feature = "rs3"))]

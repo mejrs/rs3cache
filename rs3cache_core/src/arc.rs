@@ -26,10 +26,11 @@ use crate::{
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Clone, Default)]
 pub struct Archive {
-    index_id: u32,
-    archive_id: u32,
-    files: BTreeMap<u32, Bytes>,
-    poison_state: HashSet<u32>,
+    pub(crate) index_id: u32,
+    pub(crate) archive_id: u32,
+    pub(crate) files: BTreeMap<u32, Bytes>,
+    #[cfg(feature = "dat")]
+    pub(crate) files_named: BTreeMap<i32, Bytes>,
 }
 
 impl std::fmt::Debug for Archive {
@@ -53,6 +54,7 @@ impl Archive {
         self.archive_id
     }
 
+    #[cfg(any(feature = "sqlite", feature = "dat2"))]
     pub(crate) fn deserialize(metadata: &Metadata, data: Bytes) -> Archive {
         let index_id = metadata.index_id();
         let archive_id = metadata.archive_id();
@@ -83,7 +85,7 @@ impl Archive {
                 files
             }
 
-            #[cfg(any(feature = "dat2", feature = "dat"))]
+            #[cfg(feature = "dat2")]
             child_count => {
                 use crate::utils::adapters::Accumulator;
                 let mut data = data;
@@ -104,12 +106,7 @@ impl Archive {
             }
         };
 
-        Archive {
-            index_id,
-            archive_id,
-            files,
-            poison_state: HashSet::new(),
-        }
+        Archive { index_id, archive_id, files }
     }
 
     /// Removes and returns a File.
@@ -117,14 +114,11 @@ impl Archive {
     /// # Panics
     ///
     /// This function will panic if file `file_id` has already been removed.
-    pub fn take_file(&mut self, file_id: &u32) -> CacheResult<Bytes> {
-        if self.poison_state.insert(*file_id) {
-            self.files
-                .remove(file_id)
-                .ok_or_else(|| CacheError::FileNotFoundError(self.index_id(), self.archive_id(), *file_id))
-        } else {
-            panic!("PoisonError: file {} has already been withdrawn.", file_id)
-        }
+    pub fn file(&self, file_id: &u32) -> CacheResult<Bytes> {
+        self.files
+            .get(file_id)
+            .ok_or_else(|| CacheError::FileNotFoundError(self.index_id(), self.archive_id(), *file_id))
+            .cloned()
     }
 
     /// Take the files. Consumes the [`Archive`].
@@ -133,23 +127,106 @@ impl Archive {
     ///
     /// This function will panic if [`take_file`](Archive::take_file) has been called prior.
     pub fn take_files(self) -> BTreeMap<u32, Bytes> {
-        if self.poison_state.is_empty() {
-            self.files
-        } else {
-            panic!("PoisonError: some files have already been withdrawn")
-        }
+        self.files
     }
 
     /// The quantity of files currently in the archive.
     pub fn file_count(&self) -> usize {
         self.files.len()
     }
+
+    #[cfg(feature = "dat")]
+    pub(crate) fn deserialize_jag(metadata: &Metadata, mut buffer: Bytes) -> CacheResult<Archive> {
+        use std::io::Read;
+
+        #[derive(Debug)]
+        struct JagHeader {
+            filename: i32,
+            decompressed_len: u32,
+            compressed_len: u32,
+        }
+
+        assert_eq!(metadata.index_id(), 0, "called deserialize_jag on data not from index 0");
+
+        let decompressed_len = buffer.try_get_uint(3)?;
+        let compressed_len = buffer.try_get_uint(3)?;
+
+        let extracted = if decompressed_len != compressed_len {
+            let mut compressed = bytes::BytesMut::from(b"BZh1".as_slice());
+            compressed.extend(buffer.split_to(compressed_len as usize));
+
+            let mut decoded = Vec::with_capacity(decompressed_len as usize);
+
+            let mut decoder = bzip2_rs::DecoderReader::new(&compressed[..]);
+
+            decoder.read_to_end(&mut decoded).unwrap();
+            buffer = Bytes::from(decoded);
+            true
+        } else {
+            false
+        };
+
+        let files_length = buffer.get_u16();
+
+        let mut headers = buffer.split_to((files_length * 10).try_into().unwrap());
+        let mut archive = Archive {
+            index_id: metadata.index_id(),
+            archive_id: metadata.archive_id(),
+            ..Default::default()
+        };
+
+        for i in 0..files_length {
+            let header = JagHeader {
+                filename: headers.try_get_i32()?,
+                decompressed_len: headers.try_get_uint(3)? as u32,
+                compressed_len: headers.try_get_uint(3)? as u32,
+            };
+
+            let decompressed = if extracted {
+                buffer.split_to(header.decompressed_len as usize)
+            } else {
+                let mut compressed = bytes::BytesMut::from(b"BZh1".as_slice());
+                compressed.extend(buffer.split_to(header.compressed_len as usize));
+
+                let mut decoded = Vec::with_capacity(header.decompressed_len as usize);
+
+                let mut decoder = bzip2_rs::DecoderReader::new(&compressed[..]);
+
+                decoder.read_to_end(&mut decoded).unwrap();
+                Bytes::from(decoded)
+            };
+            archive.files.insert(i as u32, decompressed.clone());
+            archive.files_named.insert(header.filename, decompressed);
+        }
+        assert_eq!(buffer.remaining(), 0);
+
+        Ok(archive)
+    }
+
+    #[cfg(feature = "dat")]
+    pub fn file_named(&self, name: impl AsRef<str>) -> CacheResult<Bytes> {
+        let name = name.as_ref();
+
+        let hash = crate::hash::hash_archive(name);
+
+        self.files_named
+            .get(&hash)
+            .ok_or_else(|| CacheError::FileNotFoundError(self.index_id(), self.archive_id(), hash as u32))
+            .cloned()
+    }
+
+    /// Take the files. Consumes the [`Archive`].
+    #[cfg(feature = "dat")]
+    pub fn take_files_named(self) -> BTreeMap<i32, Bytes> {
+        self.files_named
+    }
 }
 
 #[cfg(feature = "pyo3")]
 #[pymethods]
 impl Archive {
-    fn file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyBytes> {
+    #[pyo3(name = "file")]
+    fn py_file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyBytes> {
         if let Some(file) = self.files.get(&file_id) {
             Ok(PyBytes::new(py, file))
         } else {

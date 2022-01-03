@@ -21,6 +21,8 @@ impl Compression {
     pub const GZIP: u8 = 2;
     /// Token for zlib compression.
     pub const ZLIB: &'static [u8] = b"ZLB";
+    #[cfg(feature = "dat")]
+    pub const DAT_GZIP: &'static [u8] = b"\x1f\x8b\x08";
 }
 
 /// Decompresses index files.
@@ -31,9 +33,10 @@ pub fn decompress(
     filesize: Option<u32>,
     #[cfg(feature = "dat2")] xtea: Option<crate::xtea::Xtea>,
 ) -> Result<Bytes, DecodeError> {
-    #[cfg(feature = "2008_shim")]
+    // Return an error when someone packed an empty file
+    //#[cfg(any(feature = "legacy", feature = "2008_shim"))]
     if encoded_data.len() < 3 {
-        return Ok(vec![0; 1000000].into());
+        return Err(DecodeError::Other("File was empty".to_string()));
     }
     match &encoded_data[0..3] {
         Compression::ZLIB => {
@@ -88,7 +91,19 @@ pub fn decompress(
             Ok(decoded_data.into())
         }
 
-        other => unimplemented!("unknown format {:?}", other),
+        #[cfg(feature = "dat")]
+        Compression::DAT_GZIP => {
+            if let [data @ .., _version_tag1, _version_tag2] = encoded_data.as_slice() {
+                let mut decoder = gzip::Decoder::new(data)?;
+                let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
+                decoder.read_to_end(&mut decoded_data)?;
+                Ok(decoded_data.into())
+            } else {
+                panic!()
+            }
+        }
+
+        _ => unimplemented!("unknown format {:?}", &encoded_data[0..30]),
     }
 }
 
