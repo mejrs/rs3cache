@@ -241,6 +241,25 @@
 <span id="240">240</span>
 <span id="241">241</span>
 <span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">path::PathBuf</span>, <span class="ident">str::FromStr</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
@@ -293,6 +312,7 @@
     <span class="ident">Sprites</span>,
     <span class="ident">Locations</span>,
     <span class="ident">LocationsEach</span>,
+    <span class="ident">TilesEach</span>,
     <span class="ident">LocationConfigs</span>,
     <span class="ident">LocationConfigsEach</span>,
     <span class="ident">NpcConfig</span>,
@@ -303,7 +323,9 @@
     <span class="ident">VarbitConfigs</span>,
     <span class="ident">Structs</span>,
     <span class="ident">Enums</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
     <span class="ident">Underlays</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
     <span class="ident">Overlays</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
     <span class="ident">Textures</span>,
@@ -320,7 +342,9 @@
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
                 <span class="ident">definitions::item_configs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
                 <span class="ident">definitions::maplabel_configs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
                 <span class="ident">definitions::overlays::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
                 <span class="ident">definitions::underlays::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>;
 
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
@@ -348,6 +372,7 @@
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
             <span class="ident">Dump::Achievements</span> =&gt; <span class="ident">definitions::achievements::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::Sprites</span> =&gt; <span class="ident">definitions::sprites::save_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
+            <span class="ident">Dump::TilesEach</span> =&gt; <span class="ident">definitions::mapsquares::export_tiles_by_square</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::Locations</span> =&gt; <span class="ident">definitions::mapsquares::export_locations_by_id</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::LocationsEach</span> =&gt; <span class="ident">definitions::mapsquares::export_locations_by_square</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::LocationConfigs</span> =&gt; <span class="ident">definitions::location_configs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
@@ -365,7 +390,9 @@
             <span class="ident">Dump::VarbitConfigs</span> =&gt; <span class="ident">definitions::varbit_configs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::Structs</span> =&gt; <span class="ident">definitions::structs::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="ident">Dump::Enums</span> =&gt; <span class="ident">definitions::enums::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
             <span class="ident">Dump::Underlays</span> =&gt; <span class="ident">definitions::underlays::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
             <span class="ident">Dump::Overlays</span> =&gt; <span class="ident">definitions::overlays::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
             <span class="ident">Dump::Textures</span> =&gt; <span class="ident">definitions::textures::export</span>(<span class="ident">config</span>)<span class="question-mark">?</span>,
@@ -387,6 +414,7 @@
             <span class="string">&quot;achievements&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Achievements</span>),
             <span class="string">&quot;sprites&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Sprites</span>),
             <span class="string">&quot;locations&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Locations</span>),
+            <span class="string">&quot;tiles_each&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::TilesEach</span>),
             <span class="string">&quot;locations_each&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::LocationsEach</span>),
             <span class="string">&quot;location_configs&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::LocationConfigs</span>),
             <span class="string">&quot;location_configs_each&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::LocationConfigsEach</span>),
@@ -398,7 +426,9 @@
             <span class="string">&quot;varbit_configs&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::VarbitConfigs</span>),
             <span class="string">&quot;structs&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Structs</span>),
             <span class="string">&quot;enums&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Enums</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
             <span class="string">&quot;underlays&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Underlays</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
             <span class="string">&quot;overlays&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Overlays</span>),
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
             <span class="string">&quot;textures&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Textures</span>),
@@ -479,6 +509,14 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">env</span>() -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">input</span>: <span class="ident">PathBuf::from</span>(<span class="string">&quot;test_data/rs3_cache&quot;</span>),
+            ..<span class="ident">Default::default</span>()
+        }
+    }
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mockdata&quot;</span>))]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">env</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">input</span>: <span class="ident">PathBuf::from</span>(<span class="string">&quot;test_data/2005_cache&quot;</span>),
             ..<span class="ident">Default::default</span>()
         }
     }

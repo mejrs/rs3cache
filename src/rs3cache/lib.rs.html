@@ -124,15 +124,21 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">doc</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(
     <span class="ident">cfg_eval</span>,
+    <span class="ident">bench_black_box</span>,
+    <span class="ident">doc_cfg</span>,
+    <span class="ident">doc_auto_cfg</span>,
     <span class="ident">option_result_contains</span>,
     <span class="ident">option_get_or_insert_default</span>,
     <span class="ident">once_cell</span>,
-    <span class="ident">bench_black_box</span>,
-    <span class="ident">doc_cfg</span>,
-    <span class="ident">result_cloned</span>
+    <span class="ident">result_cloned</span>,
+    <span class="ident">try_blocks</span>
 )]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>, <span class="ident">unused_imports</span>, <span class="ident">unreachable_code</span>, <span class="ident">unused_variables</span>, <span class="ident">dead_code</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(
@@ -150,9 +156,6 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)))]</span>
 <span class="macro">compile_error!</span>(<span class="string">&quot;You must use one and only one of the rs3 or osrs&quot;</span>);
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mockdata&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;save_mockdata&quot;</span>))]</span>
-<span class="macro">compile_error!</span>(<span class="string">&quot;mockdata and save_mockdata are incompatible&quot;</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cli</span>;
@@ -176,6 +179,9 @@
     <span class="doccomment">/// Configurations of Achievements</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">achievements</span>;
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">flo</span>;
 
     <span class="doccomment">/// Configuration of game locations.</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">location_configs</span>;
@@ -204,6 +210,7 @@
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">music</span>;
 
     <span class="doccomment">/// Describes the colours of tiles.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">overlays</span>;
     <span class="doccomment">/// Images displayed by the game client.</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sprites</span>;
@@ -216,6 +223,7 @@
     <span class="doccomment">/// Describes the properties of game surface tiles.</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tiles</span>;
     <span class="doccomment">/// Describes the ground colours of tiles.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">underlays</span>;
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">varbit_configs</span>;

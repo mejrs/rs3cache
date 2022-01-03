@@ -192,16 +192,25 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">backtrace::Backtrace</span>, <span class="ident">path::PathBuf</span>};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::decoder::DecodeError</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">buf::ReadError</span>, <span class="ident">decoder::DecodeError</span>};
 <span class="doccomment">/// Result wrapper for [`CacheError`].</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">CacheError</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// An error type for things that can go wrong when reading from the cache.</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CacheError</span> {
     <span class="doccomment">/// Wraps [`sqlite::Error`].</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
     <span class="ident">SqliteError</span>(<span class="ident">sqlite::Error</span>),
     <span class="ident">DecodeError</span>(<span class="ident">DecodeError</span>),
     <span class="doccomment">/// Wraps [`io.error`](std::io::Error).</span>
@@ -228,9 +237,11 @@
     <span class="ident">ArchiveNotFoundError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>),
     <span class="doccomment">/// Raised if a file is not in an [`Archive`](crate::arc::Archive).</span>
     <span class="ident">FileNotFoundError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">u32</span>),
+    <span class="doccomment">/// Raised if reading from a buffer fails</span>
+    <span class="ident">ReadError</span>(<span class="ident">ReadError</span>),
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">sqlite::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">sqlite::Error</span>) -&gt; <span class="self">Self</span> {
         <span class="ident"><span class="self">Self</span>::SqliteError</span>(<span class="ident">cause</span>)
@@ -268,6 +279,12 @@
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">DecodeError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">DecodeError</span>) -&gt; <span class="self">Self</span> {
         <span class="ident"><span class="self">Self</span>::DecodeError</span>(<span class="ident">cause</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ReadError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">ReadError</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident"><span class="self">Self</span>::ReadError</span>(<span class="ident">cause</span>)
     }
 }
 
@@ -348,13 +365,14 @@
 <span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
     <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
             <span class="ident"><span class="self">Self</span>::SqliteError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
             <span class="ident"><span class="self">Self</span>::DecodeError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
             <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
             <span class="ident"><span class="self">Self</span>::JsonDecodeError</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">e</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
             <span class="ident"><span class="self">Self</span>::ImageError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
             <span class="ident"><span class="self">Self</span>::ParseIntError</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
+            <span class="ident"><span class="self">Self</span>::ReadError</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
             <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }

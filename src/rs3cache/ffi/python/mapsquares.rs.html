@@ -166,11 +166,18 @@
 <span id="165">165</span>
 <span id="166">166</span>
 <span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">path::PathBuf</span>};
 
 <span class="kw">use</span> <span class="ident">fstrings</span>::{<span class="ident">f</span>, <span class="ident">format_args_f</span>};
 <span class="kw">use</span> <span class="ident">pyo3</span>::{
-    <span class="ident">exceptions</span>::{<span class="ident">PyIndexError</span>, <span class="ident">PyKeyError</span>, <span class="ident">PyReferenceError</span>, <span class="ident">PyTypeError</span>},
+    <span class="ident">exceptions</span>::{<span class="ident">PyIndexError</span>, <span class="ident">PyKeyError</span>, <span class="ident">PyReferenceError</span>, <span class="ident">PyRuntimeError</span>, <span class="ident">PyTypeError</span>},
     <span class="ident">prelude</span>::<span class="kw-2">*</span>,
     <span class="ident">types::PyInt</span>,
 };
@@ -248,7 +255,7 @@
                 .<span class="ident">as_ref</span>()
                 .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PyReferenceError::new_err</span>(<span class="string">&quot;Mapsquares is not available after using `iter()`&quot;</span>))<span class="question-mark">?</span>
                 .<span class="ident">get</span>(<span class="ident">i</span>, <span class="ident">j</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PyKeyError::new_err</span>(<span class="macro">f!</span>(<span class="string">&quot;Mapsquare {i}, {j} is not present.&quot;</span>)))<span class="question-mark">?</span>;
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">PyKeyError::new_err</span>(<span class="macro">f!</span>(<span class="string">&quot;Mapsquare {i}, {j} is not present.&quot;</span>)))<span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(<span class="ident">PyMapSquare</span> { <span class="ident">inner</span>: <span class="ident">sq</span> })
         }
@@ -276,8 +283,15 @@
         <span class="ident">slf</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PyMapSquare</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">sq</span><span class="op">|</span> <span class="ident">PyMapSquare</span> { <span class="ident">inner</span>: <span class="ident">sq</span> })
+    <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PyMapSquare</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>() {
+            <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">sq</span>)) =&gt; <span class="prelude-val">Some</span>(<span class="ident">PyMapSquare</span> { <span class="ident">inner</span>: <span class="ident">sq</span> }),
+            <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">e</span>)) =&gt; {
+                <span class="ident">PyRuntimeError::new_err</span>(<span class="string">&quot;Error&quot;</span>).<span class="ident">restore</span>(<span class="ident">py</span>);
+                <span class="prelude-val">None</span>
+            }
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        }
     }
 }
 

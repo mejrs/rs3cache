@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["BufExtra",""]]});
+initSidebarItems({"enum":[["ReadErrorKind",""]],"struct":[["ReadError",""]],"trait":[["BufExtra",""]]});

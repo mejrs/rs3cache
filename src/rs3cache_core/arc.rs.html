@@ -170,6 +170,83 @@
 <span id="169">169</span>
 <span id="170">170</span>
 <span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Units of data in a [`CacheIndex`](crate::index::CacheIndex).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Each [`Archive`] conatins files, which contain the actual data that can be parsed with</span>
@@ -198,10 +275,11 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Archive</span> {
-    <span class="ident">index_id</span>: <span class="ident">u32</span>,
-    <span class="ident">archive_id</span>: <span class="ident">u32</span>,
-    <span class="ident">files</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Bytes</span><span class="op">&gt;</span>,
-    <span class="ident">poison_state</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">index_id</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">archive_id</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">files</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Bytes</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">files_named</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Bytes</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Archive</span> {
@@ -225,6 +303,7 @@
         <span class="self">self</span>.<span class="ident">archive_id</span>
     }
 
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>))]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>, <span class="ident">data</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">Archive</span> {
         <span class="kw">let</span> <span class="ident">index_id</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">index_id</span>();
         <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">archive_id</span>();
@@ -236,7 +315,7 @@
                 <span class="ident">files</span>
             }
 
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
             <span class="ident">child_count</span> =&gt; {
                 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::adapters::Pairwisor</span>;
 
@@ -255,7 +334,7 @@
                 <span class="ident">files</span>
             }
 
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
             <span class="ident">child_count</span> =&gt; {
                 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::adapters::Accumulator</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">data</span>;
@@ -276,12 +355,7 @@
             }
         };
 
-        <span class="ident">Archive</span> {
-            <span class="ident">index_id</span>,
-            <span class="ident">archive_id</span>,
-            <span class="ident">files</span>,
-            <span class="ident">poison_state</span>: <span class="ident">HashSet::new</span>(),
-        }
+        <span class="ident">Archive</span> { <span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">files</span> }
     }
 
     <span class="doccomment">/// Removes and returns a File.</span>
@@ -289,14 +363,11 @@
     <span class="doccomment">/// # Panics</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function will panic if file `file_id` has already been removed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_file</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">file_id</span>: <span class="kw-2">&amp;</span><span class="ident">u32</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">poison_state</span>.<span class="ident">insert</span>(<span class="kw-2">*</span><span class="ident">file_id</span>) {
-            <span class="self">self</span>.<span class="ident">files</span>
-                .<span class="ident">remove</span>(<span class="ident">file_id</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">CacheError::FileNotFoundError</span>(<span class="self">self</span>.<span class="ident">index_id</span>(), <span class="self">self</span>.<span class="ident">archive_id</span>(), <span class="kw-2">*</span><span class="ident">file_id</span>))
-        } <span class="kw">else</span> {
-            <span class="macro">panic!</span>(<span class="string">&quot;PoisonError: file {} has already been withdrawn.&quot;</span>, <span class="ident">file_id</span>)
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file_id</span>: <span class="kw-2">&amp;</span><span class="ident">u32</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">files</span>
+            .<span class="ident">get</span>(<span class="ident">file_id</span>)
+            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">CacheError::FileNotFoundError</span>(<span class="self">self</span>.<span class="ident">index_id</span>(), <span class="self">self</span>.<span class="ident">archive_id</span>(), <span class="kw-2">*</span><span class="ident">file_id</span>))
+            .<span class="ident">cloned</span>()
     }
 
     <span class="doccomment">/// Take the files. Consumes the [`Archive`].</span>
@@ -305,23 +376,106 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function will panic if [`take_file`](Archive::take_file) has been called prior.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_files</span>(<span class="self">self</span>) -&gt; <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Bytes</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">poison_state</span>.<span class="ident">is_empty</span>() {
-            <span class="self">self</span>.<span class="ident">files</span>
-        } <span class="kw">else</span> {
-            <span class="macro">panic!</span>(<span class="string">&quot;PoisonError: some files have already been withdrawn&quot;</span>)
-        }
+        <span class="self">self</span>.<span class="ident">files</span>
     }
 
     <span class="doccomment">/// The quantity of files currently in the archive.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">file_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">files</span>.<span class="ident">len</span>()
     }
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">deserialize_jag</span>(<span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
+        <span class="kw">use</span> <span class="ident">std::io::Read</span>;
+
+        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+        <span class="kw">struct</span> <span class="ident">JagHeader</span> {
+            <span class="ident">filename</span>: <span class="ident">i32</span>,
+            <span class="ident">decompressed_len</span>: <span class="ident">u32</span>,
+            <span class="ident">compressed_len</span>: <span class="ident">u32</span>,
+        }
+
+        <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">index_id</span>(), <span class="number">0</span>, <span class="string">&quot;called deserialize_jag on data not from index 0&quot;</span>);
+
+        <span class="kw">let</span> <span class="ident">decompressed_len</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_uint</span>(<span class="number">3</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">compressed_len</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_uint</span>(<span class="number">3</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">extracted</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">decompressed_len</span> <span class="op">!</span><span class="op">=</span> <span class="ident">compressed_len</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compressed</span> <span class="op">=</span> <span class="ident">bytes::BytesMut::from</span>(<span class="string">b&quot;BZh1&quot;</span>.<span class="ident">as_slice</span>());
+            <span class="ident">compressed</span>.<span class="ident">extend</span>(<span class="ident">buffer</span>.<span class="ident">split_to</span>(<span class="ident">compressed_len</span> <span class="kw">as</span> <span class="ident">usize</span>));
+
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">decompressed_len</span> <span class="kw">as</span> <span class="ident">usize</span>);
+
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2_rs::DecoderReader::new</span>(<span class="kw-2">&amp;</span><span class="ident">compressed</span>[..]);
+
+            <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded</span>).<span class="ident">unwrap</span>();
+            <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Bytes::from</span>(<span class="ident">decoded</span>);
+            <span class="bool-val">true</span>
+        } <span class="kw">else</span> {
+            <span class="bool-val">false</span>
+        };
+
+        <span class="kw">let</span> <span class="ident">files_length</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">headers</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">split_to</span>((<span class="ident">files_length</span> <span class="op">*</span> <span class="number">10</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">archive</span> <span class="op">=</span> <span class="ident">Archive</span> {
+            <span class="ident">index_id</span>: <span class="ident">metadata</span>.<span class="ident">index_id</span>(),
+            <span class="ident">archive_id</span>: <span class="ident">metadata</span>.<span class="ident">archive_id</span>(),
+            ..<span class="ident">Default::default</span>()
+        };
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">files_length</span> {
+            <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">JagHeader</span> {
+                <span class="ident">filename</span>: <span class="ident">headers</span>.<span class="ident">try_get_i32</span>()<span class="question-mark">?</span>,
+                <span class="ident">decompressed_len</span>: <span class="ident">headers</span>.<span class="ident">try_get_uint</span>(<span class="number">3</span>)<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                <span class="ident">compressed_len</span>: <span class="ident">headers</span>.<span class="ident">try_get_uint</span>(<span class="number">3</span>)<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>,
+            };
+
+            <span class="kw">let</span> <span class="ident">decompressed</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">extracted</span> {
+                <span class="ident">buffer</span>.<span class="ident">split_to</span>(<span class="ident">header</span>.<span class="ident">decompressed_len</span> <span class="kw">as</span> <span class="ident">usize</span>)
+            } <span class="kw">else</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compressed</span> <span class="op">=</span> <span class="ident">bytes::BytesMut::from</span>(<span class="string">b&quot;BZh1&quot;</span>.<span class="ident">as_slice</span>());
+                <span class="ident">compressed</span>.<span class="ident">extend</span>(<span class="ident">buffer</span>.<span class="ident">split_to</span>(<span class="ident">header</span>.<span class="ident">compressed_len</span> <span class="kw">as</span> <span class="ident">usize</span>));
+
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">header</span>.<span class="ident">decompressed_len</span> <span class="kw">as</span> <span class="ident">usize</span>);
+
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2_rs::DecoderReader::new</span>(<span class="kw-2">&amp;</span><span class="ident">compressed</span>[..]);
+
+                <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded</span>).<span class="ident">unwrap</span>();
+                <span class="ident">Bytes::from</span>(<span class="ident">decoded</span>)
+            };
+            <span class="ident">archive</span>.<span class="ident">files</span>.<span class="ident">insert</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">decompressed</span>.<span class="ident">clone</span>());
+            <span class="ident">archive</span>.<span class="ident">files_named</span>.<span class="ident">insert</span>(<span class="ident">header</span>.<span class="ident">filename</span>, <span class="ident">decompressed</span>);
+        }
+        <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+
+        <span class="prelude-val">Ok</span>(<span class="ident">archive</span>)
+    }
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">file_named</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">as_ref</span>();
+
+        <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::hash::hash_archive</span>(<span class="ident">name</span>);
+
+        <span class="self">self</span>.<span class="ident">files_named</span>
+            .<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>)
+            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">CacheError::FileNotFoundError</span>(<span class="self">self</span>.<span class="ident">index_id</span>(), <span class="self">self</span>.<span class="ident">archive_id</span>(), <span class="ident">hash</span> <span class="kw">as</span> <span class="ident">u32</span>))
+            .<span class="ident">cloned</span>()
+    }
+
+    <span class="doccomment">/// Take the files. Consumes the [`Archive`].</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_files_named</span>(<span class="self">self</span>) -&gt; <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Bytes</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">files_named</span>
+    }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">pymethods</span>]</span>
 <span class="kw">impl</span> <span class="ident">Archive</span> {
-    <span class="kw">fn</span> <span class="ident">file</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span>, <span class="ident">file_id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="ident">PyBytes</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">pyo3</span>(<span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;file&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">py_file</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span>, <span class="ident">file_id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="ident">PyBytes</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">file</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">files</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">file_id</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">PyBytes::new</span>(<span class="ident">py</span>, <span class="ident">file</span>))
         } <span class="kw">else</span> {

@@ -138,6 +138,20 @@
 <span id="137">137</span>
 <span id="138">138</span>
 <span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Functions to decompress cache data.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -161,20 +175,22 @@
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">GZIP</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">2</span>;
     <span class="doccomment">/// Token for zlib compression.</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ZLIB</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>] <span class="op">=</span> <span class="string">b&quot;ZLB&quot;</span>;
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DAT_GZIP</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>] <span class="op">=</span> <span class="string">b&quot;\x1f\x8b\x08&quot;</span>;
 }
 
 <span class="doccomment">/// Decompresses index files.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Used internally by [`CacheIndex`](crate::index::CacheIndex).</span>
-<span class="attribute">#[<span class="ident">track_caller</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decompress</span>(
     <span class="ident">encoded_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
     <span class="ident">filesize</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span> <span class="ident">xtea</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::xtea::Xtea</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span> <span class="ident">xtea</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::xtea::Xtea</span><span class="op">&gt;</span>,
 ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Bytes</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+    <span class="comment">// Return an error when someone packed an empty file</span>
+    <span class="comment">//#[cfg(any(feature = &quot;legacy&quot;, feature = &quot;2008_shim&quot;))]</span>
     <span class="kw">if</span> <span class="ident">encoded_data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">3</span> {
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">1000000</span>].<span class="ident">into</span>());
+        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError::Other</span>(<span class="string">&quot;File was empty&quot;</span>.<span class="ident">to_string</span>()));
     }
     <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">0</span>..<span class="number">3</span>] {
         <span class="ident">Compression::ZLIB</span> =&gt; {
@@ -203,7 +219,7 @@
             <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
         <span class="kw-2">&amp;</span>[<span class="ident">Compression::GZIP</span>, ..] <span class="kw">if</span> <span class="ident">xtea</span>.<span class="ident">is_some</span>() =&gt; {
             <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">u32::from_be_bytes</span>([<span class="ident">encoded_data</span>[<span class="number">1</span>], <span class="ident">encoded_data</span>[<span class="number">2</span>], <span class="ident">encoded_data</span>[<span class="number">3</span>], <span class="ident">encoded_data</span>[<span class="number">4</span>]]) <span class="kw">as</span> <span class="ident">usize</span>;
 
@@ -229,7 +245,19 @@
             <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
         }
 
-        <span class="ident">other</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;unknown format {:?}&quot;</span>, <span class="ident">other</span>),
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
+        <span class="ident">Compression::DAT_GZIP</span> =&gt; {
+            <span class="kw">if</span> <span class="kw">let</span> [<span class="ident">data</span> @ .., <span class="ident">_version_tag1</span>, <span class="ident">_version_tag2</span>] <span class="op">=</span> <span class="ident">encoded_data</span>.<span class="ident">as_slice</span>() {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">gzip::Decoder::new</span>(<span class="ident">data</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
+            } <span class="kw">else</span> {
+                <span class="macro">panic!</span>()
+            }
+        }
+
+        <span class="kw">_</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;unknown format {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">0</span>..<span class="number">30</span>]),
     }
 }
 
@@ -239,7 +267,7 @@
     <span class="ident">IoError</span>(<span class="ident">std::io::Error</span>),
     <span class="doccomment">/// Wraps [`bzip2_rs::decoder::DecoderError`].</span>
     <span class="ident">BZip2Error</span>(<span class="ident">bzip2_rs::decoder::DecoderError</span>),
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
     <span class="ident">XteaError</span>,
     <span class="ident">Other</span>(<span class="ident">String</span>),
 }
@@ -262,7 +290,7 @@
             <span class="ident"><span class="self">Self</span>::BZip2Error</span>(<span class="ident">e</span>) =&gt; <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>, <span class="ident">f</span>),
             <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="ident">e</span>) =&gt; <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>, <span class="ident">f</span>),
             <span class="ident"><span class="self">Self</span>::Other</span>(<span class="ident">e</span>) =&gt; <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>, <span class="ident">f</span>),
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
             <span class="ident"><span class="self">Self</span>::XteaError</span> =&gt; <span class="ident">Display::fmt</span>(<span class="string">&quot;XteaError&quot;</span>, <span class="ident">f</span>),
         }
     }

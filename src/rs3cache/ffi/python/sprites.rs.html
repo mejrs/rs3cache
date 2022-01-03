@@ -278,8 +278,8 @@
     }
 
     <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>, <span class="ident">id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">PySprite</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">archive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">archive</span>(<span class="ident">id</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">sprite</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">take_file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">and_then</span>(<span class="ident">sprites::deserialize</span>);
+        <span class="kw">let</span> <span class="ident">archive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">archive</span>(<span class="ident">id</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">sprite</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">and_then</span>(<span class="ident">sprites::deserialize</span>);
         <span class="kw">let</span> <span class="ident">sprite</span> <span class="op">=</span> <span class="ident">sprite</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">frames</span><span class="op">|</span> <span class="ident">PySprite</span> {
             <span class="ident">archive_id</span>: <span class="ident">archive</span>.<span class="ident">archive_id</span>(),
             <span class="ident">frames</span>: <span class="ident">frames</span>
@@ -357,9 +357,9 @@
 
     <span class="kw">fn</span> <span class="ident">__next__</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PySprite</span><span class="op">&gt;</span> {
         <span class="comment">// no archive currently expose can fail here once fully loaded</span>
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Result::unwrap</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">archive</span><span class="op">|</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Result::unwrap</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
             <span class="ident">archive</span>
-                .<span class="ident">take_file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)
+                .<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)
                 .<span class="ident">and_then</span>(<span class="ident">sprites::deserialize</span>)
                 .<span class="ident">map</span>(<span class="op">|</span><span class="ident">frames</span><span class="op">|</span> <span class="ident">PySprite</span> {
                     <span class="ident">archive_id</span>: <span class="ident">archive</span>.<span class="ident">archive_id</span>(),
