@@ -29,7 +29,7 @@ impl IndexType {
     /// Unimplemented.
     pub const VORBIS: u32 = 14;
     /// Contains the [`LocationConfig`](../../sqlitecache/definitions/location_configs/struct.LocationConfig.html) definitions.
-    #[cfg(any(feature = "sqlite", feature = "2008_shim"))]
+    #[cfg(any(feature = "sqlite", feature = "2008_3_shim"))]
     pub const LOC_CONFIG: u32 = 16;
     /// Unimplemented.
     pub const ENUM_CONFIG: u32 = 17;
@@ -144,16 +144,16 @@ impl ConfigType {
     /// Unimplemented.
     pub const CURSORS: u32 = 33;
     /// Contains [`MapScene`](../../sqlitecache/definitions/mapscenes/struct.MapScene.html).
-    #[cfg(any(feature = "sqlite", feature = "2008_shim"))]
+    #[cfg(any(feature = "sqlite", feature = "2008_3_shim"))]
     pub const MAPSCENES: u32 = 34;
 
-    #[cfg(all(any(feature = "dat2", feature = "dat"), not(feature = "2008_shim")))]
+    #[cfg(all(any(feature = "dat2", feature = "dat"), not(feature = "2008_3_shim")))]
     pub const MAPLABELS: u32 = 35;
     /// Unimplemented.
     #[cfg(feature = "sqlite")]
     pub const QUESTS: u32 = 35;
     /// Contains [`MapLabelConfig`](../../sqlitecache/definitions/maplabel_configs/struct.MapLabelConfig.html).
-    #[cfg(any(feature = "sqlite", feature = "2008_shim"))]
+    #[cfg(any(feature = "sqlite", feature = "2008_3_shim"))]
     pub const MAPLABELS: u32 = 36;
     /// Unimplemented.
     pub const DBTABLE: u32 = 40;

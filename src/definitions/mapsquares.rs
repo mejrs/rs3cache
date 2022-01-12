@@ -407,6 +407,29 @@ pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
     Ok(())
 }
 
+#[cfg(all(test, any(feature = "rs3", feature = "osrs")))]
+mod tests {
+    use super::*;
+    use crate::cli::Config;
+    #[test]
+    fn water() -> CacheResult<()> {
+        let config = Config::env();
+
+        let squares = MapSquares::new(&config)?.into_iter();
+        for square in squares {
+            let square = square.unwrap();
+            if square.i() == 40 && square.j() == 62 {
+                for i in 0..4 {
+                    let tile = square.get_tiles()?.get([i, 10, 10]);
+                    dbg!(tile);
+                    return Ok(());
+                }
+            }
+        }
+        panic!("Unable to get some water");
+    }
+}
+
 #[cfg(all(test, feature = "legacy"))]
 mod legacy {
     use super::*;

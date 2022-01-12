@@ -34,7 +34,7 @@ pub fn decompress(
     #[cfg(feature = "dat2")] xtea: Option<crate::xtea::Xtea>,
 ) -> Result<Bytes, DecodeError> {
     // Return an error when someone packed an empty file
-    //#[cfg(any(feature = "legacy", feature = "2008_shim"))]
+    //#[cfg(any(feature = "legacy", feature = "2008_3_shim"))]
     if encoded_data.len() < 3 {
         return Err(DecodeError::Other("File was empty".to_string()));
     }

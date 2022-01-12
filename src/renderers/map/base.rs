@@ -19,7 +19,6 @@ pub fn put(
     #[cfg(any(feature = "rs3", feature = "osrs"))] overlay_definitions: &BTreeMap<u32, Overlay>,
     #[cfg(feature = "legacy")] flos: &BTreeMap<u32, Flo>,
 ) {
-    #[cfg(feature = "legacy")]
     if let Some(core) = squares.core() {
         if let Ok(columns) = core.indexed_columns() {
             columns.for_each(|(column, (x, y))| {
@@ -54,10 +53,13 @@ pub fn put(
                             for colour in [ov.primary_colour, ov.secondary_colour] {
                                 if Some([255, 0, 255]) != colour {
                                     if let Some([red, green, blue]) = colour {
-                                        let fill = Rgba([red, green, blue, 255]);
-                                        if column[p].shape.unwrap_or(0) != 0 {
-                                            //dbg!(column[p]);
-                                        }
+                                        let fill = if id == 112 && colour == Some([255, 255, 255]) {
+                                            // Gross hack to make ocean colours work past hd update
+                                            Rgba([96, 118, 154, 255])
+                                        } else {
+                                            Rgba([red, green, blue, 255])
+                                        };
+
                                         tileshape::draw_overlay(column[p].shape.unwrap_or(0), CONFIG.tile_size, |(a, b)| unsafe {
                                             debug_assert!(
                                                 (CONFIG.tile_size * x + a) < img.width() && (CONFIG.tile_size * (63u32 - y) + b) < img.height(),

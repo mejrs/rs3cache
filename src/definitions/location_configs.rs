@@ -40,6 +40,7 @@ pub struct LocationConfig {
     #[cfg(feature = "legacy")]
     pub description: Option<String>,
     #[cfg(any(feature = "osrs", feature = "legacy"))]
+    #[serde(flatten)]
     pub models_2: Option<Models2>,
     /// Its west-east dimension, defaulting to 1 if not present.
     ///
@@ -49,7 +50,7 @@ pub struct LocationConfig {
     ///
     /// Code using this value must account for the location's rotation.
     pub dim_y: Option<u8>,
-    #[cfg(feature = "2008_shim")]
+    #[cfg(feature = "2008_3_shim")]
     pub unknown_16: Option<bool>,
     pub unknown_17: Option<bool>,
     pub is_transparent: Option<bool>,
@@ -91,13 +92,13 @@ pub struct LocationConfig {
     pub unknown_78: Option<Unknown78>,
     pub unknown_79: Option<Unknown79>,
     pub unknown_81: Option<u8>,
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     pub unknown_82: Option<bool>,
-    #[cfg(all(feature = "osrs", not(feature = "2008_shim")))]
+    #[cfg(all(feature = "osrs", not(feature = "2008_3_shim")))]
     pub maparea_id: Option<u16>,
     pub unknown_88: Option<bool>,
     pub unknown_89: Option<bool>,
-    #[cfg(feature = "2008_shim")]
+    #[cfg(feature = "2008_3_shim")]
     pub unknown_90: Option<bool>,
     pub is_members: Option<bool>,
     /// This location can have different appearances depending on a players varbits,
@@ -105,11 +106,11 @@ pub struct LocationConfig {
     pub morphs_2: Option<ExtendedLocationMorphTable>,
     pub unknown_93: Option<u16>,
     pub unknown_94: Option<bool>,
-    #[cfg(any(feature = "rs3", feature = "2011_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2010_3_shim"))]
     pub unknown_95: Option<u16>,
-    #[cfg(all(feature = "2008_shim", not(feature = "2011_shim")))]
+    #[cfg(all(feature = "2008_3_shim", not(feature = "2010_3_shim")))]
     pub unknown_95: Option<bool>,
-    #[cfg(feature = "2008_shim")]
+    #[cfg(feature = "2008_3_shim")]
     pub unknown_96: Option<bool>,
     pub unknown_97: Option<bool>,
     pub unknown_98: Option<bool>,
@@ -125,6 +126,7 @@ pub struct LocationConfig {
     pub mapfunction: Option<u16>,
     pub unknown_array: Option<[Option<u8>; 5]>,
     pub member_actions: Option<[Option<String>; 5]>,
+    pub unknown_159: Option<u8>,
     pub unknown_160: Option<Unknown160>,
     pub unknown_162: Option<i32>,
     pub unknown_163: Option<Unknown163>,
@@ -132,7 +134,9 @@ pub struct LocationConfig {
     pub unknown_165: Option<u16>,
     pub unknown_166: Option<u16>,
     pub unknown_167: Option<u16>,
+    #[cfg(feature = "2010_3_shim")]
     pub unknown_168: Option<bool>,
+    #[cfg(feature = "2010_3_shim")]
     pub unknown_169: Option<bool>,
     pub unknown_170: Option<u16>,
     pub unknown_171: Option<u16>,
@@ -158,7 +162,7 @@ pub struct LocationConfig {
 
 impl LocationConfig {
     /// Returns a mapping of all [location configurations](LocationConfig)
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let index = IndexType::LOC_CONFIG;
 
@@ -178,7 +182,7 @@ impl LocationConfig {
         Ok(locations)
     }
 
-    #[cfg(all(feature = "osrs", not(feature = "2008_shim"), not(feature = "legacy")))]
+    #[cfg(all(feature = "osrs", not(feature = "2008_3_shim"), not(feature = "legacy")))]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let locations = CacheIndex::new(IndexType::CONFIG, &config.input)?
             .archive(ConfigType::LOC_CONFIG)?
@@ -230,21 +234,6 @@ impl LocationConfig {
 
             let read: Result<(), ReadError> = try {
                 match opcode {
-                    #[cfg(feature = "2011_shim")]
-                    37 | 10 | 146 | 12 => {
-                        buffer.try_get_u8()?;
-                    }
-                    #[cfg(feature = "2011_shim")]
-                    145 => {
-                        buffer.try_get_u16()?;
-                    }
-
-                    #[cfg(feature = "2011_shim")]
-                    187 | 185 | 5 => break loc,
-
-                    #[cfg(feature = "2011_shim")]
-                    42 | 168 | 169 => {}
-
                     0 => {
                         if buffer.has_remaining() {
                             Err(ReadError::not_exhausted())?;
@@ -257,10 +246,18 @@ impl LocationConfig {
                     #[cfg(feature = "legacy")]
                     3 => loc.description = Some(buffer.try_get_string()?),
                     #[cfg(any(feature = "osrs", feature = "legacy"))]
-                    5 => loc.models_2 = Some(Models2::deserialize(&mut buffer)?),
+                    5 => {
+                        #[cfg(feature = "2010_1_shim")]
+                        {
+                            loc.models = Some(Models::deserialize(&mut buffer)?);
+                        }
+
+                        loc.models_2 = Some(Models2::deserialize(&mut buffer)?);
+                    }
+
                     14 => loc.dim_x = Some(buffer.try_get_u8()?),
                     15 => loc.dim_y = Some(buffer.try_get_u8()?),
-                    #[cfg(feature = "2008_shim")]
+                    #[cfg(feature = "2008_3_shim")]
                     16 => loc.unknown_16 = Some(true),
 
                     17 => loc.unknown_17 = Some(false),
@@ -309,43 +306,43 @@ impl LocationConfig {
                     78 => loc.unknown_78 = Some(Unknown78::deserialize(&mut buffer)?),
                     79 => loc.unknown_79 = Some(Unknown79::deserialize(&mut buffer)?),
                     81 => loc.unknown_81 = Some(buffer.try_get_u8()?),
-                    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                     82 => loc.unknown_82 = Some(true),
-                    #[cfg(all(feature = "osrs", not(feature = "2008_shim")))]
+                    #[cfg(all(feature = "osrs", not(feature = "2008_3_shim")))]
                     82 => loc.maparea_id = Some(buffer.try_get_u16()?),
                     88 => loc.unknown_88 = Some(false),
                     89 => loc.unknown_89 = Some(false),
-                    #[cfg(feature = "2008_shim")]
+                    #[cfg(feature = "2008_3_shim")]
                     90 => loc.unknown_90 = Some(true),
                     91 => loc.is_members = Some(true),
                     92 => loc.morphs_2 = Some(ExtendedLocationMorphTable::deserialize(&mut buffer)?),
                     93 => loc.unknown_93 = Some(buffer.try_get_u16()?),
                     94 => loc.unknown_94 = Some(true),
-                    #[cfg(all(feature = "2008_shim", not(feature = "2011_shim")))]
+                    #[cfg(all(feature = "2008_3_shim", not(feature = "2010_3_shim")))]
                     95 => loc.unknown_95 = Some(true),
-                    #[cfg(any(feature = "rs3", feature = "2011_shim"))]
+                    #[cfg(any(feature = "rs3", feature = "2010_3_shim"))]
                     95 => loc.unknown_95 = Some(buffer.try_get_u16()?),
-                    #[cfg(feature = "2008_shim")]
+                    #[cfg(feature = "2008_3_shim")]
                     96 => loc.unknown_96 = Some(true),
                     97 => loc.unknown_97 = Some(true),
                     98 => loc.unknown_98 = Some(true),
-                    #[cfg(feature = "2011_shim")]
+                    #[cfg(feature = "2009_1_shim")]
                     opcode @ 99..=100 => {
                         let cursors = loc.cursors.get_or_insert([None, None, None, None, None, None]);
                         buffer.try_get_u8()?;
                         cursors[opcode as usize - 99] = Some(buffer.try_get_u16()?);
                     }
-                    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                     102 => loc.mapscene = Some(buffer.try_get_u16()?),
                     103 => loc.occludes_2 = Some(false),
                     104 => loc.unknown_104 = Some(buffer.try_get_u8()?),
                     106 => loc.headmodels = Some(HeadModels::deserialize(&mut buffer)?),
-                    #[cfg(feature = "rs3")]
+                    #[cfg(any(feature = "rs3", feature = "2009_1_shim"))]
                     107 => loc.mapfunction = Some(buffer.try_get_u16()?),
-                    #[cfg(not(feature = "2011_shim"))]
+                    #[cfg(not(feature = "2010_1_shim"))]
                     opcode @ 136..=140 => {
                         let actions = loc.unknown_array.get_or_insert([None, None, None, None, None]);
-                        actions[opcode as usize - 150] = Some(buffer.try_get_u8()?);
+                        actions[opcode as usize - 136] = Some(buffer.try_get_u8()?);
                     }
 
                     opcode @ 150..=154 => {
@@ -353,12 +350,17 @@ impl LocationConfig {
                         actions[opcode as usize - 150] = Some(buffer.try_get_string()?);
                     }
 
+                    159 => loc.unknown_159 = Some(buffer.try_get_u8()?),
                     160 => loc.unknown_160 = Some(Unknown160::deserialize(&mut buffer)?),
                     162 => loc.unknown_162 = Some(buffer.try_get_i32()?),
                     163 => loc.unknown_163 = Some(Unknown163::deserialize(&mut buffer)?),
                     164 => loc.unknown_164 = Some(buffer.try_get_u16()?),
                     165 => loc.unknown_166 = Some(buffer.try_get_u16()?),
                     167 => loc.unknown_167 = Some(buffer.try_get_u16()?),
+                    #[cfg(feature = "2010_3_shim")]
+                    168 => loc.unknown_168 = Some(true),
+                    #[cfg(feature = "2010_3_shim")]
+                    169 => loc.unknown_169 = Some(true),
                     170 => loc.unknown_170 = Some(buffer.try_get_unsigned_smart()?),
                     171 => loc.unknown_171 = Some(buffer.try_get_unsigned_smart()?),
                     173 => loc.unknown_173 = Some(Unknown173::deserialize(&mut buffer)?),
@@ -367,13 +369,10 @@ impl LocationConfig {
                     186 => loc.unknown_186 = Some(buffer.try_get_u8()?),
                     188 => loc.unknown_188 = Some(true),
                     189 => loc.unknown_189 = Some(true),
+                    // august 2012
                     opcode @ 190..=195 => {
                         let actions = loc.cursors.get_or_insert([None, None, None, None, None, None]);
-                        actions[opcode as usize - 190] = Some(if !cfg!(feature = "2011_shim") {
-                            buffer.try_get_u16()?
-                        } else {
-                            buffer.try_get_u8()? as u16
-                        });
+                        actions[opcode as usize - 190] = Some(buffer.try_get_u16()?);
                     }
                     196 => loc.unknown_196 = Some(buffer.try_get_u8()?),
                     197 => loc.unknown_196 = Some(buffer.try_get_u8()?),
@@ -420,10 +419,10 @@ pub mod location_config_fields {
         types::variables::{Varbit, Varp, VarpOrVarbit},
     };
 
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2011_11_shim"))]
     type IdType = u32;
 
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
+    #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2011_11_shim")))]
     type IdType = u16;
 
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
@@ -439,13 +438,17 @@ pub mod location_config_fields {
 
     impl LocationMorphTable {
         /// Constructor for [`LocationMorphTable`]
-        #[cfg(feature = "rs3")]
+        #[cfg(any(feature = "rs3", feature = "2011_11_shim"))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let varbit = Varbit::new(buffer.try_get_u16()?);
             let varp = Varp::new(buffer.try_get_u16()?);
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let count = buffer.try_get_unsigned_smart()? as usize;
+            let count = if cfg!(feature = "2011_11_shim") {
+                buffer.try_get_u8()? as usize
+            } else {
+                buffer.try_get_unsigned_smart()? as usize
+            };
 
             let ids = iter::repeat_with(|| buffer.try_get_smart32())
                 .take(count + 1)
@@ -454,7 +457,7 @@ pub mod location_config_fields {
             Ok(Self { var, ids })
         }
 
-        #[cfg(any(feature = "osrs", feature = "legacy"))]
+        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2011_11_shim")))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let varbit = Varbit::new(buffer.try_get_u16()?);
             let varp = Varp::new(buffer.try_get_u16()?);
@@ -494,16 +497,24 @@ pub mod location_config_fields {
 
     impl ExtendedLocationMorphTable {
         /// Constructor for [`ExtendedLocationMorphTable`]
-        #[cfg(feature = "rs3")]
+        #[cfg(any(feature = "rs3", feature = "2011_11_shim"))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let varbit = Varbit::new(buffer.try_get_u16()?);
             let varp = Varp::new(buffer.try_get_u16()?);
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default = buffer.try_get_smart32()?;
+            let default = if cfg!(feature = "2011_11_shim") {
+                Some(buffer.try_get_u16()? as u32)
+            } else {
+                buffer.try_get_smart32()?
+            };
 
-            let count = buffer.try_get_unsigned_smart()? as usize;
+            let count = if cfg!(feature = "2011_11_shim") {
+                buffer.try_get_u8()? as usize
+            } else {
+                buffer.try_get_unsigned_smart()? as usize
+            };
 
             let ids = iter::repeat_with(|| buffer.try_get_smart32())
                 .take(count + 1)
@@ -511,7 +522,7 @@ pub mod location_config_fields {
             Ok(Self { var, ids, default })
         }
 
-        #[cfg(any(feature = "osrs", feature = "legacy"))]
+        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2011_11_shim")))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let varbit = Varbit::new(buffer.try_get_u16()?);
             let varp = Varp::new(buffer.try_get_u16()?);
@@ -558,23 +569,23 @@ pub mod location_config_fields {
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
-        #[cfg(any(feature = "rs3", feature = "2011_shim"))]
+        #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
         pub models: BTreeMap<i8, Vec<Option<u32>>>,
-        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2011_shim")))]
+        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2010_1_shim")))]
         pub models: Vec<(u8, u16)>,
     }
 
     impl Models {
-        #[cfg(any(feature = "rs3", feature = "2011_shim"))]
+        #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             fn sub_deserialize(buffer: &mut Bytes) -> Result<(i8, Vec<Option<u32>>), ReadError> {
                 let ty = buffer.try_get_i8()?;
                 let count = buffer.try_get_u8()? as usize;
                 let values = iter::repeat_with(|| try {
-                    if !cfg!(feature = "2011_shim") {
-                        buffer.try_get_smart32()?
-                    } else {
+                    if cfg!(all(feature = "2010_1_shim", not(feature = "2011_11_shim"))) {
                         Some(buffer.try_get_u16()? as u32)
+                    } else {
+                        buffer.try_get_smart32()?
                     }
                 })
                 .take(count)
@@ -590,7 +601,7 @@ pub mod location_config_fields {
             Ok(Models { models })
         }
 
-        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2011_shim")))]
+        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2010_1_shim")))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let count = buffer.try_get_u8()? as usize;
 
@@ -606,20 +617,47 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
     #[cfg_attr(feature = "pyo3", pyclass)]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models2 {
-        pub models: Vec<u16>,
+        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2010_1_shim")))]
+        pub models_2: Vec<u16>,
+        #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
+        pub models_2: BTreeMap<u8, u32>,
     }
 
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
     impl Models2 {
+        #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2010_1_shim")))]
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let count = buffer.try_get_u8()? as usize;
 
-            let models = iter::repeat_with(|| buffer.try_get_u16()).take(count).collect::<Result<_, ReadError>>()?;
-            Ok(Self { models })
+            let models_2 = iter::repeat_with(|| buffer.try_get_u16()).take(count).collect::<Result<_, ReadError>>()?;
+            Ok(Self { models_2 })
+        }
+
+        #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let count = buffer.try_get_u8()? as usize;
+
+            let models_2 = iter::repeat_with(|| try {
+                let r#type = buffer.try_get_u8()?;
+                let subcount = buffer.try_get_u8()?;
+
+                let model = if cfg!(feature = "2011_11_shim") {
+                    buffer.try_get_smart32()?.unwrap()
+                } else {
+                    buffer.try_get_u16()? as u32
+                };
+
+                for _ in 1..subcount {
+                    buffer.try_get_u16()?;
+                }
+
+                (r#type, model)
+            })
+            .take(count)
+            .collect::<Result<_, ReadError>>()?;
+            Ok(Self { models_2 })
         }
     }
 

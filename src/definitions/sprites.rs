@@ -223,8 +223,6 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
     let data = buffer.get_u16();
     let format = data >> 15;
     let count = (data & 0x7FFF) as usize;
-    dbg!(count);
-    //let count = 4;
 
     let imgs = match format {
         0 => {

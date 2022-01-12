@@ -124,9 +124,11 @@ impl Display for ReadError {
             ContextId(id, _) => writeln!(f, "Could not decode id {id} ({location})")?,
             Bubbled(ref ctx, _) => writeln!(f, "Could not decode {ctx}")?,
             #[cfg(debug_assertions)]
-            DecodeContext(_, remainder, parsed, src) => {
+            DecodeContext(opcodes, remainder, parsed, src) => {
                 writeln!(f, "{src}")?;
                 writeln!(f, "Note: The unread remainder of the buffer consists of {:?}", remainder)?;
+                writeln!(f)?;
+                writeln!(f, "Note: The opcodes read were {:?}", opcodes)?;
                 writeln!(f)?;
                 writeln!(f, "Note: Managed to read up to:")?;
                 writeln!(f, "{parsed}")?;
@@ -214,8 +216,9 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads two or four unsigned bytes as an 32-bit unsigned integer.
+    #[track_caller]
     fn try_get_smart32(&mut self) -> Result<Option<u32>, ReadError> {
-        let condition = self.chunk()[0] & 0x80 == 0x80;
+        let condition = self.chunk().first().ok_or_else(ReadError::eof)? & 0x80 == 0x80;
 
         let ret = if condition {
             Some(self.try_get_u32()? & 0x7FFFFFFF)

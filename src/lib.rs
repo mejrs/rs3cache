@@ -71,7 +71,7 @@ pub mod definitions {
 
     /// Configuration of images drawn on the world map.
     /// Describes text, sprites and polygons drawn on the map.
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2009_1_shim"))]
     pub mod mapscenes;
 
     pub mod mapsquares;

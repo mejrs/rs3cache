@@ -31,35 +31,38 @@ pub struct Overlay {
     #[cfg(feature = "osrs")]
     pub texture: Option<u8>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     op_3: Option<u16>,
 
     op_5: Option<bool>,
     /// Secondary colour of the [`Overlay`] configuration.
     pub secondary_colour: Option<[u8; 3]>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     op_8: Option<bool>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     op_9: Option<u16>,
 
     #[cfg(feature = "rs3")]
     op_10: Option<bool>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     op_11: Option<u8>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     op_12: Option<bool>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     ternary_colour: Option<[u8; 3]>,
 
-    #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+    #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
     op_14: Option<u8>,
 
-    #[cfg(any(feature = "rs3", feature = "2011_shim"))]
+    #[cfg(feature = "2009_1_shim")]
+    op_15: Option<u16>,
+
+    #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
     op_16: Option<u8>,
 }
 
@@ -87,27 +90,29 @@ impl Overlay {
                 1 => overlay.primary_colour = Some(buffer.get_rgb()),
                 #[cfg(feature = "osrs")]
                 2 => overlay.texture = Some(buffer.get_u8()),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 3 => overlay.op_3 = Some(buffer.get_u16()),
                 5 => overlay.op_5 = Some(true),
                 7 => overlay.secondary_colour = Some(buffer.get_rgb()),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 8 => overlay.op_8 = Some(true),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 9 => overlay.op_9 = Some(buffer.get_u16()),
                 #[cfg(feature = "rs3")]
                 10 => overlay.op_10 = Some(true),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 11 => overlay.op_11 = Some(buffer.get_u8()),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 12 => overlay.op_12 = Some(true),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 13 => overlay.ternary_colour = Some(buffer.get_rgb()),
-                #[cfg(any(feature = "rs3", feature = "2008_shim"))]
+                #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                 14 => overlay.op_14 = Some(buffer.get_u8()),
-                #[cfg(any(feature = "rs3", feature = "2011_shim"))]
+                #[cfg(feature = "2009_1_shim")]
+                15 => overlay.op_15 = Some(buffer.get_u16()),
+                #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
                 16 => overlay.op_16 = Some(buffer.get_u8()),
-                missing => unimplemented!("Overlay::deserialize cannot deserialize opcode {} in id {}", missing, id),
+                missing => unimplemented!("Overlay::deserialize cannot deserialize opcode {} in id {}: {:?}", missing, id, buffer),
             }
         }
     }

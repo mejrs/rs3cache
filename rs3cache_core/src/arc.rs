@@ -185,7 +185,7 @@ impl Archive {
             let decompressed = if extracted {
                 buffer.split_to(header.decompressed_len as usize)
             } else {
-                let mut compressed = bytes::BytesMut::from(b"BZh1".as_slice());
+                let mut compressed = bytes::BytesMut::from(b"BZh9".as_slice());
                 compressed.extend(buffer.split_to(header.compressed_len as usize));
 
                 let mut decoded = Vec::with_capacity(header.decompressed_len as usize);
