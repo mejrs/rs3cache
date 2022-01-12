@@ -188,7 +188,7 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span> <span class="ident">xtea</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::xtea::Xtea</span><span class="op">&gt;</span>,
 ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Bytes</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
     <span class="comment">// Return an error when someone packed an empty file</span>
-    <span class="comment">//#[cfg(any(feature = &quot;legacy&quot;, feature = &quot;2008_shim&quot;))]</span>
+    <span class="comment">//#[cfg(any(feature = &quot;legacy&quot;, feature = &quot;2008_3_shim&quot;))]</span>
     <span class="kw">if</span> <span class="ident">encoded_data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">3</span> {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError::Other</span>(<span class="string">&quot;File was empty&quot;</span>.<span class="ident">to_string</span>()));
     }

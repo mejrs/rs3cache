@@ -376,6 +376,9 @@
 <span id="375">375</span>
 <span id="376">376</span>
 <span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrapper around [`Cursor`](std::io::Cursor).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module provides various reads used to decode the cache data</span>
@@ -502,9 +505,11 @@
             <span class="ident">ContextId</span>(<span class="ident">id</span>, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Could not decode id {id} ({location})&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">Bubbled</span>(<span class="kw-2">ref</span> <span class="ident">ctx</span>, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Could not decode {ctx}&quot;</span>)<span class="question-mark">?</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-            <span class="ident">DecodeContext</span>(<span class="kw">_</span>, <span class="ident">remainder</span>, <span class="ident">parsed</span>, <span class="ident">src</span>) =&gt; {
+            <span class="ident">DecodeContext</span>(<span class="ident">opcodes</span>, <span class="ident">remainder</span>, <span class="ident">parsed</span>, <span class="ident">src</span>) =&gt; {
                 <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
                 <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: The unread remainder of the buffer consists of {:?}&quot;</span>, <span class="ident">remainder</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: The opcodes read were {:?}&quot;</span>, <span class="ident">opcodes</span>)<span class="question-mark">?</span>;
                 <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
                 <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
                 <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
@@ -592,8 +597,9 @@
     }
 
     <span class="doccomment">/// Reads two or four unsigned bytes as an 32-bit unsigned integer.</span>
+    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
     <span class="kw">fn</span> <span class="ident">try_get_smart32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">condition</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span>()[<span class="number">0</span>] <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">==</span> <span class="number">0x80</span>;
+        <span class="kw">let</span> <span class="ident">condition</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span>().<span class="ident">first</span>().<span class="ident">ok_or_else</span>(<span class="ident">ReadError::eof</span>)<span class="question-mark">?</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">==</span> <span class="number">0x80</span>;
 
         <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">condition</span> {
             <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">try_get_u32</span>()<span class="question-mark">?</span> <span class="op">&amp;</span> <span class="number">0x7FFFFFFF</span>)

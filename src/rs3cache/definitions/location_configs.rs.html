@@ -924,6 +924,44 @@
 <span id="923">923</span>
 <span id="924">924</span>
 <span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
     <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
@@ -966,6 +1004,7 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">models_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Models2</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Its west-east dimension, defaulting to 1 if not present.</span>
     <span class="doccomment">///</span>
@@ -975,7 +1014,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Code using this value must account for the location&#39;s rotation.</span>
     <span class="kw">pub</span> <span class="ident">dim_y</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">unknown_16</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_17</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">is_transparent</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
@@ -1017,13 +1056,13 @@
     <span class="kw">pub</span> <span class="ident">unknown_78</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown78</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_79</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown79</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_81</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">unknown_82</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="ident">maparea_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_88</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_89</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">unknown_90</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">is_members</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// This location can have different appearances depending on a players varbits,</span>
@@ -1031,11 +1070,11 @@
     <span class="kw">pub</span> <span class="ident">morphs_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedLocationMorphTable</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_93</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_94</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">unknown_95</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="ident">unknown_95</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">unknown_96</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_97</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_98</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
@@ -1051,6 +1090,7 @@
     <span class="kw">pub</span> <span class="ident">mapfunction</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_array</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">member_actions</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">unknown_159</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_160</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown160</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_162</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_163</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown163</span><span class="op">&gt;</span>,
@@ -1058,7 +1098,9 @@
     <span class="kw">pub</span> <span class="ident">unknown_165</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_166</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_167</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">unknown_168</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">unknown_169</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_170</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_171</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
@@ -1084,7 +1126,7 @@
 
 <span class="kw">impl</span> <span class="ident">LocationConfig</span> {
     <span class="doccomment">/// Returns a mapping of all [location configurations](LocationConfig)</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">IndexType::LOC_CONFIG</span>;
 
@@ -1104,7 +1146,7 @@
         <span class="prelude-val">Ok</span>(<span class="ident">locations</span>)
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">locations</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
             .<span class="ident">archive</span>(<span class="ident">ConfigType::LOC_CONFIG</span>)<span class="question-mark">?</span>
@@ -1156,21 +1198,6 @@
 
             <span class="kw">let</span> <span class="ident">read</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ReadError</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">try</span> {
                 <span class="kw">match</span> <span class="ident">opcode</span> {
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)]</span>
-                    <span class="number">37</span> <span class="op">|</span> <span class="number">10</span> <span class="op">|</span> <span class="number">146</span> <span class="op">|</span> <span class="number">12</span> =&gt; {
-                        <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>;
-                    }
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)]</span>
-                    <span class="number">145</span> =&gt; {
-                        <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>;
-                    }
-
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)]</span>
-                    <span class="number">187</span> <span class="op">|</span> <span class="number">185</span> <span class="op">|</span> <span class="number">5</span> =&gt; <span class="kw">break</span> <span class="ident">loc</span>,
-
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)]</span>
-                    <span class="number">42</span> <span class="op">|</span> <span class="number">168</span> <span class="op">|</span> <span class="number">169</span> =&gt; {}
-
                     <span class="number">0</span> =&gt; {
                         <span class="kw">if</span> <span class="ident">buffer</span>.<span class="ident">has_remaining</span>() {
                             <span class="prelude-val">Err</span>(<span class="ident">ReadError::not_exhausted</span>())<span class="question-mark">?</span>;
@@ -1183,10 +1210,18 @@
                     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
                     <span class="number">3</span> =&gt; <span class="ident">loc</span>.<span class="ident">description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_string</span>()<span class="question-mark">?</span>),
                     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-                    <span class="number">5</span> =&gt; <span class="ident">loc</span>.<span class="ident">models_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Models2::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
+                    <span class="number">5</span> =&gt; {
+                        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>)]</span>
+                        {
+                            <span class="ident">loc</span>.<span class="ident">models</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Models::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>);
+                        }
+
+                        <span class="ident">loc</span>.<span class="ident">models_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Models2::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>);
+                    }
+
                     <span class="number">14</span> =&gt; <span class="ident">loc</span>.<span class="ident">dim_x</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
                     <span class="number">15</span> =&gt; <span class="ident">loc</span>.<span class="ident">dim_y</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)]</span>
                     <span class="number">16</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_16</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
 
                     <span class="number">17</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_17</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
@@ -1235,43 +1270,43 @@
                     <span class="number">78</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_78</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown78::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
                     <span class="number">79</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_79</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown79::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
                     <span class="number">81</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_81</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
                     <span class="number">82</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_82</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)))]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)))]</span>
                     <span class="number">82</span> =&gt; <span class="ident">loc</span>.<span class="ident">maparea_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
                     <span class="number">88</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_88</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
                     <span class="number">89</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_89</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)]</span>
                     <span class="number">90</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_90</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">91</span> =&gt; <span class="ident">loc</span>.<span class="ident">is_members</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">92</span> =&gt; <span class="ident">loc</span>.<span class="ident">morphs_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ExtendedLocationMorphTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
                     <span class="number">93</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_93</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
                     <span class="number">94</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_94</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)))]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>)))]</span>
                     <span class="number">95</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_95</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>))]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>))]</span>
                     <span class="number">95</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_95</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>)]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)]</span>
                     <span class="number">96</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_96</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">97</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_97</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">98</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_98</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2009_1_shim&quot;</span>)]</span>
                     <span class="ident">opcode</span> @ <span class="number">99</span>..<span class="op">=</span><span class="number">100</span> =&gt; {
                         <span class="kw">let</span> <span class="ident">cursors</span> <span class="op">=</span> <span class="ident">loc</span>.<span class="ident">cursors</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
                         <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>;
                         <span class="ident">cursors</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">99</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
                     }
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_shim&quot;</span>))]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
                     <span class="number">102</span> =&gt; <span class="ident">loc</span>.<span class="ident">mapscene</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
                     <span class="number">103</span> =&gt; <span class="ident">loc</span>.<span class="ident">occludes_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
                     <span class="number">104</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_104</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
                     <span class="number">106</span> =&gt; <span class="ident">loc</span>.<span class="ident">headmodels</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">HeadModels::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2009_1_shim&quot;</span>))]</span>
                     <span class="number">107</span> =&gt; <span class="ident">loc</span>.<span class="ident">mapfunction</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>))]</span>
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>))]</span>
                     <span class="ident">opcode</span> @ <span class="number">136</span>..<span class="op">=</span><span class="number">140</span> =&gt; {
                         <span class="kw">let</span> <span class="ident">actions</span> <span class="op">=</span> <span class="ident">loc</span>.<span class="ident">unknown_array</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
-                        <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">150</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>);
+                        <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">136</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>);
                     }
 
                     <span class="ident">opcode</span> @ <span class="number">150</span>..<span class="op">=</span><span class="number">154</span> =&gt; {
@@ -1279,12 +1314,17 @@
                         <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">150</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_string</span>()<span class="question-mark">?</span>);
                     }
 
+                    <span class="number">159</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_159</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
                     <span class="number">160</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_160</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown160::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
                     <span class="number">162</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_162</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_i32</span>()<span class="question-mark">?</span>),
                     <span class="number">163</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_163</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown163::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
                     <span class="number">164</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_164</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
                     <span class="number">165</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_166</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
                     <span class="number">167</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_167</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>),
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>)]</span>
+                    <span class="number">168</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_168</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_3_shim&quot;</span>)]</span>
+                    <span class="number">169</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_169</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">170</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_170</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span>),
                     <span class="number">171</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_171</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span>),
                     <span class="number">173</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_173</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown173::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
@@ -1293,13 +1333,10 @@
                     <span class="number">186</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_186</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
                     <span class="number">188</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_188</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">189</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_189</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                    <span class="comment">// august 2012</span>
                     <span class="ident">opcode</span> @ <span class="number">190</span>..<span class="op">=</span><span class="number">195</span> =&gt; {
                         <span class="kw">let</span> <span class="ident">actions</span> <span class="op">=</span> <span class="ident">loc</span>.<span class="ident">cursors</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
-                        <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">190</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw">if</span> <span class="op">!</span><span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>) {
-                            <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>
-                        } <span class="kw">else</span> {
-                            <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u16</span>
-                        });
+                        <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">190</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
                     }
                     <span class="number">196</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_196</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
                     <span class="number">197</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_196</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
@@ -1346,10 +1383,10 @@
         <span class="ident">types::variables</span>::{<span class="ident">Varbit</span>, <span class="ident">Varp</span>, <span class="ident">VarpOrVarbit</span>},
     };
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>))]</span>
     <span class="kw">type</span> <span class="ident">IdType</span> <span class="op">=</span> <span class="ident">u32</span>;
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>)))]</span>
     <span class="kw">type</span> <span class="ident">IdType</span> <span class="op">=</span> <span class="ident">u16</span>;
 
     <span class="doccomment">/// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.</span>
@@ -1365,13 +1402,17 @@
 
     <span class="kw">impl</span> <span class="ident">LocationMorphTable</span> {
         <span class="doccomment">/// Constructor for [`LocationMorphTable`]</span>
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
             <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
             <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
 
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>) {
+                <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>
+            } <span class="kw">else</span> {
+                <span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>
+            };
 
             <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>())
                 .<span class="ident">take</span>(<span class="ident">count</span> <span class="op">+</span> <span class="number">1</span>)
@@ -1380,7 +1421,7 @@
             <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">var</span>, <span class="ident">ids</span> })
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>)))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
             <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
@@ -1420,16 +1461,24 @@
 
     <span class="kw">impl</span> <span class="ident">ExtendedLocationMorphTable</span> {
         <span class="doccomment">/// Constructor for [`ExtendedLocationMorphTable`]</span>
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
             <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
 
             <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
 
-            <span class="kw">let</span> <span class="ident">default</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">default</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>) {
+                <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>)
+            } <span class="kw">else</span> {
+                <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>
+            };
 
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>) {
+                <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>
+            } <span class="kw">else</span> {
+                <span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>
+            };
 
             <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>())
                 .<span class="ident">take</span>(<span class="ident">count</span> <span class="op">+</span> <span class="number">1</span>)
@@ -1437,7 +1486,7 @@
             <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">var</span>, <span class="ident">ids</span>, <span class="ident">default</span> })
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>)))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
             <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>);
@@ -1484,23 +1533,23 @@
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Models</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>))]</span>
         <span class="kw">pub</span> <span class="ident">models</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>)))]</span>
         <span class="kw">pub</span> <span class="ident">models</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u16</span>)<span class="op">&gt;</span>,
     }
 
     <span class="kw">impl</span> <span class="ident">Models</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">fn</span> <span class="ident">sub_deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">i8</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>), <span class="ident">ReadError</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_i8</span>()<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
                 <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">try</span> {
-                    <span class="kw">if</span> <span class="op">!</span><span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>) {
-                        <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>
-                    } <span class="kw">else</span> {
+                    <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>))) {
                         <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>)
+                    } <span class="kw">else</span> {
+                        <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>
                     }
                 })
                 .<span class="ident">take</span>(<span class="ident">count</span>)
@@ -1516,7 +1565,7 @@
             <span class="prelude-val">Ok</span>(<span class="ident">Models</span> { <span class="ident">models</span> })
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_shim&quot;</span>)))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>)))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
 
@@ -1532,20 +1581,47 @@
     }
 
     <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Models2</span> {
-        <span class="kw">pub</span> <span class="ident">models</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>)))]</span>
+        <span class="kw">pub</span> <span class="ident">models_2</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>))]</span>
+        <span class="kw">pub</span> <span class="ident">models_2</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">u32</span><span class="op">&gt;</span>,
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
     <span class="kw">impl</span> <span class="ident">Models2</span> {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>)))]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
 
-            <span class="kw">let</span> <span class="ident">models</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">models</span> })
+            <span class="kw">let</span> <span class="ident">models_2</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">models_2</span> })
+        }
+
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2010_1_shim&quot;</span>))]</span>
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
+
+            <span class="kw">let</span> <span class="ident">models_2</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">try</span> {
+                <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">subcount</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>;
+
+                <span class="kw">let</span> <span class="ident">model</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>) {
+                    <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>.<span class="ident">unwrap</span>()
+                } <span class="kw">else</span> {
+                    <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>
+                };
+
+                <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">subcount</span> {
+                    <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>;
+                }
+
+                (<span class="ident">r#type</span>, <span class="ident">model</span>)
+            })
+            .<span class="ident">take</span>(<span class="ident">count</span>)
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">models_2</span> })
         }
     }
 
