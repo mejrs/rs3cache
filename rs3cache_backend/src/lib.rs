@@ -24,7 +24,6 @@ pub mod decoder;
 pub mod error;
 pub mod hash;
 pub mod index;
-pub mod indextype;
 pub mod meta;
 #[cfg(feature = "dat2")]
 pub mod xtea;

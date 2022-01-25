@@ -1,5 +1,5 @@
 [package]
-name = "rs3cache_core"
+name = "rs3cache_backend"
 version = "0.1.0"
 edition = "2021"
 
@@ -15,7 +15,7 @@ serde_json = "1.0.67"
 serde = { version = "1.0.130", features = ["derive"]}
 serde_with = "1.10.0"
 bzip2-rs = "0.1.2"
-pyo3 = { version = "0.15", optional = true }
+pyo3 = { version = "0.15", features = ["auto-initialize"],  optional = true }
 path_macro = "1.0.0"
 fstrings = "0.2.3"
 memchr = "2.4.1"
@@ -26,8 +26,7 @@ path-absolutize = "3.0.10"
 [features]
 python = ["pyo3", "rs3cache_macros"]
 dat2 = []
-dat = []
+dat = ["pyo3"]
 mockdata = []
 dont_save = []
-legacy = []
 2008_3_shim = ["dat2"]

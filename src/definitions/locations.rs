@@ -3,7 +3,7 @@ use std::hash::Hash;
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_core::buf::BufExtra;
+use rs3cache_backend::buf::BufExtra;
 use serde::{Serialize, Serializer};
 
 use crate::definitions::tiles::TileArray;
@@ -110,7 +110,7 @@ pub struct Location {
 
 impl Location {
     // todo: fix this with water tiles
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
     pub(crate) fn dump_water_locations(i: u8, j: u8, buffer: Bytes) -> Vec<Self> {
         let blanks = TileArray::default((4, 64, 64));
         Self::dump(i, j, &blanks, buffer)

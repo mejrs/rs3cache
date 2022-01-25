@@ -31,7 +31,6 @@ use crate::{
     buf::BufExtra,
     decoder,
     error::{CacheError, CacheResult},
-    indextype::IndexType,
     meta::{IndexMetadata, Metadata},
 };
 
@@ -75,7 +74,7 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    /// The [index id](crate::indextype::IndexType) of `self`,
+    /// The index id of `self`,
     /// corresponding to the `raw/js5-{index_id}.jcache` file being held.
     #[inline(always)]
     pub fn index_id(&self) -> u32 {

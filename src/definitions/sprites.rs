@@ -10,9 +10,12 @@ use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-use rs3cache_core::buf::BufExtra;
+use rs3cache_backend::buf::BufExtra;
 
-use crate::cache::{error::CacheResult, index::CacheIndex, indextype::IndexType};
+use crate::{
+    cache::{error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
+};
 
 /// Type alias for a rgba image.
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
@@ -125,7 +128,7 @@ fn make_image(index_entry: &IndexEntry, entry: &Entry, data: Bytes) -> Sprite {
 
 #[cfg(feature = "legacy")]
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
-    use rs3cache_core::hash::hash_archive;
+    use rs3cache_backend::hash::hash_archive;
 
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
@@ -154,7 +157,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 
 #[cfg(feature = "legacy")]
 pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTreeMap<(u32, u32), Sprite>> {
-    use rs3cache_core::hash::hash_archive;
+    use rs3cache_backend::hash::hash_archive;
 
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
@@ -187,7 +190,7 @@ pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTr
 ///
 /// # Errors
 ///
-/// Raises [`CacheError`](rs3cache_core::error::CacheError) if any of `ids` does not correspond to a sprite.
+/// Raises [`CacheError`](rs3cache_backend::error::CacheError) if any of `ids` does not correspond to a sprite.
 ///
 /// # Panics
 ///

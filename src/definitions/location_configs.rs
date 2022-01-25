@@ -10,18 +10,16 @@ use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-#[cfg(any(feature = "osrs", feature = "legacy"))]
-use rs3cache_core::indextype::ConfigType;
-use rs3cache_core::{
+use rs3cache_backend::{
     buf::{BufExtra, ReadError},
     error::{CacheError, CacheResult},
     index::CacheIndex,
-    indextype::IndexType,
 };
 use serde::Serialize;
 
-use crate::structures::paramtable::ParamTable;
-
+#[cfg(any(feature = "osrs", feature = "legacy"))]
+use crate::definitions::indextype::ConfigType;
+use crate::{definitions::indextype::IndexType, structures::paramtable::ParamTable};
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 #[cfg_eval]
 #[allow(missing_docs)]
@@ -60,6 +58,7 @@ pub struct LocationConfig {
     pub unknown_22: Option<bool>,
     pub occludes_1: Option<bool>,
     pub unknown_24: Option<u32>,
+    pub unknown_25: Option<bool>,
     pub unknown_27: Option<bool>,
     pub unknown_28: Option<u8>,
     pub ambient: Option<i8>,
@@ -208,9 +207,9 @@ impl LocationConfig {
 
         let len = offset_data.try_get_u16().unwrap();
         for id in 0..len {
-            let piece_len = offset_data.try_get_u16().unwrap();
+            let piece_len = offset_data.try_get_u16()?;
             let data = file.split_to(piece_len as usize);
-            let loc = LocationConfig::deserialize(id as u32, data).unwrap();
+            let loc = LocationConfig::deserialize(id as u32, data)?;
             locations.insert(id as u32, loc);
         }
 
@@ -267,6 +266,8 @@ impl LocationConfig {
                     22 => loc.unknown_22 = Some(true),
                     23 => loc.occludes_1 = Some(false),
                     24 => loc.unknown_24 = buffer.try_get_smart32()?,
+                    #[cfg(feature = "legacy")]
+                    25 => loc.unknown_25 = Some(true),
                     27 => loc.unknown_27 = Some(false),
                     28 => loc.unknown_28 = Some(buffer.try_get_u8()?),
                     29 => loc.ambient = Some(buffer.try_get_i8()?),
@@ -504,7 +505,7 @@ pub mod location_config_fields {
 
             let var = VarpOrVarbit::new(varp, varbit);
 
-            let default = if cfg!(feature = "2011_11_shim") {
+            let default = if cfg!(all(feature = "2011_11_shim", not(feature = "2013_shim"))) {
                 Some(buffer.try_get_u16()? as u32)
             } else {
                 buffer.try_get_smart32()?
@@ -890,7 +891,7 @@ impl LocationConfig {
 mod legacy {
     use std::path::PathBuf;
 
-    use rs3cache_core::index::CacheIndex;
+    use rs3cache_backend::index::CacheIndex;
 
     use super::*;
     use crate::cli::Config;

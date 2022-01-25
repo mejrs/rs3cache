@@ -8,8 +8,8 @@
 //! These coordinates are referred to as `x` and `y`.
 //! They have four elevations, referred to as `p` or `plane`.
 
-#[cfg_attr(feature = "rs3", path = "mapsquares/rs3.rs")]
-#[cfg_attr(feature = "osrs", path = "mapsquares/osrs.rs")]
+#[cfg_attr(any(feature = "rs3", feature = "2013_4_shim"), path = "mapsquares/rs3.rs")]
+#[cfg_attr(all(feature = "osrs", not(feature = "2013_4_shim")), path = "mapsquares/osrs.rs")]
 #[cfg_attr(feature = "legacy", path = "mapsquares/legacy.rs")]
 mod iterator;
 
@@ -28,17 +28,17 @@ use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 
 pub use self::iterator::*;
-#[cfg(feature = "rs3")]
+#[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
 use crate::cache::arc::Archive;
-#[cfg(feature = "osrs")]
+#[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
 use crate::cache::xtea::Xtea;
 use crate::{
     cache::{
         error::{CacheError, CacheResult},
         index::{CacheIndex, Initial},
-        indextype::{IndexType, MapFileType},
     },
     definitions::{
+        indextype::{ConfigType, IndexType, MapFileType},
         locations::Location,
         tiles::{Tile, TileArray},
     },
@@ -69,7 +69,7 @@ pub struct MapSquare {
     /// All water locations in this [`MapSquare`].
     ///
     /// Locations can overlap on surrounding mapsquares.
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
     water_locations: CacheResult<Vec<Location>>,
 }
 
@@ -91,7 +91,7 @@ impl MapSquare {
         self.j
     }
 
-    #[cfg(all(test, feature = "rs3"))]
+    #[cfg(all(test, any(feature = "rs3", feature = "2013_4_shim")))]
     pub fn new(i: u8, j: u8, config: &crate::cli::Config) -> CacheResult<MapSquare> {
         assert!(i < 0x7F, "Index out of range.");
         let archive_id = (i as u32) | (j as u32) << 7;
@@ -99,7 +99,7 @@ impl MapSquare {
         Ok(Self::from_archive(archive))
     }
 
-    #[cfg(feature = "osrs")]
+    #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
     fn new(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
         let land = index.archive_with_xtea(land, xtea).and_then(|arch| arch.file(&0));
         let tiles = index.archive(tiles)?.file(&0)?;
@@ -136,7 +136,7 @@ impl MapSquare {
         })
     }
 
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
     pub(crate) fn from_archive(archive: Archive) -> MapSquare {
         let i = (archive.archive_id() & 0x7F) as u8;
         let j = (archive.archive_id() >> 7) as u8;
@@ -187,13 +187,13 @@ impl MapSquare {
     }
 
     /// Returns a view over the `locations` field, if present.
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
     pub fn get_water_locations(&self) -> Result<&Vec<Location>, &CacheError> {
         self.water_locations.as_ref()
     }
 
     /// Take its locations, consuming `self`.
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
     pub fn take_water_locations(self) -> Result<Vec<Location>, CacheError> {
         self.water_locations
     }
@@ -201,17 +201,17 @@ impl MapSquare {
 
 pub struct MapSquares {
     index: CacheIndex<Initial>,
-    #[cfg(feature = "osrs")]
+    #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
     mapping: BTreeMap<(&'static str, u8, u8), u32>,
     #[cfg(feature = "legacy")]
-    meta: BTreeMap<(u8, u8), rs3cache_core::index::MapsquareMeta>,
+    meta: BTreeMap<(u8, u8), rs3cache_backend::index::MapsquareMeta>,
 }
 
 impl IntoIterator for MapSquares {
     type Item = CacheResult<MapSquare>;
     type IntoIter = MapSquareIterator;
 
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
     fn into_iter(self) -> Self::IntoIter {
         let state = self
             .index
@@ -223,7 +223,7 @@ impl IntoIterator for MapSquares {
         MapSquareIterator { mapsquares: self, state }
     }
 
-    #[cfg(feature = "osrs")]
+    #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
     fn into_iter(self) -> Self::IntoIter {
         let state = self
             .mapping
@@ -442,8 +442,8 @@ mod legacy {
         let index = cache.get_index();
         let meta = index[&(50, 50)];
         dbg!(meta);
-        let locs = cache.archive(meta.locfile as u32).unwrap().file(&0).unwrap();
-        let map = cache.archive(meta.mapfile as u32).unwrap().file(&0).unwrap();
+        let locs = cache.archive(meta.locfile as u32).unwrap(); //.file(&0).unwrap();
+        let map = cache.archive(meta.mapfile as u32).unwrap(); //.file(&0).unwrap();
     }
 }
 

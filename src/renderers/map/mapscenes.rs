@@ -24,28 +24,39 @@ pub fn put(
         .all_locations_iter()
         .filter_map(|loc| {
             if loc.plane.matches(&(plane as u8)) {
-                location_config[&(loc.id)].mapscene.and_then(|mapscene_id| {
-                    #[cfg(any(feature = "rs3", feature = "2009_1_shim"))]
-                    {
-                        mapscenes[&(mapscene_id as u32)]
-                            .sprite_id
-                            // sprites is constructed with ids from
-                            // mapscenes so it should always be in the map.
-                            .map(|sprite_id| (loc, &sprites[&(sprite_id, 0)]))
-                    }
+                location_config
+                    .get(&(loc.id))
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "fatal error: maps and location_configs are logically inconsistent, tried looking up {} of mapsquare {}_{}",
+                            loc.id,
+                            squares.core_i(),
+                            squares.core_j()
+                        );
+                    })
+                    .mapscene
+                    .and_then(|mapscene_id| {
+                        #[cfg(any(feature = "rs3", feature = "2009_1_shim"))]
+                        {
+                            mapscenes[&(mapscene_id as u32)]
+                                .sprite_id
+                                // sprites is constructed with ids from
+                                // mapscenes so it should always be in the map.
+                                .map(|sprite_id| (loc, &sprites[&(sprite_id, 0)]))
+                        }
 
-                    #[cfg(all(feature = "osrs", not(feature = "2009_1_shim")))]
-                    {
-                        // 317 is the sprite named "mapscene", whose frames form all the mapscenes.
-                        // 22 is missing and indicates the empty mapscene, which is why this does not index
-                        sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
-                    }
+                        #[cfg(all(feature = "osrs", not(feature = "2009_1_shim")))]
+                        {
+                            // 317 is the sprite named "mapscene", whose frames form all the mapscenes.
+                            // 22 is missing and indicates the empty mapscene, which is why this does not index
+                            sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
+                        }
 
-                    #[cfg(feature = "legacy")]
-                    {
-                        sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
-                    }
-                })
+                        #[cfg(feature = "legacy")]
+                        {
+                            sprites.get(&(317, mapscene_id as u32)).map(|s| (loc, s))
+                        }
+                    })
             } else {
                 None
             }

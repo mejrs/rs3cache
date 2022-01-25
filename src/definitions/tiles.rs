@@ -56,9 +56,9 @@ impl Tile {
 
 impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
-    #[cfg(feature = "rs3")]
+    #[cfg(any(feature = "rs3", feature = "2013_shim"))]
     pub fn dump(mut buffer: Bytes) -> TileArray {
-        use rs3cache_core::buf::BufExtra;
+        use rs3cache_backend::buf::BufExtra;
 
         let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();
@@ -91,7 +91,7 @@ impl Tile {
         tiles
     }
 
-    #[cfg(any(feature = "osrs", feature = "legacy"))]
+    #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2013_shim")))]
     pub fn dump(mut buffer: Bytes) -> TileArray {
         let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();

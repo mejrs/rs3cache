@@ -174,7 +174,7 @@ impl IndexMetadata {
         self.metadatas.keys()
     }
 
-    /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_core::indextype::IndexType).
+    /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_backend::indextype::IndexType).
     #[cfg(any(feature = "sqlite", feature = "dat2"))]
     pub(crate) fn deserialize(index_id: u32, mut buffer: Bytes) -> CacheResult<Self> {
         let format = buffer.try_get_i8()?;

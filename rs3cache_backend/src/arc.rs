@@ -185,15 +185,20 @@ impl Archive {
             let decompressed = if extracted {
                 buffer.split_to(header.decompressed_len as usize)
             } else {
-                let mut compressed = bytes::BytesMut::from(b"BZh9".as_slice());
+                let mut compressed = bytes::BytesMut::from(b"BZh1".as_slice());
                 compressed.extend(buffer.split_to(header.compressed_len as usize));
 
-                let mut decoded = Vec::with_capacity(header.decompressed_len as usize);
+                use pyo3::{prelude::*, types::PyBytes};
 
-                let mut decoder = bzip2_rs::DecoderReader::new(&compressed[..]);
-
-                decoder.read_to_end(&mut decoded).unwrap();
-                Bytes::from(decoded)
+                let res = Python::with_gil(|py| {
+                    let zlib = PyModule::import(py, "bz2")?;
+                    let decompress = zlib.getattr("decompress")?;
+                    let bytes = PyBytes::new(py, &*compressed);
+                    let value = decompress.call1((bytes,))?;
+                    value.extract::<Vec<u8>>()
+                })
+                .unwrap();
+                Bytes::from(res)
             };
             archive.files.insert(i as u32, decompressed.clone());
             archive.files_named.insert(header.filename, decompressed);

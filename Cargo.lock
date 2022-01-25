@@ -1258,7 +1258,7 @@ dependencies = [
  "pyo3",
  "rayon",
  "regex",
- "rs3cache_core",
+ "rs3cache_backend",
  "rs3cache_macros",
  "rs3cache_utils",
  "serde",
@@ -1268,7 +1268,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rs3cache_core"
+name = "rs3cache_backend"
 version = "0.1.0"
 dependencies = [
  "bytes",

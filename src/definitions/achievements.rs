@@ -12,8 +12,10 @@ use path_macro::path;
 use pyo3::prelude::*;
 use serde::Serialize;
 
-use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType};
-
+use crate::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
+};
 /// Describes the properties of a given Achievement.
 #[cfg_eval]
 #[allow(missing_docs)]

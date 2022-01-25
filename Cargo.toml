@@ -7,7 +7,7 @@ default-run = "rs3cache"
 
 [workspace]
 members = [
-    "rs3cache_core",
+    "rs3cache_backend",
     "rs3cache_macros",
     "rs3cache_utils",
     "rs3_py",
@@ -39,7 +39,7 @@ required-features = ["legacy"]
 
 [dependencies]
 rs3cache_macros = { path = "rs3cache_macros", version = "0.1.0", optional = true  }
-rs3cache_core = { path = "rs3cache_core", version = "0.1.0" }
+rs3cache_backend = { path = "rs3cache_backend", version = "0.1.0" }
 rs3cache_utils = { path = "rs3cache_utils", version = "0.1.0" }
 itertools = "0.10.1"
 ndarray = {version = "0.15.3", features = ["serde"] }
@@ -60,14 +60,16 @@ rayon = "1.5.1"
 bytes = "1.1.0"
 
 [features]
-python = ["pyo3", "rs3cache_core/python", "rs3cache_macros"]
-mockdata = ["rs3cache_core/mockdata"]
+python = ["pyo3", "rs3cache_backend/python", "rs3cache_macros"]
+mockdata = ["rs3cache_backend/mockdata"]
 fast = []
-rs3 = ["rs3cache_core/sqlite", "filetime"]
-osrs = ["rs3cache_core/dat2"]
-legacy = ["rs3cache_core/dat"]
-2008_3_shim = ["osrs", "rs3cache_core/2008_3_shim"]
-2009_1_shim = ["2008_3_shim", "rs3cache_core/2008_3_shim"]
+rs3 = ["rs3cache_backend/sqlite", "filetime"]
+osrs = ["rs3cache_backend/dat2"]
+legacy = ["rs3cache_backend/dat"]
+2008_3_shim = ["osrs", "rs3cache_backend/2008_3_shim"]
+2009_1_shim = ["2008_3_shim", "rs3cache_backend/2008_3_shim"]
 2010_1_shim = ["2009_1_shim"]
 2010_3_shim = ["2010_1_shim"]
 2011_11_shim = ["2010_3_shim"]
+2013_shim = ["2011_11_shim"]
+2013_4_shim = ["2013_shim"]

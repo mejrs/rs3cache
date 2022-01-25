@@ -19,9 +19,7 @@ use crate::{
     decoder,
     error::{CacheError, CacheResult},
     index::{CacheIndex, IndexState, Initial},
-    indextype::IndexType,
     meta::{IndexMetadata, Metadata},
-    xtea::Xtea,
 };
 
 impl<S> CacheIndex<S>
@@ -55,9 +53,8 @@ where
 
             let current_part = buffer.get_u16();
             let new_sector = buffer.get_uint(3) as u32;
-            let current_index = buffer.get_u8();
+            let _current_index = buffer.get_u8();
 
-            assert_eq!(a, current_index as u32);
             assert_eq!(b, current_archive as u32);
             assert_eq!(part, current_part as u32);
 
@@ -72,31 +69,62 @@ where
 
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        Ok(decoder::decompress(data, None, None)?)
-    }
-
-    pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>> {
-        &self.xteas
-    }
-
-    pub fn archive_with_xtea(&self, archive_id: u32, xtea: Option<Xtea>) -> CacheResult<Archive> {
-        let metadata = self
-            .metadatas()
-            .get(&archive_id)
-            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
-        let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        let data = decoder::decompress(data, None, xtea)?;
-        Ok(Archive::deserialize(metadata, data))
+        if metadata.index_id() == 0 {
+            // The caller of this function is responsible for unpacking the .jag format
+            return Ok(Bytes::from(data));
+        }
+        Ok(decoder::decompress(data, None)?)
     }
 
     pub fn archive_by_name(&self, name: String) -> CacheResult<Bytes> {
-        let hash = crate::hash::hash_djb2(&name);
+        let hash = crate::hash::hash_archive(&name);
         for (_, m) in self.metadatas.iter() {
             if m.name() == Some(hash) {
                 return self.get_file(m);
             }
         }
         Err(CacheError::ArchiveNotFoundError(0, 0))
+    }
+
+    pub fn get_index(&mut self) -> BTreeMap<(u8, u8), MapsquareMeta> {
+        let index_name = match self.index_id {
+            /*
+            1 => "model",
+            2 => "anim",
+            3 => "midi",
+            */
+            4 => "map",
+            other => unimplemented!("getting index metadata for {other} is not supported"),
+        };
+
+        let temp = self.index_id;
+
+        // Temporarily set the id to 0
+        self.index_id = 0;
+        let a = self.archive(5).unwrap();
+        let mut index = a.file_named(format!("{index_name}_index")).unwrap();
+        let _versions = a.file_named(format!("{index_name}_version")).unwrap();
+        let _crcs = a.file_named(format!("{index_name}_crc")).unwrap();
+
+        // Restore the index id
+        self.index_id = temp;
+
+        let mut map = BTreeMap::new();
+
+        for _ in 0..(index.len() / 7) {
+            let meta = MapsquareMeta {
+                mapsquare: index.get_u16(),
+                mapfile: index.get_u16(),
+                locfile: index.get_u16(),
+                f2p: index.get_u8() != 0,
+            };
+            let i = (meta.mapsquare >> 8).try_into().unwrap();
+            let j = (meta.mapsquare & 0xFF) as u8;
+
+            map.insert((i, j), meta);
+        }
+
+        map
     }
 }
 
@@ -107,53 +135,24 @@ impl CacheIndex<Initial> {
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
     pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(folder / "cache" / "main_file_cache.dat2");
+        let file = path!(folder / "cache/main_file_cache.dat");
 
         let file = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?.into_boxed_slice();
-        let xteas = if index_id == IndexType::MAPSV2 {
-            let path = path!(folder / "xteas.json");
 
-            // Try to laod either xteas.json or keys.json
-            match Xtea::load(&path) {
-                Ok(file) => Some(file),
-                Err(CacheError::IoError(e1)) if e1.kind() == io::ErrorKind::NotFound => {
-                    let alt_path = path!(folder / "keys.json");
-                    Some(Xtea::load(&alt_path).map_err(|e2| {
-                        let path = path.to_string_lossy();
-                        let alt_path = alt_path.to_string_lossy();
-                        let e1 = e1.to_string();
-                        let e2 = e2.to_string();
-                        io::Error::new(
-                            io::ErrorKind::NotFound,
-                            f!("Cannot to find xtea keys at either {path} or {alt_path}: {e1} \n {e2}"),
-                        )
-                    })?)
-                }
-                Err(other) => return Err(other),
-            }
-        } else {
-            None
-        };
-
-        // `s` is in a partially initialized state here
-        let mut s = Self {
+        Ok(Self {
             path: folder.as_ref().to_path_buf(),
             index_id,
             metadatas: IndexMetadata::empty(),
             file,
-            xteas,
             state: Initial {},
-        };
-
-        let metadatas = {
-            let data = s.read_index(255, index_id)?;
-            let data = decoder::decompress(data, None, None)?;
-            IndexMetadata::deserialize(index_id, data)?
-        };
-
-        s.metadatas = metadatas;
-        // `s` is now fully initialized
-
-        Ok(s)
+        })
     }
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct MapsquareMeta {
+    pub mapsquare: u16,
+    pub mapfile: u16,
+    pub locfile: u16,
+    pub f2p: bool,
 }

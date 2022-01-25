@@ -7,16 +7,16 @@ use std::{
 use bytes::{Buf, Bytes};
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
-use rs3cache_core::index::MapsquareMeta;
+use rs3cache_backend::index::MapsquareMeta;
 
 use crate::{
     cache::{
         arc::Archive,
         error::{CacheError, CacheResult},
         index::{self, CacheIndex},
-        indextype::{IndexType, MapFileType},
     },
     definitions::{
+        indextype::{IndexType, MapFileType},
         locations::Location,
         mapsquares::{GroupMapSquare, MapSquare, MapSquares},
         tiles::{Tile, TileArray},

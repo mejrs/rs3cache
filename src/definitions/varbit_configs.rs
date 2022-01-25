@@ -15,10 +15,9 @@ use path_macro::path;
 use pyo3::prelude::*;
 use serde::Serialize;
 
-use crate::cache::{
-    error::CacheResult,
-    index::CacheIndex,
-    indextype::{ConfigType, IndexType},
+use crate::{
+    cache::{error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
 };
 /// A varbit configuration.
 ///

@@ -9,8 +9,11 @@ use fstrings::{f, format_args_f};
 use path_macro::path;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
-    definitions::enums::{Enum, Value},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::{
+        enums::{Enum, Value},
+        indextype::IndexType,
+    },
 };
 
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {

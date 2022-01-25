@@ -1,7 +1,7 @@
 use std::{path::PathBuf, str::FromStr};
 
 use fstrings::{f, format_args_f};
-use rs3cache_core::error::CacheResult;
+use rs3cache_backend::error::CacheResult;
 use structopt::StructOpt;
 
 use crate::definitions;

@@ -10,11 +10,10 @@ use crate::{
     cache::{
         arc::Archive,
         index::{self, CacheIndex, Initial},
-        indextype::IndexType,
         meta::IndexMetadata,
     },
     cli::Config,
-    definitions::sprites,
+    definitions::{indextype::IndexType, sprites},
     ffi::python::PyIndexMetadata,
 };
 /// Obtained from [`PySprites`]'s [`get`](PySprites::get) method.

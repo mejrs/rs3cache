@@ -11,9 +11,10 @@ use pyo3::prelude::*;
 use serde::Serialize;
 
 #[cfg(feature = "osrs")]
-use crate::cache::indextype::ConfigType;
+use crate::definitions::indextype::ConfigType;
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
     structures::paramtable::ParamTable,
 };
 

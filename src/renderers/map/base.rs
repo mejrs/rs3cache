@@ -135,9 +135,7 @@ pub fn put(
                                 if Some([255, 0, 255]) != colour {
                                     if let Some([red, green, blue]) = colour {
                                         let fill = Rgba([red, green, blue, 255]);
-                                        if column[p].shape.unwrap_or(0) != 0 {
-                                            //dbg!(column[p]);
-                                        }
+
                                         tileshape::draw_overlay(column[p].shape.unwrap_or(0), CONFIG.tile_size, |(a, b)| unsafe {
                                             debug_assert!(
                                                 (CONFIG.tile_size * x + a) < img.width() && (CONFIG.tile_size * (63u32 - y) + b) < img.height(),
@@ -260,10 +258,6 @@ fn get_underlay_colour(
             .fold((0, (0, 0, 0)), |(acc_w, (acc_r, acc_g, acc_b)), (w, (r, g, b))| {
                 (acc_w + w, (acc_r + r, acc_g + g, acc_b + b))
             });
-        if weight > 121 {
-            dbg!(weight);
-        }
-
         [
             (reds / 121).try_into().unwrap(),
             (greens / 121).try_into().unwrap(),

@@ -19,7 +19,6 @@ use crate::{
     decoder,
     error::{CacheError, CacheResult},
     index::{CacheIndex, IndexState, Initial},
-    indextype::IndexType,
     meta::{IndexMetadata, Metadata},
 };
 
@@ -50,8 +49,8 @@ where
 
             // wut
             let crc_offset = match self.index_id() {
-                IndexType::SPRITES => 2_i64,
-                IndexType::MODELSRT7 => 2_i64,
+                8 => 2_i64,
+                47 => 2_i64,
                 _ => 1_i64,
             };
 
@@ -100,8 +99,8 @@ where
 
             // wut
             let crc_offset = match self.index_id() {
-                IndexType::SPRITES => 2_i64,
-                IndexType::MODELSRT7 => 2_i64,
+                8 => 2_i64,
+                47 => 2_i64,
                 _ => 1_i64,
             };
             if crc == 0 && version == 0 {
@@ -165,10 +164,14 @@ impl CacheIndex<Initial> {
 /// Panics if compiled with feature `mockdata`.
 #[cfg(not(feature = "mockdata"))]
 pub fn assert_coherence(folder: impl AsRef<Path>) -> CacheResult<()> {
-    for index_id in IndexType::iterator() {
-        match CacheIndex::new(index_id, &folder)?.assert_coherence() {
-            Ok(_) => println!("Index {} is coherent!", index_id),
-            Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
+    let folder = folder.as_ref();
+
+    for index_id in 0..70 {
+        if fs::metadata(path!(folder / format!("js5-{index_id}.jcache"))).is_ok() {
+            match CacheIndex::new(index_id, &folder)?.assert_coherence() {
+                Ok(_) => println!("Index {} is coherent!", index_id),
+                Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
+            }
         }
     }
     Ok(())

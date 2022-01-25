@@ -12,8 +12,10 @@ use path_macro::path;
 use pyo3::prelude::*;
 use serde::Serialize;
 
-use crate::cache::{error::CacheResult, index::CacheIndex, indextype::IndexType};
-
+use crate::{
+    cache::{error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
+};
 /// Describes the properties of a given item.
 
 #[cfg_eval]

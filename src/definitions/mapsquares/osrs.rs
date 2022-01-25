@@ -7,9 +7,11 @@ use crate::{
     cache::{
         error::CacheResult,
         index::{self, CacheIndex},
-        indextype::IndexType,
     },
-    definitions::mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
+    definitions::{
+        indextype::IndexType,
+        mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
+    },
 };
 
 impl MapSquares {

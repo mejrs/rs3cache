@@ -11,13 +11,10 @@ use pyo3::prelude::*;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-use crate::cache::{
-    buf::BufExtra,
-    error::CacheResult,
-    index::CacheIndex,
-    indextype::{ConfigType, IndexType},
+use crate::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
 };
-
 /// Describes (part of) ground colour.
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[skip_serializing_none]

@@ -11,11 +11,9 @@ use pyo3::prelude::*;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-use crate::cache::{
-    buf::BufExtra,
-    error::CacheResult,
-    index::CacheIndex,
-    indextype::{ConfigType, IndexType},
+use crate::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
 };
 
 /// Describes the general ground colour. This colour is blended with surrounding tiles.

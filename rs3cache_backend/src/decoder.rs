@@ -38,6 +38,7 @@ pub fn decompress(
     if encoded_data.len() < 3 {
         return Err(DecodeError::Other("File was empty".to_string()));
     }
+
     match &encoded_data[0..3] {
         Compression::ZLIB => {
             let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
@@ -93,10 +94,10 @@ pub fn decompress(
 
         #[cfg(feature = "dat")]
         Compression::DAT_GZIP => {
-            if let [data @ .., _version_tag1, _version_tag2] = encoded_data.as_slice() {
-                let mut decoder = gzip::Decoder::new(data)?;
+            if let [data @ .., _version, _version_part2] = encoded_data.as_slice() {
+                let mut decoder = gzip::Decoder::new(data).unwrap();
                 let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-                decoder.read_to_end(&mut decoded_data)?;
+                decoder.read_to_end(&mut decoded_data).unwrap();
                 Ok(decoded_data.into())
             } else {
                 panic!()

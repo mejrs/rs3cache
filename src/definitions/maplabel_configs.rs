@@ -11,12 +11,8 @@ use pyo3::prelude::*;
 use serde::Serialize;
 
 use crate::{
-    cache::{
-        buf::BufExtra,
-        error::CacheResult,
-        index::CacheIndex,
-        indextype::{ConfigType, IndexType},
-    },
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
     structures::paramtable::ParamTable,
 };
 

@@ -32,7 +32,7 @@ pub mod cli;
 
 /// Tools for decoding the cache itself.
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
-pub use rs3cache_core as cache;
+pub use rs3cache_backend as cache;
 use rs3cache_utils as utils;
 
 /// Various data types
@@ -58,6 +58,8 @@ pub mod definitions {
 
     /// Describes the id, position, type and rotation of game objects.
     pub mod locations;
+
+    pub mod indextype;
 
     pub mod item_configs;
 

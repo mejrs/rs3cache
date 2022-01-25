@@ -13,7 +13,8 @@ use path_macro::path;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
     types::coordinate::Coordinate,
 };
 
