@@ -962,6 +962,7 @@
 <span id="961">961</span>
 <span id="962">962</span>
 <span id="963">963</span>
+<span id="964">964</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
     <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
@@ -974,18 +975,16 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rayon::iter</span>::{<span class="ident">ParallelBridge</span>, <span class="ident">ParallelIterator</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">rs3cache_core::indextype::ConfigType</span>;
-<span class="kw">use</span> <span class="ident">rs3cache_core</span>::{
+<span class="kw">use</span> <span class="ident">rs3cache_backend</span>::{
     <span class="ident">buf</span>::{<span class="ident">BufExtra</span>, <span class="ident">ReadError</span>},
     <span class="ident">error</span>::{<span class="ident">CacheError</span>, <span class="ident">CacheResult</span>},
     <span class="ident">index::CacheIndex</span>,
-    <span class="ident">indextype::IndexType</span>,
 };
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::structures::paramtable::ParamTable</span>;
-
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::definitions::indextype::ConfigType</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">definitions::indextype::IndexType</span>, <span class="ident">structures::paramtable::ParamTable</span>};
 <span class="doccomment">/// Describes the properties of a given [`Location`](crate::definitions::locations::Location).</span>
 <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
@@ -1024,6 +1023,7 @@
     <span class="kw">pub</span> <span class="ident">unknown_22</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">occludes_1</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_24</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">unknown_25</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_27</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_28</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">ambient</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
@@ -1172,9 +1172,9 @@
 
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">offset_data</span>.<span class="ident">try_get_u16</span>().<span class="ident">unwrap</span>();
         <span class="kw">for</span> <span class="ident">id</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> {
-            <span class="kw">let</span> <span class="ident">piece_len</span> <span class="op">=</span> <span class="ident">offset_data</span>.<span class="ident">try_get_u16</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">piece_len</span> <span class="op">=</span> <span class="ident">offset_data</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">split_to</span>(<span class="ident">piece_len</span> <span class="kw">as</span> <span class="ident">usize</span>);
-            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">LocationConfig::deserialize</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">data</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">LocationConfig::deserialize</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">data</span>)<span class="question-mark">?</span>;
             <span class="ident">locations</span>.<span class="ident">insert</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">loc</span>);
         }
 
@@ -1231,6 +1231,8 @@
                     <span class="number">22</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_22</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">23</span> =&gt; <span class="ident">loc</span>.<span class="ident">occludes_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
                     <span class="number">24</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_24</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>,
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
+                    <span class="number">25</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_25</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">27</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_27</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
                     <span class="number">28</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_28</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span>),
                     <span class="number">29</span> =&gt; <span class="ident">loc</span>.<span class="ident">ambient</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_i8</span>()<span class="question-mark">?</span>),
@@ -1468,7 +1470,7 @@
 
             <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
 
-            <span class="kw">let</span> <span class="ident">default</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>) {
+            <span class="kw">let</span> <span class="ident">default</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2011_11_shim&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_shim&quot;</span>))) {
                 <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>)
             } <span class="kw">else</span> {
                 <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>
@@ -1854,7 +1856,7 @@
 <span class="kw">mod</span> <span class="ident">legacy</span> {
     <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
-    <span class="kw">use</span> <span class="ident">rs3cache_core::index::CacheIndex</span>;
+    <span class="kw">use</span> <span class="ident">rs3cache_backend::index::CacheIndex</span>;
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli::Config</span>;

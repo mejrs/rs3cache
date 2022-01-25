@@ -106,7 +106,6 @@
 <span id="105">105</span>
 <span id="106">106</span>
 <span id="107">107</span>
-<span id="108">108</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Bitpacked player variables.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!</span>
@@ -124,10 +123,9 @@
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{
-    <span class="ident">error::CacheResult</span>,
-    <span class="ident">index::CacheIndex</span>,
-    <span class="ident">indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">cache</span>::{<span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
+    <span class="ident">definitions::indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
 };
 <span class="doccomment">/// A varbit configuration.</span>
 <span class="doccomment">///</span>

@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["arc","Units of data in a `CacheIndex`."],["buf","Wrapper around `Cursor`."],["decoder","Functions to decompress cache data."],["error",""],["hash",""],["index","The interface between rs3cache and the cache database."],["indextype","The names of various indexes and archives."],["meta","Metadata about the cache itself."]]});

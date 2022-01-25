@@ -189,7 +189,6 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
-<span id="191">191</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">path::PathBuf</span>};
 
 <span class="kw">use</span> <span class="ident">pyo3</span>::{
@@ -202,11 +201,10 @@
     <span class="ident">cache</span>::{
         <span class="ident">arc::Archive</span>,
         <span class="ident">index</span>::{<span class="self">self</span>, <span class="ident">CacheIndex</span>, <span class="ident">Initial</span>},
-        <span class="ident">indextype::IndexType</span>,
         <span class="ident">meta::IndexMetadata</span>,
     },
     <span class="ident">cli::Config</span>,
-    <span class="ident">definitions::sprites</span>,
+    <span class="ident">definitions</span>::{<span class="ident">indextype::IndexType</span>, <span class="ident">sprites</span>},
     <span class="ident">ffi::python::PyIndexMetadata</span>,
 };
 <span class="doccomment">/// Obtained from [`PySprites`]&#39;s [`get`](PySprites::get) method.</span>

@@ -235,7 +235,7 @@
 <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rs3cache_core::buf::BufExtra</span>;
+<span class="kw">use</span> <span class="ident">rs3cache_backend::buf::BufExtra</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::definitions::tiles::TileArray</span>;
@@ -342,7 +342,7 @@
 
 <span class="kw">impl</span> <span class="ident">Location</span> {
     <span class="comment">// todo: fix this with water tiles</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dump_water_locations</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">blanks</span> <span class="op">=</span> <span class="ident">TileArray::default</span>((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>));
         <span class="ident"><span class="self">Self</span>::dump</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="kw-2">&amp;</span><span class="ident">blanks</span>, <span class="ident">buffer</span>)

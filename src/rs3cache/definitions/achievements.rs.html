@@ -494,6 +494,8 @@
 <span id="493">493</span>
 <span id="494">494</span>
 <span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.</span>
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
@@ -508,8 +510,10 @@
 <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>, <span class="ident">indextype::IndexType</span>};
-
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
+    <span class="ident">definitions::indextype::IndexType</span>,
+};
 <span class="doccomment">/// Describes the properties of a given Achievement.</span>
 <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
