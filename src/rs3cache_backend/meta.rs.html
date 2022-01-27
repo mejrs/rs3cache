@@ -331,6 +331,28 @@
 <span id="330">330</span>
 <span id="331">331</span>
 <span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Metadata about the cache itself.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -344,9 +366,14 @@
 
 <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
 <span class="kw">use</span> <span class="ident">itertools::izip</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
+<span class="kw">use</span> {
+    <span class="ident">pyo3::class::basic::CompareOp</span>,
+    <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>,
+    <span class="ident">std::collections</span>::{<span class="ident">btree_map</span>, <span class="ident">hash_map::DefaultHasher</span>},
+    <span class="ident">std::hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>},
+};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">buf</span>::{<span class="ident">BufExtra</span>, <span class="ident">ReadError</span>},
@@ -360,7 +387,7 @@
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
 <span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Hash</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Metadata</span> {
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
     <span class="kw">pub</span> <span class="ident">index_id</span>: <span class="ident">u32</span>,
@@ -403,6 +430,23 @@
 
     <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+    }
+
+    <span class="kw">fn</span> <span class="ident">__hash__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">DefaultHasher::new</span>();
+        <span class="self">self</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;mut</span> <span class="ident">hasher</span>);
+        <span class="prelude-val">Ok</span>(<span class="ident">hasher</span>.<span class="ident">finish</span>())
+    }
+
+    <span class="kw">fn</span> <span class="ident">__richcmp__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>, <span class="ident">op</span>: <span class="ident">CompareOp</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="ident">op</span> {
+            <span class="ident">CompareOp::Lt</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&lt;</span> <span class="ident">other</span>),
+            <span class="ident">CompareOp::Le</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">other</span>),
+            <span class="ident">CompareOp::Eq</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">==</span> <span class="ident">other</span>),
+            <span class="ident">CompareOp::Ne</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>),
+            <span class="ident">CompareOp::Gt</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&gt;</span> <span class="ident">other</span>),
+            <span class="ident">CompareOp::Ge</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">other</span>),
+        }
     }
 }
 
@@ -489,7 +533,7 @@
 <span class="doccomment">/// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.</span>
 <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Hash</span>, <span class="ident">Eq</span>, <span class="ident">Ord</span>, <span class="ident">PartialOrd</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IndexMetadata</span> {
     <span class="ident">metadatas</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Metadata</span><span class="op">&gt;</span>,
 }
