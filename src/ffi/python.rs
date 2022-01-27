@@ -61,6 +61,7 @@ pub fn initializer(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_varbit_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_struct_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_enum_configs, m)?)?;
+    m.add_function(wrap_pyfunction!(hash_djb2, m)?)?;
 
     m.add_class::<PyMapSquares>()?;
     m.add_class::<PyCacheIndex>()?;
@@ -118,4 +119,9 @@ pub fn get_enum_configs() -> PyResult<BTreeMap<u32, Enum>> {
 #[pyfunction]
 pub fn get_varbit_configs() -> PyResult<BTreeMap<u32, VarbitConfig>> {
     Ok(VarbitConfig::dump_all(&Config::env())?)
+}
+
+#[pyfunction]
+pub fn hash_djb2(s: &str) -> i32 {
+    rs3cache_backend::hash::hash_djb2(s)
 }

@@ -1,6 +1,14 @@
-use std::{collections::btree_map, path::PathBuf};
+use std::{
+    collections::{btree_map, hash_map::DefaultHasher},
+    hash::{Hash, Hasher},
+    path::PathBuf,
+};
 
-use pyo3::{exceptions::PyReferenceError, prelude::*};
+use pyo3::{
+    class::basic::CompareOp,
+    exceptions::{PyIndexError, PyReferenceError},
+    prelude::*,
+};
 
 use crate::{
     cache::{
@@ -121,6 +129,18 @@ pub struct PyIndexMetadata {
 
 #[pymethods]
 impl PyIndexMetadata {
+    fn __getitem__(&self, index: u32) -> PyResult<Metadata> {
+        let meta = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?
+            .metadatas()
+            .get(&index)
+            .ok_or_else(|| PyIndexError::new_err("Key not present"))?
+            .to_owned();
+
+        Ok(meta)
+    }
     fn __repr__(&self) -> PyResult<String> {
         let inner = self
             .inner
@@ -147,6 +167,23 @@ impl PyIndexMetadata {
 
         let iter = PyIndexMetadataIter { inner };
         Py::new(py, iter)
+    }
+
+    fn __hash__(&self) -> PyResult<u64> {
+        let mut hasher = DefaultHasher::new();
+        self.inner.hash(&mut hasher);
+        Ok(hasher.finish())
+    }
+
+    fn __richcmp__(&self, other: &PyIndexMetadata, op: CompareOp) -> PyResult<bool> {
+        match op {
+            CompareOp::Lt => Ok(self.inner < other.inner),
+            CompareOp::Le => Ok(self.inner <= other.inner),
+            CompareOp::Eq => Ok(self.inner == other.inner),
+            CompareOp::Ne => Ok(self.inner != other.inner),
+            CompareOp::Gt => Ok(self.inner > other.inner),
+            CompareOp::Ge => Ok(self.inner >= other.inner),
+        }
     }
 }
 

@@ -11,9 +11,14 @@ use std::{
 
 use bytes::{Buf, Bytes};
 use itertools::izip;
-#[cfg(feature = "pyo3")]
-use pyo3::prelude::*;
 use serde::{Serialize, Serializer};
+#[cfg(feature = "pyo3")]
+use {
+    pyo3::class::basic::CompareOp,
+    pyo3::prelude::*,
+    std::collections::{btree_map, hash_map::DefaultHasher},
+    std::hash::{Hash, Hasher},
+};
 
 use crate::{
     buf::{BufExtra, ReadError},
@@ -27,7 +32,7 @@ use crate::{
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Clone, Debug, Default)]
+#[derive(Serialize, Clone, Debug, Default, Hash, Eq, PartialOrd, Ord, PartialEq)]
 pub struct Metadata {
     #[cfg_attr(feature = "pyo3", pyo3(get))]
     pub index_id: u32,
@@ -70,6 +75,23 @@ impl Metadata {
 
     fn __str__(&self) -> PyResult<String> {
         Ok(format!("Metadata({})", serde_json::to_string(self).unwrap()))
+    }
+
+    fn __hash__(&self) -> PyResult<u64> {
+        let mut hasher = DefaultHasher::new();
+        self.hash(&mut hasher);
+        Ok(hasher.finish())
+    }
+
+    fn __richcmp__(&self, other: &Metadata, op: CompareOp) -> PyResult<bool> {
+        match op {
+            CompareOp::Lt => Ok(self < other),
+            CompareOp::Le => Ok(self <= other),
+            CompareOp::Eq => Ok(self == other),
+            CompareOp::Ne => Ok(self != other),
+            CompareOp::Gt => Ok(self > other),
+            CompareOp::Ge => Ok(self >= other),
+        }
     }
 }
 
@@ -156,7 +178,7 @@ impl Metadata {
 /// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.
 #[cfg_eval]
 #[allow(missing_docs)]
-#[derive(Serialize, Clone, Debug, Default)]
+#[derive(Serialize, Clone, Debug, Default, Hash, Eq, Ord, PartialOrd, PartialEq)]
 pub struct IndexMetadata {
     metadatas: BTreeMap<u32, Metadata>,
 }

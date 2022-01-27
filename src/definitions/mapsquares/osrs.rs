@@ -2,6 +2,7 @@ use core::ops::RangeInclusive;
 use std::collections::{BTreeMap, HashMap};
 
 use itertools::iproduct;
+use rs3cache_backend::error::CacheError;
 
 use crate::{
     cache::{
@@ -13,7 +14,6 @@ use crate::{
         mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
     },
 };
-
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
         let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
@@ -49,7 +49,10 @@ impl MapSquares {
     }
 
     pub fn get(&self, i: u8, j: u8) -> CacheResult<MapSquare> {
-        let land = self.mapping.get(&("l", i, j)).unwrap();
+        let land = self
+            .mapping
+            .get(&("l", i, j))
+            .ok_or_else(|| CacheError::ArchiveNotFoundError(i as u32, j as u32))?;
         let map = self.mapping.get(&("m", i, j)).unwrap();
         let env = self.mapping.get(&("e", i, j)).copied();
         let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
