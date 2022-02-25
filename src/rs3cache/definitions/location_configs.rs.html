@@ -963,6 +963,8 @@
 <span id="962">962</span>
 <span id="963">963</span>
 <span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
     <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
@@ -1120,6 +1122,7 @@
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">unknown_201</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown201</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_202</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">unknown_203</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">params</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ParamTable</span><span class="op">&gt;</span>,
 }
@@ -1346,6 +1349,7 @@
                     <span class="number">199</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_199</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">201</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_201</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown201::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>),
                     <span class="number">202</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_202</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_unsigned_smart</span>()<span class="question-mark">?</span>),
+                    <span class="number">203</span> =&gt; <span class="ident">loc</span>.<span class="ident">unknown_203</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">249</span> =&gt; <span class="ident">loc</span>.<span class="ident">params</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ParamTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
                     <span class="ident">missing</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">ReadError::opcode_not_implemented</span>(<span class="ident">missing</span>))<span class="question-mark">?</span>,
                 }
