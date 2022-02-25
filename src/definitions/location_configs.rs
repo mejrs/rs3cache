@@ -155,6 +155,7 @@ pub struct LocationConfig {
     #[serde(flatten)]
     pub unknown_201: Option<Unknown201>,
     pub unknown_202: Option<u16>,
+    pub unknown_203: Option<bool>,
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -381,6 +382,7 @@ impl LocationConfig {
                     199 => loc.unknown_199 = Some(true),
                     201 => loc.unknown_201 = Some(Unknown201::deserialize(&mut buffer)?),
                     202 => loc.unknown_202 = Some(buffer.try_get_unsigned_smart()?),
+                    203 => loc.unknown_203 = Some(true),
                     249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
                     missing => Err(ReadError::opcode_not_implemented(missing))?,
                 }
