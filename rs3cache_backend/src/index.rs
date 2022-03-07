@@ -12,7 +12,7 @@ use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
     fs::{self, File},
-    io::{self, Cursor, Read, Seek, SeekFrom, Write},
+    io::{self, BufReader, Cursor, Read, Seek, SeekFrom, Write},
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
@@ -63,7 +63,7 @@ pub struct CacheIndex<S: IndexState> {
     connection: sqlite::Connection,
 
     #[cfg(any(feature = "dat2", feature = "dat"))]
-    file: Box<[u8]>,
+    file: File,
 
     #[cfg(feature = "dat2")]
     xteas: Option<HashMap<u32, Xtea>>,

@@ -2,7 +2,7 @@ use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
     fs::{self, File},
-    io::{self, Cursor, Read, Seek, SeekFrom, Write},
+    io::{self, BufReader, Cursor, Read, Seek, SeekFrom, Write},
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
@@ -36,7 +36,7 @@ where
     }
 
     fn read_index(&self, a: u32, b: u32) -> CacheResult<Vec<u8>> {
-        let mut buffer = Cursor::new(&self.file);
+        let mut buffer = BufReader::new(&self.file);
 
         let (length, mut sector) = Self::get_entry(a, b, &self.path)?;
 
@@ -47,14 +47,30 @@ where
         while sector != 0 {
             buffer.seek(SeekFrom::Start((sector * 520) as _))?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
-                (10, buffer.get_i32(), 510.min(length - read_count))
+                let mut buf = [0; 4];
+                buffer.read_exact(&mut buf)?;
+                (10, i32::from_be_bytes(buf), 510.min(length - read_count))
             } else {
-                (8, buffer.get_u16() as _, 512.min(length - read_count))
+                let mut buf = [0; 2];
+                buffer.read_exact(&mut buf)?;
+                (8, u16::from_be_bytes(buf) as _, 512.min(length - read_count))
             };
 
-            let current_part = buffer.get_u16();
-            let new_sector = buffer.get_uint(3) as u32;
-            let current_index = buffer.get_u8();
+            let current_part = {
+                let mut buf = [0; 2];
+                buffer.read_exact(&mut buf)?;
+                u16::from_be_bytes(buf)
+            };
+            let new_sector = {
+                let mut buf = [0; 4];
+                buffer.read_exact(&mut buf[1..4])?;
+                u32::from_be_bytes(buf)
+            };
+            let current_index = {
+                let mut buf = [0; 1];
+                buffer.read_exact(&mut buf)?;
+                u8::from_be_bytes(buf)
+            };
 
             assert_eq!(a, current_index as u32);
             assert_eq!(b, current_archive as u32);
@@ -64,7 +80,10 @@ where
             read_count += block_size;
             sector = new_sector;
 
-            data.extend(buffer.copy_to_bytes(block_size as _));
+            let mut buf = [0u8; 512];
+            buffer.read_exact(&mut buf[..(block_size as usize)])?;
+
+            data.extend_from_slice(&buf[..(block_size as usize)]);
         }
         Ok(data)
     }
@@ -108,7 +127,7 @@ impl CacheIndex<Initial> {
     pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(folder / "cache" / "main_file_cache.dat2");
 
-        let file = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?.into_boxed_slice();
+        let file = File::open(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
         let xteas = if index_id == 5 {
             let path = path!(folder / "xteas.json");
 
