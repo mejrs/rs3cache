@@ -94,13 +94,15 @@ pub fn decompress(
 
         #[cfg(feature = "dat")]
         Compression::DAT_GZIP => {
+            // Sometimes these trailing versions are missing, and the below code
+            // shouldn't omit the last two bytes.
             if let [data @ .., _version, _version_part2] = encoded_data.as_slice() {
                 let mut decoder = gzip::Decoder::new(data).unwrap();
                 let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
                 decoder.read_to_end(&mut decoded_data).unwrap();
                 Ok(decoded_data.into())
             } else {
-                panic!()
+                unreachable!()
             }
         }
 
