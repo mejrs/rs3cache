@@ -57,7 +57,7 @@ impl Xtea {
         let v0: [u8; 4] = v0.to_be_bytes();
         let v1: [u8; 4] = v1.to_be_bytes();
 
-        array::IntoIter::new([v0[0], v0[1], v0[2], v0[3], v1[0], v1[1], v1[2], v1[3]])
+        [v0[0], v0[1], v0[2], v0[3], v1[0], v1[1], v1[2], v1[3]].into_iter()
     }
 
     pub fn decrypt(input: impl AsRef<[u8]>, xtea: Xtea) -> Vec<u8> {

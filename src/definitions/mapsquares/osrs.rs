@@ -52,7 +52,7 @@ impl MapSquares {
         let land = self
             .mapping
             .get(&("l", i, j))
-            .ok_or_else(|| CacheError::ArchiveNotFoundError(i as u32, j as u32))?;
+            .ok_or(CacheError::ArchiveNotFoundError(i as u32, j as u32))?;
         let map = self.mapping.get(&("m", i, j)).unwrap();
         let env = self.mapping.get(&("e", i, j)).copied();
         let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));

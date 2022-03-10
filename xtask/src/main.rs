@@ -54,9 +54,9 @@ fn check_formatting(cargo: &str) -> Result<(), DynError>{
 fn run_clippy(cargo: &str) -> Result<(), DynError> {
     
 
-    test_with(cargo, &["clippy", "--features=rs3,python", "--", "-D", "warnings"])?.exit_ok()?;
-    test_with(cargo, &["clippy", "--features=osrs,python", "--", "-D", "warnings"])?.exit_ok()?;
-    test_with(cargo, &["clippy", "--features=legacy,python", "--", "-D", "warnings"])?.exit_ok()?;
+    test_with(cargo, &["clippy", "--features=rs3,pyo3", "--", "-D", "warnings"])?.exit_ok()?;
+    test_with(cargo, &["clippy", "--features=osrs,pyo3", "--", "-D", "warnings"])?.exit_ok()?;
+    test_with(cargo, &["clippy", "--features=legacy,pyo3", "--", "-D", "warnings"])?.exit_ok()?;
     Ok(())
 }
 

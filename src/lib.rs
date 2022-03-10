@@ -7,7 +7,6 @@
     option_result_contains,
     option_get_or_insert_default,
     once_cell,
-    result_cloned,
     try_blocks
 )]
 #![allow(non_snake_case, unused_imports, unreachable_code, unused_variables, dead_code)]
