@@ -22,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cargo clippy --features=rs3,python -- -D warnings
-      - run: cargo clippy --features=osrs,python -- -D warnings
+      - run: cargo clippy --features=rs3,pyo3 -- -D warnings
+      - run: cargo clippy --features=osrs,pyo3 -- -D warnings
       - run: cargo clippy --features=rs3,mockdata -- -D warnings
       - run: cargo clippy --features=osrs,mockdata -- -D warnings
       - run: cargo check --features=legacy
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the doc
         run: |
-          cargo doc --features="rs3,python" --target-dir="gh-pages-build" --no-deps --workspace --exclude="osrs"
+          cargo doc --features="rs3,pyo3" --target-dir="gh-pages-build" --no-deps --workspace --exclude="osrs"
           echo "<meta http-equiv=refresh content=0;url=rs3cache/index.html>" > gh-pages-build/doc/index.html
       - name: Deploy
         if: ${{ github.ref == 'refs/heads/master' }}

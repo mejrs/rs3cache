@@ -1,5 +1,6 @@
 [package]
 name = "rs3cache_backend"
+description = "Tools and api for reading and interpreting the RuneScape 3 game cache"
 version = "0.1.0"
 edition = "2021"
 

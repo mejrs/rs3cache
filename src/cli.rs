@@ -127,6 +127,7 @@ impl Dump {
 }
 
 #[derive(Debug, Default, Parser)]
+#[clap(author, about = "Tools and api for reading and interpreting the RuneScape 3 game cache")]
 pub struct Config {
     /// The path where to look for the current cache.
     #[cfg_attr(feature = "rs3", clap(long, env = "RS3_CACHE_INPUT_FOLDER", default_value = ""))]
