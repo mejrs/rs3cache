@@ -1,11 +1,11 @@
 use std::time::{Duration, Instant};
 
 use rs3cache::cli::Config;
-use structopt::StructOpt;
+use clap::Parser;
 
 /// Entry point for the program. Run the executable with `--help` for a list of commands.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = Config::from_args();
+    let config = Config::parse();
 
     let start = Instant::now();
 

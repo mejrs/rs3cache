@@ -51,8 +51,8 @@ async-std = "1.10.0"
 serde_json = "1.0.67"
 serde = { version = "1.0.130", features = ["derive"] }
 serde_with = "1.10.0"
-pyo3 = { version = "0.15", features = ["extension-module", "multiple-pymethods"], optional = true }
-structopt = "0.3.23"
+pyo3 = { version = "0.15", features = ["extension-module"], optional = true }
+clap = { version = "3.1.6", features = ["derive", "env"] }
 indicatif = "0.16.2"
 path_macro = "1.0.0"
 fstrings = "0.2.3"

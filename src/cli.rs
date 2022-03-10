@@ -1,15 +1,15 @@
 use std::{path::PathBuf, str::FromStr};
 
+use clap::{Parser, Args, Subcommand, ArgEnum};
 use fstrings::{f, format_args_f};
 use rs3cache_backend::error::CacheResult;
-use structopt::StructOpt;
 
 use crate::definitions;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::renderers::map;
 
 #[cfg(not(target_arch = "wasm32"))]
-#[derive(Debug)]
+#[derive(ArgEnum, Clone, Debug)]
 pub enum Render {
     All,
     Map,
@@ -27,20 +27,7 @@ impl Render {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-impl FromStr for Render {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "all" => Ok(Self::All),
-            "map" => Ok(Self::Map),
-            _ => Err("oops"),
-        }
-    }
-}
-
-#[derive(StructOpt, Debug)]
+#[derive(ArgEnum, Clone, Debug)]
 pub enum Dump {
     All,
     #[cfg(feature = "rs3")]
@@ -140,81 +127,35 @@ impl Dump {
     }
 }
 
-impl FromStr for Dump {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "all" => Ok(Self::All),
-            #[cfg(feature = "rs3")]
-            "music" => Ok(Self::Music),
-            #[cfg(feature = "rs3")]
-            "achievements" => Ok(Self::Achievements),
-            "sprites" => Ok(Self::Sprites),
-            "locations" => Ok(Self::Locations),
-            "tiles_each" => Ok(Self::TilesEach),
-            "locations_each" => Ok(Self::LocationsEach),
-            "location_configs" => Ok(Self::LocationConfigs),
-            "location_configs_each" => Ok(Self::LocationConfigsEach),
-            "npc_configs" => Ok(Self::NpcConfig),
-            "item_configs" => Ok(Self::ItemConfigs),
-            "maplabels" => Ok(Self::Maplabels),
-            #[cfg(feature = "rs3")]
-            "worldmaps" => Ok(Self::Worldmaps),
-            "varbit_configs" => Ok(Self::VarbitConfigs),
-            "structs" => Ok(Self::Structs),
-            "enums" => Ok(Self::Enums),
-            #[cfg(any(feature = "rs3", feature = "osrs"))]
-            "underlays" => Ok(Self::Underlays),
-            #[cfg(any(feature = "rs3", feature = "osrs"))]
-            "overlays" => Ok(Self::Overlays),
-            #[cfg(feature = "osrs")]
-            "textures" => Ok(Self::Textures),
-            other => Err(f!("{other} is not supported.")),
-        }
-    }
-}
-
-#[derive(Debug, Default, StructOpt)]
+#[derive(Debug, Default, Parser)]
 pub struct Config {
     /// The path where to look for the current cache.
-    /// If omitted this falls back to the
-    #[cfg_attr(feature = "rs3", doc = "\"RS3_CACHE_INPUT_FOLDER\"")]
-    #[cfg_attr(feature = "osrs", doc = "\"OSRS_CACHE_INPUT_FOLDER\"")]
-    ///  environment variable and then to the current folder if not set.
-    #[cfg_attr(feature = "rs3", structopt(long, env = "RS3_CACHE_INPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "osrs", structopt(long, env = "OSRS_CACHE_INPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "legacy", structopt(long))]
+    #[cfg_attr(feature = "rs3", clap(long, env = "RS3_CACHE_INPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "osrs", clap(long, env = "OSRS_CACHE_INPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "legacy", clap(long))]
     pub input: PathBuf,
 
     /// The path where to place output.
-    /// If omitted this falls back to the
-    #[cfg_attr(feature = "rs3", doc = "\"RS3_CACHE_OUTPUT_FOLDER\"")]
-    #[cfg_attr(feature = "osrs", doc = "\"OSRS_CACHE_OUTPUT_FOLDER\"")]
-    ///  environment variable and then to the current folder if not set.
-    #[cfg_attr(feature = "rs3", structopt(long, env = "RS3_CACHE_OUTPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "osrs", structopt(long, env = "OSRS_CACHE_OUTPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "legacy", structopt(long))]
+    #[cfg_attr(feature = "rs3", clap(long, env = "RS3_CACHE_OUTPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "osrs", clap(long, env = "OSRS_CACHE_OUTPUT_FOLDER", default_value = ""))]
+    #[cfg_attr(feature = "legacy", clap(long))]
     pub output: PathBuf,
 
-    /// Allowed values: [all, map]
-    ///
     /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
     /// suitable for use with interactive map libraries such as <https://leafletjs.com/>,
     /// as seen on <https://mejrs.github.io/>
     #[cfg(not(target_arch = "wasm32"))]
-    #[structopt(long)]
+    #[clap(arg_enum, long, multiple_values = true)]
     pub render: Vec<Render>,
 
-    /// Allowed values: [all, sprites, locations, location_configs, location_configs_each, npc_configs, item_configs, maplabels, music, worldmaps, varbit_configs, structs, enums, underlays, overlays]
-    ///
+
     /// Dumps the given archives.
-    #[structopt(long)]
+    #[clap(arg_enum, long, multiple_values = true)]
     pub dump: Vec<Dump>,
 
     /// Checks whether the cache is in a consistent state.
     /// Indices 14, 40, 54, 55 are not necessarily complete.
-    #[structopt(long)]
+    #[clap(long)]
     pub assert_coherence: bool,
 }
 
