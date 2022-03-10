@@ -5,7 +5,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
@@ -868,7 +867,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
 
     let configs = LocationConfig::dump_all(config)?;
     configs.into_iter().par_bridge().for_each(|(id, location_config)| {
-        let mut file = File::create(path!(&folder / f!("{id}.json"))).unwrap();
+        let mut file = File::create(path!(&folder / format!("{id}.json"))).unwrap();
 
         let data = serde_json::to_string_pretty(&location_config).unwrap();
         file.write_all(data.as_bytes()).unwrap();

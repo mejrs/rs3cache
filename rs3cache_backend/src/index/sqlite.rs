@@ -9,7 +9,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 use itertools::iproduct;
 use path_macro::path;
 
@@ -132,7 +131,7 @@ impl CacheIndex<Initial> {
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
     pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(folder / f!("js5-{index_id}.jcache"));
+        let file = path!(folder / format!("js5-{index_id}.jcache"));
 
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
@@ -169,8 +168,8 @@ pub fn assert_coherence(folder: impl AsRef<Path>) -> CacheResult<()> {
     for index_id in 0..70 {
         if fs::metadata(path!(folder / format!("js5-{index_id}.jcache"))).is_ok() {
             match CacheIndex::new(index_id, &folder)?.assert_coherence() {
-                Ok(_) => println!("Index {} is coherent!", index_id),
-                Err(e) => println!("Index {} is not coherent: {} and possibly others.", index_id, e),
+                Ok(_) => println!("Index {index_id} is coherent!"),
+                Err(e) => println!("Index {index_id} is not coherent: {e} and possibly others."),
             }
         }
     }

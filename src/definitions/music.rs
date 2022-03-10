@@ -5,7 +5,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 use path_macro::path;
 
 use crate::{
@@ -25,7 +24,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
 
     for (archive_id, name) in music_names.variants.into_iter() {
         let name = match name {
-            Value::String(s) if s.chars().all(|c| c == ' ') => f!("Unnamed track {archive_id}"),
+            Value::String(s) if s.chars().all(|c| c == ' ') => format!("Unnamed track {archive_id}"),
             // Check for bad filenames
             // Almost never happens, so we check first before possibly creating a new string
             Value::String(s) if s.chars().any(|c| ['?', '/', '\\'].contains(&c)) => s.chars().filter(|c| ['?', '/', '\\'].contains(c)).collect(),
@@ -56,7 +55,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
         let out = path_macro::path!(config.output / "music" / name);
         fs::create_dir_all(&out).unwrap();
 
-        let file_name = path!(&out / f!("{music_archive_id}.ogg"));
+        let file_name = path!(&out / format!("{music_archive_id}.ogg"));
         let mut file = File::create(&file_name).unwrap();
         file.write_all(&data).unwrap();
 
@@ -70,13 +69,13 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
         for chunk in jaga.chunks.iter().skip(1) {
             let archive_id = chunk.archive_id;
             let more_data = audio_archives.archive(archive_id).unwrap().file(&0).unwrap();
-            let file_name = path!(&out / f!("{archive_id}.ogg"));
+            let file_name = path!(&out / format!("{archive_id}.ogg"));
             let mut file = File::create(&file_name).unwrap();
             file.write_all(&more_data).unwrap();
             command.arg(file_name);
         }
 
-        command.arg(path!(config.output / "music" / f!("{name}.ogg")));
+        command.arg(path!(config.output / "music" / format!("{name}.ogg")));
         command.output().unwrap();
     }
 

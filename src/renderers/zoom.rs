@@ -1,7 +1,6 @@
 use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Range, path::Path};
 
 use async_std::{fs::File, prelude::*, task};
-use fstrings::{f, format_args_f};
 use futures::future::join_all;
 use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageFormat, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
@@ -18,13 +17,13 @@ static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>
 pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
     let zoom_levels = range.rev();
     for zoom in zoom_levels {
-        fs::create_dir_all(path!(folder / f!("{mapid}/{zoom}")))?;
+        fs::create_dir_all(path!(folder / format!("{mapid}/{zoom}")))?;
 
         let new_tile_coordinates = get_future_filenames(&folder, mapid, zoom + 1)?.into_iter();
 
         let func = |(p, i, j)| {
             let img = make_tile(&folder, mapid, zoom, p, i, j, backfill).unwrap();
-            let filename = path!(folder / f!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
+            let filename = path!(folder / format!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
             img.save(filename).unwrap();
         };
 
@@ -89,14 +88,14 @@ async fn get_files(
         let i = (target_i << 1) + di;
         let j = (target_j << 1) + dj;
         let zoom = target_zoom + 1;
-        let filename = path!(folder / f!("{mapid}/{zoom}/{target_plane}_{i}_{j}.png"));
+        let filename = path!(folder / format!("{mapid}/{zoom}/{target_plane}_{i}_{j}.png"));
         files.push(get_file(filename));
     }
     join_all(files).await
 }
 
 fn get_future_filenames(folder: impl AsRef<Path>, mapid: i32, zoom: i8) -> CacheResult<HashSet<(usize, usize, usize)>> {
-    let dir = path!(folder / f!("{mapid}/{zoom}"));
+    let dir = path!(folder / format!("{mapid}/{zoom}"));
 
     let new_tiles = fs::read_dir(&dir)?
         .collect::<io::Result<Vec<_>>>()?

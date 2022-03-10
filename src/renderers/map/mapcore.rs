@@ -1,6 +1,5 @@
 use std::{collections::BTreeMap, fs, path::Path};
 
-use fstrings::{f, format_args_f};
 use image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::iproduct;
@@ -74,9 +73,10 @@ pub static CONFIG: RenderConfig = RenderConfig::detailed();
 pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(config.output / "mapsquares");
     fs::create_dir_all(&folder)?;
+    let map_id = CONFIG.map_id;
 
     for zoom in 2..=4 {
-        let inner_folder = path!(folder / f!("{CONFIG.map_id}/{zoom}"));
+        let inner_folder = path!(folder / format!("{map_id}/{zoom}"));
 
         fs::create_dir_all(inner_folder)?;
     }
@@ -195,6 +195,8 @@ type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
+    let map_id = CONFIG.map_id;
+
     // SAFETY (2) these checks assure that...
     assert_eq!(CONFIG.dim % 4, 0);
     for img in &imgs {
@@ -242,7 +244,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                 {
                     let xx = base_i + x;
                     let yy = base_j + y;
-                    let filename = path!(folder / f!("{CONFIG.map_id}/4/{plane}_{xx}_{yy}.png"));
+                    let filename = path!(folder / format!("{map_id}/4/{plane}_{xx}_{yy}.png"));
                     sub_image.to_image().save(filename).unwrap();
                 }
             }
@@ -271,7 +273,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                     debug_assert_eq!(resized.height(), 256);
                     let xx = base_i + x;
                     let yy = base_j + y;
-                    let filename = path!(folder / f!("{CONFIG.map_id}/3/{plane}_{xx}_{yy}.png"));
+                    let filename = path!(folder / format!("{map_id}/3/{plane}_{xx}_{yy}.png"));
                     resized.save(filename).unwrap();
                 }
             }
@@ -291,7 +293,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             if resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
-                let filename = path!(folder / f!("{CONFIG.map_id}/2/{plane}_{base_i}_{base_j}.png"));
+                let filename = path!(folder / format!("{map_id}/2/{plane}_{base_i}_{base_j}.png"));
                 resized.save(filename).unwrap();
             }
         }

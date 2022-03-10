@@ -1,7 +1,7 @@
 use std::time::{Duration, Instant};
 
-use rs3cache::cli::Config;
 use clap::Parser;
+use rs3cache::cli::Config;
 
 /// Entry point for the program. Run the executable with `--help` for a list of commands.
 fn main() -> Result<(), Box<dyn std::error::Error>> {

@@ -19,7 +19,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 pub use index_impl::*;
 use itertools::iproduct;
 use path_macro::path;

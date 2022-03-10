@@ -8,7 +8,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 use path_macro::path;
 use serde::Serialize;
 
@@ -339,7 +338,7 @@ pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
         .archive(WorldMapType::SMALL)?
         .take_files();
     for (id, data) in files {
-        let filename = path!(config.output / "world_map_small" / f!("{id}.png"));
+        let filename = path!(config.output / "world_map_small" / format!("{id}.png"));
         let mut file = File::create(filename)?;
         file.write_all(&data)?;
     }
@@ -359,7 +358,7 @@ pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
         let size = buffer.get_u32() as usize;
         let img = buffer.copy_to_bytes(size);
 
-        let filename = path!(config.output / "world_map_big" / f!("{id}.png"));
+        let filename = path!(config.output / "world_map_big" / format!("{id}.png"));
         let mut file = File::create(filename)?;
         file.write_all(&img)?;
     }

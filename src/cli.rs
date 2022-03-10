@@ -1,7 +1,6 @@
 use std::{path::PathBuf, str::FromStr};
 
-use clap::{Parser, Args, Subcommand, ArgEnum};
-use fstrings::{f, format_args_f};
+use clap::{ArgEnum, Args, Parser, Subcommand};
 use rs3cache_backend::error::CacheResult;
 
 use crate::definitions;
@@ -147,7 +146,6 @@ pub struct Config {
     #[cfg(not(target_arch = "wasm32"))]
     #[clap(arg_enum, long, multiple_values = true)]
     pub render: Vec<Render>,
-
 
     /// Dumps the given archives.
     #[clap(arg_enum, long, multiple_values = true)]

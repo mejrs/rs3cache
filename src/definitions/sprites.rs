@@ -5,7 +5,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
@@ -44,7 +43,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
         let images = deserialize(file).unwrap_or_else(|error| panic!("Error decoding sprite {}: {}", archive.archive_id(), error));
         images.into_iter().for_each(|(frame, img)| {
             let id = archive.archive_id();
-            let filename = path!(config.output / "sprites" / f!("{id}-{frame}.png"));
+            let filename = path!(config.output / "sprites" / format!("{id}-{frame}.png"));
             img.save(&filename)
                 .unwrap_or_else(|_| panic!("Unable to save sprite {}-{} to {}", id, frame, filename.to_string_lossy()));
 
@@ -146,7 +145,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
         let entry = Entry::deserialize(&mut entry_data);
         let this_data = data.split_to((entry.width * entry.height) as usize);
         let img = make_image(&index_entry, &entry, this_data);
-        let filename = path!(config.output / "sprites" / f!("mapscene-{id}.png"));
+        let filename = path!(config.output / "sprites" / format!("mapscene-{id}.png"));
         img.save(&filename).unwrap();
 
         id += 1;

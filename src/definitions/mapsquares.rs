@@ -21,7 +21,6 @@ use std::{
     ops::Range,
 };
 
-use fstrings::{f, format_args_f};
 use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
@@ -356,7 +355,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
         .par_bridge()
         .for_each(|(id, id_locs)| {
             if !id_locs.is_empty() && id != 83 {
-                let mut file = File::create(path!(&out / f!("{id}.json"))).unwrap();
+                let mut file = File::create(path!(&out / format!("{id}.json"))).unwrap();
                 let data = serde_json::to_string_pretty(&id_locs).unwrap();
                 file.write_all(data.as_bytes()).unwrap();
             }
@@ -376,7 +375,7 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
         let j = sq.j;
         if let Ok(locations) = sq.take_locations() {
             if !locations.is_empty() {
-                let mut file = File::create(path!(&out / f!("{i}_{j}.json"))).unwrap();
+                let mut file = File::create(path!(&out / format!("{i}_{j}.json"))).unwrap();
                 let data = serde_json::to_string_pretty(&locations).unwrap();
                 file.write_all(data.as_bytes()).unwrap();
             }
@@ -397,7 +396,7 @@ pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
         let j = sq.j;
         if let Ok(tiles) = sq.take_tiles() {
             if !tiles.is_empty() {
-                let mut file = File::create(path!(&out / f!("{i}_{j}.json"))).unwrap();
+                let mut file = File::create(path!(&out / format!("{i}_{j}.json"))).unwrap();
                 let data = serde_json::to_string_pretty(&tiles).unwrap();
                 file.write_all(data.as_bytes()).unwrap();
             }

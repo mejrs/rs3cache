@@ -9,7 +9,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-use fstrings::{f, format_args_f};
 use itertools::iproduct;
 use path_macro::path;
 
@@ -28,7 +27,7 @@ where
     S: IndexState,
 {
     fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
-        let file = path!(folder / "cache" / f!("main_file_cache.idx{a}"));
+        let file = path!(folder / "cache" / format!("main_file_cache.idx{a}"));
         let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
@@ -143,7 +142,7 @@ impl CacheIndex<Initial> {
                         let e2 = e2.to_string();
                         io::Error::new(
                             io::ErrorKind::NotFound,
-                            f!("Cannot to find xtea keys at either {path} or {alt_path}: {e1} \n {e2}"),
+                            format!("Cannot to find xtea keys at either {path} or {alt_path}: {e1} \n {e2}"),
                         )
                     })?)
                 }
