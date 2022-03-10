@@ -1,8 +1,6 @@
 use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Range, path::Path};
 
-use async_std::{fs::File, prelude::*, task};
-use futures::future::join_all;
-use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageFormat, Rgba, RgbaImage};
+use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageError, ImageFormat, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::{iproduct, izip};
 use path_macro::path;
@@ -32,11 +30,11 @@ pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, ra
     Ok(())
 }
 
-fn to_coordinates(text: OsString) -> CacheResult<(usize, usize, usize)> {
+fn to_coordinates(text: OsString) -> CacheResult<(i32, i32, i32)> {
     let caps = RE.captures(text.to_str().unwrap()).unwrap();
-    let p = caps.name("p").unwrap().as_str().parse::<usize>()?;
-    let i = caps.name("i").unwrap().as_str().parse::<usize>()?;
-    let j = caps.name("j").unwrap().as_str().parse::<usize>()?;
+    let p = caps.name("p").unwrap().as_str().parse::<i32>()?;
+    let i = caps.name("i").unwrap().as_str().parse::<i32>()?;
+    let j = caps.name("j").unwrap().as_str().parse::<i32>()?;
     Ok((p, i, j))
 }
 
@@ -44,23 +42,23 @@ fn make_tile(
     folder: impl AsRef<Path>,
     mapid: i32,
     target_zoom: i8,
-    target_plane: usize,
-    target_i: usize,
-    target_j: usize,
+    target_plane: i32,
+    target_i: i32,
+    target_j: i32,
     backfill: [u8; 4],
 ) -> CacheResult<ImageBuffer<Rgba<u8>, Vec<u8>>> {
     let mut base = RgbaImage::from_fn(512, 512, |_, _| Rgba(backfill));
 
-    let files = task::block_on(get_files(folder, mapid, target_zoom, target_plane, target_i, target_j));
+    let files = get_files(folder, mapid, target_zoom, target_plane, target_i, target_j);
 
-    for ((di, dj), file) in izip!(iproduct!(0..=1, 0..=1), files) {
-        match file {
+    for ((di, dj), img) in files {
+        match img {
             Ok(f) => {
-                let img = ImageReader::with_format(io::Cursor::new(f), ImageFormat::Png).decode()?;
+                let img = f.into_rgba8();
                 imageops::overlay(&mut base, &img, (256 * di) as u32, 256 * (1 - dj) as u32);
             }
             // can be missing; if so, swallow
-            Err(ref e) if e.kind() == io::ErrorKind::NotFound => {}
+            Err(ImageError::IoError(ref e)) if e.kind() == io::ErrorKind::NotFound => {}
             Err(other_error) => return Err(other_error.into()),
         }
     }
@@ -68,33 +66,24 @@ fn make_tile(
     Ok(scaled)
 }
 
-async fn get_file(filename: impl AsRef<Path>) -> io::Result<Vec<u8>> {
-    let mut file = File::open(filename.as_ref()).await?;
-    let mut contents = Vec::new();
-    file.read_to_end(&mut contents).await?;
-    Ok(contents)
-}
-
-async fn get_files(
+fn get_files(
     folder: impl AsRef<Path>,
     mapid: i32,
     target_zoom: i8,
-    target_plane: usize,
-    target_i: usize,
-    target_j: usize,
-) -> Vec<io::Result<Vec<u8>>> {
-    let mut files = Vec::new();
-    for (di, dj) in iproduct!(0..=1, 0..=1) {
+    target_plane: i32,
+    target_i: i32,
+    target_j: i32,
+) -> [((i32, i32), Result<image::DynamicImage, ImageError>); 4] {
+    [(0, 0), (0, 1), (1, 0), (1, 1)].map(|(di, dj)| {
         let i = (target_i << 1) + di;
         let j = (target_j << 1) + dj;
         let zoom = target_zoom + 1;
         let filename = path!(folder / format!("{mapid}/{zoom}/{target_plane}_{i}_{j}.png"));
-        files.push(get_file(filename));
-    }
-    join_all(files).await
+        ((di, dj), image::open(filename))
+    })
 }
 
-fn get_future_filenames(folder: impl AsRef<Path>, mapid: i32, zoom: i8) -> CacheResult<HashSet<(usize, usize, usize)>> {
+fn get_future_filenames(folder: impl AsRef<Path>, mapid: i32, zoom: i8) -> CacheResult<HashSet<(i32, i32, i32)>> {
     let dir = path!(folder / format!("{mapid}/{zoom}"));
 
     let new_tiles = fs::read_dir(&dir)?
