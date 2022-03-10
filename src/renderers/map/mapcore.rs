@@ -265,9 +265,7 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                 if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
-                    //let resized = imageops::resize(&sub_image, 256, 256, imageops::FilterType::CatmullRom);
-
-                    let resized = scale::resize_half(sub_image);
+                    let resized = scale::resize_half(*sub_image);
 
                     debug_assert_eq!(resized.width(), 256);
                     debug_assert_eq!(resized.height(), 256);
@@ -283,7 +281,6 @@ fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             let base_i = i as u32;
             let base_j = j as u32;
 
-            //let resized = imageops::resize(&base, 256, 256, imageops::FilterType::CatmullRom);
             let resized = scale::resize_quarter(base);
 
             debug_assert_eq!(resized.width(), 256);

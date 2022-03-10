@@ -55,7 +55,7 @@ fn make_tile(
         match img {
             Ok(f) => {
                 let img = f.into_rgba8();
-                imageops::overlay(&mut base, &img, (256 * di) as u32, 256 * (1 - dj) as u32);
+                imageops::overlay(&mut base, &img, (256 * di) as i64, 256 * (1 - dj) as i64);
             }
             // can be missing; if so, swallow
             Err(ImageError::IoError(ref e)) if e.kind() == io::ErrorKind::NotFound => {}
