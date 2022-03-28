@@ -192,7 +192,7 @@ pub fn render_tile(
 
 type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
-fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
+pub fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
     let map_id = CONFIG.map_id;

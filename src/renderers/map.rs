@@ -11,4 +11,4 @@ pub mod mapscenes;
 /// Describes the shape of overlays drawn by the map renderer.
 pub mod tileshape;
 
-pub use self::mapcore::render;
+pub use self::mapcore::{render, save_smallest};
