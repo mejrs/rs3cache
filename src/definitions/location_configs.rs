@@ -382,6 +382,11 @@ impl LocationConfig {
                     201 => loc.unknown_201 = Some(Unknown201::deserialize(&mut buffer)?),
                     202 => loc.unknown_202 = Some(buffer.try_get_unsigned_smart()?),
                     203 => loc.unknown_203 = Some(true),
+                    204 => {
+                        // not entirely sure how to read this.
+                        // seems to be mostly 0's.
+                        buffer.advance(28);
+                    }
                     249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
                     missing => Err(ReadError::opcode_not_implemented(missing))?,
                 }
