@@ -500,6 +500,8 @@
 <span id="495">495</span>
 <span id="496">496</span>
 <span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.</span>
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::BTreeMap</span>,
@@ -565,6 +567,7 @@
     <span class="kw">pub</span> <span class="ident">reqs_23</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PackedVarbitRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">reqs_25</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PackedVarbitRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">unknown_27</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">unknown_17</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="comment">//</span>
     <span class="kw">pub</span> <span class="ident">skill_req_count</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// 355 - Seven Colours in Their Hat - 1</span>
@@ -688,6 +691,7 @@
                     }
                 }
                 <span class="number">16</span> =&gt; <span class="ident">achievement</span>.<span class="ident">sub_category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
+                <span class="number">17</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_17</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                 <span class="number">18</span> =&gt; <span class="ident">achievement</span>.<span class="ident">hidden</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
                 <span class="number">19</span> =&gt; <span class="ident">achievement</span>.<span class="ident">free_to_play</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                 <span class="number">20</span> =&gt; {
