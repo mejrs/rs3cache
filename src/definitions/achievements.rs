@@ -63,6 +63,7 @@ pub struct Achievement {
     pub reqs_23: Option<Vec<PackedVarbitRequirement>>,
     pub reqs_25: Option<Vec<PackedVarbitRequirement>>,
     pub unknown_27: Option<bool>,
+    pub unknown_17: Option<bool>, //
     pub skill_req_count: Option<Vec<u8>>,
 
     /// 355 - Seven Colours in Their Hat - 1
@@ -186,6 +187,7 @@ impl Achievement {
                     }
                 }
                 16 => achievement.sub_category = Some(buffer.get_u16()),
+                17 => achievement.unknown_17 = Some(true),
                 18 => achievement.hidden = Some(buffer.get_u8()),
                 19 => achievement.free_to_play = Some(true),
                 20 => {
