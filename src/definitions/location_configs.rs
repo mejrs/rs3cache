@@ -236,7 +236,8 @@ impl LocationConfig {
                     0 => {
                         if buffer.has_remaining() {
                             let remaining_bytes = buffer.len();
-                            if remaining_bytes == 27 { // id 123546 b"\x08\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+                            // id 123546 b"\x08\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+                            if remaining_bytes == 27 {
                                 buffer.advance(remaining_bytes);
                                 break Ok(loc);
                             } else {
