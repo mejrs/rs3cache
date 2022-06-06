@@ -235,7 +235,13 @@ impl LocationConfig {
                 match opcode {
                     0 => {
                         if buffer.has_remaining() {
-                            Err(ReadError::not_exhausted())?;
+                            let remaining_bytes = buffer.len();
+                            if remaining_bytes == 27 { // id 123546 b"\x08\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+                                buffer.advance(remaining_bytes);
+                                break Ok(loc);
+                            } else {
+                                Err(ReadError::not_exhausted())?;
+                            }
                         } else {
                             break Ok(loc);
                         }
