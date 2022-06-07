@@ -155,6 +155,7 @@ pub struct LocationConfig {
     pub unknown_201: Option<Unknown201>,
     pub unknown_202: Option<u16>,
     pub unknown_203: Option<bool>,
+    pub unknown_204: Option<Vec<Unknown204>>,
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -383,9 +384,12 @@ impl LocationConfig {
                     202 => loc.unknown_202 = Some(buffer.try_get_unsigned_smart()?),
                     203 => loc.unknown_203 = Some(true),
                     204 => {
-                        // not entirely sure how to read this.
-                        // seems to be mostly 0's.
-                        buffer.advance(28);
+                        let count = buffer.try_get_unsigned_smart()? as usize;
+                        let out = std::iter::repeat_with(|| Unknown204::deserialize(&mut buffer))
+                            .take(count)
+                            .collect::<Result<_, ReadError>>()?;
+
+                        loc.unknown_204 = Some(out)
                     }
                     249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
                     missing => Err(ReadError::opcode_not_implemented(missing))?,
@@ -848,6 +852,27 @@ pub mod location_config_fields {
                 .take(count)
                 .collect::<Result<_, ReadError>>()?;
             Ok(HeadModels { headmodels })
+        }
+    }
+
+    #[cfg_eval]
+    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct Unknown204 {
+        pub id: u16,
+        pub some_bool: bool,
+        pub vec_1: [u32; 3],
+        pub vec_2: [u32; 3],
+    }
+
+    impl Unknown204 {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let id = buffer.try_get_u16()?;
+            let some_bool = buffer.try_get_u8()? == 1;
+            let vec_1 = [buffer.try_get_u32()?, buffer.try_get_u32()?, buffer.try_get_u32()?];
+            let vec_2 = [buffer.try_get_u32()?, buffer.try_get_u32()?, buffer.try_get_u32()?];
+
+            Ok(Self { id, some_bool, vec_1, vec_2 })
         }
     }
 }
