@@ -47,7 +47,7 @@ impl RenderConfig {
             tile_size: 16,
             interp: 5,
             dim: 1024,
-            initial_zoom: 2,
+            initial_zoom: 3,
         }
     }
 
