@@ -346,7 +346,6 @@ impl LocationConfig {
                         let actions = loc.unknown_array.get_or_insert([None, None, None, None, None]);
                         actions[opcode as usize - 136] = Some(buffer.try_get_u8()?);
                     }
-
                     opcode @ 150..=154 => {
                         let actions = loc.member_actions.get_or_insert([None, None, None, None, None]);
                         actions[opcode as usize - 150] = Some(buffer.try_get_string()?);
