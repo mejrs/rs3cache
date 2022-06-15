@@ -9,6 +9,7 @@ use crate::renderers::map;
 
 #[cfg(not(target_arch = "wasm32"))]
 #[derive(ArgEnum, Clone, Debug)]
+#[clap(rename_all = "snake_case")]
 pub enum Render {
     All,
     Map,
@@ -27,6 +28,7 @@ impl Render {
 }
 
 #[derive(ArgEnum, Clone, Debug)]
+#[clap(rename_all = "snake_case")]
 pub enum Dump {
     All,
     #[cfg(feature = "rs3")]
