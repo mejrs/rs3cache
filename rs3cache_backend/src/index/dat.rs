@@ -91,7 +91,7 @@ where
             // The caller of this function is responsible for unpacking the .jag format
             return Ok(Bytes::from(data));
         }
-        Ok(decoder::decompress(data, None)?)
+        Ok(decoder::decompress(data)?)
     }
 
     pub fn archive_by_name(&self, name: String) -> CacheResult<Bytes> {

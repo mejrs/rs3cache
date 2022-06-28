@@ -1,6 +1,6 @@
 //! Core cache interpreting utilities.
 
-#![feature(backtrace, error_iter, cfg_eval, try_blocks)]
+#![feature(backtrace, error_iter, cfg_eval, try_blocks, read_buf, array_chunks)]
 #![allow(non_snake_case, unused_imports)]
 #![warn(
      unused_qualifications,

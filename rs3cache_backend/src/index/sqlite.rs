@@ -33,7 +33,7 @@ where
             statement.next()?;
             statement.read::<Vec<u8>>(0)?
         };
-        Ok(decoder::decompress(encoded_data, None)?)
+        Ok(decoder::decompress(encoded_data)?)
     }
 
     /// Executes a sql command to retrieve an archive from the cache.
@@ -73,8 +73,7 @@ where
                 Ok(statement.read::<Vec<u8>>(0)?)
             }
         }?;
-
-        Ok(decoder::decompress(encoded_data, metadata.size())?)
+        Ok(decoder::decompress(encoded_data)?)
     }
 
     /// Assert whether the cache held by `self` is in a coherent state.

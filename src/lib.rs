@@ -24,7 +24,7 @@
 #![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
 
 #[cfg(not(any(feature = "rs3", feature = "osrs", feature = "legacy")))]
-compile_error!("You must use one and only one of the rs3 or osrs");
+compile_error!("You must use one and only one of the rs3 or osrs or legacy features");
 
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
 pub mod cli;

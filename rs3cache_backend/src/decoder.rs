@@ -2,112 +2,122 @@
 #![allow(deprecated)]
 use std::{
     fmt::{Debug, Display, Formatter},
-    io::Read,
+    io::{Read, ReadBuf},
+    mem::MaybeUninit,
 };
 
-use bytes::{Buf, Bytes};
+use bytes::{Buf, BufMut, Bytes, BytesMut};
 use libflate::{gzip, zlib};
 
 use crate::buf::BufExtra;
-/// Enumeration of different compression types.
-pub struct Compression;
-
-impl Compression {
-    /// Token for no compression.
-    pub const NONE: u8 = 0;
-    /// Token for bzip compression.
-    pub const BZIP: u8 = 1;
-    /// Token for gzip compression.
-    pub const GZIP: u8 = 2;
-    /// Token for zlib compression.
-    pub const ZLIB: &'static [u8] = b"ZLB";
-    #[cfg(feature = "dat")]
-    pub const DAT_GZIP: &'static [u8] = b"\x1f\x8b\x08";
-}
 
 /// Decompresses index files.
 ///
 /// Used internally by [`CacheIndex`](crate::index::CacheIndex).
-pub fn decompress(
-    encoded_data: Vec<u8>,
-    filesize: Option<u32>,
-    #[cfg(feature = "dat2")] xtea: Option<crate::xtea::Xtea>,
-) -> Result<Bytes, DecodeError> {
-    // Return an error when someone packed an empty file
-    //#[cfg(any(feature = "legacy", feature = "2008_3_shim"))]
-    if encoded_data.len() < 3 {
-        return Err(DecodeError::Other("File was empty".to_string()));
-    }
+pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Option<crate::xtea::Xtea>) -> Result<Bytes, DecodeError> {
+    match &mut *encoded_data {
+        // The zlib format
+        [b'Z', b'L', b'B', b'\x01', x0, x1, x2, x3, data @ ..] => {
+            let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
+            let decoder = zlib::Decoder::new(&*data)?;
+            let ret = do_read(decoder, length)?;
 
-    match &encoded_data[0..3] {
-        Compression::ZLIB => {
-            let mut decoder = zlib::Decoder::new(&encoded_data[8..])?;
-            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-            decoder.read_to_end(&mut decoded_data)?;
-            Ok(decoded_data.into())
+            Ok(ret)
         }
 
-        &[Compression::NONE, ..] => {
-            // length is encoded_data[1..5] as u32 + 7
-            Ok(encoded_data[5..(encoded_data.len() - 2)].to_vec().into())
+        // No compression
+        [0, _, _, _, _, data @ .., _, _] => {
+            let ret = Bytes::copy_from_slice(data);
+            Ok(ret)
         }
 
-        &[Compression::BZIP, ..] => {
-            let mut temp = b"BZh1".to_vec();
-            let length = u32::from_be_bytes([encoded_data[5], encoded_data[6], encoded_data[7], encoded_data[8]]) as usize;
+        // The bzip format
+        [1, _, _, _, _, data @ ..] => {
+            let mut header = *b"BZh1";
+            let length: &mut [u8; 4] = data.get_mut(0..4).unwrap().try_into().unwrap();
+            std::mem::swap(&mut header, length);
+            let length = u32::from_be_bytes(header);
 
-            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(length as u32) as usize);
-
-            temp.extend(&encoded_data[9..]);
-
-            let mut decoder = bzip2_rs::DecoderReader::new(temp.as_slice());
-
-            decoder.read_to_end(&mut decoded_data)?;
-            Ok(decoded_data.into())
+            let decoder = bzip2_rs::DecoderReader::new(&*data);
+            let ret = do_read(decoder, length)?;
+            Ok(ret)
         }
 
+        // A xtea-encrypted gzip
         #[cfg(feature = "dat2")]
-        &[Compression::GZIP, ..] if xtea.is_some() => {
-            let length = u32::from_be_bytes([encoded_data[1], encoded_data[2], encoded_data[3], encoded_data[4]]) as usize;
-
+        [2, _, _, _, _, data @ .., _, _] if xtea.is_some() => {
             let xtea = xtea.unwrap();
-            let decrypted = crate::xtea::Xtea::decrypt(&encoded_data[5..(length + 9)], xtea);
+            let decrypted = crate::xtea::Xtea::decrypt(data, xtea);
 
-            let mut decoder = match gzip::Decoder::new(&decrypted[4..]) {
-                Ok(decoder) => decoder,
-                Err(_e) => {
-                    return Err(DecodeError::XteaError);
-                }
-            };
-            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-            decoder.read_to_end(&mut decoded_data).expect("oops");
-
-            Ok(decoded_data.into())
-        }
-
-        &[Compression::GZIP, ..] => {
-            let mut decoder = gzip::Decoder::new(&encoded_data[9..])?;
-            let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-            decoder.read_to_end(&mut decoded_data)?;
-            Ok(decoded_data.into())
-        }
-
-        #[cfg(feature = "dat")]
-        Compression::DAT_GZIP => {
-            // Sometimes these trailing versions are missing, and the below code
-            // shouldn't omit the last two bytes.
-            if let [data @ .., _version, _version_part2] = encoded_data.as_slice() {
-                let mut decoder = gzip::Decoder::new(data).unwrap();
-                let mut decoded_data = Vec::with_capacity(filesize.unwrap_or(0) as usize);
-                decoder.read_to_end(&mut decoded_data).unwrap();
-                Ok(decoded_data.into())
+            if let [x0, x1, x2, x3, decrypted @ ..] = &*decrypted {
+                let decoder = gzip::Decoder::new(decrypted).map_err(|_| DecodeError::XteaError)?;
+                let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
+                let ret = do_read(decoder, length)?;
+                Ok(ret)
             } else {
                 unreachable!()
             }
         }
 
+        // The gzip format
+        [2, _y0, _y1, _y2, _y3, x0, x1, x2, x3, data @ ..] => {
+            let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
+            let decoder = gzip::Decoder::new(&*data)?;
+            let ret = do_read(decoder, length)?;
+            Ok(ret)
+        }
+
+        // An older variant of the gzip format
+        #[cfg(feature = "dat")]
+        [b'\x1f', b'\x8b', b'\x08', data @ ..] => {
+            if let [data @ .., _version, _version_part2] = data {
+                let ret: Result<Bytes, DecodeError> = try {
+                    let mut decoder = gzip::Decoder::new(&*data)?;
+                    let mut buf = Vec::new();
+                    decoder.read_to_end(&mut buf).unwrap();
+                    buf.into()
+                };
+                if let Err(_) = ret {
+                    // Sometimes tools generate caches where trailing versions are missing,
+                    // and the below code includes the last two bytes.
+                    let data = encoded_data.as_slice();
+                    let mut decoder = gzip::Decoder::new(data)?;
+                    let mut buf = Vec::new();
+                    decoder.read_to_end(&mut buf).unwrap();
+                    Ok(buf.into())
+                } else {
+                    ret
+                }
+            } else {
+                unreachable!()
+            }
+        }
+
+        // Some tools pack empty files
+        [] | [_] | [_, _] | [_, _, _] => Err(DecodeError::Other("File was empty".to_string())),
+
+        // Oh no
         _ => unimplemented!("unknown format {:?}", &encoded_data[0..30]),
     }
+}
+
+fn do_read(mut decoder: impl Read, len: u32) -> Result<Bytes, DecodeError> {
+    if len == 0 {
+        return Ok(Bytes::new());
+    }
+    let len = len as usize;
+    let mut buf = BytesMut::with_capacity(len);
+
+    unsafe {
+        let uninit = buf.chunk_mut();
+        let uninit = std::slice::from_raw_parts_mut(uninit.as_mut_ptr().cast::<MaybeUninit<u8>>(), uninit.len());
+        let mut rbuf = ReadBuf::uninit(uninit);
+
+        decoder.read_buf_exact(&mut rbuf)?;
+        let init_len = rbuf.initialized_len();
+        buf.set_len(init_len);
+    }
+    Ok(buf.freeze())
 }
 
 #[derive(Debug)]
@@ -152,5 +162,39 @@ impl std::error::Error for DecodeError {
             Self::IoError(e) => Some(e),
             _ => None,
         }
+    }
+}
+
+#[cfg(all(test, feature = "sqlite"))]
+mod tests {
+    use std::error::Error;
+
+    use super::*;
+
+    #[test]
+    fn zlib() -> Result<(), Box<dyn Error>> {
+        let file = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/zlib_encoded.dat")).to_vec();
+        let buf = decompress(file)?;
+        let out = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/zlib_decoded.dat"));
+        assert_eq!(&*buf, out);
+        Ok(())
+    }
+
+    #[test]
+    fn bzip() -> Result<(), Box<dyn Error>> {
+        let file = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/bzip_encoded.dat")).to_vec();
+        let buf = decompress(file)?;
+        let out = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/bzip_decoded.dat"));
+        assert_eq!(&*buf, out);
+        Ok(())
+    }
+
+    #[test]
+    fn gzip() -> Result<(), Box<dyn Error>> {
+        let file = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/gzip_encoded.dat")).to_vec();
+        let buf = decompress(file)?;
+        let out = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/gzip_decoded.dat"));
+        assert_eq!(&*buf, out);
+        Ok(())
     }
 }

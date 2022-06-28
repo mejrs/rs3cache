@@ -89,7 +89,7 @@ where
 
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        Ok(decoder::decompress(data, None, None)?)
+        Ok(decoder::decompress(data, None)?)
     }
 
     pub fn xteas(&self) -> &Option<HashMap<u32, Xtea>> {
@@ -102,7 +102,7 @@ where
             .get(&archive_id)
             .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
         let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
-        let data = decoder::decompress(data, None, xtea)?;
+        let data = decoder::decompress(data, xtea)?;
         Ok(Archive::deserialize(metadata, data))
     }
 
@@ -164,7 +164,7 @@ impl CacheIndex<Initial> {
 
         let metadatas = {
             let data = s.read_index(255, index_id)?;
-            let data = decoder::decompress(data, None, None)?;
+            let data = decoder::decompress(data, None)?;
             IndexMetadata::deserialize(index_id, data)?
         };
 

@@ -38,11 +38,12 @@ test            Test with various feature flags
 
 fn run_tests(cargo: &str) -> Result<(), DynError> {
 
-    test_with(cargo, &["test", "--features=rs3,mockdata"])?.exit_ok()?;
+    test_with(cargo, &["test", "--features=rs3,mockdata",])?.exit_ok()?;
     test_with(cargo, &["test", "--features=osrs,mockdata"])?.exit_ok()?;
     test_with(cargo, &["test", "--features=legacy,mockdata"])?.exit_ok()?;
-   
-
+    test_with(cargo, &["test", "--features=sqlite", "--manifest-path=rs3cache_backend/Cargo.toml"])?.exit_ok()?;
+    test_with(cargo, &["test", "--features=dat2", "--manifest-path=rs3cache_backend/Cargo.toml"])?.exit_ok()?;
+    test_with(cargo, &["test", "--features=dat", "--manifest-path=rs3cache_backend/Cargo.toml"])?.exit_ok()?;
     Ok(())
 }
 
