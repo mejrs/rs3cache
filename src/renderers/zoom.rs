@@ -1,4 +1,4 @@
-use std::{collections::HashSet, ffi::OsString, fs, io, lazy::SyncLazy, ops::Range, path::Path};
+use std::{collections::HashSet, ffi::OsString, fs, io, sync::LazyLock, ops::Range, path::Path};
 
 use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageError, ImageFormat, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
@@ -9,7 +9,7 @@ use regex::Regex;
 
 use crate::{cache::error::CacheResult, renderers::scale};
 
-static RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
+static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 
 /// Given a folder and a range of zoom levels, recursively creates tiles for all zoom levels.
 pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
