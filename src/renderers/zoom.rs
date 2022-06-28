@@ -1,4 +1,4 @@
-use std::{collections::HashSet, ffi::OsString, fs, io, sync::LazyLock, ops::Range, path::Path};
+use std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, path::Path, sync::LazyLock};
 
 use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageError, ImageFormat, Rgba, RgbaImage};
 use indicatif::ProgressIterator;

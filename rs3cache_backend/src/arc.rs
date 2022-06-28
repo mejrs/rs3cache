@@ -78,11 +78,9 @@ impl Archive {
                     .take(child_count as usize + 1)
                     .pairwise();
 
-                let files = izip!(metadata.child_indices(), offsets)
+                izip!(metadata.child_indices(), offsets)
                     .map(|(i, (start, end))| (*i, data.slice(start..end)))
-                    .collect::<BTreeMap<_, _>>();
-
-                files
+                    .collect::<BTreeMap<_, _>>()
             }
 
             #[cfg(feature = "dat2")]
@@ -99,10 +97,9 @@ impl Archive {
                     .take(child_count as usize)
                     .accumulate(|x, y| x + y);
 
-                let files = izip!(metadata.child_indices(), offsets)
+                izip!(metadata.child_indices(), offsets)
                     .map(|(i, n)| (*i, data.split_to(n.try_into().unwrap())))
-                    .collect::<BTreeMap<_, _>>();
-                files
+                    .collect::<BTreeMap<_, _>>()
             }
         };
 

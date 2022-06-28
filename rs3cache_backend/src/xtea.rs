@@ -83,7 +83,6 @@ mod tests {
 
         let input = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/xtea_encrypted.dat")).to_vec();
 
-
         let output = Xtea::decrypt(input, xtea);
 
         let should_be_output = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/xtea_decrypted.dat"));
