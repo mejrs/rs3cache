@@ -9,7 +9,7 @@
     once_cell,
     try_blocks
 )]
-#![allow(non_snake_case, unused_imports, unreachable_code, unused_variables, dead_code)]
+#![allow(clippy::borrow_deref_ref, non_snake_case, unused_imports, unreachable_code, unused_variables, dead_code)]
 #![warn(
     unused_qualifications,
     unused_import_braces,
@@ -48,6 +48,8 @@ pub mod definitions {
     /// Configurations of Achievements
     #[cfg(feature = "rs3")]
     pub mod achievements;
+
+    pub mod dbrows;
 
     #[cfg(feature = "legacy")]
     pub mod flo;

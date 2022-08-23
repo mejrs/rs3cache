@@ -150,7 +150,7 @@ impl Display for CacheError {
 
         writeln!(f)?;
 
-        if let Some(trace) = self.backtrace() {
+        if let Self::JsonDecodeError(trace, _, _) = self {
             writeln!(f, "The following backtrace was captured:")?;
             writeln!(f, "{}", trace)?;
         }
@@ -174,10 +174,13 @@ impl std::error::Error for CacheError {
         }
     }
 
-    fn backtrace(&self) -> Option<&Backtrace> {
+    fn provide<'a>(&'a self, req: &mut core::any::Demand<'a>) {
+        #![expect(clippy::single_match, reason = "more error variants should have traces")]
         match self {
-            Self::JsonDecodeError(trace, _, _) => Some(trace),
-            _ => None,
+            Self::JsonDecodeError(trace, _, _) => {
+                req.provide_ref::<Backtrace>(trace);
+            }
+            _ => {}
         }
     }
 }

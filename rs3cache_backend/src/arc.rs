@@ -186,11 +186,12 @@ impl Archive {
                 compressed.extend(buffer.split_to(header.compressed_len as usize));
 
                 use pyo3::{prelude::*, types::PyBytes};
+                pyo3::prepare_freethreaded_python();
 
                 let res = Python::with_gil(|py| {
                     let zlib = PyModule::import(py, "bz2")?;
                     let decompress = zlib.getattr("decompress")?;
-                    let bytes = PyBytes::new(py, &*compressed);
+                    let bytes = PyBytes::new(py, &compressed);
                     let value = decompress.call1((bytes,))?;
                     value.extract::<Vec<u8>>()
                 })

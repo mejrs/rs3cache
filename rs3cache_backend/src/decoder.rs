@@ -77,7 +77,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
                     decoder.read_to_end(&mut buf).unwrap();
                     buf.into()
                 };
-                if let Err(_) = ret {
+                if ret.is_err() {
                     // Sometimes tools generate caches where trailing versions are missing,
                     // and the below code includes the last two bytes.
                     let data = encoded_data.as_slice();
