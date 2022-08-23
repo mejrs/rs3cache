@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["adapters","Adapters for iterators."],["color","Various colour constants."],["rangeclamp","Clamps a `Range` to a certain interval."],["slice",""]]});
+window.SIDEBAR_ITEMS = {"mod":[["adapters","Adapters for iterators."],["color","Various colour constants."],["rangeclamp","Clamps a `Range` to a certain interval."],["slice",""]]};

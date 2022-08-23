@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/index.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>index.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/index.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>index.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -254,257 +249,256 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
-</pre><pre class="rust"><code><span class="doccomment">//! The interface between [rs3cache](crate) and the cache database.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! The interface between [rs3cache](crate) and the cache database.
 
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span> <span class="comment">// varies based on mock config flags</span>
+</span><span class="attribute">#![allow(unused_imports)] </span><span class="comment">// varies based on mock config flags
 
-<span class="doccomment">/// This contains the game-specific implementations.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>, <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;index/sqlite.rs&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;index/dat2.rs&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>, <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;index/dat.rs&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">index_impl</span>;
+</span><span class="doccomment">/// This contains the game-specific implementations.
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;sqlite&quot;</span>, path = <span class="string">&quot;index/sqlite.rs&quot;</span>)]
+#[cfg_attr(feature = <span class="string">&quot;dat2&quot;</span>, path = <span class="string">&quot;index/dat2.rs&quot;</span>)]
+#[cfg_attr(feature = <span class="string">&quot;dat&quot;</span>, path = <span class="string">&quot;index/dat.rs&quot;</span>)]
+</span><span class="kw">mod </span>index_impl;
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">BTreeSet</span>, <span class="ident">HashMap</span>},
-    <span class="ident">env</span>::{<span class="self">self</span>, <span class="ident">VarError</span>},
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">BufReader</span>, <span class="ident">Cursor</span>, <span class="ident">Read</span>, <span class="ident">Seek</span>, <span class="ident">SeekFrom</span>, <span class="ident">Write</span>},
-    <span class="ident">marker::PhantomData</span>,
-    <span class="ident">ops::RangeInclusive</span>,
-    <span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>},
+<span class="kw">use </span>std::{
+    collections::{BTreeMap, BTreeSet, HashMap},
+    env::{<span class="self">self</span>, VarError},
+    fs::{<span class="self">self</span>, File},
+    io::{<span class="self">self</span>, BufReader, Cursor, Read, Seek, SeekFrom, Write},
+    marker::PhantomData,
+    ops::RangeInclusive,
+    path::{Path, PathBuf},
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">index_impl</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">itertools::iproduct</span>;
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">pub use </span>index_impl::<span class="kw-2">*</span>;
+<span class="kw">use </span>itertools::iproduct;
+<span class="kw">use </span>path_macro::path;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::xtea::Xtea</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">arc::Archive</span>,
-    <span class="ident">buf::BufExtra</span>,
-    <span class="ident">decoder</span>,
-    <span class="ident">error</span>::{<span class="ident">CacheError</span>, <span class="ident">CacheResult</span>},
-    <span class="ident">meta</span>::{<span class="ident">IndexMetadata</span>, <span class="ident">Metadata</span>},
+<span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::xtea::Xtea;
+<span class="kw">use crate</span>::{
+    arc::Archive,
+    buf::BufExtra,
+    decoder,
+    error::{CacheError, CacheResult},
+    meta::{IndexMetadata, Metadata},
 };
 
-<span class="kw">mod</span> <span class="ident">states</span> {
-    <span class="kw">use</span> <span class="ident">std::ops::RangeInclusive</span>;
+<span class="kw">mod </span>states {
+    <span class="kw">use </span>std::ops::RangeInclusive;
 
-    <span class="doccomment">/// Initial state of [`CacheIndex`](super::CacheIndex).</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Initial</span> {}
+    <span class="doccomment">/// Initial state of [`CacheIndex`](super::CacheIndex).
+    </span><span class="kw">pub struct </span>Initial {}
 
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Truncated</span> {
-        <span class="kw">pub</span> <span class="ident">feed</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="kw">pub struct </span>Truncated {
+        <span class="kw">pub </span>feed: Vec&lt;u32&gt;,
     }
 
-    <span class="doccomment">/// Trait that describes the current index state. Cannot be implemented.</span>
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IndexState</span> {}
-    <span class="kw">impl</span> <span class="ident">IndexState</span> <span class="kw">for</span> <span class="ident">Initial</span> {}
-    <span class="kw">impl</span> <span class="ident">IndexState</span> <span class="kw">for</span> <span class="ident">Truncated</span> {}
+    <span class="doccomment">/// Trait that describes the current index state. Cannot be implemented.
+    </span><span class="kw">pub trait </span>IndexState {}
+    <span class="kw">impl </span>IndexState <span class="kw">for </span>Initial {}
+    <span class="kw">impl </span>IndexState <span class="kw">for </span>Truncated {}
 }
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">states</span>::{<span class="ident">IndexState</span>, <span class="ident">Initial</span>, <span class="ident">Truncated</span>};
+<span class="kw">pub use </span>states::{IndexState, Initial, Truncated};
 
-<span class="doccomment">/// Container of [`Archive`]s.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">IndexState</span><span class="op">&gt;</span> {
-    <span class="ident">index_id</span>: <span class="ident">u32</span>,
-    <span class="ident">metadatas</span>: <span class="ident">IndexMetadata</span>,
-    <span class="ident">state</span>: <span class="ident">S</span>,
-    <span class="ident">path</span>: <span class="ident">PathBuf</span>,
+<span class="doccomment">/// Container of [`Archive`]s.
+</span><span class="kw">pub struct </span>CacheIndex&lt;S: IndexState&gt; {
+    index_id: u32,
+    metadatas: IndexMetadata,
+    state: S,
+    path: PathBuf,
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-    <span class="ident">connection</span>: <span class="ident">sqlite::Connection</span>,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+    </span>connection: sqlite::Connection,
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>))]</span>
-    <span class="ident">file</span>: <span class="ident">File</span>,
+    <span class="attribute">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
+    </span>file: File,
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-    <span class="ident">xteas</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Xtea</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+    </span>xteas: <span class="prelude-ty">Option</span>&lt;HashMap&lt;u32, Xtea&gt;&gt;,
 }
 
-<span class="comment">// methods valid in any state</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">IndexState</span>,
+<span class="comment">// methods valid in any state
+</span><span class="kw">impl</span>&lt;S&gt; CacheIndex&lt;S&gt;
+<span class="kw">where
+    </span>S: IndexState,
 {
-    <span class="doccomment">/// The index id of `self`,</span>
-    <span class="doccomment">/// corresponding to the `raw/js5-{index_id}.jcache` file being held.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">index_id</span>
+    <span class="doccomment">/// The index id of `self`,
+    /// corresponding to the `raw/js5-{index_id}.jcache` file being held.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>index_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.index_id
     }
 
-    <span class="doccomment">/// Returns a view over the [`IndexMetadata`] of `self`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadatas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">IndexMetadata</span> {
-        <span class="kw-2">&amp;</span>(<span class="self">self</span>.<span class="ident">metadatas</span>)
+    <span class="doccomment">/// Returns a view over the [`IndexMetadata`] of `self`.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>metadatas(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>IndexMetadata {
+        <span class="kw-2">&amp;</span>(<span class="self">self</span>.metadatas)
     }
 
-    <span class="doccomment">/// Get an [`Archive`] from `self`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Errors</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">archive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">archive_id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">metadatas</span>()
-            .<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">archive_id</span>)
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">CacheError::ArchiveNotFoundError</span>(<span class="self">self</span>.<span class="ident">index_id</span>(), <span class="ident">archive_id</span>))<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_file</span>(<span class="ident">metadata</span>)<span class="question-mark">?</span>;
+    <span class="doccomment">/// Get an [`Archive`] from `self`.
+    ///
+    /// # Errors
+    ///
+    /// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;sqlite&quot;</span>, feature = <span class="string">&quot;dat2&quot;</span>))]
+    </span><span class="kw">pub fn </span>archive(<span class="kw-2">&amp;</span><span class="self">self</span>, archive_id: u32) -&gt; CacheResult&lt;Archive&gt; {
+        <span class="kw">let </span>metadata = <span class="self">self
+            </span>.metadatas()
+            .get(<span class="kw-2">&amp;</span>archive_id)
+            .ok_or_else(|| CacheError::ArchiveNotFoundError(<span class="self">self</span>.index_id(), archive_id))<span class="question-mark">?</span>;
+        <span class="kw">let </span>data = <span class="self">self</span>.get_file(metadata)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(<span class="ident">Archive::deserialize</span>(<span class="ident">metadata</span>, <span class="ident">data</span>))
+        <span class="prelude-val">Ok</span>(Archive::deserialize(metadata, data))
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">archive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">archive_id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span> {
-        <span class="comment">// FIXME</span>
-        <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">Metadata</span> {
-            <span class="ident">index_id</span>: <span class="self">self</span>.<span class="ident">index_id</span>,
-            <span class="ident">archive_id</span>,
-            <span class="ident">child_count</span>: <span class="number">1</span>,
-            <span class="ident">child_indices</span>: <span class="macro">vec!</span>[<span class="number">0</span>],
-            ..<span class="ident">Default::default</span>()
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;dat&quot;</span>)]
+    </span><span class="kw">pub fn </span>archive(<span class="kw-2">&amp;</span><span class="self">self</span>, archive_id: u32) -&gt; CacheResult&lt;Archive&gt; {
+        <span class="comment">// FIXME
+        </span><span class="kw">let </span>metadata = Metadata {
+            index_id: <span class="self">self</span>.index_id,
+            archive_id,
+            child_count: <span class="number">1</span>,
+            child_indices: <span class="macro">vec!</span>[<span class="number">0</span>],
+            ..Default::default()
         };
 
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_file</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>data = <span class="self">self</span>.get_file(<span class="kw-2">&amp;</span>metadata)<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">index_id</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">Archive::deserialize_jag</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>, <span class="ident">data</span>)<span class="question-mark">?</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">Archive</span> {
-                <span class="ident">index_id</span>: <span class="self">self</span>.<span class="ident">index_id</span>,
-                <span class="ident">archive_id</span>,
-                <span class="ident">files</span>: {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">BTreeMap::new</span>();
-                    <span class="ident">files</span>.<span class="ident">insert</span>(<span class="ident">metadata</span>.<span class="ident">child_indices</span>()[<span class="number">0</span>], <span class="ident">data</span>);
-                    <span class="ident">files</span>
+        <span class="kw">if </span><span class="self">self</span>.index_id == <span class="number">0 </span>{
+            <span class="prelude-val">Ok</span>(Archive::deserialize_jag(<span class="kw-2">&amp;</span>metadata, data)<span class="question-mark">?</span>)
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Ok</span>(Archive {
+                index_id: <span class="self">self</span>.index_id,
+                archive_id,
+                files: {
+                    <span class="kw">let </span><span class="kw-2">mut </span>files = BTreeMap::new();
+                    files.insert(metadata.child_indices()[<span class="number">0</span>], data);
+                    files
                 },
-                <span class="ident">files_named</span>: <span class="ident">BTreeMap::new</span>(),
+                files_named: BTreeMap::new(),
             })
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Retain only those archives that are in `ids`.</span>
-    <span class="doccomment">/// Advances `self` to the `Truncated` state.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if any of `ids` is not in `self`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">retain</span>(<span class="self">self</span>, <span class="ident">ids</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) -&gt; <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Truncated</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">all_ids</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">metadatas</span>().<span class="ident">keys</span>().<span class="ident">copied</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeSet</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+<span class="kw">impl </span>CacheIndex&lt;Initial&gt; {
+    <span class="doccomment">/// Retain only those archives that are in `ids`.
+    /// Advances `self` to the `Truncated` state.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any of `ids` is not in `self`.
+    </span><span class="kw">pub fn </span>retain(<span class="self">self</span>, ids: Vec&lt;u32&gt;) -&gt; CacheIndex&lt;Truncated&gt; {
+        <span class="kw">let </span>all_ids = <span class="self">self</span>.metadatas().keys().copied().collect::&lt;BTreeSet&lt;<span class="kw">_</span>&gt;&gt;();
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">missing_id</span>) <span class="op">=</span> <span class="ident">ids</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="op">!</span><span class="ident">all_ids</span>.<span class="ident">contains</span>(<span class="ident">id</span>)) {
-            <span class="macro">panic!</span>(<span class="string">&quot;Attempted to retain missing archive id {},&quot;</span>, <span class="ident">missing_id</span>)
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(missing_id) = ids.iter().find(|id| !all_ids.contains(id)) {
+            <span class="macro">panic!</span>(<span class="string">&quot;Attempted to retain missing archive id {},&quot;</span>, missing_id)
         }
-        <span class="kw">let</span> <span class="self">Self</span> {
-            <span class="ident">path</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-            <span class="ident">connection</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>))]</span>
-            <span class="ident">file</span>,
-            <span class="ident">index_id</span>,
-            <span class="ident">metadatas</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-            <span class="ident">xteas</span>,
+        <span class="kw">let </span><span class="self">Self </span>{
+            path,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+            </span>connection,
+            <span class="attribute">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
+            </span>file,
+            index_id,
+            metadatas,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+            </span>xteas,
             ..
-        } <span class="op">=</span> <span class="self">self</span>;
+        } = <span class="self">self</span>;
 
-        <span class="ident">CacheIndex</span> {
-            <span class="ident">path</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-            <span class="ident">connection</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>))]</span>
-            <span class="ident">file</span>,
-            <span class="ident">index_id</span>,
-            <span class="ident">metadatas</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-            <span class="ident">xteas</span>,
-            <span class="ident">state</span>: <span class="ident">Truncated</span> { <span class="ident">feed</span>: <span class="ident">ids</span> },
+        CacheIndex {
+            path,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+            </span>connection,
+            <span class="attribute">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
+            </span>file,
+            index_id,
+            metadatas,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+            </span>xteas,
+            state: Truncated { feed: ids },
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>;
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>CacheIndex&lt;Initial&gt; {
+    <span class="kw">type </span>Item = CacheResult&lt;Archive&gt;;
 
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">IntoIter</span>;
+    <span class="kw">type </span>IntoIter = IntoIter;
 
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="kw">let</span> <span class="ident">feed</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">metadatas</span>().<span class="ident">keys</span>().<span class="ident">copied</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">into_iter</span>();
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">let </span>feed = <span class="self">self</span>.metadatas().keys().copied().collect::&lt;Vec&lt;u32&gt;&gt;().into_iter();
 
-        <span class="ident">IntoIter</span> { <span class="ident">index</span>: <span class="self">self</span>, <span class="ident">feed</span> }
+        IntoIter { index: <span class="self">self</span>, feed }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Truncated</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>;
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>CacheIndex&lt;Truncated&gt; {
+    <span class="kw">type </span>Item = CacheResult&lt;Archive&gt;;
 
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">IntoIter</span>;
+    <span class="kw">type </span>IntoIter = IntoIter;
 
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="kw">let</span> <span class="self">Self</span> {
-            <span class="ident">path</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-            <span class="ident">connection</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>))]</span>
-            <span class="ident">file</span>,
-            <span class="ident">index_id</span>,
-            <span class="ident">metadatas</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-            <span class="ident">xteas</span>,
-            <span class="ident">state</span>,
-        } <span class="op">=</span> <span class="self">self</span>;
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">let </span><span class="self">Self </span>{
+            path,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+            </span>connection,
+            <span class="attribute">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
+            </span>file,
+            index_id,
+            metadatas,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+            </span>xteas,
+            state,
+        } = <span class="self">self</span>;
 
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex</span> {
-            <span class="ident">path</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-            <span class="ident">connection</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>))]</span>
-            <span class="ident">file</span>,
-            <span class="ident">index_id</span>,
-            <span class="ident">metadatas</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-            <span class="ident">xteas</span>,
-            <span class="ident">state</span>: <span class="ident">Initial</span> {},
+        <span class="kw">let </span>index = CacheIndex {
+            path,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+            </span>connection,
+            <span class="attribute">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
+            </span>file,
+            index_id,
+            metadatas,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+            </span>xteas,
+            state: Initial {},
         };
 
-        <span class="ident">IntoIter</span> {
-            <span class="ident">index</span>,
-            <span class="ident">feed</span>: <span class="ident">state</span>.<span class="ident">feed</span>.<span class="ident">into_iter</span>(),
+        IntoIter {
+            index,
+            feed: state.feed.into_iter(),
         }
     }
 }
 
-<span class="doccomment">/// Iterator over all [`Archive`]s of `self`. Yields in arbitrary order.</span>
-<span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IntoIter</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">index</span>: <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span>,
-    <span class="ident">feed</span>: <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Iterator over all [`Archive`]s of `self`. Yields in arbitrary order.
+</span><span class="attribute">#[must_use = <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]
+</span><span class="kw">pub struct </span>IntoIter {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) index: CacheIndex&lt;Initial&gt;,
+    feed: std::vec::IntoIter&lt;u32&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">IntoIter</span> {
-    <span class="doccomment">/// Returns a view of the [`IndexMetadata`] of the contained [`CacheIndex`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadatas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">IndexMetadata</span> {
-        <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">metadatas</span>()
+<span class="kw">impl </span>IntoIter {
+    <span class="doccomment">/// Returns a view of the [`IndexMetadata`] of the contained [`CacheIndex`].
+    </span><span class="kw">pub fn </span>metadatas(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>IndexMetadata {
+        <span class="self">self</span>.index.metadatas()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">IntoIter</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Archive</span><span class="op">&gt;</span>;
+<span class="kw">impl </span>Iterator <span class="kw">for </span>IntoIter {
+    <span class="kw">type </span>Item = CacheResult&lt;Archive&gt;;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">feed</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">archive_id</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">archive_id</span>))
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.feed.next().map(|archive_id| <span class="self">self</span>.index.archive(archive_id))
     }
 
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">feed</span>.<span class="ident">size_hint</span>()
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        <span class="self">self</span>.feed.size_hint()
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

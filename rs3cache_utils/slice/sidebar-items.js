@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["SharedSlice",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["SharedSlice",""]]};

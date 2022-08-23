@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["export_each",""]],"struct":[["ChunkDescriptor",""],["Jaga",""]]});
+window.SIDEBAR_ITEMS = {"fn":[["export_each",""]],"struct":[["ChunkDescriptor",""],["Jaga",""]]};

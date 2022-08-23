@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Tile","Describes the properties of a tile in a `MapSquare`."]],"type":[["TileArray","Type alias for the 4x64x64 array of [`Tile`]s in a `MapSquare`."]]});
+window.SIDEBAR_ITEMS = {"struct":[["Tile","Describes the properties of a tile in a `MapSquare`."]],"type":[["TileArray","Type alias for the 4x64x64 array of [`Tile`]s in a `MapSquare`."]]};

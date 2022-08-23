@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["rs3cache"] = [{"text":"impl ArgEnum for <a class=\"enum\" href=\"rs3cache/cli/enum.Render.html\" title=\"enum rs3cache::cli::Render\">Render</a>","synthetic":false,"types":["rs3cache::cli::Render"]},{"text":"impl ArgEnum for <a class=\"enum\" href=\"rs3cache/cli/enum.Dump.html\" title=\"enum rs3cache::cli::Dump\">Dump</a>","synthetic":false,"types":["rs3cache::cli::Dump"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"rs3cache":[["impl ArgEnum for <a class=\"enum\" href=\"rs3cache/cli/enum.Render.html\" title=\"enum rs3cache::cli::Render\">Render</a>"],["impl ArgEnum for <a class=\"enum\" href=\"rs3cache/cli/enum.Dump.html\" title=\"enum rs3cache::cli::Dump\">Dump</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

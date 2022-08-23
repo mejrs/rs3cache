@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/music.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>music.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/music.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>music.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -130,133 +125,132 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
-    <span class="ident">process::Command</span>,
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    fs::{<span class="self">self</span>, File},
+    io::Write,
+    process::Command,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions</span>::{
-        <span class="ident">enums</span>::{<span class="ident">Enum</span>, <span class="ident">Value</span>},
-        <span class="ident">indextype::IndexType</span>,
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::{
+        enums::{Enum, Value},
+        indextype::IndexType,
     },
 };
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_each</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">enum_archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::ENUM_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">archive</span> <span class="op">=</span> <span class="ident">enum_archives</span>.<span class="ident">archive</span>(<span class="number">5</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">music_names</span> <span class="op">=</span> <span class="ident">Enum::deserialize</span>(<span class="number">5</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> <span class="number">65</span>, <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">65</span>)<span class="question-mark">?</span>);
-    <span class="kw">let</span> <span class="ident">music_indices</span> <span class="op">=</span> <span class="ident">Enum::deserialize</span>(<span class="number">5</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> <span class="number">71</span>, <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">71</span>)<span class="question-mark">?</span>);
-    <span class="kw">let</span> <span class="ident">audio_archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::AUDIOSTREAMS</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
+<span class="kw">pub fn </span>export_each(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    <span class="kw">let </span>enum_archives = CacheIndex::new(IndexType::ENUM_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
+    <span class="kw">let </span>archive = enum_archives.archive(<span class="number">5</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>music_names = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">65</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">65</span>)<span class="question-mark">?</span>);
+    <span class="kw">let </span>music_indices = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">71</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">71</span>)<span class="question-mark">?</span>);
+    <span class="kw">let </span>audio_archives = CacheIndex::new(IndexType::AUDIOSTREAMS, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
 
-    <span class="kw">for</span> (<span class="ident">archive_id</span>, <span class="ident">name</span>) <span class="kw">in</span> <span class="ident">music_names</span>.<span class="ident">variants</span>.<span class="ident">into_iter</span>() {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">name</span> {
-            <span class="ident">Value::String</span>(<span class="ident">s</span>) <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">chars</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39; &#39;</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;Unnamed track {archive_id}&quot;</span>),
-            <span class="comment">// Check for bad filenames</span>
-            <span class="comment">// Almost never happens, so we check first before possibly creating a new string</span>
-            <span class="ident">Value::String</span>(<span class="ident">s</span>) <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">chars</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> [<span class="string">&#39;?&#39;</span>, <span class="string">&#39;/&#39;</span>, <span class="string">&#39;\\&#39;</span>].<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">c</span>)) =&gt; <span class="ident">s</span>.<span class="ident">chars</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> [<span class="string">&#39;?&#39;</span>, <span class="string">&#39;/&#39;</span>, <span class="string">&#39;\\&#39;</span>].<span class="ident">contains</span>(<span class="ident">c</span>)).<span class="ident">collect</span>(),
-            <span class="ident">Value::String</span>(<span class="ident">s</span>) =&gt; <span class="ident">s</span>,
-            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+    <span class="kw">for </span>(archive_id, name) <span class="kw">in </span>music_names.variants.into_iter() {
+        <span class="kw">let </span>name = <span class="kw">match </span>name {
+            Value::String(s) <span class="kw">if </span>s.chars().all(|c| c == <span class="string">&#39; &#39;</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;Unnamed track {archive_id}&quot;</span>),
+            <span class="comment">// Check for bad filenames
+            // Almost never happens, so we check first before possibly creating a new string
+            </span>Value::String(s) <span class="kw">if </span>s.chars().any(|c| [<span class="string">&#39;?&#39;</span>, <span class="string">&#39;/&#39;</span>, <span class="string">&#39;\\&#39;</span>].contains(<span class="kw-2">&amp;</span>c)) =&gt; s.chars().filter(|c| [<span class="string">&#39;?&#39;</span>, <span class="string">&#39;/&#39;</span>, <span class="string">&#39;\\&#39;</span>].contains(c)).collect(),
+            Value::String(s) =&gt; s,
+            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
         };
 
-        <span class="kw">let</span> <span class="ident">music_archive_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">music_indices</span>.<span class="ident">variants</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">archive_id</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">Value::Integer</span>(<span class="ident">i</span>)) =&gt; <span class="kw-2">*</span><span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span>,
+        <span class="kw">let </span>music_archive_id = <span class="kw">match </span>music_indices.variants.get(<span class="kw-2">&amp;</span>archive_id) {
+            <span class="prelude-val">Some</span>(Value::Integer(i)) =&gt; <span class="kw-2">*</span>i <span class="kw">as </span>u32,
             <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
-            <span class="prelude-val">None</span> =&gt; {
-                <span class="macro">println!</span>(<span class="string">&quot;Unable to create \&quot;{}\&quot;.&quot;</span>, <span class="ident">name</span>);
+            <span class="prelude-val">None </span>=&gt; {
+                <span class="macro">println!</span>(<span class="string">&quot;Unable to create \&quot;{}\&quot;.&quot;</span>, name);
                 <span class="kw">continue</span>;
             }
         };
 
-        <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">audio_archives</span>.<span class="ident">archive</span>(<span class="ident">music_archive_id</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">file</span>) =&gt; <span class="ident">file</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">unwrap</span>(),
-            <span class="kw">_</span> =&gt; {
-                <span class="comment">// Seems like things are lazily loaded.</span>
-                <span class="macro">println!</span>(<span class="string">&quot;Unable to create \&quot;{}\&quot;.&quot;</span>, <span class="ident">name</span>);
+        <span class="kw">let </span>first = <span class="kw">match </span>audio_archives.archive(music_archive_id) {
+            <span class="prelude-val">Ok</span>(file) =&gt; file.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap(),
+            <span class="kw">_ </span>=&gt; {
+                <span class="comment">// Seems like things are lazily loaded.
+                </span><span class="macro">println!</span>(<span class="string">&quot;Unable to create \&quot;{}\&quot;.&quot;</span>, name);
                 <span class="kw">continue</span>;
             }
         };
 
-        <span class="kw">let</span> (<span class="ident">jaga</span>, <span class="ident">data</span>) <span class="op">=</span> <span class="ident">decode_first</span>(<span class="ident">first</span>);
+        <span class="kw">let </span>(jaga, data) = decode_first(first);
 
-        <span class="kw">let</span> <span class="ident">out</span> <span class="op">=</span> <span class="macro">path_macro::path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;music&quot;</span> <span class="op">/</span> <span class="ident">name</span>);
-        <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">out</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;music&quot; </span>/ name);
+        fs::create_dir_all(<span class="kw-2">&amp;</span>out).unwrap();
 
-        <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="kw-2">&amp;</span><span class="ident">out</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{music_archive_id}.ogg&quot;</span>));
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>).<span class="ident">unwrap</span>();
-        <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let </span>file_name = <span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{music_archive_id}.ogg&quot;</span>));
+        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>file_name).unwrap();
+        file.write_all(<span class="kw-2">&amp;</span>data).unwrap();
 
-        <span class="comment">// Prepare a process that invokes `Sox` to concatenate all these files.</span>
-        <span class="comment">// This is really scuffed, but SoX seems to be only program capable of handling it</span>
-        <span class="comment">// Simply concatenating the files should normally work for .ogg files, but not for these...</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="string">&quot;sox&quot;</span>);
-        <span class="ident">command</span>.<span class="ident">arg</span>(<span class="ident">file_name</span>);
+        <span class="comment">// Prepare a process that invokes `Sox` to concatenate all these files.
+        // This is really scuffed, but SoX seems to be only program capable of handling it
+        // Simply concatenating the files should normally work for .ogg files, but not for these...
+        </span><span class="kw">let </span><span class="kw-2">mut </span>command = Command::new(<span class="string">&quot;sox&quot;</span>);
+        command.arg(file_name);
 
-        <span class="comment">// The first one is the one that&#39;s already written</span>
-        <span class="kw">for</span> <span class="ident">chunk</span> <span class="kw">in</span> <span class="ident">jaga</span>.<span class="ident">chunks</span>.<span class="ident">iter</span>().<span class="ident">skip</span>(<span class="number">1</span>) {
-            <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">chunk</span>.<span class="ident">archive_id</span>;
-            <span class="kw">let</span> <span class="ident">more_data</span> <span class="op">=</span> <span class="ident">audio_archives</span>.<span class="ident">archive</span>(<span class="ident">archive_id</span>).<span class="ident">unwrap</span>().<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="kw-2">&amp;</span><span class="ident">out</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{archive_id}.ogg&quot;</span>));
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>).<span class="ident">unwrap</span>();
-            <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">more_data</span>).<span class="ident">unwrap</span>();
-            <span class="ident">command</span>.<span class="ident">arg</span>(<span class="ident">file_name</span>);
+        <span class="comment">// The first one is the one that&#39;s already written
+        </span><span class="kw">for </span>chunk <span class="kw">in </span>jaga.chunks.iter().skip(<span class="number">1</span>) {
+            <span class="kw">let </span>archive_id = chunk.archive_id;
+            <span class="kw">let </span>more_data = audio_archives.archive(archive_id).unwrap().file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap();
+            <span class="kw">let </span>file_name = <span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{archive_id}.ogg&quot;</span>));
+            <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>file_name).unwrap();
+            file.write_all(<span class="kw-2">&amp;</span>more_data).unwrap();
+            command.arg(file_name);
         }
 
-        <span class="ident">command</span>.<span class="ident">arg</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;music&quot;</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{name}.ogg&quot;</span>)));
-        <span class="ident">command</span>.<span class="ident">output</span>().<span class="ident">unwrap</span>();
+        command.arg(<span class="macro">path!</span>(config.output / <span class="string">&quot;music&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;{name}.ogg&quot;</span>)));
+        command.output().unwrap();
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Jaga</span> {
-    <span class="ident">_int_1</span>: <span class="ident">u32</span>,
-    <span class="ident">_int_2</span>: <span class="ident">u32</span>,
-    <span class="ident">_sample_frequency</span>: <span class="ident">u32</span>,
-    <span class="ident">_int_3</span>: <span class="ident">u32</span>,
-    <span class="ident">chunks</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ChunkDescriptor</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>Jaga {
+    _int_1: u32,
+    _int_2: u32,
+    _sample_frequency: u32,
+    _int_3: u32,
+    chunks: Vec&lt;ChunkDescriptor&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChunkDescriptor</span> {
-    <span class="ident">_position</span>: <span class="ident">u32</span>,
-    <span class="ident">_length</span>: <span class="ident">u32</span>,
-    <span class="ident">archive_id</span>: <span class="ident">u32</span>,
+<span class="attribute">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>ChunkDescriptor {
+    _position: u32,
+    _length: u32,
+    archive_id: u32,
 }
 
-<span class="kw">fn</span> <span class="ident">decode_first</span>(<span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; (<span class="ident">Jaga</span>, <span class="ident">Bytes</span>) {
-    <span class="kw">let</span> <span class="ident">signature</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_array</span>::<span class="op">&lt;</span><span class="number">4</span><span class="op">&gt;</span>();
-    <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">signature</span>, <span class="string">b&quot;JAGA&quot;</span>);
+<span class="kw">fn </span>decode_first(<span class="kw-2">mut </span>buffer: Bytes) -&gt; (Jaga, Bytes) {
+    <span class="kw">let </span>signature = buffer.get_array::&lt;<span class="number">4</span>&gt;();
+    <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>signature, <span class="string">b&quot;JAGA&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">_int_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-    <span class="kw">let</span> <span class="ident">_int_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-    <span class="kw">let</span> <span class="ident">_sample_frequency</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-    <span class="kw">let</span> <span class="ident">_int_3</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-    <span class="kw">let</span> <span class="ident">chunk_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-    <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">chunk_count</span>)
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">_position</span><span class="op">|</span> <span class="ident">ChunkDescriptor</span> {
-            <span class="ident">_position</span>,
-            <span class="ident">_length</span>: <span class="ident">buffer</span>.<span class="ident">get_u32</span>(),
-            <span class="ident">archive_id</span>: <span class="ident">buffer</span>.<span class="ident">get_u32</span>(),
+    <span class="kw">let </span>_int_1 = buffer.get_u32();
+    <span class="kw">let </span>_int_2 = buffer.get_u32();
+    <span class="kw">let </span>_sample_frequency = buffer.get_u32();
+    <span class="kw">let </span>_int_3 = buffer.get_u32();
+    <span class="kw">let </span>chunk_count = buffer.get_u32();
+    <span class="kw">let </span>chunks = (<span class="number">0</span>..chunk_count)
+        .map(|_position| ChunkDescriptor {
+            _position,
+            _length: buffer.get_u32(),
+            archive_id: buffer.get_u32(),
         })
-        .<span class="ident">collect</span>();
+        .collect();
     (
-        <span class="ident">Jaga</span> {
-            <span class="ident">_int_1</span>,
-            <span class="ident">_int_2</span>,
-            <span class="ident">_sample_frequency</span>,
-            <span class="ident">_int_3</span>,
-            <span class="ident">chunks</span>,
+        Jaga {
+            _int_1,
+            _int_2,
+            _sample_frequency,
+            _int_3,
+            chunks,
         },
-        <span class="ident">buffer</span>,
+        buffer,
     )
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

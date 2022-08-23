@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/types/variables.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>variables.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/types/variables.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>variables.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -107,110 +102,109 @@
 <span id="102">102</span>
 <span id="103">103</span>
 <span id="104">104</span>
-</pre><pre class="rust"><code><span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+</pre><pre class="rust"><code><span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="doccomment">/// A bitmapping of a [`Varp`]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Ord</span>, <span class="ident">PartialOrd</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Varbit</span> {
-    <span class="doccomment">///The value of the `Varbit`. Cannot be `Some(u16::MAX)`.</span>
-    <span class="kw">pub</span> <span class="ident">val</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A bitmapping of a [`Varp`]
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>Varbit {
+    <span class="doccomment">///The value of the `Varbit`. Cannot be `Some(u16::MAX)`.
+    </span><span class="kw">pub </span>val: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">Varbit</span> {
-    <span class="doccomment">/// Constructor for [`Varbit`]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">id</span>: <span class="ident">u16</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">!</span><span class="op">=</span> <span class="ident">u16::MAX</span> {
-            <span class="self">Self</span> { <span class="ident">val</span>: <span class="prelude-val">Some</span>(<span class="ident">id</span>) }
-        } <span class="kw">else</span> {
-            <span class="self">Self</span> { <span class="ident">val</span>: <span class="prelude-val">None</span> }
+<span class="kw">impl </span>Varbit {
+    <span class="doccomment">/// Constructor for [`Varbit`]
+    </span><span class="kw">pub fn </span>new(id: u16) -&gt; <span class="self">Self </span>{
+        <span class="kw">if </span>id != u16::MAX {
+            <span class="self">Self </span>{ val: <span class="prelude-val">Some</span>(id) }
+        } <span class="kw">else </span>{
+            <span class="self">Self </span>{ val: <span class="prelude-val">None </span>}
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">Varbit</span> {
-    <span class="attribute">#[<span class="ident">classattr</span>]</span>
-    <span class="kw">fn</span> <span class="ident">r#type</span>() -&gt; <span class="ident">String</span> {
-        <span class="string">&quot;varbit&quot;</span>.<span class="ident">to_string</span>()
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>Varbit {
+    <span class="attribute">#[classattr]
+    </span><span class="kw">fn </span>r#type() -&gt; String {
+        <span class="string">&quot;varbit&quot;</span>.to_string()
     }
 
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">val</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">val</span>)
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>val(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.val)
     }
 }
 
-<span class="doccomment">/// A player variable</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Ord</span>, <span class="ident">PartialOrd</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Varp</span> {
-    <span class="doccomment">///The value of the `Varp`. Cannot be `Some(u16::MAX)`.</span>
-    <span class="kw">pub</span> <span class="ident">val</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A player variable
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>Varp {
+    <span class="doccomment">///The value of the `Varp`. Cannot be `Some(u16::MAX)`.
+    </span><span class="kw">pub </span>val: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">Varp</span> {
-    <span class="doccomment">/// Constructor for [`Varp`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">id</span>: <span class="ident">u16</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">!</span><span class="op">=</span> <span class="ident">u16::MAX</span> {
-            <span class="self">Self</span> { <span class="ident">val</span>: <span class="prelude-val">Some</span>(<span class="ident">id</span>) }
-        } <span class="kw">else</span> {
-            <span class="self">Self</span> { <span class="ident">val</span>: <span class="prelude-val">None</span> }
+<span class="kw">impl </span>Varp {
+    <span class="doccomment">/// Constructor for [`Varp`].
+    </span><span class="kw">pub fn </span>new(id: u16) -&gt; <span class="self">Self </span>{
+        <span class="kw">if </span>id != u16::MAX {
+            <span class="self">Self </span>{ val: <span class="prelude-val">Some</span>(id) }
+        } <span class="kw">else </span>{
+            <span class="self">Self </span>{ val: <span class="prelude-val">None </span>}
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">Varp</span> {
-    <span class="attribute">#[<span class="ident">classattr</span>]</span>
-    <span class="kw">fn</span> <span class="ident">r#type</span>() -&gt; <span class="ident">String</span> {
-        <span class="string">&quot;varp&quot;</span>.<span class="ident">to_string</span>()
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>Varp {
+    <span class="attribute">#[classattr]
+    </span><span class="kw">fn </span>r#type() -&gt; String {
+        <span class="string">&quot;varp&quot;</span>.to_string()
     }
 
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">val</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">val</span>)
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>val(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.val)
     }
 }
 
-<span class="doccomment">/// A variable containing either a Varp or Varbit.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Ord</span>, <span class="ident">PartialOrd</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">VarpOrVarbit</span> {
-    <span class="doccomment">/// See [`Varbit`].</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;varbit&quot;</span>)]</span>
-    <span class="ident">Varbit</span>(<span class="ident">u16</span>),
-    <span class="doccomment">/// See [`Varp`].</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;varp&quot;</span>)]</span>
-    <span class="ident">Varp</span>(<span class="ident">u16</span>),
+<span class="doccomment">/// A variable containing either a Varp or Varbit.
+</span><span class="attribute">#[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>VarpOrVarbit {
+    <span class="doccomment">/// See [`Varbit`].
+    </span><span class="attribute">#[serde(rename = <span class="string">&quot;varbit&quot;</span>)]
+    </span>Varbit(u16),
+    <span class="doccomment">/// See [`Varp`].
+    </span><span class="attribute">#[serde(rename = <span class="string">&quot;varp&quot;</span>)]
+    </span>Varp(u16),
 }
 
-<span class="kw">impl</span> <span class="ident">VarpOrVarbit</span> {
-    <span class="doccomment">/// Constructor for VarpOrVarbit.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">/// Panics if `varp` and `varbit` have the same discriminant, i.e. one has to be `Some` and the other has to be `None`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">varp</span>: <span class="ident">Varp</span>, <span class="ident">varbit</span>: <span class="ident">Varbit</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">match</span> (<span class="ident">varp</span>.<span class="ident">val</span>, <span class="ident">varbit</span>.<span class="ident">val</span>) {
-            (<span class="prelude-val">Some</span>(<span class="ident">id</span>), <span class="prelude-val">None</span>) =&gt; <span class="ident"><span class="self">Self</span>::Varp</span>(<span class="ident">id</span>),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">id</span>)) =&gt; <span class="ident"><span class="self">Self</span>::Varbit</span>(<span class="ident">id</span>),
-            <span class="ident">other</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Invalid variable pattern {:?}.&quot;</span>, <span class="ident">other</span>),
+<span class="kw">impl </span>VarpOrVarbit {
+    <span class="doccomment">/// Constructor for VarpOrVarbit.
+    ///
+    /// # Panics
+    /// Panics if `varp` and `varbit` have the same discriminant, i.e. one has to be `Some` and the other has to be `None`.
+    </span><span class="kw">pub fn </span>new(varp: Varp, varbit: Varbit) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>(varp.val, varbit.val) {
+            (<span class="prelude-val">Some</span>(id), <span class="prelude-val">None</span>) =&gt; <span class="self">Self</span>::Varp(id),
+            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(id)) =&gt; <span class="self">Self</span>::Varbit(id),
+            other =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Invalid variable pattern {:?}.&quot;</span>, other),
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">PyObject</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VarpOrVarbit</span> {
-    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">PyObject</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Varbit</span>(<span class="ident">id</span>) =&gt; <span class="ident">Varbit</span> { <span class="ident">val</span>: <span class="prelude-val">Some</span>(<span class="ident">id</span>) }.<span class="ident">into_py</span>(<span class="ident">py</span>),
-            <span class="ident"><span class="self">Self</span>::Varp</span>(<span class="ident">id</span>) =&gt; <span class="ident">Varp</span> { <span class="ident">val</span>: <span class="prelude-val">Some</span>(<span class="ident">id</span>) }.<span class="ident">into_py</span>(<span class="ident">py</span>),
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">impl </span>IntoPy&lt;PyObject&gt; <span class="kw">for </span>VarpOrVarbit {
+    <span class="kw">fn </span>into_py(<span class="self">self</span>, py: Python) -&gt; PyObject {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Varbit(id) =&gt; Varbit { val: <span class="prelude-val">Some</span>(id) }.into_py(py),
+            <span class="self">Self</span>::Varp(id) =&gt; Varp { val: <span class="prelude-val">Some</span>(id) }.into_py(py),
         }
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

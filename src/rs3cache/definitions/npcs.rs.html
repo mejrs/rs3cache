@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/npcs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>npcs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/npcs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>npcs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -54,57 +49,56 @@
 <span id="49">49</span>
 <span id="50">50</span>
 <span id="51">51</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>serde::Serialize;
 
-<span class="doccomment">/// A non player character.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Npc</span> {
-    <span class="doccomment">/// The plane a.k.a elevation.</span>
-    <span class="kw">pub</span> <span class="ident">plane</span>: <span class="ident">u8</span>,
+<span class="doccomment">/// A non player character.
+</span><span class="attribute">#[derive(Copy, Clone, Debug, Serialize)]
+</span><span class="kw">pub struct </span>Npc {
+    <span class="doccomment">/// The plane a.k.a elevation.
+    </span><span class="kw">pub </span>plane: u8,
 
-    <span class="doccomment">/// The horizontal [`MapSquare`](crate::definitions::mapsquares::MapSquare) coordinate.</span>
-    <span class="kw">pub</span> <span class="ident">i</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// The horizontal [`MapSquare`](crate::definitions::mapsquares::MapSquare) coordinate.
+    </span><span class="kw">pub </span>i: u8,
 
-    <span class="doccomment">/// The vertical [`MapSquare`](crate::definitions::mapsquares::MapSquare) coordinate.</span>
-    <span class="kw">pub</span> <span class="ident">j</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// The vertical [`MapSquare`](crate::definitions::mapsquares::MapSquare) coordinate.
+    </span><span class="kw">pub </span>j: u8,
 
-    <span class="doccomment">/// The horizontal coordinate inside its [`MapSquare`](crate::definitions::mapsquares::MapSquare).</span>
-    <span class="kw">pub</span> <span class="ident">x</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// The horizontal coordinate inside its [`MapSquare`](crate::definitions::mapsquares::MapSquare).
+    </span><span class="kw">pub </span>x: u8,
 
-    <span class="doccomment">/// The vertical coordinate inside its [`MapSquare`](crate::definitions::mapsquares::MapSquare).</span>
-    <span class="kw">pub</span> <span class="ident">y</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// The vertical coordinate inside its [`MapSquare`](crate::definitions::mapsquares::MapSquare).
+    </span><span class="kw">pub </span>y: u8,
 
-    <span class="doccomment">/// The id corresponding to its [`NpcConfig`](crate::definitions::npc_configs::NpcConfig).</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// The id corresponding to its [`NpcConfig`](crate::definitions::npc_configs::NpcConfig).
+    </span><span class="kw">pub </span>id: u32,
 }
 
-<span class="kw">impl</span> <span class="ident">Npc</span> {
-    <span class="doccomment">/// Constructor for [`Npc`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Npc</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">remaining</span>();
+<span class="kw">impl </span>Npc {
+    <span class="doccomment">/// Constructor for [`Npc`].
+    </span><span class="kw">pub fn </span>deserialize(i: u8, j: u8, <span class="kw-2">mut </span>buffer: Bytes) -&gt; Vec&lt;Npc&gt; {
+        <span class="kw">let </span>length = buffer.remaining();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">npcs</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">length</span> <span class="op">/</span> <span class="number">4</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>npcs = Vec::with_capacity(length / <span class="number">4</span>);
 
-        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..(<span class="ident">length</span> <span class="op">/</span> <span class="number">4</span>) {
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+        <span class="kw">for _ in </span><span class="number">0</span>..(length / <span class="number">4</span>) {
+            <span class="kw">let </span>value = buffer.get_u16();
 
-            <span class="kw">let</span> <span class="ident">plane</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">14</span>) <span class="kw">as</span> <span class="ident">u8</span>;
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span> <span class="op">&amp;</span> <span class="number">0x3F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
-            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&amp;</span> <span class="number">0x3F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
+            <span class="kw">let </span>plane = (value &gt;&gt; <span class="number">14</span>) <span class="kw">as </span>u8;
+            <span class="kw">let </span>x = (value &gt;&gt; <span class="number">7 </span>&amp; <span class="number">0x3F</span>) <span class="kw">as </span>u8;
+            <span class="kw">let </span>y = (value &amp; <span class="number">0x3F</span>) <span class="kw">as </span>u8;
 
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+            <span class="kw">let </span>id = buffer.get_u16() <span class="kw">as </span>u32;
 
-            <span class="kw">let</span> <span class="ident">npc</span> <span class="op">=</span> <span class="ident">Npc</span> { <span class="ident">plane</span>, <span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">id</span> };
+            <span class="kw">let </span>npc = Npc { plane, i, j, x, y, id };
 
-            <span class="ident">npcs</span>.<span class="ident">push</span>(<span class="ident">npc</span>);
+            npcs.push(npc);
         }
 
-        <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
+        <span class="macro">debug_assert!</span>(!buffer.has_remaining());
 
-        <span class="ident">npcs</span>
+        npcs
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

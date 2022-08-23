@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Watery","Describes whether this location is on the contained plane."]],"struct":[["Location","A location, also referred to as an “object”."]]});
+window.SIDEBAR_ITEMS = {"enum":[["Watery","Describes whether this location is on the contained plane."]],"struct":[["Location","A location, also referred to as an “object”."]]};

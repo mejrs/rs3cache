@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/mapsquares/rs3.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rs3.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../rs3cache/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/mapsquares/rs3.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rs3.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../rs3cache/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -125,128 +120,127 @@
 <span id="120">120</span>
 <span id="121">121</span>
 <span id="122">122</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">core::ops::RangeInclusive</span>;
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>core::ops::RangeInclusive;
+<span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">use</span> <span class="ident">itertools::iproduct</span>;
+<span class="kw">use </span>itertools::iproduct;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{
-        <span class="ident">error::CacheResult</span>,
-        <span class="ident">index</span>::{<span class="self">self</span>, <span class="ident">CacheIndex</span>},
+<span class="kw">use crate</span>::{
+    cache::{
+        error::CacheResult,
+        index::{<span class="self">self</span>, CacheIndex},
     },
-    <span class="ident">definitions</span>::{
-        <span class="ident">indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
-        <span class="ident">mapsquares</span>::{<span class="ident">GroupMapSquare</span>, <span class="ident">MapFileType</span>, <span class="ident">MapSquare</span>, <span class="ident">MapSquares</span>},
+    definitions::{
+        indextype::{ConfigType, IndexType},
+        mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
     },
 };
-<span class="kw">impl</span> <span class="ident">MapSquares</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquares</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::MAPSV2</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
+<span class="kw">impl </span>MapSquares {
+    <span class="kw">pub fn </span>new(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;MapSquares&gt; {
+        <span class="kw">let </span>index = CacheIndex::new(IndexType::MAPSV2, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(<span class="ident">MapSquares</span> { <span class="ident">index</span> })
+        <span class="prelude-val">Ok</span>(MapSquares { index })
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> (<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">|</span> (<span class="ident">j</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span>;
-        <span class="kw">let</span> <span class="ident">archive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">archive_id</span>)<span class="question-mark">?</span>;
+    <span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, i: u8, j: u8) -&gt; CacheResult&lt;MapSquare&gt; {
+        <span class="kw">let </span>archive_id = (i <span class="kw">as </span>u32) | (j <span class="kw">as </span>u32) &lt;&lt; <span class="number">7</span>;
+        <span class="kw">let </span>archive = <span class="self">self</span>.index.archive(archive_id)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(<span class="ident">MapSquare::from_archive</span>(<span class="ident">archive</span>))
+        <span class="prelude-val">Ok</span>(MapSquare::from_archive(archive))
     }
 }
-<span class="doccomment">/// Iterates over all [`MapSquare`]s in arbitrary order.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapSquareIterator</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">mapsquares</span>: <span class="ident">MapSquares</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">state</span>: <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u8</span>)<span class="op">&gt;</span>,
+<span class="doccomment">/// Iterates over all [`MapSquare`]s in arbitrary order.
+</span><span class="kw">pub struct </span>MapSquareIterator {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) mapsquares: MapSquares,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) state: std::vec::IntoIter&lt;(u8, u8)&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">MapSquareIterator</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span>;
+<span class="kw">impl </span>Iterator <span class="kw">for </span>MapSquareIterator {
+    <span class="kw">type </span>Item = CacheResult&lt;MapSquare&gt;;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="self">self</span>.<span class="ident">mapsquares</span>.<span class="ident">get</span>(<span class="ident">i</span>, <span class="ident">j</span>))
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.state.next().map(|(i, j)| <span class="self">self</span>.mapsquares.get(i, j))
     }
 
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">size_hint</span>()
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        <span class="self">self</span>.state.size_hint()
     }
 }
 
-<span class="doccomment">/// Iterates over [`GroupMapSquare`] in arbitrary order.</span>
+<span class="doccomment">/// Iterates over [`GroupMapSquare`] in arbitrary order.
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GroupMapSquareIterator</span> {
-    <span class="ident">index</span>: <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">index::Initial</span><span class="op">&gt;</span>,
-    <span class="ident">range_i</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="ident">range_j</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="ident">state</span>: <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u8</span>)<span class="op">&gt;</span>,
+</span><span class="kw">pub struct </span>GroupMapSquareIterator {
+    index: CacheIndex&lt;index::Initial&gt;,
+    range_i: RangeInclusive&lt;i32&gt;,
+    range_j: RangeInclusive&lt;i32&gt;,
+    state: std::vec::IntoIter&lt;(u8, u8)&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">GroupMapSquareIterator</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">range_i</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>, <span class="ident">range_j</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">GroupMapSquareIterator</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::MAPSV2</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
+<span class="kw">impl </span>GroupMapSquareIterator {
+    <span class="kw">pub fn </span>new(range_i: RangeInclusive&lt;i32&gt;, range_j: RangeInclusive&lt;i32&gt;, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;GroupMapSquareIterator&gt; {
+        <span class="kw">let </span>index = CacheIndex::new(IndexType::MAPSV2, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">index</span>
-            .<span class="ident">metadatas</span>()
-            .<span class="ident">keys</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> ((<span class="ident">id</span> <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="kw">as</span> <span class="ident">u8</span>, (<span class="ident">id</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>) <span class="kw">as</span> <span class="ident">u8</span>))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            .<span class="ident">into_iter</span>();
+        <span class="kw">let </span>state = index
+            .metadatas()
+            .keys()
+            .map(|id| ((id &amp; <span class="number">0x7F</span>) <span class="kw">as </span>u8, (id &gt;&gt; <span class="number">7</span>) <span class="kw">as </span>u8))
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            .into_iter();
 
-        <span class="prelude-val">Ok</span>(<span class="ident">GroupMapSquareIterator</span> {
-            <span class="ident">index</span>,
-            <span class="ident">range_i</span>,
-            <span class="ident">range_j</span>,
-            <span class="ident">state</span>,
+        <span class="prelude-val">Ok</span>(GroupMapSquareIterator {
+            index,
+            range_i,
+            range_j,
+            state,
         })
     }
 
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_only</span>(
-        <span class="ident">range_i</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-        <span class="ident">range_j</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-        <span class="ident">coordinates</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u8</span>)<span class="op">&gt;</span>,
-        <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>,
-    ) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">GroupMapSquareIterator</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::MAPSV2</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
+    <span class="attribute">#[doc(hidden)]
+    </span><span class="kw">pub fn </span>new_only(
+        range_i: RangeInclusive&lt;i32&gt;,
+        range_j: RangeInclusive&lt;i32&gt;,
+        coordinates: Vec&lt;(u8, u8)&gt;,
+        config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config,
+    ) -&gt; CacheResult&lt;GroupMapSquareIterator&gt; {
+        <span class="kw">let </span>index = CacheIndex::new(IndexType::MAPSV2, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(<span class="ident">GroupMapSquareIterator</span> {
-            <span class="ident">index</span>,
-            <span class="ident">range_i</span>,
-            <span class="ident">range_j</span>,
-            <span class="ident">state</span>: <span class="ident">coordinates</span>.<span class="ident">into_iter</span>(),
+        <span class="prelude-val">Ok</span>(GroupMapSquareIterator {
+            index,
+            range_i,
+            range_j,
+            state: coordinates.into_iter(),
         })
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">GroupMapSquareIterator</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">GroupMapSquare</span>;
+<span class="kw">impl </span>Iterator <span class="kw">for </span>GroupMapSquareIterator {
+    <span class="kw">type </span>Item = GroupMapSquare;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">core_i</span>, <span class="ident">core_j</span>)<span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">core_i</span> <span class="kw">as</span> <span class="ident">i32</span>;
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">core_j</span> <span class="kw">as</span> <span class="ident">i32</span>;
-            <span class="kw">let</span> <span class="ident">group_ids</span> <span class="op">=</span> <span class="macro">iproduct!</span>(<span class="self">self</span>.<span class="ident">range_i</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">range_j</span>.<span class="ident">clone</span>())
-                .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">di</span>, <span class="ident">dj</span>)<span class="op">|</span> (<span class="ident">i</span> <span class="op">+</span> <span class="ident">di</span>, <span class="ident">j</span> <span class="op">+</span> <span class="ident">dj</span>))
-                .<span class="ident">filter</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="ident">j</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span>)
-                .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> (<span class="ident">i</span> <span class="op">+</span> (<span class="ident">j</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span>)) <span class="kw">as</span> <span class="ident">u32</span>);
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.state.next().map(|(core_i, core_j)| {
+            <span class="kw">let </span>i = core_i <span class="kw">as </span>i32;
+            <span class="kw">let </span>j = core_j <span class="kw">as </span>i32;
+            <span class="kw">let </span>group_ids = <span class="macro">iproduct!</span>(<span class="self">self</span>.range_i.clone(), <span class="self">self</span>.range_j.clone())
+                .map(|(di, dj)| (i + di, j + dj))
+                .filter(|(i, j)| <span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; <span class="kw-2">*</span>j &gt;= <span class="number">0</span>)
+                .map(|(i, j)| (i + (j &lt;&lt; <span class="number">7</span>)) <span class="kw">as </span>u32);
 
-            <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">group_ids</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">archive_id</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">archive_id</span>).<span class="ident">ok</span>());
+            <span class="kw">let </span>archives = group_ids.filter_map(|archive_id| <span class="self">self</span>.index.archive(archive_id).ok());
 
-            <span class="kw">let</span> <span class="ident">mapsquares</span> <span class="op">=</span> <span class="ident">archives</span>
-                .<span class="ident">map</span>(<span class="ident">MapSquare::from_archive</span>)
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">sq</span><span class="op">|</span> ((<span class="ident">sq</span>.<span class="ident">i</span>, <span class="ident">sq</span>.<span class="ident">j</span>), <span class="ident">sq</span>))
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let </span>mapsquares = archives
+                .map(MapSquare::from_archive)
+                .map(|sq| ((sq.i, sq.j), sq))
+                .collect::&lt;HashMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;();
 
-            <span class="ident">GroupMapSquare</span> { <span class="ident">core_i</span>, <span class="ident">core_j</span>, <span class="ident">mapsquares</span> }
+            GroupMapSquare { core_i, core_j, mapsquares }
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">size_hint</span>()
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        <span class="self">self</span>.state.size_hint()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">GroupMapSquareIterator</span> {}
+<span class="kw">impl </span>ExactSizeIterator <span class="kw">for </span>GroupMapSquareIterator {}
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

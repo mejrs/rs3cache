@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["draw",""]]});
+window.SIDEBAR_ITEMS = {"fn":[["draw",""]]};

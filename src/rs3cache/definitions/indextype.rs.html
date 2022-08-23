@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/indextype.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>indextype.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/indextype.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>indextype.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -244,247 +239,246 @@
 <span id="239">239</span>
 <span id="240">240</span>
 <span id="241">241</span>
-</pre><pre class="rust"><code><span class="doccomment">//! The names of various indexes and archives.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! The names of various indexes and archives.
 
-<span class="doccomment">/// Enumeration of all index types.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IndexType</span>;
+/// Enumeration of all index types.
+</span><span class="kw">pub struct </span>IndexType;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">impl</span> <span class="ident">IndexType</span> {
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BASES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="doccomment">/// Contains various smaller [`ConfigType`] definitions.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INTERFACES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="doccomment">/// Contains [`MapSquare`](../../sqlitecache/definitions/mapsquares/struct.MapSquares.html) definitions.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPSV2</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">5</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">MODELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">7</span>;
-    <span class="doccomment">/// Contains [`sprite`](../../sqlitecache/definitions/sprites/index.html) definitions.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SPRITES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">8</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TEXTURES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">9</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BINARY</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">10</span>;
-    <span class="doccomment">/// Contains client side scripts in a bytecode-like format (cs2). Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SCRIPTS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">12</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FONTMETRICS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">13</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VORBIS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">14</span>;
-    <span class="doccomment">/// Contains the [`LocationConfig`](../../sqlitecache/definitions/location_configs/struct.LocationConfig.html) definitions.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">16</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ENUM_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">17</span>;
-    <span class="doccomment">/// Contains the [`NpcConfig`](../../sqlitecache/definitions/npc_configs/struct.NpcConfig.html) definitions.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NPC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">18</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">OBJ_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">19</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SEQ_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">20</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SPOT_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">21</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">STRUCT_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">22</span>;
-    <span class="doccomment">/// Contains [`MapZone`](../../sqlitecache/definitions/worldmaps/struct.MapZone.html),</span>
-    <span class="doccomment">/// [`MapPastes`](../../sqlitecache/definitions/worldmaps/struct.MapPastes.html) definitions,</span>
-    <span class="doccomment">/// as well as PNG images of the world map.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WORLDMAP</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">23</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">QUICKCHAT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">24</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">GLOBAL_QUICKCHAT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">25</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MATERIALS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">26</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PARTICLES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">27</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DEFAULTS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">28</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BILLBOARDS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">29</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">DLLS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">30</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">SHADERS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">31</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">LOADINGSPRITES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">32</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">LOADINGSCREEN</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">33</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">LOADINGSPRITESRAW</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">34</span>;
-    <span class="doccomment">/// Discontinued.</span>
-    <span class="kw">const</span> <span class="ident">CUTSCENES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">35</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">AUDIOSTREAMS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">40</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WORLDMAPAREAS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">41</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WORLDMAPLABELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">42</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MODELSRT7</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">47</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ANIMSRT7</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">48</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DBTABLEINDEX</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">49</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TEXTURES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">52</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TEXTURES_PNG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">53</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TEXTURES_PNG_MIPPED</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">54</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TEXTURES_ETC</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">55</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ANIMS_KEYFRAMES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">56</span>;
+<span class="attribute">#[allow(dead_code)]
+</span><span class="kw">impl </span>IndexType {
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>BASES: u32 = <span class="number">1</span>;
+    <span class="doccomment">/// Contains various smaller [`ConfigType`] definitions.
+    </span><span class="kw">pub const </span>CONFIG: u32 = <span class="number">2</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>INTERFACES: u32 = <span class="number">3</span>;
+    <span class="doccomment">/// Contains [`MapSquare`](../../sqlitecache/definitions/mapsquares/struct.MapSquares.html) definitions.
+    </span><span class="kw">pub const </span>MAPSV2: u32 = <span class="number">5</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>MODELS: u32 = <span class="number">7</span>;
+    <span class="doccomment">/// Contains [`sprite`](../../sqlitecache/definitions/sprites/index.html) definitions.
+    </span><span class="kw">pub const </span>SPRITES: u32 = <span class="number">8</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub const </span>TEXTURES: u32 = <span class="number">9</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>BINARY: u32 = <span class="number">10</span>;
+    <span class="doccomment">/// Contains client side scripts in a bytecode-like format (cs2). Unimplemented.
+    </span><span class="kw">pub const </span>SCRIPTS: u32 = <span class="number">12</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>FONTMETRICS: u32 = <span class="number">13</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>VORBIS: u32 = <span class="number">14</span>;
+    <span class="doccomment">/// Contains the [`LocationConfig`](../../sqlitecache/definitions/location_configs/struct.LocationConfig.html) definitions.
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2008_3_shim&quot;</span>))]
+    </span><span class="kw">pub const </span>LOC_CONFIG: u32 = <span class="number">16</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>ENUM_CONFIG: u32 = <span class="number">17</span>;
+    <span class="doccomment">/// Contains the [`NpcConfig`](../../sqlitecache/definitions/npc_configs/struct.NpcConfig.html) definitions.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+    </span><span class="kw">pub const </span>NPC_CONFIG: u32 = <span class="number">18</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>OBJ_CONFIG: u32 = <span class="number">19</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>SEQ_CONFIG: u32 = <span class="number">20</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>SPOT_CONFIG: u32 = <span class="number">21</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>STRUCT_CONFIG: u32 = <span class="number">22</span>;
+    <span class="doccomment">/// Contains [`MapZone`](../../sqlitecache/definitions/worldmaps/struct.MapZone.html),
+    /// [`MapPastes`](../../sqlitecache/definitions/worldmaps/struct.MapPastes.html) definitions,
+    /// as well as PNG images of the world map.
+    </span><span class="kw">pub const </span>WORLDMAP: u32 = <span class="number">23</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>QUICKCHAT: u32 = <span class="number">24</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>GLOBAL_QUICKCHAT: u32 = <span class="number">25</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>MATERIALS: u32 = <span class="number">26</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>PARTICLES: u32 = <span class="number">27</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>DEFAULTS: u32 = <span class="number">28</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>BILLBOARDS: u32 = <span class="number">29</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>DLLS: u32 = <span class="number">30</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>SHADERS: u32 = <span class="number">31</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>LOADINGSPRITES: u32 = <span class="number">32</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>LOADINGSCREEN: u32 = <span class="number">33</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>LOADINGSPRITESRAW: u32 = <span class="number">34</span>;
+    <span class="doccomment">/// Discontinued.
+    </span><span class="kw">const </span>CUTSCENES: u32 = <span class="number">35</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>AUDIOSTREAMS: u32 = <span class="number">40</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>WORLDMAPAREAS: u32 = <span class="number">41</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>WORLDMAPLABELS: u32 = <span class="number">42</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>MODELSRT7: u32 = <span class="number">47</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>ANIMSRT7: u32 = <span class="number">48</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>DBTABLEINDEX: u32 = <span class="number">49</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+    </span><span class="kw">pub const </span>TEXTURES: u32 = <span class="number">52</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>TEXTURES_PNG: u32 = <span class="number">53</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>TEXTURES_PNG_MIPPED: u32 = <span class="number">54</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>TEXTURES_ETC: u32 = <span class="number">55</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>ANIMS_KEYFRAMES: u32 = <span class="number">56</span>;
 
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ACHIEVEMENT_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">57</span>;
+    <span class="kw">pub const </span>ACHIEVEMENT_CONFIG: u32 = <span class="number">57</span>;
 }
 
-<span class="kw">impl</span> <span class="ident">IndexType</span> {
-    <span class="doccomment">/// Iterate over all indextypes.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iterator</span>() -&gt; <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
+<span class="kw">impl </span>IndexType {
+    <span class="doccomment">/// Iterate over all indextypes.
+    </span><span class="kw">pub fn </span>iterator() -&gt; std::vec::IntoIter&lt;u32&gt; {
         <span class="macro">vec!</span>[
             <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">16</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, <span class="number">20</span>, <span class="number">21</span>, <span class="number">22</span>, <span class="number">23</span>, <span class="number">24</span>, <span class="number">25</span>, <span class="number">26</span>, <span class="number">27</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">40</span>, <span class="number">41</span>, <span class="number">42</span>, <span class="number">47</span>, <span class="number">48</span>, <span class="number">49</span>, <span class="number">52</span>, <span class="number">54</span>, <span class="number">55</span>, <span class="number">56</span>, <span class="number">57</span>,
         ]
-        .<span class="ident">into_iter</span>()
+        .into_iter()
     }
 }
 
-<span class="doccomment">/// Enumeration of all archives in the Config (2) index.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigType</span>;
+<span class="doccomment">/// Enumeration of all archives in the Config (2) index.
+</span><span class="kw">pub struct </span>ConfigType;
 
-<span class="kw">impl</span> <span class="ident">ConfigType</span> {
-    <span class="doccomment">/// Contains [`Underlay`](../../sqlitecache/definitions/underlays/struct.Underlay.html) definitions.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNDERLAYS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">HUNT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">IDENTITY_KIT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="doccomment">/// Contains [`Overlay`](../../sqlitecache/definitions/overlays/struct.Overlay.html) definitions.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">OVERLAYS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">4</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INVENTORY</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">5</span>;
+<span class="kw">impl </span>ConfigType {
+    <span class="doccomment">/// Contains [`Underlay`](../../sqlitecache/definitions/underlays/struct.Underlay.html) definitions.
+    </span><span class="kw">pub const </span>UNDERLAYS: u32 = <span class="number">1</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>HUNT: u32 = <span class="number">2</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>IDENTITY_KIT: u32 = <span class="number">3</span>;
+    <span class="doccomment">/// Contains [`Overlay`](../../sqlitecache/definitions/overlays/struct.Overlay.html) definitions.
+    </span><span class="kw">pub const </span>OVERLAYS: u32 = <span class="number">4</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>INVENTORY: u32 = <span class="number">5</span>;
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">6</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_7</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">7</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NPC_CONFIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">9</span>;
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub const </span>LOC_CONFIG: u32 = <span class="number">6</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_7: u32 = <span class="number">7</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub const </span>NPC_CONFIG: u32 = <span class="number">9</span>;
 
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TOOLTIPS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">11</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">AREA</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">18</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SKYBOX</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">29</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LIGHT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">31</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BASE_ANIMATION_SET</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">32</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CURSORS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">33</span>;
-    <span class="doccomment">/// Contains [`MapScene`](../../sqlitecache/definitions/mapscenes/struct.MapScene.html).</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPSCENES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">34</span>;
+    <span class="kw">pub const </span>TOOLTIPS: u32 = <span class="number">11</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>AREA: u32 = <span class="number">18</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>SKYBOX: u32 = <span class="number">29</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>LIGHT: u32 = <span class="number">31</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>BASE_ANIMATION_SET: u32 = <span class="number">32</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>CURSORS: u32 = <span class="number">33</span>;
+    <span class="doccomment">/// Contains [`MapScene`](../../sqlitecache/definitions/mapscenes/struct.MapScene.html).
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2008_3_shim&quot;</span>))]
+    </span><span class="kw">pub const </span>MAPSCENES: u32 = <span class="number">34</span>;
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>)))]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPLABELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">35</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">QUESTS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">35</span>;
-    <span class="doccomment">/// Contains [`MapLabelConfig`](../../sqlitecache/definitions/maplabel_configs/struct.MapLabelConfig.html).</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2008_3_shim&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAPLABELS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">36</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DBTABLE</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">40</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DBROWS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">41</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_42</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">42</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">HITSPLATS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">46</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_48</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">48</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_49</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">49</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PLAYER</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">60</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NPC</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">61</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CLIENT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">62</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WORLD</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">63</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">REGION</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">64</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">OBJECT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">65</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CLAN</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">66</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CLAN_SETTING</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">67</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CAMPAIGN</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">68</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VARBITS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">69</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_70</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">70</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">HEADBAR</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">72</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_73</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">73</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_75</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">75</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_76</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">76</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_77</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">77</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SEQGROUP</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">80</span>;
-    <span class="doccomment">/// Unimplemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_83</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">83</span>;
+    <span class="attribute">#[cfg(all(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>), not(feature = <span class="string">&quot;2008_3_shim&quot;</span>)))]
+    </span><span class="kw">pub const </span>MAPLABELS: u32 = <span class="number">35</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+    </span><span class="kw">pub const </span>QUESTS: u32 = <span class="number">35</span>;
+    <span class="doccomment">/// Contains [`MapLabelConfig`](../../sqlitecache/definitions/maplabel_configs/struct.MapLabelConfig.html).
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2008_3_shim&quot;</span>))]
+    </span><span class="kw">pub const </span>MAPLABELS: u32 = <span class="number">36</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>DBTABLE: u32 = <span class="number">40</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>DBROWS: u32 = <span class="number">41</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_42: u32 = <span class="number">42</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>HITSPLATS: u32 = <span class="number">46</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_48: u32 = <span class="number">48</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_49: u32 = <span class="number">49</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>PLAYER: u32 = <span class="number">60</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>NPC: u32 = <span class="number">61</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>CLIENT: u32 = <span class="number">62</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>WORLD: u32 = <span class="number">63</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>REGION: u32 = <span class="number">64</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>OBJECT: u32 = <span class="number">65</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>CLAN: u32 = <span class="number">66</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>CLAN_SETTING: u32 = <span class="number">67</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>CAMPAIGN: u32 = <span class="number">68</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>VARBITS: u32 = <span class="number">69</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_70: u32 = <span class="number">70</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>HEADBAR: u32 = <span class="number">72</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_73: u32 = <span class="number">73</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_75: u32 = <span class="number">75</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_76: u32 = <span class="number">76</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_77: u32 = <span class="number">77</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>SEQGROUP: u32 = <span class="number">80</span>;
+    <span class="doccomment">/// Unimplemented.
+    </span><span class="kw">pub const </span>UNKNOWN_83: u32 = <span class="number">83</span>;
 }
 
-<span class="doccomment">/// Enumeration of the files in the [MAPSV2](IndexType::MAPSV2) archives.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapFileType</span>;
+<span class="doccomment">/// Enumeration of the files in the [MAPSV2](IndexType::MAPSV2) archives.
+</span><span class="kw">pub struct </span>MapFileType;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-<span class="kw">impl</span> <span class="ident">MapFileType</span> {
-    <span class="doccomment">/// Deserializes to the sequence of [`Location`]s in `self`.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOCATIONS</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;l&quot;</span>;
-    <span class="doccomment">/// Deserializes to the [`TileArray`] of `self`.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TILES</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;m&quot;</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ENVIRONMENT</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;e&quot;</span>;
+<span class="attribute">#[allow(missing_docs)]
+#[cfg(any(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)), feature = <span class="string">&quot;legacy&quot;</span>))]
+</span><span class="kw">impl </span>MapFileType {
+    <span class="doccomment">/// Deserializes to the sequence of [`Location`]s in `self`.
+    </span><span class="kw">pub const </span>LOCATIONS: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;l&quot;</span>;
+    <span class="doccomment">/// Deserializes to the [`TileArray`] of `self`.
+    </span><span class="kw">pub const </span>TILES: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;m&quot;</span>;
+    <span class="kw">pub const </span>ENVIRONMENT: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;e&quot;</span>;
 }
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-<span class="kw">impl</span> <span class="ident">MapFileType</span> {
-    <span class="doccomment">/// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LOCATIONS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="doccomment">/// Deserializes to a sequence of underwater  [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`. Not implemented.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WATER_LOCATIONS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="doccomment">/// Deserializes to a sequence of all npcs in `self`.</span>
-    <span class="doccomment">/// Only mapsquares which used to have a &quot;zoom around&quot; login screen,</span>
-    <span class="doccomment">/// or are derived from one that had, have this file.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NPCS</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="doccomment">/// Deserializes to the [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TILES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="doccomment">/// Deserializes to the underwater [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WATER_TILES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">4</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_5</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">5</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_6</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">6</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_7</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">7</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_8</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">8</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_9</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">9</span>;
+<span class="attribute">#[allow(missing_docs)]
+#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+</span><span class="kw">impl </span>MapFileType {
+    <span class="doccomment">/// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.
+    </span><span class="kw">pub const </span>LOCATIONS: u32 = <span class="number">0</span>;
+    <span class="doccomment">/// Deserializes to a sequence of underwater  [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`. Not implemented.
+    </span><span class="kw">pub const </span>WATER_LOCATIONS: u32 = <span class="number">1</span>;
+    <span class="doccomment">/// Deserializes to a sequence of all npcs in `self`.
+    /// Only mapsquares which used to have a &quot;zoom around&quot; login screen,
+    /// or are derived from one that had, have this file.
+    </span><span class="kw">pub const </span>NPCS: u32 = <span class="number">2</span>;
+    <span class="doccomment">/// Deserializes to the [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.
+    </span><span class="kw">pub const </span>TILES: u32 = <span class="number">3</span>;
+    <span class="doccomment">/// Deserializes to the underwater [`Tiles`](../../rs3cache/definitions/tiles/struct.Tile.html) of `self`.
+    </span><span class="kw">pub const </span>WATER_TILES: u32 = <span class="number">4</span>;
+    <span class="kw">pub const </span>UNKNOWN_5: u32 = <span class="number">5</span>;
+    <span class="kw">pub const </span>UNKNOWN_6: u32 = <span class="number">6</span>;
+    <span class="kw">pub const </span>UNKNOWN_7: u32 = <span class="number">7</span>;
+    <span class="kw">pub const </span>UNKNOWN_8: u32 = <span class="number">8</span>;
+    <span class="kw">pub const </span>UNKNOWN_9: u32 = <span class="number">9</span>;
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

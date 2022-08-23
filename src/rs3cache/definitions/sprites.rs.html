@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/sprites.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sprites.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/sprites.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sprites.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -383,386 +378,385 @@
 <span id="378">378</span>
 <span id="379">379</span>
 <span id="380">380</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::BTreeMap</span>,
-    <span class="ident">io</span>::{<span class="ident">Cursor</span>, <span class="ident">Seek</span>, <span class="ident">SeekFrom</span>},
-    <span class="ident">iter</span>,
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    collections::BTreeMap,
+    io::{Cursor, Seek, SeekFrom},
+    iter,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">image</span>::{<span class="ident">imageops</span>, <span class="ident">ImageBuffer</span>, <span class="ident">Rgba</span>, <span class="ident">RgbaImage</span>};
-<span class="kw">use</span> <span class="ident">itertools::izip</span>;
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="kw">use</span> <span class="ident">rayon::iter</span>::{<span class="ident">ParallelBridge</span>, <span class="ident">ParallelIterator</span>};
-<span class="kw">use</span> <span class="ident">rs3cache_backend::buf::BufExtra</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>image::{imageops, ImageBuffer, Rgba, RgbaImage};
+<span class="kw">use </span>itertools::izip;
+<span class="kw">use </span>path_macro::path;
+<span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
+<span class="kw">use </span>rs3cache_backend::buf::BufExtra;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
+<span class="kw">use crate</span>::{
+    cache::{error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
 };
 
-<span class="doccomment">/// Type alias for a rgba image.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Sprite</span> <span class="op">=</span> <span class="ident">ImageBuffer</span><span class="op">&lt;</span><span class="ident">Rgba</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Type alias for a rgba image.
+</span><span class="kw">pub type </span>Sprite = ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;;
 
-<span class="doccomment">/// Saves an image of every sprite to disk.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">save_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">std::fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
+<span class="doccomment">/// Saves an image of every sprite to disk.
+</span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
+</span><span class="kw">pub fn </span>save_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    std::fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::SPRITES</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>index = CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">let</span> <span class="ident">versions</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">::filetime::FileTime</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">index</span>
-        .<span class="ident">metadatas</span>()
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">meta</span>)<span class="op">|</span> (<span class="ident">meta</span>.<span class="ident">archive_id</span>(), <span class="ident">::filetime::FileTime::from_unix_time</span>(<span class="ident">meta</span>.<span class="ident">version</span>() <span class="kw">as</span> <span class="ident">i64</span>, <span class="number">0</span>)))
-        .<span class="ident">collect</span>();
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+    </span><span class="kw">let </span>versions: BTreeMap&lt;u32, ::filetime::FileTime&gt; = index
+        .metadatas()
+        .iter()
+        .map(|(<span class="kw">_</span>, meta)| (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() <span class="kw">as </span>i64, <span class="number">0</span>)))
+        .collect();
 
-    <span class="ident">index</span>.<span class="ident">into_iter</span>().<span class="ident">par_bridge</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="ident">archive</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">unwrap</span>();
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">archive</span>.<span class="ident">file_count</span>(), <span class="number">1</span>);
+    index.into_iter().par_bridge().for_each(|archive| {
+        <span class="kw">let </span>archive = archive.unwrap();
+        <span class="macro">debug_assert_eq!</span>(archive.file_count(), <span class="number">1</span>);
 
-        <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">archive</span>
-            .<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)
-            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="macro">panic!</span>(<span class="string">&quot;Unable to get file for sprite {}: {} &quot;</span>, <span class="ident">archive</span>.<span class="ident">archive_id</span>(), <span class="ident">error</span>));
-        <span class="kw">let</span> <span class="ident">images</span> <span class="op">=</span> <span class="ident">deserialize</span>(<span class="ident">file</span>).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="macro">panic!</span>(<span class="string">&quot;Error decoding sprite {}: {}&quot;</span>, <span class="ident">archive</span>.<span class="ident">archive_id</span>(), <span class="ident">error</span>));
-        <span class="ident">images</span>.<span class="ident">into_iter</span>().<span class="ident">for_each</span>(<span class="op">|</span>(<span class="ident">frame</span>, <span class="ident">img</span>)<span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;sprites&quot;</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{id}-{frame}.png&quot;</span>));
-            <span class="ident">img</span>.<span class="ident">save</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>)
-                .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="macro">panic!</span>(<span class="string">&quot;Unable to save sprite {}-{} to {}&quot;</span>, <span class="ident">id</span>, <span class="ident">frame</span>, <span class="ident">filename</span>.<span class="ident">to_string_lossy</span>()));
+        <span class="kw">let </span>file = archive
+            .file(<span class="kw-2">&amp;</span><span class="number">0</span>)
+            .unwrap_or_else(|error| <span class="macro">panic!</span>(<span class="string">&quot;Unable to get file for sprite {}: {} &quot;</span>, archive.archive_id(), error));
+        <span class="kw">let </span>images = deserialize(file).unwrap_or_else(|error| <span class="macro">panic!</span>(<span class="string">&quot;Error decoding sprite {}: {}&quot;</span>, archive.archive_id(), error));
+        images.into_iter().for_each(|(frame, img)| {
+            <span class="kw">let </span>id = archive.archive_id();
+            <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;{id}-{frame}.png&quot;</span>));
+            img.save(<span class="kw-2">&amp;</span>filename)
+                .unwrap_or_else(|<span class="kw">_</span>| <span class="macro">panic!</span>(<span class="string">&quot;Unable to save sprite {}-{} to {}&quot;</span>, id, frame, filename.to_string_lossy()));
 
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-            {
-                <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">::std::fs::OpenOptions::new</span>().<span class="ident">write</span>(<span class="bool-val">true</span>).<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>).<span class="ident">unwrap</span>();
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+            </span>{
+                <span class="kw">let </span>file = ::std::fs::OpenOptions::new().write(<span class="bool-val">true</span>).open(<span class="kw-2">&amp;</span>filename).unwrap();
 
-                <span class="kw">let</span> <span class="ident">date</span> <span class="op">=</span> <span class="ident">versions</span>[<span class="kw-2">&amp;</span><span class="ident">id</span>];
+                <span class="kw">let </span>date = versions[<span class="kw-2">&amp;</span>id];
 
-                <span class="ident">::filetime::set_file_handle_times</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>, <span class="prelude-val">Some</span>(<span class="ident">date</span>), <span class="prelude-val">Some</span>(<span class="ident">date</span>)).<span class="ident">unwrap</span>();
+                ::filetime::set_file_handle_times(<span class="kw-2">&amp;</span>file, <span class="prelude-val">Some</span>(date), <span class="prelude-val">Some</span>(date)).unwrap();
             }
         })
     });
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">IndexEntry</span> {
-    <span class="ident">max_width</span>: <span class="ident">u16</span>,
-    <span class="ident">max_height</span>: <span class="ident">u16</span>,
-    <span class="ident">colour_count</span>: <span class="ident">u8</span>,
-    <span class="ident">palette</span>: <span class="ident">Vec</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">struct </span>IndexEntry {
+    max_width: u16,
+    max_height: u16,
+    colour_count: u8,
+    palette: Vec&lt;[u8; <span class="number">3</span>]&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">IndexEntry</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">max_width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-        <span class="kw">let</span> <span class="ident">max_height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-        <span class="kw">let</span> <span class="ident">colour_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">checked_sub</span>(<span class="number">1</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">palette</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_rgb</span>()).<span class="ident">take</span>(<span class="ident">colour_count</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">collect</span>();
-        <span class="self">Self</span> {
-            <span class="ident">max_width</span>,
-            <span class="ident">max_height</span>,
-            <span class="ident">colour_count</span>,
-            <span class="ident">palette</span>,
+<span class="kw">impl </span>IndexEntry {
+    <span class="kw">fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>max_width = buffer.get_u16();
+        <span class="kw">let </span>max_height = buffer.get_u16();
+        <span class="kw">let </span>colour_count = buffer.get_u8().checked_sub(<span class="number">1</span>).unwrap();
+        <span class="kw">let </span>palette = iter::repeat_with(|| buffer.get_rgb()).take(colour_count <span class="kw">as </span>usize).collect();
+        <span class="self">Self </span>{
+            max_width,
+            max_height,
+            colour_count,
+            palette,
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Entry</span> {
-    <span class="ident">offset_x</span>: <span class="ident">u8</span>,
-    <span class="ident">offset_y</span>: <span class="ident">u8</span>,
-    <span class="ident">width</span>: <span class="ident">u16</span>,
-    <span class="ident">height</span>: <span class="ident">u16</span>,
-    <span class="ident">transposed</span>: <span class="ident">u8</span>,
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">struct </span>Entry {
+    offset_x: u8,
+    offset_y: u8,
+    width: u16,
+    height: u16,
+    transposed: u8,
 }
 
-<span class="kw">impl</span> <span class="ident">Entry</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">offset_x</span>: <span class="ident">buffer</span>.<span class="ident">get_u8</span>(),
-            <span class="ident">offset_y</span>: <span class="ident">buffer</span>.<span class="ident">get_u8</span>(),
-            <span class="ident">width</span>: <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-            <span class="ident">height</span>: <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-            <span class="ident">transposed</span>: <span class="ident">buffer</span>.<span class="ident">get_u8</span>(),
+<span class="kw">impl </span>Entry {
+    <span class="kw">fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            offset_x: buffer.get_u8(),
+            offset_y: buffer.get_u8(),
+            width: buffer.get_u16(),
+            height: buffer.get_u16(),
+            transposed: buffer.get_u8(),
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-<span class="kw">fn</span> <span class="ident">make_image</span>(<span class="ident">index_entry</span>: <span class="kw-2">&amp;</span><span class="ident">IndexEntry</span>, <span class="ident">entry</span>: <span class="kw-2">&amp;</span><span class="ident">Entry</span>, <span class="ident">data</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">Sprite</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">image</span> <span class="op">=</span> <span class="ident">RgbaImage::new</span>(<span class="ident">entry</span>.<span class="ident">width</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">entry</span>.<span class="ident">height</span> <span class="kw">as</span> <span class="ident">u32</span>);
-    <span class="ident">image</span>.<span class="ident">pixels_mut</span>().<span class="ident">zip</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data</span>).<span class="ident">for_each</span>(<span class="op">|</span>(<span class="ident">pixel</span>, <span class="kw-2">&amp;</span><span class="ident">idx</span>)<span class="op">|</span> {
-        <span class="kw">let</span> ([<span class="ident">red</span>, <span class="ident">green</span>, <span class="ident">blue</span>], <span class="ident">alpha</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">idx</span> <span class="op">==</span> <span class="number">0</span> {
+<span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+</span><span class="kw">fn </span>make_image(index_entry: <span class="kw-2">&amp;</span>IndexEntry, entry: <span class="kw-2">&amp;</span>Entry, data: Bytes) -&gt; Sprite {
+    <span class="kw">let </span><span class="kw-2">mut </span>image = RgbaImage::new(entry.width <span class="kw">as </span>u32, entry.height <span class="kw">as </span>u32);
+    image.pixels_mut().zip(<span class="kw-2">&amp;*</span>data).for_each(|(pixel, <span class="kw-2">&amp;</span>idx)| {
+        <span class="kw">let </span>([red, green, blue], alpha) = <span class="kw">if </span>idx == <span class="number">0 </span>{
             ([<span class="number">255</span>, <span class="number">0</span>, <span class="number">255</span>], <span class="number">0</span>)
-        } <span class="kw">else</span> {
-            (<span class="ident">index_entry</span>.<span class="ident">palette</span>[<span class="ident">idx</span>.<span class="ident">checked_sub</span>(<span class="number">1</span>).<span class="ident">unwrap</span>() <span class="kw">as</span> <span class="ident">usize</span>], <span class="number">255</span>)
+        } <span class="kw">else </span>{
+            (index_entry.palette[idx.checked_sub(<span class="number">1</span>).unwrap() <span class="kw">as </span>usize], <span class="number">255</span>)
         };
 
-        <span class="ident">pixel</span>[<span class="number">0</span>] <span class="op">=</span> <span class="ident">red</span>;
-        <span class="ident">pixel</span>[<span class="number">1</span>] <span class="op">=</span> <span class="ident">green</span>;
-        <span class="ident">pixel</span>[<span class="number">2</span>] <span class="op">=</span> <span class="ident">blue</span>;
-        <span class="ident">pixel</span>[<span class="number">3</span>] <span class="op">=</span> <span class="ident">alpha</span>;
+        pixel[<span class="number">0</span>] = red;
+        pixel[<span class="number">1</span>] = green;
+        pixel[<span class="number">2</span>] = blue;
+        pixel[<span class="number">3</span>] = alpha;
     });
-    <span class="kw">if</span> <span class="ident">entry</span>.<span class="ident">transposed</span> <span class="op">==</span> <span class="number">1</span> {
-        <span class="ident">image</span> <span class="op">=</span> <span class="ident">imageops::rotate90</span>(<span class="kw-2">&amp;</span><span class="ident">imageops::flip_vertical</span>(<span class="kw-2">&amp;</span><span class="ident">image</span>));
+    <span class="kw">if </span>entry.transposed == <span class="number">1 </span>{
+        image = imageops::rotate90(<span class="kw-2">&amp;</span>imageops::flip_vertical(<span class="kw-2">&amp;</span>image));
     }
-    <span class="ident">image</span>
+    image
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">save_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">use</span> <span class="ident">rs3cache_backend::hash::hash_archive</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+</span><span class="kw">pub fn </span>save_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    <span class="kw">use </span>rs3cache_backend::hash::hash_archive;
 
-    <span class="ident">std::fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
+    std::fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">index</span>.<span class="ident">archive</span>(<span class="number">4</span>)<span class="question-mark">?</span>.<span class="ident">take_files_named</span>();
+    <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>files = index.archive(<span class="number">4</span>)<span class="question-mark">?</span>.take_files_named();
 
-    <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="ident">files</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">hash_archive</span>(<span class="string">&quot;index.dat&quot;</span>)).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">files</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">hash_archive</span>(<span class="string">&quot;mapscene.dat&quot;</span>)).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">get_u16</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry_data</span> <span class="op">=</span> <span class="ident">meta</span>.<span class="ident">slice</span>((<span class="ident">offset</span> <span class="kw">as</span> <span class="ident">usize</span>)..);
-    <span class="kw">let</span> <span class="ident">index_entry</span> <span class="op">=</span> <span class="ident">IndexEntry::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">entry_data</span>);
+    <span class="kw">let </span>meta = files.remove(<span class="kw-2">&amp;</span>hash_archive(<span class="string">&quot;index.dat&quot;</span>)).unwrap();
+    <span class="kw">let </span><span class="kw-2">mut </span>data = files.remove(<span class="kw-2">&amp;</span>hash_archive(<span class="string">&quot;mapscene.dat&quot;</span>)).unwrap();
+    <span class="kw">let </span>offset = data.get_u16();
+    <span class="kw">let </span><span class="kw-2">mut </span>entry_data = meta.slice((offset <span class="kw">as </span>usize)..);
+    <span class="kw">let </span>index_entry = IndexEntry::deserialize(<span class="kw-2">&amp;mut </span>entry_data);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">id</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">while</span> <span class="ident">data</span>.<span class="ident">has_remaining</span>() {
-        <span class="kw">let</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">Entry::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">entry_data</span>);
-        <span class="kw">let</span> <span class="ident">this_data</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">split_to</span>((<span class="ident">entry</span>.<span class="ident">width</span> <span class="op">*</span> <span class="ident">entry</span>.<span class="ident">height</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-        <span class="kw">let</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">make_image</span>(<span class="kw-2">&amp;</span><span class="ident">index_entry</span>, <span class="kw-2">&amp;</span><span class="ident">entry</span>, <span class="ident">this_data</span>);
-        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;sprites&quot;</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;mapscene-{id}.png&quot;</span>));
-        <span class="ident">img</span>.<span class="ident">save</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>id = <span class="number">0</span>;
+    <span class="kw">while </span>data.has_remaining() {
+        <span class="kw">let </span>entry = Entry::deserialize(<span class="kw-2">&amp;mut </span>entry_data);
+        <span class="kw">let </span>this_data = data.split_to((entry.width * entry.height) <span class="kw">as </span>usize);
+        <span class="kw">let </span>img = make_image(<span class="kw-2">&amp;</span>index_entry, <span class="kw-2">&amp;</span>entry, this_data);
+        <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;mapscene-{id}.png&quot;</span>));
+        img.save(<span class="kw-2">&amp;</span>filename).unwrap();
 
-        <span class="ident">id</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        id += <span class="number">1</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_mapscenes</span>(<span class="ident">scale</span>: <span class="ident">u32</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">u32</span>), <span class="ident">Sprite</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">use</span> <span class="ident">rs3cache_backend::hash::hash_archive</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+</span><span class="kw">pub fn </span>get_mapscenes(scale: u32, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;(u32, u32), Sprite&gt;&gt; {
+    <span class="kw">use </span>rs3cache_backend::hash::hash_archive;
 
-    <span class="ident">std::fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
+    std::fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">index</span>.<span class="ident">archive</span>(<span class="number">4</span>)<span class="question-mark">?</span>.<span class="ident">take_files_named</span>();
+    <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>files = index.archive(<span class="number">4</span>)<span class="question-mark">?</span>.take_files_named();
 
-    <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="ident">files</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">hash_archive</span>(<span class="string">&quot;index.dat&quot;</span>)).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">files</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">hash_archive</span>(<span class="string">&quot;mapscene.dat&quot;</span>)).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">get_u16</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry_data</span> <span class="op">=</span> <span class="ident">meta</span>.<span class="ident">slice</span>((<span class="ident">offset</span> <span class="kw">as</span> <span class="ident">usize</span>)..);
-    <span class="kw">let</span> <span class="ident">index_entry</span> <span class="op">=</span> <span class="ident">IndexEntry::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">entry_data</span>);
+    <span class="kw">let </span>meta = files.remove(<span class="kw-2">&amp;</span>hash_archive(<span class="string">&quot;index.dat&quot;</span>)).unwrap();
+    <span class="kw">let </span><span class="kw-2">mut </span>data = files.remove(<span class="kw-2">&amp;</span>hash_archive(<span class="string">&quot;mapscene.dat&quot;</span>)).unwrap();
+    <span class="kw">let </span>offset = data.get_u16();
+    <span class="kw">let </span><span class="kw-2">mut </span>entry_data = meta.slice((offset <span class="kw">as </span>usize)..);
+    <span class="kw">let </span>index_entry = IndexEntry::deserialize(<span class="kw-2">&amp;mut </span>entry_data);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">BTreeMap::new</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>out = BTreeMap::new();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">frame</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">while</span> <span class="ident">data</span>.<span class="ident">has_remaining</span>() {
-        <span class="kw">let</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">Entry::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">entry_data</span>);
-        <span class="kw">let</span> <span class="ident">this_data</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">split_to</span>((<span class="ident">entry</span>.<span class="ident">width</span> <span class="op">*</span> <span class="ident">entry</span>.<span class="ident">height</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-        <span class="kw">let</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">make_image</span>(<span class="kw-2">&amp;</span><span class="ident">index_entry</span>, <span class="kw-2">&amp;</span><span class="ident">entry</span>, <span class="ident">this_data</span>);
-        <span class="kw">let</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">imageops::resize</span>(<span class="kw-2">&amp;</span><span class="ident">img</span>, <span class="ident">img</span>.<span class="ident">width</span>() <span class="op">*</span> <span class="ident">scale</span>, <span class="ident">img</span>.<span class="ident">height</span>() <span class="op">*</span> <span class="ident">scale</span>, <span class="ident">imageops::Nearest</span>);
-        <span class="ident">out</span>.<span class="ident">insert</span>((<span class="number">317</span>, <span class="ident">frame</span>), <span class="ident">img</span>);
-        <span class="ident">frame</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>frame = <span class="number">0</span>;
+    <span class="kw">while </span>data.has_remaining() {
+        <span class="kw">let </span>entry = Entry::deserialize(<span class="kw-2">&amp;mut </span>entry_data);
+        <span class="kw">let </span>this_data = data.split_to((entry.width * entry.height) <span class="kw">as </span>usize);
+        <span class="kw">let </span>img = make_image(<span class="kw-2">&amp;</span>index_entry, <span class="kw-2">&amp;</span>entry, this_data);
+        <span class="kw">let </span>img = imageops::resize(<span class="kw-2">&amp;</span>img, img.width() * scale, img.height() * scale, imageops::Nearest);
+        out.insert((<span class="number">317</span>, frame), img);
+        frame += <span class="number">1</span>;
     }
-    <span class="prelude-val">Ok</span>(<span class="ident">out</span>)
+    <span class="prelude-val">Ok</span>(out)
 }
 
-<span class="doccomment">/// Returns a [`BTreeMap`] holding all sprites in `ids`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Sprites are scaled according to `scale`, which may not be `0`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Errors</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Raises [`CacheError`](rs3cache_backend::error::CacheError) if any of `ids` does not correspond to a sprite.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Panics</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// **Panics** if `scale == 0`.</span>
+<span class="doccomment">/// Returns a [`BTreeMap`] holding all sprites in `ids`.
+///
+/// Sprites are scaled according to `scale`, which may not be `0`.
+///
+/// # Errors
+///
+/// Raises [`CacheError`](rs3cache_backend::error::CacheError) if any of `ids` does not correspond to a sprite.
+///
+/// # Panics
+///
+/// **Panics** if `scale == 0`.
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dumps</span>(<span class="ident">scale</span>: <span class="ident">u32</span>, <span class="ident">ids</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">u32</span>), <span class="ident">Sprite</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="macro">assert_ne!</span>(<span class="ident">scale</span>, <span class="number">0</span>);
+</span><span class="kw">pub fn </span>dumps(scale: u32, ids: Vec&lt;u32&gt;, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;(u32, u32), Sprite&gt;&gt; {
+    <span class="macro">assert_ne!</span>(scale, <span class="number">0</span>);
 
-    <span class="kw">let</span> <span class="ident">resizer</span> <span class="op">=</span> <span class="op">|</span>(<span class="ident">id</span>, <span class="ident">frames</span>): (<span class="ident">u32</span>, <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Sprite</span><span class="op">&gt;</span>)<span class="op">|</span> {
-        <span class="ident">frames</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">frame</span>, <span class="ident">img</span>)<span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">resized_img</span> <span class="op">=</span> <span class="ident">imageops::resize</span>(<span class="kw-2">&amp;</span><span class="ident">img</span>, <span class="ident">img</span>.<span class="ident">width</span>() <span class="op">*</span> <span class="ident">scale</span>, <span class="ident">img</span>.<span class="ident">height</span>() <span class="op">*</span> <span class="ident">scale</span>, <span class="ident">imageops::Nearest</span>);
-            ((<span class="ident">id</span>, <span class="ident">frame</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="ident">resized_img</span>)
+    <span class="kw">let </span>resizer = |(id, frames): (u32, BTreeMap&lt;usize, Sprite&gt;)| {
+        frames.into_iter().map(<span class="kw">move </span>|(frame, img)| {
+            <span class="kw">let </span>resized_img = imageops::resize(<span class="kw-2">&amp;</span>img, img.width() * scale, img.height() * scale, imageops::Nearest);
+            ((id, frame <span class="kw">as </span>u32), resized_img)
         })
     };
 
-    <span class="kw">let</span> <span class="ident">sprites</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::SPRITES</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-        .<span class="ident">retain</span>(<span class="ident">ids</span>)
-        .<span class="ident">into_iter</span>()
-        .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">and_then</span>(<span class="ident">deserialize</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">frames</span><span class="op">|</span> (<span class="ident">archive</span>.<span class="ident">archive_id</span>(), <span class="ident">frames</span>)))
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="kw">_</span>)<span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>
-        .<span class="ident">into_iter</span>()
-        .<span class="ident">flat_map</span>(<span class="ident">resizer</span>)
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">u32</span>), <span class="ident">Sprite</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="prelude-val">Ok</span>(<span class="ident">sprites</span>)
+    <span class="kw">let </span>sprites = CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        </span>.retain(ids)
+        .into_iter()
+        .map(Result::unwrap)
+        .map(|archive| archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).and_then(deserialize).map(|frames| (archive.archive_id(), frames)))
+        .collect::&lt;CacheResult&lt;Vec&lt;(u32, <span class="kw">_</span>)&gt;&gt;&gt;()<span class="question-mark">?
+        </span>.into_iter()
+        .flat_map(resizer)
+        .collect::&lt;BTreeMap&lt;(u32, u32), Sprite&gt;&gt;();
+    <span class="prelude-val">Ok</span>(sprites)
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Sprite</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Cursor::new</span>(<span class="ident">buffer</span>);
+<span class="kw">pub fn </span>deserialize(buffer: Bytes) -&gt; CacheResult&lt;BTreeMap&lt;usize, Sprite&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>buffer = Cursor::new(buffer);
 
-    <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="op">-</span><span class="number">2</span>))<span class="question-mark">?</span>;
+    buffer.seek(SeekFrom::End(-<span class="number">2</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-    <span class="kw">let</span> <span class="ident">format</span> <span class="op">=</span> <span class="ident">data</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">15</span>;
-    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> (<span class="ident">data</span> <span class="op">&amp;</span> <span class="number">0x7FFF</span>) <span class="kw">as</span> <span class="ident">usize</span>;
+    <span class="kw">let </span>data = buffer.get_u16();
+    <span class="kw">let </span>format = data &gt;&gt; <span class="number">15</span>;
+    <span class="kw">let </span>count = (data &amp; <span class="number">0x7FFF</span>) <span class="kw">as </span>usize;
 
-    <span class="kw">let</span> <span class="ident">imgs</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">format</span> {
-        <span class="number">0</span> =&gt; {
-            <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="op">-</span><span class="number">7</span> <span class="op">-</span> (<span class="ident">count</span> <span class="kw">as</span> <span class="ident">i64</span>) <span class="op">*</span> <span class="number">8</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>imgs = <span class="kw">match </span>format {
+        <span class="number">0 </span>=&gt; {
+            buffer.seek(SeekFrom::End(-<span class="number">7 </span>- (count <span class="kw">as </span>i64) * <span class="number">8</span>))<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="ident">_big_width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">_big_height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">palette_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let </span>_big_width = buffer.get_u16();
+            <span class="kw">let </span>_big_height = buffer.get_u16();
+            <span class="kw">let </span>palette_count = buffer.get_u8() <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">_min_xs</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">_min_ys</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">widths</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">heights</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let </span>_min_xs = iter::repeat_with(|| buffer.get_u16()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="kw">let </span>_min_ys = iter::repeat_with(|| buffer.get_u16()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="kw">let </span>widths = iter::repeat_with(|| buffer.get_u16()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="kw">let </span>heights = iter::repeat_with(|| buffer.get_u16()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="op">-</span><span class="number">7</span> <span class="op">-</span> (<span class="ident">count</span> <span class="kw">as</span> <span class="ident">i64</span>) <span class="op">*</span> <span class="number">8</span> <span class="op">-</span> (<span class="ident">palette_count</span> <span class="kw">as</span> <span class="ident">i64</span>) <span class="op">*</span> <span class="number">3</span>;
+            <span class="kw">let </span>pos = -<span class="number">7 </span>- (count <span class="kw">as </span>i64) * <span class="number">8 </span>- (palette_count <span class="kw">as </span>i64) * <span class="number">3</span>;
 
-            <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="ident">pos</span>))<span class="question-mark">?</span>;
+            buffer.seek(SeekFrom::End(pos))<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="ident">palette</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_rgb</span>()).<span class="ident">take</span>(<span class="ident">palette_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let </span>palette = iter::repeat_with(|| buffer.get_rgb()).take(palette_count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::Start</span>(<span class="number">0</span>))<span class="question-mark">?</span>;
+            buffer.seek(SeekFrom::Start(<span class="number">0</span>))<span class="question-mark">?</span>;
 
-            <span class="macro">izip!</span>(<span class="number">0</span>..<span class="ident">count</span>, <span class="ident">widths</span>, <span class="ident">heights</span>)
-                .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">index</span>, <span class="ident">width</span>, <span class="ident">height</span>)<span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">pixel_count</span> <span class="op">=</span> <span class="ident">width</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="ident">height</span> <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="kw">let</span> [<span class="ident">transposed</span>, <span class="ident">alpha</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
-                    <span class="kw">if</span> <span class="ident">pixel_count</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                        <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">pixel_count</span>);
+            <span class="macro">izip!</span>(<span class="number">0</span>..count, widths, heights)
+                .filter_map(|(index, width, height)| {
+                    <span class="kw">let </span>pixel_count = width <span class="kw">as </span>usize * height <span class="kw">as </span>usize;
+                    <span class="kw">let </span>[transposed, alpha, ..] = buffer.get_bitflags();
+                    <span class="kw">if </span>pixel_count != <span class="number">0 </span>{
+                        <span class="kw">let </span>base = buffer.copy_to_bytes(pixel_count);
 
-                        <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">alpha</span> {
-                            <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">pixel_count</span>)
-                        } <span class="kw">else</span> {
-                            <span class="macro">vec!</span>[<span class="number">255_u8</span>; <span class="ident">pixel_count</span>].<span class="ident">into</span>()
+                        <span class="kw">let </span>mask = <span class="kw">if </span>alpha {
+                            buffer.copy_to_bytes(pixel_count)
+                        } <span class="kw">else </span>{
+                            <span class="macro">vec!</span>[<span class="number">255_u8</span>; pixel_count].into()
                         };
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">img</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">transposed</span> {
-                            <span class="ident">RgbaImage::new</span>(<span class="ident">width</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">height</span> <span class="kw">as</span> <span class="ident">u32</span>)
-                        } <span class="kw">else</span> {
-                            <span class="ident">RgbaImage::new</span>(<span class="ident">height</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">width</span> <span class="kw">as</span> <span class="ident">u32</span>)
+                        <span class="kw">let </span><span class="kw-2">mut </span>img = <span class="kw">if </span>!transposed {
+                            RgbaImage::new(width <span class="kw">as </span>u32, height <span class="kw">as </span>u32)
+                        } <span class="kw">else </span>{
+                            RgbaImage::new(height <span class="kw">as </span>u32, width <span class="kw">as </span>u32)
                         };
 
-                        <span class="ident">img</span>.<span class="ident">pixels_mut</span>().<span class="ident">zip</span>(<span class="ident">base</span>).<span class="ident">zip</span>(<span class="ident">mask</span>).<span class="ident">for_each</span>(<span class="op">|</span>((<span class="ident">pixel</span>, <span class="ident">idx</span>), <span class="ident">alpha_channel</span>)<span class="op">|</span> {
-                            <span class="kw">let</span> ([<span class="ident">red</span>, <span class="ident">green</span>, <span class="ident">blue</span>], <span class="ident">alpha</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">idx</span> <span class="op">==</span> <span class="number">0</span> {
+                        img.pixels_mut().zip(base).zip(mask).for_each(|((pixel, idx), alpha_channel)| {
+                            <span class="kw">let </span>([red, green, blue], alpha) = <span class="kw">if </span>idx == <span class="number">0 </span>{
                                 ([<span class="number">255</span>, <span class="number">0</span>, <span class="number">255</span>], <span class="number">0</span>)
-                            } <span class="kw">else</span> {
-                                (<span class="ident">palette</span>[<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">1</span>], <span class="ident">alpha_channel</span>)
+                            } <span class="kw">else </span>{
+                                (palette[idx <span class="kw">as </span>usize - <span class="number">1</span>], alpha_channel)
                             };
 
-                            <span class="ident">pixel</span>[<span class="number">0</span>] <span class="op">=</span> <span class="ident">red</span>;
-                            <span class="ident">pixel</span>[<span class="number">1</span>] <span class="op">=</span> <span class="ident">green</span>;
-                            <span class="ident">pixel</span>[<span class="number">2</span>] <span class="op">=</span> <span class="ident">blue</span>;
-                            <span class="ident">pixel</span>[<span class="number">3</span>] <span class="op">=</span> <span class="ident">alpha</span>;
+                            pixel[<span class="number">0</span>] = red;
+                            pixel[<span class="number">1</span>] = green;
+                            pixel[<span class="number">2</span>] = blue;
+                            pixel[<span class="number">3</span>] = alpha;
                         });
 
-                        <span class="kw">if</span> <span class="ident">transposed</span> {
-                            <span class="ident">img</span> <span class="op">=</span> <span class="ident">imageops::rotate90</span>(<span class="kw-2">&amp;</span><span class="ident">imageops::flip_vertical</span>(<span class="kw-2">&amp;</span><span class="ident">img</span>));
+                        <span class="kw">if </span>transposed {
+                            img = imageops::rotate90(<span class="kw-2">&amp;</span>imageops::flip_vertical(<span class="kw-2">&amp;</span>img));
                         }
 
-                        <span class="prelude-val">Some</span>((<span class="ident">index</span>, <span class="ident">img</span>))
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+                        <span class="prelude-val">Some</span>((index, img))
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>}
                 })
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                .collect::&lt;BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()
         }
-        <span class="number">1</span> =&gt; {
-            <span class="ident">buffer</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::Start</span>(<span class="number">0</span>))<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">ty</span>, <span class="number">0</span>, <span class="string">&quot;Unknown image type.&quot;</span>);
+        <span class="number">1 </span>=&gt; {
+            buffer.seek(SeekFrom::Start(<span class="number">0</span>))<span class="question-mark">?</span>;
+            <span class="kw">let </span>ty = buffer.get_u8();
+            <span class="macro">assert_eq!</span>(ty, <span class="number">0</span>, <span class="string">&quot;Unknown image type.&quot;</span>);
 
-            <span class="kw">let</span> [<span class="ident">alpha</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
-            <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">pixel_count</span> <span class="op">=</span> <span class="ident">width</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">*</span> <span class="ident">height</span> <span class="kw">as</span> <span class="ident">usize</span>;
+            <span class="kw">let </span>[alpha, ..] = buffer.get_bitflags();
+            <span class="kw">let </span>width = buffer.get_u16();
+            <span class="kw">let </span>height = buffer.get_u16();
+            <span class="kw">let </span>pixel_count = width <span class="kw">as </span>usize * height <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_rgb</span>()).<span class="ident">take</span>(<span class="ident">pixel_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            <span class="kw">let </span>base = iter::repeat_with(|| buffer.get_rgb()).take(pixel_count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">alpha</span> {
-                <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">pixel_count</span>)
-            } <span class="kw">else</span> {
-                <span class="macro">vec!</span>[<span class="number">255_u8</span>; <span class="ident">pixel_count</span>].<span class="ident">into</span>()
+            <span class="kw">let </span>mask = <span class="kw">if </span>alpha {
+                buffer.copy_to_bytes(pixel_count)
+            } <span class="kw">else </span>{
+                <span class="macro">vec!</span>[<span class="number">255_u8</span>; pixel_count].into()
             };
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">RgbaImage::new</span>(<span class="ident">width</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">height</span> <span class="kw">as</span> <span class="ident">u32</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>img = RgbaImage::new(width <span class="kw">as </span>u32, height <span class="kw">as </span>u32);
 
-            <span class="ident">img</span>.<span class="ident">pixels_mut</span>().<span class="ident">zip</span>(<span class="ident">base</span>).<span class="ident">zip</span>(<span class="ident">mask</span>).<span class="ident">for_each</span>(<span class="op">|</span>((<span class="ident">pixel</span>, <span class="ident">rgb</span>), <span class="ident">alpha</span>)<span class="op">|</span> {
-                <span class="kw">let</span> [<span class="ident">red</span>, <span class="ident">green</span>, <span class="ident">blue</span>] <span class="op">=</span> <span class="ident">rgb</span>;
-                <span class="ident">pixel</span>[<span class="number">0</span>] <span class="op">=</span> <span class="ident">red</span>;
-                <span class="ident">pixel</span>[<span class="number">1</span>] <span class="op">=</span> <span class="ident">green</span>;
-                <span class="ident">pixel</span>[<span class="number">2</span>] <span class="op">=</span> <span class="ident">blue</span>;
-                <span class="ident">pixel</span>[<span class="number">3</span>] <span class="op">=</span> <span class="ident">alpha</span>;
+            img.pixels_mut().zip(base).zip(mask).for_each(|((pixel, rgb), alpha)| {
+                <span class="kw">let </span>[red, green, blue] = rgb;
+                pixel[<span class="number">0</span>] = red;
+                pixel[<span class="number">1</span>] = green;
+                pixel[<span class="number">2</span>] = blue;
+                pixel[<span class="number">3</span>] = alpha;
             });
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">images</span> <span class="op">=</span> <span class="ident">BTreeMap::new</span>();
-            <span class="ident">images</span>.<span class="ident">insert</span>(<span class="number">0_usize</span>, <span class="ident">img</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>images = BTreeMap::new();
+            images.insert(<span class="number">0_usize</span>, img);
 
-            <span class="ident">images</span>
+            images
         }
-        <span class="kw">_</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unknown sprite format...&quot;</span>),
+        <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unknown sprite format...&quot;</span>),
     };
-    <span class="prelude-val">Ok</span>(<span class="ident">imgs</span>)
+    <span class="prelude-val">Ok</span>(imgs)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">sprite_tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
+</span><span class="kw">mod </span>sprite_tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">render_some_0</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">fn</span> <span class="ident">dump</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">frame</span>: <span class="ident">u32</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Sprite</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>render_some_0() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">fn </span>dump(id: u32, frame: u32) -&gt; CacheResult&lt;Sprite&gt; {
+            <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-            <span class="kw">let</span> <span class="ident">archive</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::SPRITES</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">archive</span>(<span class="ident">id</span>)<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
-            <span class="macro">assert!</span>(<span class="ident">file</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">file</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">images</span> <span class="op">=</span> <span class="ident">deserialize</span>(<span class="ident">file</span>).<span class="ident">unwrap</span>();
-            <span class="prelude-val">Ok</span>(<span class="ident">images</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span>(<span class="ident">frame</span> <span class="kw">as</span> <span class="ident">usize</span>)).<span class="ident">unwrap</span>())
+            <span class="kw">let </span>archive = CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.archive(id)<span class="question-mark">?</span>;
+            <span class="kw">let </span>file = archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+            <span class="macro">assert!</span>(file.len() != <span class="number">0</span>, <span class="string">&quot;{:?}&quot;</span>, file);
+            <span class="kw">let </span><span class="kw-2">mut </span>images = deserialize(file).unwrap();
+            <span class="prelude-val">Ok</span>(images.remove(<span class="kw-2">&amp;</span>(frame <span class="kw">as </span>usize)).unwrap())
         }
 
-        <span class="ident">std::fs::create_dir_all</span>(<span class="string">&quot;test_data/sprites/method_0&quot;</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>;
+        std::fs::create_dir_all(<span class="string">&quot;test_data/sprites/method_0&quot;</span>.to_string())<span class="question-mark">?</span>;
 
-        <span class="kw">for</span> <span class="ident">id</span> <span class="kw">in</span> <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">694</span>, <span class="number">3034</span>] {
-            <span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">let</span> <span class="ident">sprite</span> <span class="op">=</span> <span class="ident">dump</span>(<span class="ident">id</span>, <span class="ident">frame</span>)<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;test_data/sprites/method_0/{}-{}.png&quot;</span>, <span class="ident">id</span>, <span class="ident">frame</span>);
-            <span class="ident">sprite</span>.<span class="ident">save</span>(<span class="ident">filename</span>).<span class="ident">expect</span>(<span class="string">&quot;Error saving image&quot;</span>);
+        <span class="kw">for </span>id <span class="kw">in </span><span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">694</span>, <span class="number">3034</span>] {
+            <span class="kw">let </span>frame = <span class="number">0</span>;
+            <span class="kw">let </span>sprite = dump(id, frame)<span class="question-mark">?</span>;
+            <span class="kw">let </span>filename = <span class="macro">format!</span>(<span class="string">&quot;test_data/sprites/method_0/{}-{}.png&quot;</span>, id, frame);
+            sprite.save(filename).expect(<span class="string">&quot;Error saving image&quot;</span>);
         }
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">render_some_1</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>render_some_1() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-        <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">694</span>, <span class="number">3034</span>];
+        <span class="kw">let </span>ids = <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">694</span>, <span class="number">3034</span>];
 
-        <span class="kw">let</span> <span class="ident">sprites</span> <span class="op">=</span> <span class="ident">dumps</span>(<span class="number">2</span>, <span class="ident">ids</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
-        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">sprites</span>.<span class="ident">keys</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>());
+        <span class="kw">let </span>sprites = dumps(<span class="number">2</span>, ids, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
+        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, sprites.keys().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;());
 
         <span class="prelude-val">Ok</span>(())
     }
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
-    <span class="kw">fn</span> <span class="ident">render_nonexistant</span>() {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    #[should_panic]
+    </span><span class="kw">fn </span>render_nonexistant() {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-        <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">40000</span>, <span class="number">50000</span>];
+        <span class="kw">let </span>ids = <span class="macro">vec!</span>[<span class="number">40000</span>, <span class="number">50000</span>];
 
-        <span class="kw">let</span> <span class="ident">sprites</span> <span class="op">=</span> <span class="ident">dumps</span>(<span class="number">2</span>, <span class="ident">ids</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>).<span class="ident">expect</span>(<span class="string">&quot;should be unable to create a limited archiveiterator if the key is not in metadatas&quot;</span>);
+        <span class="kw">let </span>sprites = dumps(<span class="number">2</span>, ids, <span class="kw-2">&amp;</span>config).expect(<span class="string">&quot;should be unable to create a limited archiveiterator if the key is not in metadatas&quot;</span>);
 
-        <span class="macro">println!</span>(<span class="string">&quot;Should have not been able to deserialize these: {:?}&quot;</span>, <span class="ident">sprites</span>.<span class="ident">keys</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>());
+        <span class="macro">println!</span>(<span class="string">&quot;Should have not been able to deserialize these: {:?}&quot;</span>, sprites.keys().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;());
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

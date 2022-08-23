@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/mapsquares.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mapsquares.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/mapsquares.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mapsquares.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -502,386 +497,386 @@
 <span id="497">497</span>
 <span id="498">498</span>
 <span id="499">499</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Data comprising the game surface.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The game map is divided in (potentially) 128 by 256 [`MapSquare`]s,</span>
-<span class="doccomment">//! though this seems to be limited to 100 by 200.</span>
-<span class="doccomment">//! These coordinates are referred to as `i` and `j`.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Each [`MapSquare`] itself is comprised of 64 by 64 [`Tile`]s.</span>
-<span class="doccomment">//! These coordinates are referred to as `x` and `y`.</span>
-<span class="doccomment">//! They have four elevations, referred to as `p` or `plane`.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Data comprising the game surface.
+//!
+//! The game map is divided in (potentially) 128 by 256 [`MapSquare`]s,
+//! though this seems to be limited to 100 by 200.
+//! These coordinates are referred to as `i` and `j`.
+//!
+//! Each [`MapSquare`] itself is comprised of 64 by 64 [`Tile`]s.
+//! These coordinates are referred to as `x` and `y`.
+//! They have four elevations, referred to as `p` or `plane`.
 
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>), <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mapsquares/rs3.rs&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)), <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mapsquares/osrs.rs&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>, <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mapsquares/legacy.rs&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">iterator</span>;
+</span><span class="attribute">#[cfg_attr(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>), path = <span class="string">&quot;mapsquares/rs3.rs&quot;</span>)]
+#[cfg_attr(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)), path = <span class="string">&quot;mapsquares/osrs.rs&quot;</span>)]
+#[cfg_attr(feature = <span class="string">&quot;legacy&quot;</span>, path = <span class="string">&quot;mapsquares/legacy.rs&quot;</span>)]
+</span><span class="kw">mod </span>iterator;
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections</span>::{<span class="ident">hash_map</span>, <span class="ident">BTreeMap</span>, <span class="ident">HashMap</span>},
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
-    <span class="ident">iter::Zip</span>,
-    <span class="ident">ops::Range</span>,
+<span class="kw">use </span>std::{
+    collections::{hash_map, BTreeMap, HashMap},
+    fs::{<span class="self">self</span>, File},
+    io::Write,
+    iter::Zip,
+    ops::Range,
 };
 
-<span class="kw">use</span> <span class="ident">itertools</span>::{<span class="ident">iproduct</span>, <span class="ident">Product</span>};
-<span class="kw">use</span> <span class="ident">ndarray</span>::{<span class="ident">iter::LanesIter</span>, <span class="ident">s</span>, <span class="ident">Axis</span>, <span class="ident">Dim</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="kw">use</span> <span class="ident">rayon::iter</span>::{<span class="ident">ParallelBridge</span>, <span class="ident">ParallelIterator</span>};
+<span class="kw">use </span>itertools::{iproduct, Product};
+<span class="kw">use </span>ndarray::{iter::LanesIter, s, Axis, Dim};
+<span class="kw">use </span>path_macro::path;
+<span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::iterator</span>::<span class="kw-2">*</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::arc::Archive</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)))]</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache::xtea::Xtea</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{
-        <span class="ident">error</span>::{<span class="ident">CacheError</span>, <span class="ident">CacheResult</span>},
-        <span class="ident">index</span>::{<span class="ident">CacheIndex</span>, <span class="ident">Initial</span>},
+<span class="kw">pub use </span><span class="self">self</span>::iterator::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::cache::arc::Archive;
+<span class="attribute">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
+</span><span class="kw">use </span><span class="kw">crate</span>::cache::xtea::Xtea;
+<span class="kw">use crate</span>::{
+    cache::{
+        error::{CacheError, CacheResult},
+        index::{CacheIndex, Initial},
     },
-    <span class="ident">definitions</span>::{
-        <span class="ident">indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>, <span class="ident">MapFileType</span>},
-        <span class="ident">locations::Location</span>,
-        <span class="ident">tiles</span>::{<span class="ident">Tile</span>, <span class="ident">TileArray</span>},
+    definitions::{
+        indextype::{ConfigType, IndexType, MapFileType},
+        locations::Location,
+        tiles::{Tile, TileArray},
     },
-    <span class="ident">utils::rangeclamp::RangeClamp</span>,
+    utils::rangeclamp::RangeClamp,
 };
 
-<span class="doccomment">/// Represents a section of the game map</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapSquare</span> {
-    <span class="doccomment">/// The horizontal [`MapSquare`] coordinate.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It can have any value in the range `0..=100`.</span>
-    <span class="ident">i</span>: <span class="ident">u8</span>,
+<span class="doccomment">/// Represents a section of the game map
+</span><span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub struct </span>MapSquare {
+    <span class="doccomment">/// The horizontal [`MapSquare`] coordinate.
+    ///
+    /// It can have any value in the range `0..=100`.
+    </span>i: u8,
 
-    <span class="doccomment">/// The vertical [`MapSquare`] coordinate.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It can have any value in the range `0..=200`.</span>
-    <span class="ident">j</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// The vertical [`MapSquare`] coordinate.
+    ///
+    /// It can have any value in the range `0..=200`.
+    </span>j: u8,
 
-    <span class="doccomment">/// Data on the tiles it contains.</span>
-    <span class="ident">tiles</span>: <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">TileArray</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Data on the tiles it contains.
+    </span>tiles: CacheResult&lt;TileArray&gt;,
 
-    <span class="doccomment">/// All locations in this [`MapSquare`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Locations can overlap on surrounding mapsquares.</span>
-    <span class="ident">locations</span>: <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// All locations in this [`MapSquare`].
+    ///
+    /// Locations can overlap on surrounding mapsquares.
+    </span>locations: CacheResult&lt;Vec&lt;Location&gt;&gt;,
 
-    <span class="doccomment">/// All water locations in this [`MapSquare`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Locations can overlap on surrounding mapsquares.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-    <span class="ident">water_locations</span>: <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// All water locations in this [`MapSquare`].
+    ///
+    /// Locations can overlap on surrounding mapsquares.
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+    </span>water_locations: CacheResult&lt;Vec&lt;Location&gt;&gt;,
 }
 
-<span class="doccomment">/// Iterator over a columns of planes with their x, y coordinates</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ColumnIter</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">LanesIter</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="ident">Tile</span>, <span class="ident">Dim</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Product</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Iterator over a columns of planes with their x, y coordinates
+</span><span class="kw">pub type </span>ColumnIter&lt;<span class="lifetime">&#39;c</span>&gt; = Zip&lt;LanesIter&lt;<span class="lifetime">&#39;c</span>, Tile, Dim&lt;[usize; <span class="number">2</span>]&gt;&gt;, Product&lt;Range&lt;u32&gt;, Range&lt;u32&gt;&gt;&gt;;
 
-<span class="kw">impl</span> <span class="ident">MapSquare</span> {
-    <span class="doccomment">/// The horizontal [`MapSquare`] coordinate.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It can have any value in the range `0..=100`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="self">self</span>.<span class="ident">i</span>
+<span class="kw">impl </span>MapSquare {
+    <span class="doccomment">/// The horizontal [`MapSquare`] coordinate.
+    ///
+    /// It can have any value in the range `0..=100`.
+    </span><span class="kw">pub fn </span>i(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="self">self</span>.i
     }
 
-    <span class="doccomment">/// The vertical [`MapSquare`] coordinate.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It can have any value in the range `0..=200`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">j</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="self">self</span>.<span class="ident">j</span>
+    <span class="doccomment">/// The vertical [`MapSquare`] coordinate.
+    ///
+    /// It can have any value in the range `0..=200`.
+    </span><span class="kw">pub fn </span>j(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="self">self</span>.j
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)))]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="macro">assert!</span>(<span class="ident">i</span> <span class="op">&lt;</span> <span class="number">0x7F</span>, <span class="string">&quot;Index out of range.&quot;</span>);
-        <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> (<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">|</span> (<span class="ident">j</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span>;
-        <span class="kw">let</span> <span class="ident">archive</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::MAPSV2</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">archive</span>(<span class="ident">archive_id</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::from_archive</span>(<span class="ident">archive</span>))
+    <span class="attribute">#[cfg(all(test, any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
+    </span><span class="kw">pub fn </span>new(i: u8, j: u8, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;MapSquare&gt; {
+        <span class="macro">assert!</span>(i &lt; <span class="number">0x7F</span>, <span class="string">&quot;Index out of range.&quot;</span>);
+        <span class="kw">let </span>archive_id = (i <span class="kw">as </span>u32) | (j <span class="kw">as </span>u32) &lt;&lt; <span class="number">7</span>;
+        <span class="kw">let </span>archive = CacheIndex::new(IndexType::MAPSV2, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.archive(archive_id)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from_archive(archive))
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)))]</span>
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">index</span>: <span class="kw-2">&amp;</span><span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span>, <span class="ident">xtea</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Xtea</span><span class="op">&gt;</span>, <span class="ident">land</span>: <span class="ident">u32</span>, <span class="ident">tiles</span>: <span class="ident">u32</span>, <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">land</span> <span class="op">=</span> <span class="ident">index</span>.<span class="ident">archive_with_xtea</span>(<span class="ident">land</span>, <span class="ident">xtea</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">arch</span><span class="op">|</span> <span class="ident">arch</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>));
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">tiles</span>)<span class="question-mark">?</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">_env</span> <span class="op">=</span> <span class="ident">env</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> <span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">k</span>));
+    <span class="attribute">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
+    </span><span class="kw">fn </span>new(index: <span class="kw-2">&amp;</span>CacheIndex&lt;Initial&gt;, xtea: <span class="prelude-ty">Option</span>&lt;Xtea&gt;, land: u32, tiles: u32, env: <span class="prelude-ty">Option</span>&lt;u32&gt;, i: u8, j: u8) -&gt; CacheResult&lt;MapSquare&gt; {
+        <span class="kw">let </span>land = index.archive_with_xtea(land, xtea).and_then(|arch| arch.file(<span class="kw-2">&amp;</span><span class="number">0</span>));
+        <span class="kw">let </span>tiles = index.archive(tiles)<span class="question-mark">?</span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>_env = env.map(|k| index.archive(k));
 
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">Tile::dump</span>(<span class="ident">tiles</span>);
-        <span class="kw">let</span> <span class="ident">locations</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">ok_land</span>) <span class="op">=</span> <span class="ident">land</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">Location::dump</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="kw-2">&amp;</span><span class="ident">tiles</span>, <span class="ident">ok_land</span>))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">CacheError::ArchiveNotFoundError</span>(<span class="number">5</span>, <span class="number">0</span>))
+        <span class="kw">let </span>tiles = Tile::dump(tiles);
+        <span class="kw">let </span>locations = <span class="kw">if let </span><span class="prelude-val">Ok</span>(ok_land) = land {
+            <span class="prelude-val">Ok</span>(Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, ok_land))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(CacheError::ArchiveNotFoundError(<span class="number">5</span>, <span class="number">0</span>))
         };
 
-        <span class="prelude-val">Ok</span>(<span class="ident">MapSquare</span> {
-            <span class="ident">i</span>,
-            <span class="ident">j</span>,
-            <span class="ident">tiles</span>: <span class="prelude-val">Ok</span>(<span class="ident">tiles</span>),
-            <span class="ident">locations</span>,
+        <span class="prelude-val">Ok</span>(MapSquare {
+            i,
+            j,
+            tiles: <span class="prelude-val">Ok</span>(tiles),
+            locations,
         })
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">index</span>: <span class="kw-2">&amp;</span><span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span>, <span class="ident">loc</span>: <span class="ident">u32</span>, <span class="ident">map</span>: <span class="ident">u32</span>, <span class="ident">i</span>: <span class="ident">u8</span>, <span class="ident">j</span>: <span class="ident">u8</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">land</span> <span class="op">=</span> <span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">loc</span>)<span class="question-mark">?</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">index</span>.<span class="ident">archive</span>(<span class="ident">map</span>)<span class="question-mark">?</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+    </span><span class="kw">fn </span>new(index: <span class="kw-2">&amp;</span>CacheIndex&lt;Initial&gt;, loc: u32, map: u32, i: u8, j: u8) -&gt; CacheResult&lt;MapSquare&gt; {
+        <span class="kw">let </span>land = index.archive(loc)<span class="question-mark">?</span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>tiles = index.archive(map)<span class="question-mark">?</span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">Tile::dump</span>(<span class="ident">tiles</span>);
-        <span class="kw">let</span> <span class="ident">locations</span> <span class="op">=</span> <span class="ident">Location::dump</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="kw-2">&amp;</span><span class="ident">tiles</span>, <span class="ident">land</span>);
+        <span class="kw">let </span>tiles = Tile::dump(tiles);
+        <span class="kw">let </span>locations = Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, land);
 
-        <span class="prelude-val">Ok</span>(<span class="ident">MapSquare</span> {
-            <span class="ident">i</span>,
-            <span class="ident">j</span>,
-            <span class="ident">tiles</span>: <span class="prelude-val">Ok</span>(<span class="ident">tiles</span>),
-            <span class="ident">locations</span>: <span class="prelude-val">Ok</span>(<span class="ident">locations</span>),
+        <span class="prelude-val">Ok</span>(MapSquare {
+            i,
+            j,
+            tiles: <span class="prelude-val">Ok</span>(tiles),
+            locations: <span class="prelude-val">Ok</span>(locations),
         })
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_archive</span>(<span class="ident">archive</span>: <span class="ident">Archive</span>) -&gt; <span class="ident">MapSquare</span> {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> (<span class="ident">archive</span>.<span class="ident">archive_id</span>() <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="kw">as</span> <span class="ident">u8</span>;
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> (<span class="ident">archive</span>.<span class="ident">archive_id</span>() <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>) <span class="kw">as</span> <span class="ident">u8</span>;
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="ident">MapFileType::TILES</span>).<span class="ident">map</span>(<span class="ident">Tile::dump</span>);
-        <span class="kw">let</span> <span class="ident">locations</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tiles</span> {
-            <span class="prelude-val">Ok</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">archive</span>.<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="ident">MapFileType::LOCATIONS</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">file</span><span class="op">|</span> <span class="ident">Location::dump</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">t</span>, <span class="ident">file</span>)),
-            <span class="comment">// can&#39;t generally clone or copy error</span>
-            <span class="prelude-val">Err</span>(<span class="ident">CacheError::FileNotFoundError</span>(<span class="ident">i</span>, <span class="ident">a</span>, <span class="ident">f</span>)) =&gt; <span class="prelude-val">Err</span>(<span class="ident">CacheError::FileNotFoundError</span>(<span class="ident">i</span>, <span class="ident">a</span>, <span class="ident">f</span>)),
-            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+    <span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_archive(archive: Archive) -&gt; MapSquare {
+        <span class="kw">let </span>i = (archive.archive_id() &amp; <span class="number">0x7F</span>) <span class="kw">as </span>u8;
+        <span class="kw">let </span>j = (archive.archive_id() &gt;&gt; <span class="number">7</span>) <span class="kw">as </span>u8;
+        <span class="kw">let </span>tiles = archive.file(<span class="kw-2">&amp;</span>MapFileType::TILES).map(Tile::dump);
+        <span class="kw">let </span>locations = <span class="kw">match </span>tiles {
+            <span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>t) =&gt; archive.file(<span class="kw-2">&amp;</span>MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
+            <span class="comment">// can&#39;t generally clone or copy error
+            </span><span class="prelude-val">Err</span>(CacheError::FileNotFoundError(i, a, f)) =&gt; <span class="prelude-val">Err</span>(CacheError::FileNotFoundError(i, a, f)),
+            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
         };
-        <span class="kw">let</span> <span class="ident">water_locations</span> <span class="op">=</span> <span class="ident">archive</span>
-            .<span class="ident">file</span>(<span class="kw-2">&amp;</span><span class="ident">MapFileType::WATER_LOCATIONS</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">file</span><span class="op">|</span> <span class="ident">Location::dump_water_locations</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">file</span>));
+        <span class="kw">let </span>water_locations = archive
+            .file(<span class="kw-2">&amp;</span>MapFileType::WATER_LOCATIONS)
+            .map(|file| Location::dump_water_locations(i, j, file));
 
-        <span class="ident">MapSquare</span> {
-            <span class="ident">i</span>,
-            <span class="ident">j</span>,
-            <span class="ident">tiles</span>,
-            <span class="ident">locations</span>,
-            <span class="ident">water_locations</span>,
+        MapSquare {
+            i,
+            j,
+            tiles,
+            locations,
+            water_locations,
         }
     }
 
-    <span class="doccomment">/// Iterator over a columns of planes with their x, y coordinates</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">indexed_columns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ColumnIter</span>, <span class="kw-2">&amp;</span><span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">get_tiles</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">tiles</span><span class="op">|</span> <span class="ident">tiles</span>.<span class="ident">lanes</span>(<span class="ident">Axis</span>(<span class="number">0</span>)).<span class="ident">into_iter</span>().<span class="ident">zip</span>(<span class="macro">iproduct!</span>(<span class="number">0</span>..<span class="number">64u32</span>, <span class="number">0</span>..<span class="number">64u32</span>)))
+    <span class="doccomment">/// Iterator over a columns of planes with their x, y coordinates
+    </span><span class="kw">pub fn </span>indexed_columns(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ColumnIter, <span class="kw-2">&amp;</span>CacheError&gt; {
+        <span class="self">self</span>.get_tiles()
+            .map(|tiles| tiles.lanes(Axis(<span class="number">0</span>)).into_iter().zip(<span class="macro">iproduct!</span>(<span class="number">0</span>..<span class="number">64u32</span>, <span class="number">0</span>..<span class="number">64u32</span>)))
     }
 
-    <span class="doccomment">/// Returns a view over the `tiles` field, if present</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_tiles</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">TileArray</span>, <span class="kw-2">&amp;</span><span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">tiles</span>.<span class="ident">as_ref</span>()
+    <span class="doccomment">/// Returns a view over the `tiles` field, if present
+    </span><span class="kw">pub fn </span>get_tiles(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>TileArray, <span class="kw-2">&amp;</span>CacheError&gt; {
+        <span class="self">self</span>.tiles.as_ref()
     }
 
-    <span class="doccomment">/// Returns a view over the `tiles` field, if present</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_tiles</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TileArray</span>, <span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">tiles</span>
+    <span class="doccomment">/// Returns a view over the `tiles` field, if present
+    </span><span class="kw">pub fn </span>take_tiles(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;TileArray, CacheError&gt; {
+        <span class="self">self</span>.tiles
     }
 
-    <span class="doccomment">/// Returns a view over the `locations` field, if present.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_locations</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">locations</span>.<span class="ident">as_ref</span>()
+    <span class="doccomment">/// Returns a view over the `locations` field, if present.
+    </span><span class="kw">pub fn </span>get_locations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>Vec&lt;Location&gt;, <span class="kw-2">&amp;</span>CacheError&gt; {
+        <span class="self">self</span>.locations.as_ref()
     }
 
-    <span class="doccomment">/// Take its locations, consuming `self`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_locations</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span>, <span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">locations</span>
+    <span class="doccomment">/// Take its locations, consuming `self`.
+    </span><span class="kw">pub fn </span>take_locations(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Location&gt;, CacheError&gt; {
+        <span class="self">self</span>.locations
     }
 
-    <span class="doccomment">/// Returns a view over the `locations` field, if present.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_water_locations</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">water_locations</span>.<span class="ident">as_ref</span>()
+    <span class="doccomment">/// Returns a view over the `locations` field, if present.
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+    </span><span class="kw">pub fn </span>get_water_locations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>Vec&lt;Location&gt;, <span class="kw-2">&amp;</span>CacheError&gt; {
+        <span class="self">self</span>.water_locations.as_ref()
     }
 
-    <span class="doccomment">/// Take its locations, consuming `self`.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_water_locations</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span>, <span class="ident">CacheError</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">water_locations</span>
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapSquares</span> {
-    <span class="ident">index</span>: <span class="ident">CacheIndex</span><span class="op">&lt;</span><span class="ident">Initial</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)))]</span>
-    <span class="ident">mapping</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">u8</span>, <span class="ident">u8</span>), <span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-    <span class="ident">meta</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u8</span>), <span class="ident">rs3cache_backend::index::MapsquareMeta</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">MapSquares</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">MapSquare</span><span class="op">&gt;</span>;
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">MapSquareIterator</span>;
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">index</span>
-            .<span class="ident">metadatas</span>()
-            .<span class="ident">keys</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> ((<span class="ident">id</span> <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="kw">as</span> <span class="ident">u8</span>, (<span class="ident">id</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>) <span class="kw">as</span> <span class="ident">u8</span>))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            .<span class="ident">into_iter</span>();
-        <span class="ident">MapSquareIterator</span> { <span class="ident">mapsquares</span>: <span class="self">self</span>, <span class="ident">state</span> }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_4_shim&quot;</span>)))]</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">mapping</span>
-            .<span class="ident">keys</span>()
-            .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">ty</span>, <span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">ty</span> <span class="op">==</span> <span class="string">&quot;m&quot;</span> { <span class="prelude-val">Some</span>((<span class="kw-2">*</span><span class="ident">i</span>, <span class="kw-2">*</span><span class="ident">j</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> })
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            .<span class="ident">into_iter</span>();
-        <span class="ident">MapSquareIterator</span> { <span class="ident">mapsquares</span>: <span class="self">self</span>, <span class="ident">state</span> }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">meta</span>.<span class="ident">keys</span>().<span class="ident">copied</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">into_iter</span>();
-        <span class="ident">MapSquareIterator</span> { <span class="ident">mapsquares</span>: <span class="self">self</span>, <span class="ident">state</span> }
+    <span class="doccomment">/// Take its locations, consuming `self`.
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+    </span><span class="kw">pub fn </span>take_water_locations(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Location&gt;, CacheError&gt; {
+        <span class="self">self</span>.water_locations
     }
 }
 
-<span class="doccomment">/// A group of adjacent [`MapSquare`]s.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Necessary for operations that need to care about surrounding mapsquares.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GroupMapSquare</span> {
-    <span class="ident">core_i</span>: <span class="ident">u8</span>,
-    <span class="ident">core_j</span>: <span class="ident">u8</span>,
-    <span class="ident">mapsquares</span>: <span class="ident">HashMap</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u8</span>), <span class="ident">MapSquare</span><span class="op">&gt;</span>,
+<span class="kw">pub struct </span>MapSquares {
+    index: CacheIndex&lt;Initial&gt;,
+    <span class="attribute">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
+    </span>mapping: BTreeMap&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, u8, u8), u32&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+    </span>meta: BTreeMap&lt;(u8, u8), rs3cache_backend::index::MapsquareMeta&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">GroupMapSquare</span> {
-    <span class="doccomment">/// The horizontal coordinate of the central [`MapSquare`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It can have any value in the range `0..100`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">core_i</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="self">self</span>.<span class="ident">core_i</span>
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>MapSquares {
+    <span class="kw">type </span>Item = CacheResult&lt;MapSquare&gt;;
+    <span class="kw">type </span>IntoIter = MapSquareIterator;
+
+    <span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">let </span>state = <span class="self">self
+            </span>.index
+            .metadatas()
+            .keys()
+            .map(|id| ((id &amp; <span class="number">0x7F</span>) <span class="kw">as </span>u8, (id &gt;&gt; <span class="number">7</span>) <span class="kw">as </span>u8))
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            .into_iter();
+        MapSquareIterator { mapsquares: <span class="self">self</span>, state }
     }
 
-    <span class="doccomment">/// The vertical coordinate of the central [`MapSquare`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It can have any value in the range `0..200`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">core_j</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="self">self</span>.<span class="ident">core_j</span>
+    <span class="attribute">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">let </span>state = <span class="self">self
+            </span>.mapping
+            .keys()
+            .filter_map(|(ty, i, j)| <span class="kw">if </span><span class="kw-2">*</span>ty == <span class="string">&quot;m&quot; </span>{ <span class="prelude-val">Some</span>((<span class="kw-2">*</span>i, <span class="kw-2">*</span>j)) } <span class="kw">else </span>{ <span class="prelude-val">None </span>})
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            .into_iter();
+        MapSquareIterator { mapsquares: <span class="self">self</span>, state }
     }
 
-    <span class="doccomment">/// Returns a reference to the central [`MapSquare`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">core</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">mapsquares</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="self">self</span>.<span class="ident">core_i</span>, <span class="self">self</span>.<span class="ident">core_j</span>))
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">let </span>state = <span class="self">self</span>.meta.keys().copied().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;().into_iter();
+        MapSquareIterator { mapsquares: <span class="self">self</span>, state }
+    }
+}
+
+<span class="doccomment">/// A group of adjacent [`MapSquare`]s.
+///
+/// Necessary for operations that need to care about surrounding mapsquares.
+</span><span class="kw">pub struct </span>GroupMapSquare {
+    core_i: u8,
+    core_j: u8,
+    mapsquares: HashMap&lt;(u8, u8), MapSquare&gt;,
+}
+
+<span class="kw">impl </span>GroupMapSquare {
+    <span class="doccomment">/// The horizontal coordinate of the central [`MapSquare`].
+    ///
+    /// It can have any value in the range `0..100`.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>core_i(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="self">self</span>.core_i
     }
 
-    <span class="doccomment">/// Iterates over all [`MapSquare`]s of `self` in arbitrary order.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">hash_map::Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, (<span class="ident">u8</span>, <span class="ident">u8</span>), <span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">mapsquares</span>.<span class="ident">iter</span>()
+    <span class="doccomment">/// The vertical coordinate of the central [`MapSquare`].
+    ///
+    /// It can have any value in the range `0..200`.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>core_j(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="self">self</span>.core_j
     }
 
-    <span class="doccomment">/// Returns a view over a specific [`MapSquare`]..</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span>(<span class="ident">u8</span>, <span class="ident">u8</span>)) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">MapSquare</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">mapsquares</span>.<span class="ident">get</span>(<span class="ident">key</span>)
+    <span class="doccomment">/// Returns a reference to the central [`MapSquare`].
+    </span><span class="kw">pub fn </span>core(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>MapSquare&gt; {
+        <span class="self">self</span>.mapsquares.get(<span class="kw-2">&amp;</span>(<span class="self">self</span>.core_i, <span class="self">self</span>.core_j))
     }
 
-    <span class="doccomment">/// Returns a view over all tiles within `interp` of the [`Tile`] at `plane, x, y`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tiles_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">plane</span>: <span class="ident">usize</span>, <span class="ident">x</span>: <span class="ident">usize</span>, <span class="ident">y</span>: <span class="ident">usize</span>, <span class="ident">interp</span>: <span class="ident">isize</span>) -&gt; <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Tile</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">low_x</span> <span class="op">=</span> <span class="ident">x</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">-</span> <span class="ident">interp</span>;
-        <span class="kw">let</span> <span class="ident">upper_x</span> <span class="op">=</span> <span class="ident">x</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">+</span> <span class="ident">interp</span> <span class="op">+</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">low_y</span> <span class="op">=</span> <span class="ident">y</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">-</span> <span class="ident">interp</span>;
-        <span class="kw">let</span> <span class="ident">upper_y</span> <span class="op">=</span> <span class="ident">y</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">+</span> <span class="ident">interp</span> <span class="op">+</span> <span class="number">1</span>;
+    <span class="doccomment">/// Iterates over all [`MapSquare`]s of `self` in arbitrary order.
+    </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; hash_map::Iter&lt;<span class="lifetime">&#39;_</span>, (u8, u8), MapSquare&gt; {
+        <span class="self">self</span>.mapsquares.iter()
+    }
 
-        <span class="ident">Box::new</span>(
-            <span class="self">self</span>.<span class="ident">iter</span>()
-                .<span class="ident">filter_map</span>(<span class="kw">move</span> <span class="op">|</span>((<span class="ident">i</span>, <span class="ident">j</span>), <span class="ident">sq</span>)<span class="op">|</span> {
-                    <span class="ident">sq</span>.<span class="ident">get_tiles</span>().<span class="ident">ok</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">tiles</span><span class="op">|</span> {
-                        <span class="kw">let</span> <span class="ident">di</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="op">-</span> (<span class="self">self</span>.<span class="ident">core_i</span> <span class="kw">as</span> <span class="ident">isize</span>);
-                        <span class="kw">let</span> <span class="ident">dj</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">j</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="op">-</span> (<span class="self">self</span>.<span class="ident">core_j</span> <span class="kw">as</span> <span class="ident">isize</span>);
-                        ((<span class="ident">di</span>, <span class="ident">dj</span>), <span class="ident">tiles</span>)
+    <span class="doccomment">/// Returns a view over a specific [`MapSquare`]..
+    </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>(u8, u8)) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>MapSquare&gt; {
+        <span class="self">self</span>.mapsquares.get(key)
+    }
+
+    <span class="doccomment">/// Returns a view over all tiles within `interp` of the [`Tile`] at `plane, x, y`.
+    </span><span class="kw">pub fn </span>tiles_iter(<span class="kw-2">&amp;</span><span class="self">self</span>, plane: usize, x: usize, y: usize, interp: isize) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>Tile&gt; + <span class="lifetime">&#39;_</span>&gt; {
+        <span class="kw">let </span>low_x = x <span class="kw">as </span>isize - interp;
+        <span class="kw">let </span>upper_x = x <span class="kw">as </span>isize + interp + <span class="number">1</span>;
+        <span class="kw">let </span>low_y = y <span class="kw">as </span>isize - interp;
+        <span class="kw">let </span>upper_y = y <span class="kw">as </span>isize + interp + <span class="number">1</span>;
+
+        Box::new(
+            <span class="self">self</span>.iter()
+                .filter_map(<span class="kw">move </span>|((i, j), sq)| {
+                    sq.get_tiles().ok().map(|tiles| {
+                        <span class="kw">let </span>di = (<span class="kw-2">*</span>i <span class="kw">as </span>isize) - (<span class="self">self</span>.core_i <span class="kw">as </span>isize);
+                        <span class="kw">let </span>dj = (<span class="kw-2">*</span>j <span class="kw">as </span>isize) - (<span class="self">self</span>.core_j <span class="kw">as </span>isize);
+                        ((di, dj), tiles)
                     })
                 })
-                .<span class="ident">flat_map</span>(<span class="kw">move</span> <span class="op">|</span>((<span class="ident">di</span>, <span class="ident">dj</span>), <span class="ident">tiles</span>)<span class="op">|</span> {
-                    <span class="ident">tiles</span>
-                        .<span class="ident">slice</span>(<span class="macro">s!</span>[
-                            <span class="ident">plane</span>,
-                            ((<span class="ident">low_x</span> <span class="op">-</span> <span class="number">64</span> <span class="op">*</span> <span class="ident">di</span>)..(<span class="ident">upper_x</span> <span class="op">-</span> <span class="number">64</span> <span class="op">*</span> <span class="ident">di</span>)).<span class="ident">clamp</span>(<span class="number">0</span>, <span class="number">64</span>),
-                            ((<span class="ident">low_y</span> <span class="op">-</span> <span class="number">64</span> <span class="op">*</span> <span class="ident">dj</span>)..(<span class="ident">upper_y</span> <span class="op">-</span> <span class="number">64</span> <span class="op">*</span> <span class="ident">dj</span>)).<span class="ident">clamp</span>(<span class="number">0</span>, <span class="number">64</span>)
+                .flat_map(<span class="kw">move </span>|((di, dj), tiles)| {
+                    tiles
+                        .slice(<span class="macro">s!</span>[
+                            plane,
+                            ((low_x - <span class="number">64 </span>* di)..(upper_x - <span class="number">64 </span>* di)).clamp(<span class="number">0</span>, <span class="number">64</span>),
+                            ((low_y - <span class="number">64 </span>* dj)..(upper_y - <span class="number">64 </span>* dj)).clamp(<span class="number">0</span>, <span class="number">64</span>)
                         ])
-                        .<span class="ident">into_iter</span>()
+                        .into_iter()
                 }),
         )
     }
 
-    <span class="doccomment">/// Returns a view over all locations in all [`MapSquare`]s of `self` in arbitrary order.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all_locations_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Location</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span><span class="op">&gt;</span> {
-        <span class="ident">Box::new</span>(
-            <span class="self">self</span>.<span class="ident">iter</span>()
-                .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">_k</span>, <span class="ident">square</span>)<span class="op">|</span> <span class="ident">square</span>.<span class="ident">get_locations</span>().<span class="ident">ok</span>())
-                .<span class="ident">flat_map</span>(<span class="ident">IntoIterator::into_iter</span>),
+    <span class="doccomment">/// Returns a view over all locations in all [`MapSquare`]s of `self` in arbitrary order.
+    </span><span class="kw">pub fn </span>all_locations_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>Location&gt; + <span class="lifetime">&#39;_</span>&gt; {
+        Box::new(
+            <span class="self">self</span>.iter()
+                .filter_map(|(_k, square)| square.get_locations().ok())
+                .flat_map(IntoIterator::into_iter),
         )
     }
 }
 
-<span class="doccomment">/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_locations_by_id</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">out</span> <span class="op">=</span> <span class="macro">path_macro::path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;locations&quot;</span>);
+<span class="doccomment">/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+</span><span class="kw">pub fn </span>export_locations_by_id(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;locations&quot;</span>);
 
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">out</span>)<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>out)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">last_id</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="ident">squares</span> <span class="op">=</span> <span class="ident">MapSquares::new</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
-        <span class="ident">squares</span>
-            .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">sq</span><span class="op">|</span> <span class="ident">sq</span>.<span class="ident">expect</span>(<span class="string">&quot;error deserializing mapsquare&quot;</span>).<span class="ident">take_locations</span>().<span class="ident">ok</span>())
-            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">locs</span><span class="op">|</span> <span class="op">!</span><span class="ident">locs</span>.<span class="ident">is_empty</span>())
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">locs</span><span class="op">|</span> <span class="ident">locs</span>.<span class="ident">last</span>().<span class="ident">expect</span>(<span class="string">&quot;locations stopped existing&quot;</span>).<span class="ident">id</span>)
-            .<span class="ident">max</span>()
-            .<span class="ident">unwrap</span>()
+    <span class="kw">let </span>last_id = {
+        <span class="kw">let </span>squares = MapSquares::new(config)<span class="question-mark">?</span>.into_iter();
+        squares
+            .filter_map(|sq| sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).take_locations().ok())
+            .filter(|locs| !locs.is_empty())
+            .map(|locs| locs.last().expect(<span class="string">&quot;locations stopped existing&quot;</span>).id)
+            .max()
+            .unwrap()
     };
 
-    <span class="kw">let</span> <span class="ident">squares</span> <span class="op">=</span> <span class="ident">MapSquares::new</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">locs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">squares</span>
-        .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">sq</span><span class="op">|</span> <span class="ident">sq</span>.<span class="ident">expect</span>(<span class="string">&quot;error deserializing mapsquare&quot;</span>).<span class="ident">take_locations</span>().<span class="ident">ok</span>())
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">locs</span><span class="op">|</span> <span class="ident">locs</span>.<span class="ident">into_iter</span>().<span class="ident">peekable</span>())
-        .<span class="ident">collect</span>();
+    <span class="kw">let </span>squares = MapSquares::new(config)<span class="question-mark">?</span>.into_iter();
+    <span class="kw">let </span><span class="kw-2">mut </span>locs: Vec&lt;<span class="kw">_</span>&gt; = squares
+        .filter_map(|sq| sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).take_locations().ok())
+        .map(|locs| locs.into_iter().peekable())
+        .collect();
 
-    <span class="comment">// Here we exploit the fact that the mapsquare file yields its locations by id in ascending order.</span>
-    (<span class="number">0</span>..<span class="op">=</span><span class="ident">last_id</span>)
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> {
+    <span class="comment">// Here we exploit the fact that the mapsquare file yields its locations by id in ascending order.
+    </span>(<span class="number">0</span>..=last_id)
+        .map(|id| {
             (
-                <span class="ident">id</span>,
-                <span class="ident">locs</span>.<span class="ident">iter_mut</span>()
-                    .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">iterator</span><span class="op">|</span> <span class="ident">std::iter::repeat_with</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">iterator</span>.<span class="ident">next_if</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span> <span class="op">==</span> <span class="ident">id</span>)).<span class="ident">take_while</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">is_some</span>()))
-                    .<span class="ident">flatten</span>()
-                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span><span class="op">&gt;</span>(),
+                id,
+                locs.iter_mut()
+                    .flat_map(|iterator| std::iter::repeat_with(<span class="kw">move </span>|| iterator.next_if(|loc| loc.id == id)).take_while(|item| item.is_some()))
+                    .flatten()
+                    .collect::&lt;Vec&lt;Location&gt;&gt;(),
             )
         })
-        .<span class="ident">par_bridge</span>()
-        .<span class="ident">for_each</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">id_locs</span>)<span class="op">|</span> {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">id_locs</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="ident">id</span> <span class="op">!</span><span class="op">=</span> <span class="number">83</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="kw-2">&amp;</span><span class="ident">out</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{id}.json&quot;</span>))).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">id_locs</span>).<span class="ident">unwrap</span>();
-                <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+        .par_bridge()
+        .for_each(|(id, id_locs)| {
+            <span class="kw">if </span>!id_locs.is_empty() &amp;&amp; id != <span class="number">83 </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{id}.json&quot;</span>))).unwrap();
+                <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>id_locs).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
             }
         });
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_locations_by_square</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">out</span> <span class="op">=</span> <span class="macro">path_macro::path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;locations&quot;</span>);
+<span class="doccomment">/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+</span><span class="kw">pub fn </span>export_locations_by_square(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;locations&quot;</span>);
 
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">out</span>)<span class="question-mark">?</span>;
-    <span class="ident">MapSquares::new</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>().<span class="ident">par_bridge</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">sq</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="ident">sq</span> <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">expect</span>(<span class="string">&quot;error deserializing mapsquare&quot;</span>);
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">i</span>;
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">j</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">locations</span>) <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">take_locations</span>() {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">locations</span>.<span class="ident">is_empty</span>() {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="kw-2">&amp;</span><span class="ident">out</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{i}_{j}.json&quot;</span>))).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">locations</span>).<span class="ident">unwrap</span>();
-                <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+    fs::create_dir_all(<span class="kw-2">&amp;</span>out)<span class="question-mark">?</span>;
+    MapSquares::new(config)<span class="question-mark">?</span>.into_iter().par_bridge().for_each(|sq| {
+        <span class="kw">let </span>sq = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>);
+        <span class="kw">let </span>i = sq.i;
+        <span class="kw">let </span>j = sq.j;
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(locations) = sq.take_locations() {
+            <span class="kw">if </span>!locations.is_empty() {
+                <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{i}_{j}.json&quot;</span>))).unwrap();
+                <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>locations).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
             }
         }
     });
@@ -889,20 +884,20 @@
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_tiles_by_square</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">out</span> <span class="op">=</span> <span class="macro">path_macro::path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;tiles&quot;</span>);
+<span class="doccomment">/// Saves all occurences of every object id as a `json` file to the folder `out/data/rs3/locations`.
+</span><span class="kw">pub fn </span>export_tiles_by_square(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;tiles&quot;</span>);
 
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">out</span>)<span class="question-mark">?</span>;
-    <span class="ident">MapSquares::new</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>().<span class="ident">par_bridge</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">sq</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="ident">sq</span> <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">expect</span>(<span class="string">&quot;error deserializing mapsquare&quot;</span>);
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">i</span>;
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">j</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">tiles</span>) <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">take_tiles</span>() {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">tiles</span>.<span class="ident">is_empty</span>() {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="kw-2">&amp;</span><span class="ident">out</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{i}_{j}.json&quot;</span>))).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">tiles</span>).<span class="ident">unwrap</span>();
-                <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+    fs::create_dir_all(<span class="kw-2">&amp;</span>out)<span class="question-mark">?</span>;
+    MapSquares::new(config)<span class="question-mark">?</span>.into_iter().par_bridge().for_each(|sq| {
+        <span class="kw">let </span>sq = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>);
+        <span class="kw">let </span>i = sq.i;
+        <span class="kw">let </span>j = sq.j;
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(tiles) = sq.take_tiles() {
+            <span class="kw">if </span>!tiles.is_empty() {
+                <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{i}_{j}.json&quot;</span>))).unwrap();
+                <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>tiles).unwrap();
+                file.write_all(data.as_bytes()).unwrap();
             }
         }
     });
@@ -910,22 +905,22 @@
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)))]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli::Config</span>;
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">water</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">Config::env</span>();
+<span class="attribute">#[cfg(all(test, any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>)))]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::cli::Config;
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>water() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = Config::env();
 
-        <span class="kw">let</span> <span class="ident">squares</span> <span class="op">=</span> <span class="ident">MapSquares::new</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
-        <span class="kw">for</span> <span class="ident">square</span> <span class="kw">in</span> <span class="ident">squares</span> {
-            <span class="kw">let</span> <span class="ident">square</span> <span class="op">=</span> <span class="ident">square</span>.<span class="ident">unwrap</span>();
-            <span class="kw">if</span> <span class="ident">square</span>.<span class="ident">i</span>() <span class="op">==</span> <span class="number">40</span> <span class="op">&amp;&amp;</span> <span class="ident">square</span>.<span class="ident">j</span>() <span class="op">==</span> <span class="number">62</span> {
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
-                    <span class="kw">let</span> <span class="ident">tile</span> <span class="op">=</span> <span class="ident">square</span>.<span class="ident">get_tiles</span>()<span class="question-mark">?</span>.<span class="ident">get</span>([<span class="ident">i</span>, <span class="number">10</span>, <span class="number">10</span>]);
-                    <span class="macro">dbg!</span>(<span class="ident">tile</span>);
-                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+        <span class="kw">let </span>squares = MapSquares::new(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>.into_iter();
+        <span class="kw">for </span>square <span class="kw">in </span>squares {
+            <span class="kw">let </span>square = square.unwrap();
+            <span class="kw">if </span>square.i() == <span class="number">40 </span>&amp;&amp; square.j() == <span class="number">62 </span>{
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
+                    <span class="kw">let </span>tile = square.get_tiles()<span class="question-mark">?</span>.get([i, <span class="number">10</span>, <span class="number">10</span>]);
+                    <span class="macro">dbg!</span>(tile);
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(());
                 }
             }
         }
@@ -933,39 +928,39 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">legacy</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli::Config</span>;
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">decode_50_50</span>() {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">Config::env</span>();
+<span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;legacy&quot;</span>))]
+</span><span class="kw">mod </span>legacy {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::cli::Config;
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>decode_50_50() {
+        <span class="kw">let </span>config = Config::env();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cache</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="number">4</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">cache</span>.<span class="ident">get_index</span>();
-        <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="ident">index</span>[<span class="kw-2">&amp;</span>(<span class="number">50</span>, <span class="number">50</span>)];
-        <span class="macro">dbg!</span>(<span class="ident">meta</span>);
-        <span class="kw">let</span> <span class="ident">locs</span> <span class="op">=</span> <span class="ident">cache</span>.<span class="ident">archive</span>(<span class="ident">meta</span>.<span class="ident">locfile</span> <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap</span>(); <span class="comment">//.file(&amp;0).unwrap();</span>
-        <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">cache</span>.<span class="ident">archive</span>(<span class="ident">meta</span>.<span class="ident">mapfile</span> <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap</span>(); <span class="comment">//.file(&amp;0).unwrap();</span>
-    }
+        <span class="kw">let </span><span class="kw-2">mut </span>cache = CacheIndex::new(<span class="number">4</span>, <span class="kw-2">&amp;</span>config.input).unwrap();
+        <span class="kw">let </span>index = cache.get_index();
+        <span class="kw">let </span>meta = index[<span class="kw-2">&amp;</span>(<span class="number">50</span>, <span class="number">50</span>)];
+        <span class="macro">dbg!</span>(meta);
+        <span class="kw">let </span>locs = cache.archive(meta.locfile <span class="kw">as </span>u32).unwrap(); <span class="comment">//.file(&amp;0).unwrap();
+        </span><span class="kw">let </span>map = cache.archive(meta.mapfile <span class="kw">as </span>u32).unwrap(); <span class="comment">//.file(&amp;0).unwrap();
+    </span>}
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">mapsquare_iter</span> {
+<span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;legacy&quot;</span>))]
+</span><span class="kw">mod </span>mapsquare_iter {
 
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">traverse</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
-        <span class="kw">let</span> <span class="ident">sqs</span> <span class="op">=</span> <span class="ident">MapSquares::new</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>traverse() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
+        <span class="kw">let </span>sqs = MapSquares::new(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">for</span> <span class="ident">sq</span> <span class="kw">in</span> <span class="ident">sqs</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">locations</span>) <span class="op">=</span> <span class="ident">sq</span>.<span class="ident">expect</span>(<span class="string">&quot;error deserializing mapsquare&quot;</span>).<span class="ident">get_locations</span>() {
-                <span class="kw">for</span> <span class="ident">loc</span> <span class="kw">in</span> <span class="ident">locations</span> {
-                    <span class="kw">if</span> <span class="ident">loc</span>.<span class="ident">id</span> <span class="op">==</span> <span class="number">3263</span> {
-                        <span class="macro">println!</span>(<span class="string">&quot;{} {} {} {}&quot;</span>, <span class="ident">loc</span>.<span class="ident">i</span>, <span class="ident">loc</span>.<span class="ident">i</span>, <span class="ident">loc</span>.<span class="ident">x</span>, <span class="ident">loc</span>.<span class="ident">y</span>);
-                        <span class="kw">if</span> <span class="ident">loc</span>.<span class="ident">i</span> <span class="op">==</span> <span class="number">56</span> <span class="op">&amp;&amp;</span> <span class="ident">loc</span>.<span class="ident">j</span> <span class="op">==</span> <span class="number">54</span> <span class="op">&amp;&amp;</span> <span class="ident">loc</span>.<span class="ident">x</span> <span class="op">==</span> <span class="number">62</span> <span class="op">&amp;&amp;</span> <span class="ident">loc</span>.<span class="ident">y</span> <span class="op">==</span> <span class="number">53</span> {
-                            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+        <span class="kw">for </span>sq <span class="kw">in </span>sqs {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(locations) = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).get_locations() {
+                <span class="kw">for </span>loc <span class="kw">in </span>locations {
+                    <span class="kw">if </span>loc.id == <span class="number">3263 </span>{
+                        <span class="macro">println!</span>(<span class="string">&quot;{} {} {} {}&quot;</span>, loc.i, loc.i, loc.x, loc.y);
+                        <span class="kw">if </span>loc.i == <span class="number">56 </span>&amp;&amp; loc.j == <span class="number">54 </span>&amp;&amp; loc.x == <span class="number">62 </span>&amp;&amp; loc.y == <span class="number">53 </span>{
+                            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
                         }
                     }
                 }
@@ -975,32 +970,31 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">map_tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;rs3&quot;</span>))]
+</span><span class="kw">mod </span>map_tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">loc_0_50_50_9_16_is_trapdoor</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>loc_0_50_50_9_16_is_trapdoor() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="number">36687_u32</span>;
-        <span class="kw">let</span> <span class="ident">square</span> <span class="op">=</span> <span class="ident">MapSquare::new</span>(<span class="number">50</span>, <span class="number">50</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
-        <span class="macro">assert!</span>(<span class="ident">square</span>
-            .<span class="ident">get_locations</span>()<span class="question-mark">?</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">any</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span> <span class="op">==</span> <span class="ident">id</span> <span class="op">&amp;&amp;</span> <span class="ident">loc</span>.<span class="ident">plane</span>.<span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="number">0</span>) <span class="op">&amp;&amp;</span> <span class="ident">loc</span>.<span class="ident">x</span> <span class="op">==</span> <span class="number">9</span> <span class="op">&amp;&amp;</span> <span class="ident">loc</span>.<span class="ident">y</span> <span class="op">==</span> <span class="number">16</span>));
+        <span class="kw">let </span>id = <span class="number">36687_u32</span>;
+        <span class="kw">let </span>square = MapSquare::new(<span class="number">50</span>, <span class="number">50</span>, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
+        <span class="macro">assert!</span>(square
+            .get_locations()<span class="question-mark">?
+            </span>.iter()
+            .any(|loc| loc.id == id &amp;&amp; loc.plane.matches(<span class="kw-2">&amp;</span><span class="number">0</span>) &amp;&amp; loc.x == <span class="number">9 </span>&amp;&amp; loc.y == <span class="number">16</span>));
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_tile</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>get_tile() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-        <span class="kw">let</span> <span class="ident">square</span> <span class="op">=</span> <span class="ident">MapSquare::new</span>(<span class="number">49</span>, <span class="number">54</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">_tile</span> <span class="op">=</span> <span class="ident">square</span>.<span class="ident">get_tiles</span>()<span class="question-mark">?</span>.<span class="ident">get</span>([<span class="number">0</span>, <span class="number">24</span>, <span class="number">25</span>]);
+        <span class="kw">let </span>square = MapSquare::new(<span class="number">49</span>, <span class="number">54</span>, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
+        <span class="kw">let </span>_tile = square.get_tiles()<span class="question-mark">?</span>.get([<span class="number">0</span>, <span class="number">24</span>, <span class="number">25</span>]);
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

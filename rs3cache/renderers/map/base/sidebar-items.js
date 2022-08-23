@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["put","Applies ground colouring to the base image."]]});
+window.SIDEBAR_ITEMS = {"fn":[["put","Applies ground colouring to the base image."]]};

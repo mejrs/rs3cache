@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/worldmaps.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>worldmaps.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/worldmaps.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>worldmaps.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -370,373 +365,372 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
-</pre><pre class="rust"><code><span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//!
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">HashMap</span>},
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
-    <span class="ident">iter</span>,
+</span><span class="kw">use </span>std::{
+    collections::{BTreeMap, HashMap},
+    fs::{<span class="self">self</span>, File},
+    io::Write,
+    iter,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype::IndexType</span>,
-    <span class="ident">types::coordinate::Coordinate</span>,
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
+    types::coordinate::Coordinate,
 };
 
-<span class="doccomment">/// Enumeration of the archives in the [WORLDMAP](IndexType::WORLDMAP) index.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WorldMapType</span>;
+<span class="doccomment">/// Enumeration of the archives in the [WORLDMAP](IndexType::WORLDMAP) index.
+</span><span class="kw">pub struct </span>WorldMapType;
 
-<span class="kw">impl</span> <span class="ident">WorldMapType</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ZONES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PASTES</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
+<span class="kw">impl </span>WorldMapType {
+    <span class="attribute">#![allow(missing_docs)]
+    </span><span class="kw">pub const </span>ZONES: u32 = <span class="number">0</span>;
+    <span class="kw">pub const </span>PASTES: u32 = <span class="number">1</span>;
 
-    <span class="doccomment">/// Used to draw the minimap in the top left of the ingame world map interface.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SMALL</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
+    <span class="doccomment">/// Used to draw the minimap in the top left of the ingame world map interface.
+    </span><span class="kw">pub const </span>SMALL: u32 = <span class="number">2</span>;
 
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">UNKNOWN_3</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">3</span>;
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BIG</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">4</span>;
+    <span class="kw">pub const </span>UNKNOWN_3: u32 = <span class="number">3</span>;
+    <span class="kw">pub const </span>BIG: u32 = <span class="number">4</span>;
 }
-<span class="doccomment">/// Describes the general properties of a map zone.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapZone</span> {
-    <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="ident">internal_name</span>: <span class="ident">String</span>,
-    <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="ident">center</span>: <span class="ident">Coordinate</span>,
-    <span class="ident">unknown_1</span>: <span class="ident">u32</span>,
-    <span class="ident">show</span>: <span class="ident">bool</span>,
-    <span class="ident">default_zoom</span>: <span class="ident">u8</span>,
-    <span class="ident">unknown_2</span>: <span class="ident">u8</span>,
-    <span class="ident">bounds</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BoundDef</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes the general properties of a map zone.
+</span><span class="attribute">#[derive(Debug, Serialize)]
+</span><span class="kw">pub struct </span>MapZone {
+    id: u32,
+    internal_name: String,
+    name: String,
+    center: Coordinate,
+    unknown_1: u32,
+    show: bool,
+    default_zoom: u8,
+    unknown_2: u8,
+    bounds: Vec&lt;BoundDef&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">MapZone</span> {
-    <span class="doccomment">/// Returns a mapping of all [`MapZone`] configurations.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-            .<span class="ident">archive</span>(<span class="ident">WorldMapType::ZONES</span>)<span class="question-mark">?</span>
-            .<span class="ident">take_files</span>()
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">file_id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>())
+<span class="kw">impl </span>MapZone {
+    <span class="doccomment">/// Returns a mapping of all [`MapZone`] configurations.
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;HashMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+            </span>.archive(WorldMapType::ZONES)<span class="question-mark">?
+            </span>.take_files()
+            .into_iter()
+            .map(|(file_id, file)| (file_id, <span class="self">Self</span>::deserialize(file_id, file)))
+            .collect())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">internal_name</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_string</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_string</span>();
-        <span class="kw">let</span> <span class="ident">center</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-        <span class="kw">let</span> <span class="ident">show</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-            <span class="number">0</span> =&gt; <span class="bool-val">false</span>,
-            <span class="number">1</span> =&gt; <span class="bool-val">true</span>,
-            <span class="ident">other</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Cannot convert value {} for &#39;show&#39; to boolean&quot;</span>, <span class="ident">other</span>),
+    <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>internal_name = buffer.get_string();
+        <span class="kw">let </span>name = buffer.get_string();
+        <span class="kw">let </span>center = buffer.get_u32().try_into().unwrap();
+        <span class="kw">let </span>unknown_1 = buffer.get_u32();
+        <span class="kw">let </span>show = <span class="kw">match </span>buffer.get_u8() {
+            <span class="number">0 </span>=&gt; <span class="bool-val">false</span>,
+            <span class="number">1 </span>=&gt; <span class="bool-val">true</span>,
+            other =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Cannot convert value {} for &#39;show&#39; to boolean&quot;</span>, other),
         };
-        <span class="kw">let</span> <span class="ident">default_zoom</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-        <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BoundDef::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
+        <span class="kw">let </span>default_zoom = buffer.get_u8();
+        <span class="kw">let </span>unknown_2 = buffer.get_u8();
+        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+        <span class="kw">let </span>bounds = iter::repeat_with(|| BoundDef::deserialize(<span class="kw-2">&amp;mut </span>buffer)).take(count).collect();
 
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+        <span class="macro">debug_assert_eq!</span>(buffer.remaining(), <span class="number">0</span>);
 
-        <span class="self">Self</span> {
-            <span class="ident">id</span>,
-            <span class="ident">internal_name</span>,
-            <span class="ident">name</span>,
-            <span class="ident">center</span>,
-            <span class="ident">unknown_1</span>,
-            <span class="ident">show</span>,
-            <span class="ident">default_zoom</span>,
-            <span class="ident">unknown_2</span>,
-            <span class="ident">bounds</span>,
+        <span class="self">Self </span>{
+            id,
+            internal_name,
+            name,
+            center,
+            unknown_1,
+            show,
+            default_zoom,
+            unknown_2,
+            bounds,
         }
     }
 
-    <span class="doccomment">/// Get a reference to the map zone&#39;s internal name.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">internal_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">internal_name</span>
+    <span class="doccomment">/// Get a reference to the map zone&#39;s internal name.
+    </span><span class="kw">pub fn </span>internal_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.internal_name
     }
 
-    <span class="doccomment">/// Get a reference to the map zone&#39;s internal name.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>
+    <span class="doccomment">/// Get a reference to the map zone&#39;s internal name.
+    </span><span class="kw">pub fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.name
     }
 
-    <span class="doccomment">/// Get the map zone&#39;s center coordinate.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">center</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Coordinate</span> {
-        <span class="self">self</span>.<span class="ident">center</span>
+    <span class="doccomment">/// Get the map zone&#39;s center coordinate.
+    </span><span class="kw">pub const fn </span>center(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Coordinate {
+        <span class="self">self</span>.center
     }
 
-    <span class="doccomment">/// Whether the mapzone is shown.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">show</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">show</span>
+    <span class="doccomment">/// Whether the mapzone is shown.
+    </span><span class="kw">pub const fn </span>show(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.show
     }
 
-    <span class="doccomment">/// Get a reference to the map zone&#39;s unknown 1.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown_1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">unknown_1</span>
+    <span class="doccomment">/// Get a reference to the map zone&#39;s unknown 1.
+    </span><span class="kw">pub const fn </span>unknown_1(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.unknown_1
     }
 
-    <span class="doccomment">/// The map zone&#39;s default zoom.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">default_zoom</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="self">self</span>.<span class="ident">default_zoom</span>
+    <span class="doccomment">/// The map zone&#39;s default zoom.
+    </span><span class="kw">pub const fn </span>default_zoom(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="self">self</span>.default_zoom
     }
 
-    <span class="doccomment">/// Get a reference to the map zone&#39;s unknown 2.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown_2</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="self">self</span>.<span class="ident">unknown_2</span>
+    <span class="doccomment">/// Get a reference to the map zone&#39;s unknown 2.
+    </span><span class="kw">pub const fn </span>unknown_2(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="self">self</span>.unknown_2
     }
 
-    <span class="doccomment">/// Get a reference to the map zone&#39;s bounds.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bounds</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">BoundDef</span>] {
-        <span class="self">self</span>.<span class="ident">bounds</span>.<span class="ident">as_slice</span>()
+    <span class="doccomment">/// Get a reference to the map zone&#39;s bounds.
+    </span><span class="kw">pub fn </span>bounds(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[BoundDef] {
+        <span class="self">self</span>.bounds.as_slice()
     }
 }
 
-<span class="kw">mod</span> <span class="ident">mapzone_fields_impl</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-    <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">mod </span>mapzone_fields_impl {
+    <span class="attribute">#![allow(missing_docs)]
+    </span><span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="kw">use </span>serde::Serialize;
 
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BoundDef</span> {
-        <span class="ident">plane</span>: <span class="ident">u8</span>,
-        <span class="ident">src</span>: <span class="ident">Bound</span>,
-        <span class="ident">dst</span>: <span class="ident">Bound</span>,
+    <span class="attribute">#[derive(Debug, Serialize)]
+    </span><span class="kw">pub struct </span>BoundDef {
+        plane: u8,
+        src: Bound,
+        dst: Bound,
     }
 
-    <span class="kw">impl</span> <span class="ident">BoundDef</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buffer</span>);
-            <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Bound::deserialize</span>(<span class="ident">buffer</span>);
-            <span class="self">Self</span> { <span class="ident">plane</span>, <span class="ident">src</span>, <span class="ident">dst</span> }
+    <span class="kw">impl </span>BoundDef {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>plane = buffer.get_u8();
+            <span class="kw">let </span>src = Bound::deserialize(buffer);
+            <span class="kw">let </span>dst = Bound::deserialize(buffer);
+            <span class="self">Self </span>{ plane, src, dst }
         }
     }
 
-    <span class="doccomment">/// Represents a rectangular area of the game map..</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Bound</span> {
-        <span class="kw">pub</span> <span class="ident">west</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">south</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">east</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">north</span>: <span class="ident">u16</span>,
+    <span class="doccomment">/// Represents a rectangular area of the game map..
+    </span><span class="attribute">#[derive(Debug, Serialize)]
+    </span><span class="kw">pub struct </span>Bound {
+        <span class="kw">pub </span>west: u16,
+        <span class="kw">pub </span>south: u16,
+        <span class="kw">pub </span>east: u16,
+        <span class="kw">pub </span>north: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">Bound</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">west</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">south</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">east</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">north</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+    <span class="kw">impl </span>Bound {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>west = buffer.get_u16();
+            <span class="kw">let </span>south = buffer.get_u16();
+            <span class="kw">let </span>east = buffer.get_u16();
+            <span class="kw">let </span>north = buffer.get_u16();
 
-            <span class="self">Self</span> { <span class="ident">west</span>, <span class="ident">south</span>, <span class="ident">east</span>, <span class="ident">north</span> }
+            <span class="self">Self </span>{ west, south, east, north }
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mapzone_fields_impl</span>::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>mapzone_fields_impl::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Describes how a worldmap is formed from the actual map.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapPastes</span> {
-    <span class="doccomment">///The map id.</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// The horizontal dimension of the world map.</span>
-    <span class="kw">pub</span> <span class="ident">dim_i</span>: <span class="ident">u8</span>,
-    <span class="doccomment">/// The vertical dimension of the world map.</span>
-    <span class="kw">pub</span> <span class="ident">dim_j</span>: <span class="ident">u8</span>,
+<span class="doccomment">/// Describes how a worldmap is formed from the actual map.
+</span><span class="attribute">#[derive(Debug, Serialize)]
+</span><span class="kw">pub struct </span>MapPastes {
+    <span class="doccomment">///The map id.
+    </span><span class="kw">pub </span>id: u32,
+    <span class="doccomment">/// The horizontal dimension of the world map.
+    </span><span class="kw">pub </span>dim_i: u8,
+    <span class="doccomment">/// The vertical dimension of the world map.
+    </span><span class="kw">pub </span>dim_j: u8,
 
-    <span class="doccomment">/// The [`Paste`]s making up the world map.</span>
-    <span class="kw">pub</span> <span class="ident">pastes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Paste</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The [`Paste`]s making up the world map.
+    </span><span class="kw">pub </span>pastes: Vec&lt;Paste&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">MapPastes</span> {
-    <span class="doccomment">/// Returns a mapping of all [`MapPastes`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-            .<span class="ident">archive</span>(<span class="ident">WorldMapType::PASTES</span>)<span class="question-mark">?</span>
-            .<span class="ident">take_files</span>()
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">file_id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>())
+<span class="kw">impl </span>MapPastes {
+    <span class="doccomment">/// Returns a mapping of all [`MapPastes`].
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;HashMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+            </span>.archive(WorldMapType::PASTES)<span class="question-mark">?
+            </span>.take_files()
+            .into_iter()
+            .map(|(file_id, file)| (file_id, <span class="self">Self</span>::deserialize(file_id, file)))
+            .collect())
     }
 
-    <span class="doccomment">/// Constructor for [`MapPastes`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pastes</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+    <span class="doccomment">/// Constructor for [`MapPastes`].
+    </span><span class="kw">pub fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>pastes = Vec::new();
 
-        <span class="kw">let</span> <span class="ident">square_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">square_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_square</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">square_count</span>);
-        <span class="ident">pastes</span>.<span class="ident">extend</span>(<span class="ident">square_pastes</span>);
+        <span class="kw">let </span>square_count = buffer.get_u16() <span class="kw">as </span>usize;
+        <span class="kw">let </span>square_pastes = iter::repeat_with(|| Paste::deserialize_square(<span class="kw-2">&amp;mut </span>buffer)).take(square_count);
+        pastes.extend(square_pastes);
 
-        <span class="kw">let</span> <span class="ident">chunk_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">chunk_pastes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Paste::deserialize_chunk</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">chunk_count</span>);
-        <span class="ident">pastes</span>.<span class="ident">extend</span>(<span class="ident">chunk_pastes</span>);
-        <span class="kw">let</span> <span class="ident">dim_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-        <span class="kw">let</span> <span class="ident">dim_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>);
+        <span class="kw">let </span>chunk_count = buffer.get_u16() <span class="kw">as </span>usize;
+        <span class="kw">let </span>chunk_pastes = iter::repeat_with(|| Paste::deserialize_chunk(<span class="kw-2">&amp;mut </span>buffer)).take(chunk_count);
+        pastes.extend(chunk_pastes);
+        <span class="kw">let </span>dim_i = buffer.get_u8();
+        <span class="kw">let </span>dim_j = buffer.get_u8();
+        <span class="macro">debug_assert_eq!</span>(buffer.remaining(), <span class="number">0</span>);
 
-        <span class="self">Self</span> { <span class="ident">id</span>, <span class="ident">dim_i</span>, <span class="ident">dim_j</span>, <span class="ident">pastes</span> }
+        <span class="self">Self </span>{ id, dim_i, dim_j, pastes }
     }
 }
 
-<span class="kw">mod</span> <span class="ident">mappaste_fields_impl</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-    <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">mod </span>mappaste_fields_impl {
+    <span class="attribute">#![allow(missing_docs)]
+    </span><span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="kw">use </span>serde::Serialize;
 
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Paste</span> {
-        <span class="kw">pub</span> <span class="ident">src_plane</span>: <span class="ident">u8</span>,
-        <span class="kw">pub</span> <span class="ident">n_planes</span>: <span class="ident">u8</span>,
-        <span class="kw">pub</span> <span class="ident">src_i</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">src_j</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">src_chunk</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&gt;</span>,
+    <span class="attribute">#[derive(Debug, Serialize)]
+    </span><span class="kw">pub struct </span>Paste {
+        <span class="kw">pub </span>src_plane: u8,
+        <span class="kw">pub </span>n_planes: u8,
+        <span class="kw">pub </span>src_i: u16,
+        <span class="kw">pub </span>src_j: u16,
+        <span class="kw">pub </span>src_chunk: <span class="prelude-ty">Option</span>&lt;Chunk&gt;,
 
-        <span class="kw">pub</span> <span class="ident">dst_plane</span>: <span class="ident">u8</span>,
-        <span class="kw">pub</span> <span class="ident">dst_i</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">dst_j</span>: <span class="ident">u16</span>,
+        <span class="kw">pub </span>dst_plane: u8,
+        <span class="kw">pub </span>dst_i: u16,
+        <span class="kw">pub </span>dst_j: u16,
 
-        <span class="kw">pub</span> <span class="ident">dst_chunk</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&gt;</span>,
+        <span class="kw">pub </span>dst_chunk: <span class="prelude-ty">Option</span>&lt;Chunk&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">Paste</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_square</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">src_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+    <span class="kw">impl </span>Paste {
+        <span class="kw">pub fn </span>deserialize_square(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>src_plane = buffer.get_u8();
+            <span class="kw">let </span>n_planes = buffer.get_u8();
+            <span class="kw">let </span>src_i = buffer.get_u16();
+            <span class="kw">let </span>src_j = buffer.get_u16();
 
-            <span class="kw">let</span> <span class="ident">dst_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">dst_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">dst_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="kw">let </span>dst_plane = buffer.get_u8();
+            <span class="kw">let </span>dst_i = buffer.get_u16();
+            <span class="kw">let </span>dst_j = buffer.get_u16();
 
-            <span class="self">Self</span> {
-                <span class="ident">src_plane</span>,
-                <span class="ident">n_planes</span>,
-                <span class="ident">src_i</span>,
-                <span class="ident">src_j</span>,
-                <span class="ident">src_chunk</span>: <span class="prelude-val">None</span>,
+            <span class="self">Self </span>{
+                src_plane,
+                n_planes,
+                src_i,
+                src_j,
+                src_chunk: <span class="prelude-val">None</span>,
 
-                <span class="ident">dst_plane</span>,
-                <span class="ident">dst_i</span>,
-                <span class="ident">dst_j</span>,
+                dst_plane,
+                dst_i,
+                dst_j,
 
-                <span class="ident">dst_chunk</span>: <span class="prelude-val">None</span>,
+                dst_chunk: <span class="prelude-val">None</span>,
             }
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_chunk</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">src_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">n_planes</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">src_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">src_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">src_chunk</span> <span class="op">=</span> <span class="ident">Chunk::deserialize</span>(<span class="ident">buffer</span>);
+        <span class="kw">pub fn </span>deserialize_chunk(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>src_plane = buffer.get_u8();
+            <span class="kw">let </span>n_planes = buffer.get_u8();
+            <span class="kw">let </span>src_i = buffer.get_u16();
+            <span class="kw">let </span>src_j = buffer.get_u16();
+            <span class="kw">let </span>src_chunk = Chunk::deserialize(buffer);
 
-            <span class="kw">let</span> <span class="ident">dst_plane</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">dst_i</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">dst_j</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">dst_chunk</span> <span class="op">=</span> <span class="ident">Chunk::deserialize</span>(<span class="ident">buffer</span>);
+            <span class="kw">let </span>dst_plane = buffer.get_u8();
+            <span class="kw">let </span>dst_i = buffer.get_u16();
+            <span class="kw">let </span>dst_j = buffer.get_u16();
+            <span class="kw">let </span>dst_chunk = Chunk::deserialize(buffer);
 
-            <span class="self">Self</span> {
-                <span class="ident">src_plane</span>,
-                <span class="ident">n_planes</span>,
-                <span class="ident">src_i</span>,
-                <span class="ident">src_j</span>,
-                <span class="ident">src_chunk</span>: <span class="prelude-val">Some</span>(<span class="ident">src_chunk</span>),
+            <span class="self">Self </span>{
+                src_plane,
+                n_planes,
+                src_i,
+                src_j,
+                src_chunk: <span class="prelude-val">Some</span>(src_chunk),
 
-                <span class="ident">dst_plane</span>,
-                <span class="ident">dst_i</span>,
-                <span class="ident">dst_j</span>,
+                dst_plane,
+                dst_i,
+                dst_j,
 
-                <span class="ident">dst_chunk</span>: <span class="prelude-val">Some</span>(<span class="ident">dst_chunk</span>),
+                dst_chunk: <span class="prelude-val">Some</span>(dst_chunk),
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Chunk</span> {
-        <span class="kw">pub</span> <span class="ident">x</span>: <span class="ident">u8</span>,
-        <span class="kw">pub</span> <span class="ident">y</span>: <span class="ident">u8</span>,
+    <span class="attribute">#[derive(Debug, Serialize)]
+    </span><span class="kw">pub struct </span>Chunk {
+        <span class="kw">pub </span>x: u8,
+        <span class="kw">pub </span>y: u8,
     }
 
-    <span class="kw">impl</span> <span class="ident">Chunk</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="self">Self</span> { <span class="ident">x</span>, <span class="ident">y</span> }
+    <span class="kw">impl </span>Chunk {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>x = buffer.get_u8();
+            <span class="kw">let </span>y = buffer.get_u8();
+            <span class="self">Self </span>{ x, y }
         }
     }
 }
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mappaste_fields_impl</span>::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>mappaste_fields_impl::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Exports all world map pastes to `out/map_pastes.json`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_pastes</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
-    <span class="comment">// btreemap has deterministic order</span>
-    <span class="kw">let</span> <span class="ident">map_pastes</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">MapPastes</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">MapPastes::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>();
+<span class="doccomment">/// Exports all world map pastes to `out/map_pastes.json`.
+</span><span class="kw">pub fn </span>export_pastes(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
+    <span class="comment">// btreemap has deterministic order
+    </span><span class="kw">let </span>map_pastes: BTreeMap&lt;u32, MapPastes&gt; = MapPastes::dump_all(config)<span class="question-mark">?</span>.into_iter().collect();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;map_pastes.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">map_pastes</span>)<span class="question-mark">?</span>;
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;map_pastes.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>map_pastes)<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Exports all world map zones to `out/map_zones.json`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export_zones</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
+<span class="doccomment">/// Exports all world map zones to `out/map_zones.json`.
+</span><span class="kw">pub fn </span>export_zones(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map_zones</span> <span class="op">=</span> <span class="ident">MapZone::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">map_zones</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>map_zones = MapZone::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    map_zones.sort_unstable_by_key(|loc| loc.id);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;map_zones.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">map_zones</span>)<span class="question-mark">?</span>;
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;map_zones.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>map_zones)<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Exports small images of world maps to `out/world_map_small`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_small</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_small&quot;</span>))<span class="question-mark">?</span>;
+<span class="doccomment">/// Exports small images of world maps to `out/world_map_small`.
+</span><span class="kw">pub fn </span>dump_small(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_small&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-        .<span class="ident">archive</span>(<span class="ident">WorldMapType::SMALL</span>)<span class="question-mark">?</span>
-        .<span class="ident">take_files</span>();
-    <span class="kw">for</span> (<span class="ident">id</span>, <span class="ident">data</span>) <span class="kw">in</span> <span class="ident">files</span> {
-        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_small&quot;</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{id}.png&quot;</span>));
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="ident">filename</span>)<span class="question-mark">?</span>;
-        <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        </span>.archive(WorldMapType::SMALL)<span class="question-mark">?
+        </span>.take_files();
+    <span class="kw">for </span>(id, data) <span class="kw">in </span>files {
+        <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_small&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;{id}.png&quot;</span>));
+        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(filename)<span class="question-mark">?</span>;
+        file.write_all(<span class="kw-2">&amp;</span>data)<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Exports big images of world maps to `out/world_map_big`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_big</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_big&quot;</span>))<span class="question-mark">?</span>;
+<span class="doccomment">/// Exports big images of world maps to `out/world_map_big`.
+</span><span class="kw">pub fn </span>dump_big(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_big&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::WORLDMAP</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-        .<span class="ident">archive</span>(<span class="ident">WorldMapType::BIG</span>)<span class="question-mark">?</span>
-        .<span class="ident">take_files</span>();
+    <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        </span>.archive(WorldMapType::BIG)<span class="question-mark">?
+        </span>.take_files();
 
-    <span class="kw">for</span> (<span class="ident">id</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>) <span class="kw">in</span> <span class="ident">files</span> {
-        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">img</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="ident">size</span>);
+    <span class="kw">for </span>(id, <span class="kw-2">mut </span>buffer) <span class="kw">in </span>files {
+        <span class="kw">let </span>size = buffer.get_u32() <span class="kw">as </span>usize;
+        <span class="kw">let </span>img = buffer.copy_to_bytes(size);
 
-        <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;world_map_big&quot;</span> <span class="op">/</span> <span class="macro">format!</span>(<span class="string">&quot;{id}.png&quot;</span>));
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="ident">filename</span>)<span class="question-mark">?</span>;
-        <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">img</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_big&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;{id}.png&quot;</span>));
+        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(filename)<span class="question-mark">?</span>;
+        file.write_all(<span class="kw-2">&amp;</span>img)<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["DecodeError",""]],"fn":[["decompress","Decompresses index files."]],"struct":[["Compression","Enumeration of different compression types."]]});
+window.SIDEBAR_ITEMS = {"enum":[["DecodeError",""]],"fn":[["decompress","Decompresses index files."]]};

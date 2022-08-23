@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Param","An additional key:property mapping."]],"struct":[["ParamTable","`LocationConfig`s, items and `NpcConfig`s can have additional mapping of keys to properties."]]});
+window.SIDEBAR_ITEMS = {"enum":[["Param","An additional key:property mapping."]],"struct":[["ParamTable","`LocationConfig`s, items and `NpcConfig`s can have additional mapping of keys to properties."]]};

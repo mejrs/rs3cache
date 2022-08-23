@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/buf.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>buf.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/buf.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>buf.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -383,148 +378,158 @@
 <span id="378">378</span>
 <span id="379">379</span>
 <span id="380">380</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Wrapper around [`Cursor`](std::io::Cursor).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This module provides various reads used to decode the cache data</span>
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>},
-    <span class="ident">io</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">Cursor</span>, <span class="ident">SeekFrom</span>},
-    <span class="ident">iter</span>,
-    <span class="ident">panic::Location</span>,
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Wrapper around [`Cursor`](std::io::Cursor).
+//!
+//! This module provides various reads used to decode the cache data
+</span><span class="kw">use </span>std::{
+    fmt::{<span class="self">self</span>, Debug, Display, Formatter},
+    io::{prelude::<span class="kw-2">*</span>, Cursor, SeekFrom},
+    iter,
+    panic::Location,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
+<span class="kw">use </span>bytes::{Buf, Bytes};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error::CacheError</span>;
+<span class="kw">use </span><span class="kw">crate</span>::error::CacheError;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReadError</span> {
-    <span class="ident">location</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Location</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
-    <span class="ident">kind</span>: <span class="ident">Kind</span>,
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub struct </span>ReadError {
+    location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
+    kind: Kind,
 }
-<span class="kw">impl</span> <span class="ident">ReadError</span> {
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eof</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::Error</span>(<span class="ident">ReadErrorKind::Eof</span>),
+<span class="kw">impl </span>ReadError {
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">pub fn </span>eof() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::Error(ReadErrorKind::Eof),
         }
     }
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">not_nul_terminated</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::Error</span>(<span class="ident">ReadErrorKind::NotNulTerminated</span>),
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">pub fn </span>not_nul_terminated() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::Error(ReadErrorKind::NotNulTerminated),
         }
     }
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">opcode_not_implemented</span>(<span class="ident">opcode</span>: <span class="ident">u8</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::Error</span>(<span class="ident">ReadErrorKind::OpcodeNotImplemented</span>(<span class="ident">opcode</span>)),
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">not_exhausted</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::Error</span>(<span class="ident">ReadErrorKind::NotExhausted</span>),
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">pub fn </span>opcode_not_implemented(opcode: u8) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::Error(ReadErrorKind::OpcodeNotImplemented(opcode)),
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">duplicate_opcode</span>(<span class="ident">opcodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">opcode</span>: <span class="ident">u8</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::Error</span>(<span class="ident">ReadErrorKind::DuplicateOpcode</span>(<span class="ident">opcodes</span>, <span class="ident">opcode</span>)),
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">pub fn </span>not_exhausted() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::Error(ReadErrorKind::NotExhausted),
         }
     }
 
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_context</span>(<span class="self">self</span>, <span class="ident">ctx</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::Bubbled</span>(<span class="ident">ctx</span>, <span class="ident">Box::new</span>(<span class="self">self</span>)),
+    <span class="attribute">#[cfg(debug_assertions)]
+    #[track_caller]
+    </span><span class="kw">pub fn </span>duplicate_opcode(opcodes: Vec&lt;u8&gt;, opcode: u8) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::Error(ReadErrorKind::DuplicateOpcode(opcodes, opcode)),
         }
     }
 
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_context_id</span>(<span class="self">self</span>, <span class="ident">ctx</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="ident">Location::caller</span>(),
-            <span class="ident">kind</span>: <span class="ident">Kind::ContextId</span>(<span class="ident">ctx</span>, <span class="ident">Box::new</span>(<span class="self">self</span>)),
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">pub fn </span>add_context(<span class="self">self</span>, ctx: String) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::Bubbled(ctx, Box::new(<span class="self">self</span>)),
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_decode_context</span>(<span class="self">self</span>, <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span> <span class="ident">opcodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">remainder</span>: <span class="ident">Bytes</span>, <span class="ident">parsed</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">location</span>: <span class="self">self</span>.<span class="ident">location</span>,
-            <span class="ident">kind</span>: <span class="ident">Kind::DecodeContext</span>(
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-                <span class="ident">opcodes</span>,
-                <span class="ident">remainder</span>,
-                <span class="ident">parsed</span>,
-                <span class="ident">Box::new</span>(<span class="self">self</span>),
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">pub fn </span>add_context_id(<span class="self">self</span>, ctx: u32) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: Location::caller(),
+            kind: Kind::ContextId(ctx, Box::new(<span class="self">self</span>)),
+        }
+    }
+
+    <span class="kw">pub fn </span>add_decode_context(<span class="self">self</span>, <span class="attribute">#[cfg(debug_assertions)] </span>opcodes: Vec&lt;u8&gt;, remainder: Bytes, parsed: String) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            location: <span class="self">self</span>.location,
+            kind: Kind::DecodeContext(
+                <span class="attribute">#[cfg(debug_assertions)]
+                </span>opcodes,
+                remainder,
+                parsed,
+                Box::new(<span class="self">self</span>),
             ),
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Kind</span> {
-    <span class="ident">Error</span>(<span class="ident">ReadErrorKind</span>),
-    <span class="ident">ContextId</span>(<span class="ident">u32</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">ReadError</span><span class="op">&gt;</span>),
-    <span class="ident">Bubbled</span>(<span class="ident">String</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">ReadError</span><span class="op">&gt;</span>),
-    <span class="ident">DecodeContext</span>(<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Bytes</span>, <span class="ident">String</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">ReadError</span><span class="op">&gt;</span>),
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">enum </span>Kind {
+    Error(ReadErrorKind),
+    ContextId(u32, Box&lt;ReadError&gt;),
+    Bubbled(String, Box&lt;ReadError&gt;),
+    DecodeContext(<span class="attribute">#[cfg(debug_assertions)] </span>Vec&lt;u8&gt;, Bytes, String, Box&lt;ReadError&gt;),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ReadErrorKind</span> {
-    <span class="ident">Eof</span>,
-    <span class="ident">NotNulTerminated</span>,
-    <span class="ident">NotExhausted</span>,
-    <span class="ident">OpcodeNotImplemented</span>(<span class="ident">u8</span>),
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-    <span class="ident">DuplicateOpcode</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">u8</span>),
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub enum </span>ReadErrorKind {
+    Eof,
+    NotNulTerminated,
+    NotExhausted,
+    OpcodeNotImplemented(u8),
+    <span class="attribute">#[cfg(debug_assertions)]
+    </span>DuplicateOpcode(Vec&lt;u8&gt;, u8),
 }
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ReadError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="kw">use</span> <span class="ident">Kind</span>::<span class="kw-2">*</span>;
-        <span class="kw">use</span> <span class="ident">ReadErrorKind</span>::<span class="kw-2">*</span>;
+<span class="kw">impl </span>Display <span class="kw">for </span>ReadError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">use </span>Kind::<span class="kw-2">*</span>;
+        <span class="kw">use </span>ReadErrorKind::<span class="kw-2">*</span>;
 
-        <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">location</span>;
+        <span class="kw">let </span>location = <span class="self">self</span>.location;
 
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">kind</span> {
-            <span class="ident">Error</span>(<span class="ident">Eof</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Unexpected end of file ({location})&quot;</span>)<span class="question-mark">?</span>,
-            <span class="ident">Error</span>(<span class="ident">NotNulTerminated</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Buffer did not contain nul terminator&quot;</span>)<span class="question-mark">?</span>,
-            <span class="ident">Error</span>(<span class="ident">OpcodeNotImplemented</span>(<span class="ident">opcode</span>)) =&gt; {
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Read opcode {opcode}, but decoding opcode {opcode} is not implemented. ({location})&quot;</span>)<span class="question-mark">?</span>
+        <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.kind {
+            Error(Eof) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Unexpected end of file ({location})&quot;</span>)<span class="question-mark">?</span>,
+            Error(NotNulTerminated) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Buffer did not contain nul terminator&quot;</span>)<span class="question-mark">?</span>,
+            Error(OpcodeNotImplemented(opcode)) =&gt; {
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Read opcode {opcode}, but decoding opcode {opcode} is not implemented. ({location})&quot;</span>)<span class="question-mark">?
+            </span>}
+            Error(NotExhausted) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Reached terminating opcode but the buffer was not exhausted ({location})&quot;</span>)<span class="question-mark">?</span>,
+            <span class="attribute">#[cfg(debug_assertions)]
+            </span>Error(DuplicateOpcode(<span class="kw">_</span>, opcode)) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Read opcode {opcode}, but opcode {opcode} was already decoded. ({location})&quot;</span>)<span class="question-mark">?</span>,
+            ContextId(id, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Could not decode id {id} ({location})&quot;</span>)<span class="question-mark">?</span>,
+            Bubbled(<span class="kw-2">ref </span>ctx, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Could not decode {ctx}&quot;</span>)<span class="question-mark">?</span>,
+            <span class="attribute">#[cfg(debug_assertions)]
+            </span>DecodeContext(opcodes, remainder, parsed, src) =&gt; {
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: The unread remainder of the buffer consists of {:?}&quot;</span>, remainder)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: The opcodes read were {:?}&quot;</span>, opcodes)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
             }
-            <span class="ident">Error</span>(<span class="ident">NotExhausted</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Reached terminating opcode but the buffer was not exhausted ({location})&quot;</span>)<span class="question-mark">?</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-            <span class="ident">Error</span>(<span class="ident">DuplicateOpcode</span>(<span class="kw">_</span>, <span class="ident">opcode</span>)) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Read opcode {opcode}, but opcode {opcode} was already decoded. ({location})&quot;</span>)<span class="question-mark">?</span>,
-            <span class="ident">ContextId</span>(<span class="ident">id</span>, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Could not decode id {id} ({location})&quot;</span>)<span class="question-mark">?</span>,
-            <span class="ident">Bubbled</span>(<span class="kw-2">ref</span> <span class="ident">ctx</span>, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Could not decode {ctx}&quot;</span>)<span class="question-mark">?</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-            <span class="ident">DecodeContext</span>(<span class="ident">opcodes</span>, <span class="ident">remainder</span>, <span class="ident">parsed</span>, <span class="ident">src</span>) =&gt; {
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: The unread remainder of the buffer consists of {:?}&quot;</span>, <span class="ident">remainder</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: The opcodes read were {:?}&quot;</span>, <span class="ident">opcodes</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
-            }
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>))]</span>
-            <span class="ident">DecodeContext</span>(<span class="ident">remainder</span>, <span class="ident">parsed</span>, <span class="ident">src</span>) =&gt; {
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: The unread remainder of the buffer consists of {:?}&quot;</span>, <span class="ident">remainder</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
+            <span class="attribute">#[cfg(not(debug_assertions))]
+            </span>DecodeContext(remainder, parsed, src) =&gt; {
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: The unread remainder of the buffer consists of {:?}&quot;</span>, remainder)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
             }
         };
 
@@ -532,237 +537,246 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">ReadError</span> {
-    <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
-            <span class="ident">Kind::ContextId</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">src</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">src</span>),
-            <span class="ident">Kind::Bubbled</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">src</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">src</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>ReadError {
+    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">&#39;static</span>)&gt; {
+        <span class="kw">match </span><span class="self">self</span>.kind {
+            Kind::ContextId(<span class="kw">_</span>, <span class="kw-2">ref </span>src) =&gt; <span class="prelude-val">Some</span>(src),
+            Kind::Bubbled(<span class="kw">_</span>, <span class="kw-2">ref </span>src) =&gt; <span class="prelude-val">Some</span>(src),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">BufExtra</span>: <span class="ident">Buf</span> {
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_u8</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remaining</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">get_u8</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ReadError::eof</span>())
+<span class="kw">pub trait </span>BufExtra: Buf {
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u8, ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">1 </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_u8())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ReadError::eof())
         }
     }
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_i8</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">i8</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remaining</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">get_i8</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ReadError::eof</span>())
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_i8(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;i8, ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">1 </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_i8())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ReadError::eof())
         }
     }
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_u16</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remaining</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">get_u16</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ReadError::eof</span>())
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_i32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remaining</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">4</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">get_i32</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ReadError::eof</span>())
-        }
-    }
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_u32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remaining</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">4</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">get_u32</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ReadError::eof</span>())
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u16, ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">2 </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_u16())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ReadError::eof())
         }
     }
 
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_uint</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">nbytes</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remaining</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">nbytes</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">get_uint</span>(<span class="ident">nbytes</span>))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ReadError::eof</span>())
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_i32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;i32, ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">4 </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_i32())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ReadError::eof())
+        }
+    }
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u32, ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">4 </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_u32())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ReadError::eof())
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">get_array</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">LENGTH</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="ident">LENGTH</span>] {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dst</span> <span class="op">=</span> [<span class="number">0</span>; <span class="ident">LENGTH</span>];
-        <span class="self">self</span>.<span class="ident">copy_to_slice</span>(<span class="kw-2">&amp;mut</span> <span class="ident">dst</span>);
-        <span class="ident">dst</span>
+    <span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_uint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, nbytes: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u64, ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= nbytes {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_uint(nbytes))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ReadError::eof())
+        }
     }
 
-    <span class="doccomment">/// Reads two or four unsigned bytes as an 32-bit unsigned integer.</span>
-    <span class="attribute">#[<span class="ident">track_caller</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_smart32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">condition</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span>().<span class="ident">first</span>().<span class="ident">ok_or_else</span>(<span class="ident">ReadError::eof</span>)<span class="question-mark">?</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">==</span> <span class="number">0x80</span>;
+    <span class="kw">fn </span>get_array&lt;<span class="kw">const </span>LENGTH: usize&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; [u8; LENGTH] {
+        <span class="kw">let </span><span class="kw-2">mut </span>dst = [<span class="number">0</span>; LENGTH];
+        <span class="self">self</span>.copy_to_slice(<span class="kw-2">&amp;mut </span>dst);
+        dst
+    }
 
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">condition</span> {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">try_get_u32</span>()<span class="question-mark">?</span> <span class="op">&amp;</span> <span class="number">0x7FFFFFFF</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>;
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="number">0x7FFF</span> {
-                <span class="prelude-val">None</span>
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">value</span>)
+    <span class="kw">fn </span>try_get_array&lt;<span class="kw">const </span>LENGTH: usize&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;[u8; LENGTH], ReadError&gt; {
+        <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= LENGTH {
+            <span class="prelude-val">Err</span>(ReadError::eof())
+        } <span class="kw">else </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>dst = [<span class="number">0</span>; LENGTH];
+            <span class="self">self</span>.copy_to_slice(<span class="kw-2">&amp;mut </span>dst);
+            <span class="prelude-val">Ok</span>(dst)
+        }
+    }
+
+    <span class="doccomment">/// Reads two or four unsigned bytes as an 32-bit unsigned integer.
+    </span><span class="attribute">#[track_caller]
+    </span><span class="kw">fn </span>try_get_smart32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;, ReadError&gt; {
+        <span class="kw">let </span>condition = <span class="self">self</span>.chunk().first().ok_or_else(ReadError::eof)<span class="question-mark">? </span>&amp; <span class="number">0x80 </span>== <span class="number">0x80</span>;
+
+        <span class="kw">let </span>ret = <span class="kw">if </span>condition {
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.try_get_u32()<span class="question-mark">? </span>&amp; <span class="number">0x7FFFFFFF</span>)
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>value = <span class="self">self</span>.try_get_u16()<span class="question-mark">? </span><span class="kw">as </span>u32;
+            <span class="kw">if </span>value == <span class="number">0x7FFF </span>{
+                <span class="prelude-val">None
+            </span>} <span class="kw">else </span>{
+                <span class="prelude-val">Some</span>(value)
             }
         };
-        <span class="prelude-val">Ok</span>(<span class="ident">ret</span>)
+        <span class="prelude-val">Ok</span>(ret)
     }
 
-    <span class="doccomment">/// Reads two or four unsigned bytes as an 32-bit unsigned integer.</span>
-    <span class="kw">fn</span> <span class="ident">get_smart32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">condition</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span>()[<span class="number">0</span>] <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">==</span> <span class="number">0x80</span>;
+    <span class="doccomment">/// Reads two or four unsigned bytes as an 32-bit unsigned integer.
+    </span><span class="kw">fn </span>get_smart32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
+        <span class="kw">let </span>condition = <span class="self">self</span>.chunk()[<span class="number">0</span>] &amp; <span class="number">0x80 </span>== <span class="number">0x80</span>;
 
-        <span class="kw">if</span> <span class="ident">condition</span> {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">get_u32</span>() <span class="op">&amp;</span> <span class="number">0x7FFFFFFF</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">u32</span>;
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="number">0x7FFF</span> {
-                <span class="prelude-val">None</span>
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">value</span>)
+        <span class="kw">if </span>condition {
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.get_u32() &amp; <span class="number">0x7FFFFFFF</span>)
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>value = <span class="self">self</span>.get_u16() <span class="kw">as </span>u32;
+            <span class="kw">if </span>value == <span class="number">0x7FFF </span>{
+                <span class="prelude-val">None
+            </span>} <span class="kw">else </span>{
+                <span class="prelude-val">Some</span>(value)
             }
         }
     }
 
-    <span class="doccomment">/// Reads one or two unsigned bytes as an 16-bit unsigned integer.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_unsigned_smart</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u16</span>;
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0x80</span> {
-            <span class="ident">i</span> <span class="op">-</span><span class="op">=</span> <span class="number">0x80</span>;
-            <span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> (<span class="self">self</span>.<span class="ident">try_get_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u16</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">i</span>
+    <span class="doccomment">/// Reads one or two unsigned bytes as an 16-bit unsigned integer.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>try_get_unsigned_smart(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u16, ReadError&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="self">self</span>.try_get_u8()<span class="question-mark">? </span><span class="kw">as </span>u16;
+        <span class="kw">let </span>ret = <span class="kw">if </span>i &gt;= <span class="number">0x80 </span>{
+            i -= <span class="number">0x80</span>;
+            i &lt;&lt; <span class="number">8 </span>| (<span class="self">self</span>.try_get_u8()<span class="question-mark">? </span><span class="kw">as </span>u16)
+        } <span class="kw">else </span>{
+            i
         };
-        <span class="prelude-val">Ok</span>(<span class="ident">ret</span>)
+        <span class="prelude-val">Ok</span>(ret)
     }
 
-    <span class="doccomment">/// Reads one or two unsigned bytes as an 16-bit unsigned integer.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_unsigned_smart</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">u16</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">u16</span>;
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0x80</span> {
-            <span class="ident">i</span> <span class="op">-</span><span class="op">=</span> <span class="number">0x80</span>;
-            <span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> (<span class="self">self</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">u16</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">i</span>
+    <span class="doccomment">/// Reads one or two unsigned bytes as an 16-bit unsigned integer.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_unsigned_smart(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u16 {
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="self">self</span>.get_u8() <span class="kw">as </span>u16;
+        <span class="kw">if </span>i &gt;= <span class="number">0x80 </span>{
+            i -= <span class="number">0x80</span>;
+            i &lt;&lt; <span class="number">8 </span>| (<span class="self">self</span>.get_u8() <span class="kw">as </span>u16)
+        } <span class="kw">else </span>{
+            i
         }
     }
 
-    <span class="doccomment">/// Reads Kind one or two bytes.</span>
-    <span class="kw">fn</span> <span class="ident">get_decr_smart</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">u16</span> {
-            <span class="ident">first</span> <span class="kw">if</span> <span class="ident">first</span> <span class="op">&lt;</span> <span class="number">128</span> =&gt; <span class="ident">first</span>.<span class="ident">checked_sub</span>(<span class="number">1</span>),
-            <span class="ident">first</span> =&gt; (<span class="ident">first</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> <span class="self">self</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">u16</span>).<span class="ident">checked_sub</span>(<span class="number">0x8000</span>).<span class="ident">unwrap</span>().<span class="ident">checked_sub</span>(<span class="number">1</span>),
+    <span class="doccomment">/// Reads Kind one or two bytes.
+    </span><span class="kw">fn </span>get_decr_smart(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u16&gt; {
+        <span class="kw">match </span><span class="self">self</span>.get_u8() <span class="kw">as </span>u16 {
+            first <span class="kw">if </span>first &lt; <span class="number">128 </span>=&gt; first.checked_sub(<span class="number">1</span>),
+            first =&gt; (first &lt;&lt; <span class="number">8 </span>| <span class="self">self</span>.get_u8() <span class="kw">as </span>u16).checked_sub(<span class="number">0x8000</span>).unwrap().checked_sub(<span class="number">1</span>),
         }
     }
 
-    <span class="doccomment">/// Reads masked data.</span>
-    <span class="kw">fn</span> <span class="ident">get_masked_data</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mask</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_u8</span>();
-        <span class="kw">while</span> <span class="ident">mask</span> <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">if</span> <span class="ident">mask</span> <span class="op">&amp;</span> <span class="number">0x1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">result</span>.<span class="ident">push</span>((<span class="self">self</span>.<span class="ident">get_smart32</span>(), <span class="self">self</span>.<span class="ident">get_decr_smart</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span> <span class="kw">as</span> <span class="ident">u32</span>)));
-            } <span class="kw">else</span> {
-                <span class="ident">result</span>.<span class="ident">push</span>((<span class="prelude-val">None</span>, <span class="prelude-val">None</span>));
+    <span class="doccomment">/// Reads masked data.
+    </span><span class="kw">fn </span>get_masked_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Vec&lt;(<span class="prelude-ty">Option</span>&lt;u32&gt;, <span class="prelude-ty">Option</span>&lt;u32&gt;)&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>mask = <span class="self">self</span>.get_u8();
+        <span class="kw">while </span>mask &gt; <span class="number">0 </span>{
+            <span class="kw">if </span>mask &amp; <span class="number">0x1 </span>== <span class="number">1 </span>{
+                result.push((<span class="self">self</span>.get_smart32(), <span class="self">self</span>.get_decr_smart().map(|c| c <span class="kw">as </span>u32)));
+            } <span class="kw">else </span>{
+                result.push((<span class="prelude-val">None</span>, <span class="prelude-val">None</span>));
             }
-            <span class="ident">mask</span> <span class="op">/</span><span class="op">=</span> <span class="number">2</span>;
+            mask /= <span class="number">2</span>;
         }
-        <span class="ident">result</span>
+        result
     }
 
-    <span class="doccomment">/// Reads a multiple of two bytes as an 32-bit unsigned integer.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_smarts</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">value</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">u32</span> {
-                <span class="number">0x7FFF</span> =&gt; <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">checked_add</span>(<span class="number">0x7FFF</span>).<span class="ident">expect</span>(<span class="string">&quot;Detected u32 overflow in buffer.get_smarts()&quot;</span>),
-                <span class="ident">offset</span> =&gt; <span class="kw">break</span> <span class="ident">value</span>.<span class="ident">checked_add</span>(<span class="ident">offset</span>).<span class="ident">expect</span>(<span class="string">&quot;Detected u32 overflow in buffer.get_smarts()&quot;</span>),
+    <span class="doccomment">/// Reads a multiple of two bytes as an 32-bit unsigned integer.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_smarts(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u32 {
+        <span class="kw">let </span><span class="kw-2">mut </span>value: u32 = <span class="number">0</span>;
+        <span class="kw">loop </span>{
+            <span class="kw">match </span><span class="self">self</span>.get_unsigned_smart() <span class="kw">as </span>u32 {
+                <span class="number">0x7FFF </span>=&gt; value = value.checked_add(<span class="number">0x7FFF</span>).expect(<span class="string">&quot;Detected u32 overflow in buffer.get_smarts()&quot;</span>),
+                offset =&gt; <span class="kw">break </span>value.checked_add(offset).expect(<span class="string">&quot;Detected u32 overflow in buffer.get_smarts()&quot;</span>),
             }
         }
     }
 
-    <span class="doccomment">/// Reads one byte, returning 8 boolean bitflags.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_bitflags</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; [<span class="ident">bool</span>; <span class="number">8</span>] {
-        <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_u8</span>();
+    <span class="doccomment">/// Reads one byte, returning 8 boolean bitflags.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_bitflags(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; [bool; <span class="number">8</span>] {
+        <span class="kw">let </span>flags = <span class="self">self</span>.get_u8();
         [
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x4</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x8</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x10</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x20</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x40</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-            <span class="ident">flags</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
+            flags &amp; <span class="number">0x1 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x2 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x4 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x8 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x10 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x20 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x40 </span>!= <span class="number">0</span>,
+            flags &amp; <span class="number">0x80 </span>!= <span class="number">0</span>,
         ]
     }
 
-    <span class="doccomment">/// Reads a 0-terminated String from the buffer</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_string</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">terminator</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39;</span> } <span class="kw">else</span> { <span class="string">b&#39;\0&#39;</span> };
+    <span class="doccomment">/// Reads a 0-terminated String from the buffer
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>try_get_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, ReadError&gt; {
+        <span class="kw">let </span>terminator = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39; </span>} <span class="kw">else </span>{ <span class="string">b&#39;\0&#39; </span>};
 
-        <span class="kw">let</span> <span class="ident">nul_pos</span> <span class="op">=</span> <span class="ident">memchr::memchr</span>(<span class="ident">terminator</span>, <span class="self">self</span>.<span class="ident">chunk</span>()).<span class="ident">ok_or_else</span>(<span class="ident">ReadError::not_nul_terminated</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>nul_pos = memchr::memchr(terminator, <span class="self">self</span>.chunk()).ok_or_else(ReadError::not_nul_terminated)<span class="question-mark">?</span>;
 
-        <span class="comment">// this string format is not utf8, of course :)</span>
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span>()[<span class="number">0</span>..<span class="ident">nul_pos</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">char</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>();
-        <span class="self">self</span>.<span class="ident">advance</span>(<span class="ident">nul_pos</span> <span class="op">+</span> <span class="number">1</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">s</span>)
+        <span class="comment">// this string format is not utf8, of course :)
+        </span><span class="kw">let </span>s = <span class="self">self</span>.chunk()[<span class="number">0</span>..nul_pos].iter().map(|<span class="kw-2">&amp;</span>i| i <span class="kw">as </span>char).collect::&lt;String&gt;();
+        <span class="self">self</span>.advance(nul_pos + <span class="number">1</span>);
+        <span class="prelude-val">Ok</span>(s)
     }
 
-    <span class="doccomment">/// Reads a 0-terminated String from the buffer</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_string</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">let</span> <span class="ident">terminator</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39;</span> } <span class="kw">else</span> { <span class="string">b&#39;\0&#39;</span> };
+    <span class="doccomment">/// Reads a 0-terminated String from the buffer
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
+        <span class="kw">let </span>terminator = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39; </span>} <span class="kw">else </span>{ <span class="string">b&#39;\0&#39; </span>};
 
-        <span class="kw">let</span> <span class="ident">nul_pos</span> <span class="op">=</span> <span class="ident">memchr::memchr</span>(<span class="ident">terminator</span>, <span class="self">self</span>.<span class="ident">chunk</span>()).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span>()[<span class="number">0</span>..<span class="ident">nul_pos</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">char</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>();
-        <span class="self">self</span>.<span class="ident">advance</span>(<span class="ident">nul_pos</span> <span class="op">+</span> <span class="number">1</span>);
-        <span class="ident">s</span>
+        <span class="kw">let </span>nul_pos = memchr::memchr(terminator, <span class="self">self</span>.chunk()).unwrap();
+        <span class="kw">let </span>s = <span class="self">self</span>.chunk()[<span class="number">0</span>..nul_pos].iter().map(|<span class="kw-2">&amp;</span>i| i <span class="kw">as </span>char).collect::&lt;String&gt;();
+        <span class="self">self</span>.advance(nul_pos + <span class="number">1</span>);
+        s
     }
 
-    <span class="doccomment">/// Reads a 0-start and 0-terminated String from the buffer.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_padded_string</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="ident">get_u8</span>();
-        <span class="self">self</span>.<span class="ident">get_string</span>()
+    <span class="doccomment">/// Reads a 0-start and 0-terminated String from the buffer.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_padded_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.get_u8();
+        <span class="self">self</span>.get_string()
     }
 
-    <span class="doccomment">/// Reads three unsigned bytes , returning a `[red, blue, green]` array.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_rgb</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; [<span class="ident">u8</span>; <span class="number">3</span>] {
-        <span class="self">self</span>.<span class="ident">get_array</span>()
+    <span class="doccomment">/// Reads three unsigned bytes , returning a `[red, blue, green]` array.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_rgb(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; [u8; <span class="number">3</span>] {
+        <span class="self">self</span>.get_array()
     }
 
-    <span class="doccomment">/// Reads two obfuscated bytes.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">try_get_masked_index</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">ReadError</span><span class="op">&gt;</span> {
-        <span class="comment">// big TODO</span>
-        <span class="self">self</span>.<span class="ident">try_get_u16</span>()
+    <span class="doccomment">/// Reads two obfuscated bytes.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>try_get_masked_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u16, ReadError&gt; {
+        <span class="comment">// big TODO
+        </span><span class="self">self</span>.try_get_u16()
     }
 
-    <span class="doccomment">/// Reads two obfuscated bytes.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">get_masked_index</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">u16</span> {
-        <span class="comment">// big TODO</span>
-        <span class="self">self</span>.<span class="ident">get_u16</span>()
+    <span class="doccomment">/// Reads two obfuscated bytes.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">fn </span>get_masked_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u16 {
+        <span class="comment">// big TODO
+        </span><span class="self">self</span>.get_u16()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Buf</span><span class="op">&gt;</span> <span class="ident">BufExtra</span> <span class="kw">for</span> <span class="ident">T</span> {}
+<span class="kw">impl</span>&lt;T: Buf&gt; BufExtra <span class="kw">for </span>T {}
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

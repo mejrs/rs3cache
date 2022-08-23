@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["VarpOrVarbit","A variable containing either a Varp or Varbit."]],"struct":[["Varbit","A bitmapping of a [`Varp`]"],["Varp","A player variable"]]});
+window.SIDEBAR_ITEMS = {"enum":[["VarpOrVarbit","A variable containing either a Varp or Varbit."]],"struct":[["Varbit","A bitmapping of a [`Varp`]"],["Varp","A player variable"]]};

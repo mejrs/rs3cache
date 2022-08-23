@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/item_configs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>item_configs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/item_configs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>item_configs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -371,374 +366,373 @@
 <span id="366">366</span>
 <span id="367">367</span>
 <span id="368">368</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of items.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of items.
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::BTreeMap</span>,
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
+</span><span class="kw">use </span>std::{
+    collections::BTreeMap,
+    fs::{<span class="self">self</span>, File},
+    io::Write,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype::IndexType</span>,
-    <span class="ident">structures::paramtable::ParamTable</span>,
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
+    structures::paramtable::ParamTable,
 };
 
-<span class="doccomment">/// Describes the properties of a given item.</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ItemConfig</span> {
-    <span class="doccomment">/// Its id.</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="kw">pub</span> <span class="ident">base_model</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">buff_effect</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">rotation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rotation</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">translation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Translation</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">stackable</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">value</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">equipslot_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">equip_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_15</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">is_members</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">multi_stack_size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">male_models</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">female_models</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_27</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ground_actions</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">widget_actions</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">colour_replacements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ColourReplacements</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">textures</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Textures</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">recolour_palette</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RecolourPalette</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">name_color</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">recolour_indices</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">retexture_indices</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">is_tradeable</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ge_buy_limit</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">male_head_models</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">female_head_models</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">category</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">model_yaw</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">dummy_item</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">note_data</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">note_template</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">stack_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u16</span>, <span class="ident">u16</span>)<span class="op">&gt;</span>; <span class="number">10</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">scale</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">contrast</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">team</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ambiance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">loan_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">loan_template</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">male_translate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">female_translate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">quests</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Quests</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">pick_size_shift</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_bind_link</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">bind_template</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ground_action_cursor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">widget_action_cursor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">dummy</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">randomize_ground_pos</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">combine_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">combine_template</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">combine_num_required</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">combine_shard_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">never_stackable</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_167</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_168</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">params</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ParamTable</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes the properties of a given item.
+</span><span class="attribute">#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
+</span><span class="kw">pub struct </span>ItemConfig {
+    <span class="doccomment">/// Its id.
+    </span><span class="kw">pub </span>id: u32,
+    <span class="kw">pub </span>base_model: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="kw">pub </span>name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>buff_effect: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>rotation: <span class="prelude-ty">Option</span>&lt;Rotation&gt;,
+    <span class="kw">pub </span>translation: <span class="prelude-ty">Option</span>&lt;Translation&gt;,
+    <span class="kw">pub </span>stackable: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>value: <span class="prelude-ty">Option</span>&lt;i32&gt;,
+    <span class="kw">pub </span>equipslot_id: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>equip_id: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_15: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>is_members: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>multi_stack_size: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>male_models: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u32&gt;; <span class="number">3</span>]&gt;,
+    <span class="kw">pub </span>female_models: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u32&gt;; <span class="number">3</span>]&gt;,
+    <span class="kw">pub </span>unknown_27: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>ground_actions: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;String&gt;; <span class="number">5</span>]&gt;,
+    <span class="kw">pub </span>widget_actions: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;String&gt;; <span class="number">5</span>]&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>colour_replacements: <span class="prelude-ty">Option</span>&lt;ColourReplacements&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>textures: <span class="prelude-ty">Option</span>&lt;Textures&gt;,
+    <span class="kw">pub </span>recolour_palette: <span class="prelude-ty">Option</span>&lt;RecolourPalette&gt;,
+    <span class="kw">pub </span>name_color: <span class="prelude-ty">Option</span>&lt;i32&gt;,
+    <span class="kw">pub </span>recolour_indices: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>retexture_indices: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>is_tradeable: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>ge_buy_limit: <span class="prelude-ty">Option</span>&lt;i32&gt;,
+    <span class="kw">pub </span>male_head_models: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u32&gt;; <span class="number">2</span>]&gt;,
+    <span class="kw">pub </span>female_head_models: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u32&gt;; <span class="number">2</span>]&gt;,
+    <span class="kw">pub </span>category: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>model_yaw: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>dummy_item: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>note_data: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>note_template: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>stack_info: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;(u16, u16)&gt;; <span class="number">10</span>]&gt;,
+    <span class="kw">pub </span>scale: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u16&gt;; <span class="number">3</span>]&gt;,
+    <span class="kw">pub </span>contrast: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="kw">pub </span>team: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>ambiance: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="kw">pub </span>loan_id: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>loan_template: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>male_translate: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="kw">pub </span>female_translate: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="kw">pub </span>quests: <span class="prelude-ty">Option</span>&lt;Quests&gt;,
+    <span class="kw">pub </span>pick_size_shift: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_bind_link: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>bind_template: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>ground_action_cursor: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u16&gt;; <span class="number">5</span>]&gt;,
+    <span class="kw">pub </span>widget_action_cursor: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u16&gt;; <span class="number">5</span>]&gt;,
+    <span class="kw">pub </span>dummy: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>randomize_ground_pos: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>combine_info: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>combine_template: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>combine_num_required: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>combine_shard_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>never_stackable: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_167: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_168: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>params: <span class="prelude-ty">Option</span>&lt;ParamTable&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">ItemConfig</span> {
-    <span class="doccomment">/// Returns a mapping of all [`ItemConfig`]s.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::OBJ_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
+<span class="kw">impl </span>ItemConfig {
+    <span class="doccomment">/// Returns a mapping of all [`ItemConfig`]s.
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="kw">let </span>archives = CacheIndex::new(IndexType::OBJ_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">let</span> <span class="ident">items</span> <span class="op">=</span> <span class="ident">archives</span>
-            .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
-            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
-                <span class="ident">archive</span>
-                    .<span class="ident">take_files</span>()
-                    .<span class="ident">into_iter</span>()
-                    .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">archive_id</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> <span class="ident">file_id</span>, <span class="ident">file</span>))
+        <span class="kw">let </span>items = archives
+            .map(Result::unwrap)
+            .flat_map(|archive| {
+                <span class="kw">let </span>archive_id = archive.archive_id();
+                archive
+                    .take_files()
+                    .into_iter()
+                    .map(<span class="kw">move </span>|(file_id, file)| (archive_id &lt;&lt; <span class="number">8 </span>| file_id, file))
             })
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-        <span class="prelude-val">Ok</span>(<span class="ident">items</span>)
+            .map(|(id, file)| (id, <span class="self">Self</span>::deserialize(id, file)))
+            .collect::&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt;();
+        <span class="prelude-val">Ok</span>(items)
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">Self</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
+    <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>item = <span class="self">Self </span>{ id, ..Default::default() };
 
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-                <span class="number">0</span> =&gt; {
-                    <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
-                    <span class="kw">break</span> <span class="ident">item</span>;
+        <span class="kw">loop </span>{
+            <span class="kw">match </span>buffer.get_u8() {
+                <span class="number">0 </span>=&gt; {
+                    <span class="macro">debug_assert!</span>(!buffer.has_remaining());
+                    <span class="kw">break </span>item;
                 }
-                <span class="number">1</span> =&gt; <span class="ident">item</span>.<span class="ident">base_model</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">2</span> =&gt; <span class="ident">item</span>.<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">3</span> =&gt; <span class="ident">item</span>.<span class="ident">buff_effect</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">4</span> =&gt; <span class="ident">item</span>.<span class="ident">rotation</span>.<span class="ident">get_or_insert_default</span>().<span class="ident">yaw</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-                <span class="number">5</span> =&gt; <span class="ident">item</span>.<span class="ident">rotation</span>.<span class="ident">get_or_insert_default</span>().<span class="ident">pitch</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-                <span class="number">6</span> =&gt; <span class="ident">item</span>.<span class="ident">rotation</span>.<span class="ident">get_or_insert_default</span>().<span class="ident">roll</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-                <span class="number">7</span> =&gt; <span class="ident">item</span>.<span class="ident">translation</span>.<span class="ident">get_or_insert_default</span>().<span class="ident">x</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-                <span class="number">8</span> =&gt; <span class="ident">item</span>.<span class="ident">translation</span>.<span class="ident">get_or_insert_default</span>().<span class="ident">y</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>(),
-                <span class="number">11</span> =&gt; <span class="ident">item</span>.<span class="ident">stackable</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">12</span> =&gt; <span class="ident">item</span>.<span class="ident">value</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>()),
-                <span class="number">13</span> =&gt; <span class="ident">item</span>.<span class="ident">equipslot_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">14</span> =&gt; <span class="ident">item</span>.<span class="ident">equip_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">15</span> =&gt; <span class="ident">item</span>.<span class="ident">unknown_15</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">16</span> =&gt; <span class="ident">item</span>.<span class="ident">is_members</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">23</span> =&gt; <span class="ident">item</span>.<span class="ident">male_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">0</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">24</span> =&gt; <span class="ident">item</span>.<span class="ident">male_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">1</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">25</span> =&gt; <span class="ident">item</span>.<span class="ident">female_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">0</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">26</span> =&gt; <span class="ident">item</span>.<span class="ident">female_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">1</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">27</span> =&gt; <span class="ident">item</span>.<span class="ident">unknown_27</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="ident">opcode</span> @ <span class="number">30</span>..<span class="op">=</span><span class="number">34</span> =&gt; {
-                    <span class="ident">item</span>.<span class="ident">ground_actions</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">30</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())
+                <span class="number">1 </span>=&gt; item.base_model = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">2 </span>=&gt; item.name = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">3 </span>=&gt; item.buff_effect = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">4 </span>=&gt; item.rotation.get_or_insert_default().yaw = buffer.get_u16(),
+                <span class="number">5 </span>=&gt; item.rotation.get_or_insert_default().pitch = buffer.get_u16(),
+                <span class="number">6 </span>=&gt; item.rotation.get_or_insert_default().roll = buffer.get_u16(),
+                <span class="number">7 </span>=&gt; item.translation.get_or_insert_default().x = buffer.get_u16(),
+                <span class="number">8 </span>=&gt; item.translation.get_or_insert_default().y = buffer.get_u16(),
+                <span class="number">11 </span>=&gt; item.stackable = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">12 </span>=&gt; item.value = <span class="prelude-val">Some</span>(buffer.get_i32()),
+                <span class="number">13 </span>=&gt; item.equipslot_id = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">14 </span>=&gt; item.equip_id = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">15 </span>=&gt; item.unknown_15 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">16 </span>=&gt; item.is_members = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">23 </span>=&gt; item.male_models.get_or_insert_default()[<span class="number">0</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">24 </span>=&gt; item.male_models.get_or_insert_default()[<span class="number">1</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">25 </span>=&gt; item.female_models.get_or_insert_default()[<span class="number">0</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">26 </span>=&gt; item.female_models.get_or_insert_default()[<span class="number">1</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">27 </span>=&gt; item.unknown_27 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                opcode @ <span class="number">30</span>..=<span class="number">34 </span>=&gt; {
+                    item.ground_actions.get_or_insert([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])[opcode <span class="kw">as </span>usize - <span class="number">30</span>] = <span class="prelude-val">Some</span>(buffer.get_string())
                 }
-                <span class="ident">opcode</span> @ <span class="number">35</span>..<span class="op">=</span><span class="number">39</span> =&gt; {
-                    <span class="ident">item</span>.<span class="ident">widget_actions</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">35</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())
+                opcode @ <span class="number">35</span>..=<span class="number">39 </span>=&gt; {
+                    item.widget_actions.get_or_insert([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>])[opcode <span class="kw">as </span>usize - <span class="number">35</span>] = <span class="prelude-val">Some</span>(buffer.get_string())
                 }
-                <span class="number">40</span> =&gt; <span class="ident">item</span>.<span class="ident">colour_replacements</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ColourReplacements::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">41</span> =&gt; <span class="ident">item</span>.<span class="ident">textures</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Textures::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">42</span> =&gt; <span class="ident">item</span>.<span class="ident">recolour_palette</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">RecolourPalette::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">44</span> =&gt; <span class="ident">item</span>.<span class="ident">recolour_indices</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_masked_index</span>()),
-                <span class="number">45</span> =&gt; <span class="ident">item</span>.<span class="ident">retexture_indices</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_masked_index</span>()),
-                <span class="number">65</span> =&gt; <span class="ident">item</span>.<span class="ident">is_tradeable</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">69</span> =&gt; <span class="ident">item</span>.<span class="ident">ge_buy_limit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>()),
-                <span class="number">78</span> =&gt; <span class="ident">item</span>.<span class="ident">male_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">2</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">79</span> =&gt; <span class="ident">item</span>.<span class="ident">female_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">2</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">90</span> =&gt; <span class="ident">item</span>.<span class="ident">male_head_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">0</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">91</span> =&gt; <span class="ident">item</span>.<span class="ident">female_head_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">0</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">92</span> =&gt; <span class="ident">item</span>.<span class="ident">male_head_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">1</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">93</span> =&gt; <span class="ident">item</span>.<span class="ident">female_head_models</span>.<span class="ident">get_or_insert_default</span>()[<span class="number">1</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">94</span> =&gt; <span class="ident">item</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">95</span> =&gt; <span class="ident">item</span>.<span class="ident">model_yaw</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">96</span> =&gt; <span class="ident">item</span>.<span class="ident">dummy_item</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">97</span> =&gt; <span class="ident">item</span>.<span class="ident">note_data</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">98</span> =&gt; <span class="ident">item</span>.<span class="ident">note_template</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="ident">opcode</span> @ <span class="number">100</span>..<span class="op">=</span><span class="number">109</span> =&gt; <span class="ident">item</span>.<span class="ident">stack_info</span>.<span class="ident">get_or_insert_default</span>()[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">100</span>] <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">buffer</span>.<span class="ident">get_u16</span>(), <span class="ident">buffer</span>.<span class="ident">get_u16</span>())),
-                <span class="ident">opcode</span> @ <span class="number">110</span>..<span class="op">=</span><span class="number">112</span> =&gt; <span class="ident">item</span>.<span class="ident">scale</span>.<span class="ident">get_or_insert_default</span>()[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">110</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">113</span> =&gt; <span class="ident">item</span>.<span class="ident">ambiance</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="number">114</span> =&gt; <span class="ident">item</span>.<span class="ident">contrast</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="number">115</span> =&gt; <span class="ident">item</span>.<span class="ident">team</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">121</span> =&gt; <span class="ident">item</span>.<span class="ident">loan_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">122</span> =&gt; <span class="ident">item</span>.<span class="ident">loan_template</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">125</span> =&gt; <span class="ident">item</span>.<span class="ident">male_translate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>),
-                <span class="number">126</span> =&gt; <span class="ident">item</span>.<span class="ident">female_translate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>),
-                <span class="number">132</span> =&gt; <span class="ident">item</span>.<span class="ident">quests</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Quests::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">134</span> =&gt; <span class="ident">item</span>.<span class="ident">pick_size_shift</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">139</span> =&gt; <span class="ident">item</span>.<span class="ident">unknown_bind_link</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">140</span> =&gt; <span class="ident">item</span>.<span class="ident">bind_template</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="ident">opcode</span> @ <span class="number">142</span>..<span class="op">=</span><span class="number">146</span> =&gt; <span class="ident">item</span>.<span class="ident">ground_action_cursor</span>.<span class="ident">get_or_insert_default</span>()[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">142</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="ident">opcode</span> @ <span class="number">150</span>..<span class="op">=</span><span class="number">154</span> =&gt; <span class="ident">item</span>.<span class="ident">widget_action_cursor</span>.<span class="ident">get_or_insert_default</span>()[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">150</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">157</span> =&gt; <span class="ident">item</span>.<span class="ident">randomize_ground_pos</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">161</span> =&gt; <span class="ident">item</span>.<span class="ident">combine_info</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">162</span> =&gt; <span class="ident">item</span>.<span class="ident">combine_template</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">163</span> =&gt; <span class="ident">item</span>.<span class="ident">combine_num_required</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">164</span> =&gt; <span class="ident">item</span>.<span class="ident">combine_shard_name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">165</span> =&gt; <span class="ident">item</span>.<span class="ident">never_stackable</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">167</span> =&gt; <span class="ident">item</span>.<span class="ident">unknown_167</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">168</span> =&gt; <span class="ident">item</span>.<span class="ident">unknown_168</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">249</span> =&gt; <span class="ident">item</span>.<span class="ident">params</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ParamTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
+                <span class="number">40 </span>=&gt; item.colour_replacements = <span class="prelude-val">Some</span>(ColourReplacements::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">41 </span>=&gt; item.textures = <span class="prelude-val">Some</span>(Textures::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">42 </span>=&gt; item.recolour_palette = <span class="prelude-val">Some</span>(RecolourPalette::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">44 </span>=&gt; item.recolour_indices = <span class="prelude-val">Some</span>(buffer.get_masked_index()),
+                <span class="number">45 </span>=&gt; item.retexture_indices = <span class="prelude-val">Some</span>(buffer.get_masked_index()),
+                <span class="number">65 </span>=&gt; item.is_tradeable = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">69 </span>=&gt; item.ge_buy_limit = <span class="prelude-val">Some</span>(buffer.get_i32()),
+                <span class="number">78 </span>=&gt; item.male_models.get_or_insert_default()[<span class="number">2</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">79 </span>=&gt; item.female_models.get_or_insert_default()[<span class="number">2</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">90 </span>=&gt; item.male_head_models.get_or_insert_default()[<span class="number">0</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">91 </span>=&gt; item.female_head_models.get_or_insert_default()[<span class="number">0</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">92 </span>=&gt; item.male_head_models.get_or_insert_default()[<span class="number">1</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">93 </span>=&gt; item.female_head_models.get_or_insert_default()[<span class="number">1</span>] = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">94 </span>=&gt; item.category = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">95 </span>=&gt; item.model_yaw = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">96 </span>=&gt; item.dummy_item = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">97 </span>=&gt; item.note_data = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">98 </span>=&gt; item.note_template = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                opcode @ <span class="number">100</span>..=<span class="number">109 </span>=&gt; item.stack_info.get_or_insert_default()[opcode <span class="kw">as </span>usize - <span class="number">100</span>] = <span class="prelude-val">Some</span>((buffer.get_u16(), buffer.get_u16())),
+                opcode @ <span class="number">110</span>..=<span class="number">112 </span>=&gt; item.scale.get_or_insert_default()[opcode <span class="kw">as </span>usize - <span class="number">110</span>] = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">113 </span>=&gt; item.ambiance = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="number">114 </span>=&gt; item.contrast = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="number">115 </span>=&gt; item.team = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">121 </span>=&gt; item.loan_id = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">122 </span>=&gt; item.loan_template = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">125 </span>=&gt; item.male_translate = <span class="prelude-val">Some</span>(buffer.get_uint(<span class="number">3</span>) <span class="kw">as </span>u32),
+                <span class="number">126 </span>=&gt; item.female_translate = <span class="prelude-val">Some</span>(buffer.get_uint(<span class="number">3</span>) <span class="kw">as </span>u32),
+                <span class="number">132 </span>=&gt; item.quests = <span class="prelude-val">Some</span>(Quests::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">134 </span>=&gt; item.pick_size_shift = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">139 </span>=&gt; item.unknown_bind_link = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">140 </span>=&gt; item.bind_template = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                opcode @ <span class="number">142</span>..=<span class="number">146 </span>=&gt; item.ground_action_cursor.get_or_insert_default()[opcode <span class="kw">as </span>usize - <span class="number">142</span>] = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                opcode @ <span class="number">150</span>..=<span class="number">154 </span>=&gt; item.widget_action_cursor.get_or_insert_default()[opcode <span class="kw">as </span>usize - <span class="number">150</span>] = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">157 </span>=&gt; item.randomize_ground_pos = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">161 </span>=&gt; item.combine_info = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">162 </span>=&gt; item.combine_template = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">163 </span>=&gt; item.combine_num_required = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">164 </span>=&gt; item.combine_shard_name = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">165 </span>=&gt; item.never_stackable = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">167 </span>=&gt; item.unknown_167 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">168 </span>=&gt; item.unknown_168 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">249 </span>=&gt; item.params = <span class="prelude-val">Some</span>(ParamTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
 
-                <span class="ident">missing</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;ItemConfig::deserialize cannot deserialize opcode {} in id {}&quot;</span>, <span class="ident">missing</span>, <span class="ident">id</span>),
+                missing =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;ItemConfig::deserialize cannot deserialize opcode {} in id {}&quot;</span>, missing, id),
             }
         }
     }
 }
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display, Formatter};
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ItemConfig</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>).<span class="ident">unwrap</span>())
+<span class="kw">impl </span>Display <span class="kw">for </span>ItemConfig {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, serde_json::to_string_pretty(<span class="kw-2">&amp;</span><span class="self">self</span>).unwrap())
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">ItemConfig</span> {
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;ItemConfig({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>ItemConfig {
+    <span class="kw">fn </span>__repr__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;ItemConfig({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;ItemConfig({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
-    }
-}
-
-<span class="doccomment">/// Defines the structs used as fields of [`ItemConfig`],</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">item_config_fields</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">iter</span>};
-
-    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Rotation</span> {
-        <span class="kw">pub</span> <span class="ident">yaw</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">pitch</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">roll</span>: <span class="ident">u16</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Translation</span> {
-        <span class="kw">pub</span> <span class="ident">x</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">y</span>: <span class="ident">u16</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ColourReplacements</span> {
-        <span class="kw">pub</span> <span class="ident">colours</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u16</span>, <span class="ident">u16</span>)<span class="op">&gt;</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">pymethods</span>]</span>
-    <span class="kw">impl</span> <span class="ident">ColourReplacements</span> {
-        <span class="attribute">#[<span class="ident">getter</span>]</span>
-        <span class="kw">fn</span> <span class="ident">colours</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u16</span>, <span class="ident">u16</span>)<span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">colours</span>.<span class="ident">clone</span>())
-        }
-    }
-
-    <span class="kw">impl</span> <span class="ident">ColourReplacements</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">colours</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>(), <span class="ident">buffer</span>.<span class="ident">get_u16</span>())).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">colours</span> }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Textures</span> {
-        <span class="kw">pub</span> <span class="ident">textures</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">u16</span><span class="op">&gt;</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">pymethods</span>]</span>
-    <span class="kw">impl</span> <span class="ident">Textures</span> {
-        <span class="attribute">#[<span class="ident">getter</span>]</span>
-        <span class="kw">fn</span> <span class="ident">textures</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">textures</span>.<span class="ident">clone</span>())
-        }
-    }
-
-    <span class="kw">impl</span> <span class="ident">Textures</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="ident">Textures</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">textures</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>(), <span class="ident">buffer</span>.<span class="ident">get_u16</span>()))
-                .<span class="ident">take</span>(<span class="ident">count</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="ident">Textures</span> { <span class="ident">textures</span> }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Quests</span> {
-        <span class="kw">pub</span> <span class="ident">quests</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    }
-
-    <span class="kw">impl</span> <span class="ident">Quests</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">quests</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
-            <span class="self">Self</span> { <span class="ident">quests</span> }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StackInfo</span> {
-        <span class="ident">unknown_1</span>: <span class="ident">u16</span>,
-        <span class="ident">unknown_2</span>: <span class="ident">u16</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">pymethods</span>]</span>
-    <span class="kw">impl</span> <span class="ident">StackInfo</span> {
-        <span class="attribute">#[<span class="ident">getter</span>]</span>
-        <span class="kw">fn</span> <span class="ident">unknown_1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">unknown_1</span>)
-        }
-        <span class="attribute">#[<span class="ident">getter</span>]</span>
-        <span class="kw">fn</span> <span class="ident">unknown_2</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">unknown_2</span>)
-        }
-    }
-
-    <span class="kw">impl</span> <span class="ident">StackInfo</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="self">Self</span> { <span class="ident">unknown_1</span>, <span class="ident">unknown_2</span> }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RecolourPalette</span> {
-        <span class="kw">pub</span> <span class="ident">palette</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">pymethods</span>]</span>
-    <span class="kw">impl</span> <span class="ident">RecolourPalette</span> {
-        <span class="attribute">#[<span class="ident">getter</span>]</span>
-        <span class="kw">fn</span> <span class="ident">palette</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">palette</span>.<span class="ident">clone</span>())
-        }
-    }
-
-    <span class="kw">impl</span> <span class="ident">RecolourPalette</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-
-            <span class="kw">let</span> <span class="ident">palette</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">palette</span> }
-        }
+    <span class="kw">fn </span>__str__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;ItemConfig({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 }
 
-<span class="kw">use</span> <span class="ident">item_config_fields</span>::<span class="kw-2">*</span>;
+<span class="doccomment">/// Defines the structs used as fields of [`ItemConfig`],
+</span><span class="kw">pub mod </span>item_config_fields {
+    <span class="attribute">#![allow(missing_docs)]
+    </span><span class="kw">use </span>std::{collections::BTreeMap, iter};
 
-<span class="doccomment">/// Save the item configs as `item_configs.json`. Exposed as `--dump item_configs`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">item_configs</span> <span class="op">=</span> <span class="ident">ItemConfig::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">item_configs</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span>);
+    <span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+    <span class="kw">use </span>serde::Serialize;
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;item_configs.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">item_configs</span>).<span class="ident">unwrap</span>();
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
+    </span><span class="kw">pub struct </span>Rotation {
+        <span class="kw">pub </span>yaw: u16,
+        <span class="kw">pub </span>pitch: u16,
+        <span class="kw">pub </span>roll: u16,
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
+    </span><span class="kw">pub struct </span>Translation {
+        <span class="kw">pub </span>x: u16,
+        <span class="kw">pub </span>y: u16,
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>ColourReplacements {
+        <span class="kw">pub </span>colours: Vec&lt;(u16, u16)&gt;,
+    }
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    #[pymethods]
+    </span><span class="kw">impl </span>ColourReplacements {
+        <span class="attribute">#[getter]
+        </span><span class="kw">fn </span>colours(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;Vec&lt;(u16, u16)&gt;&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.colours.clone())
+        }
+    }
+
+    <span class="kw">impl </span>ColourReplacements {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>colours = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16())).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ colours }
+        }
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>Textures {
+        <span class="kw">pub </span>textures: BTreeMap&lt;u16, u16&gt;,
+    }
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    #[pymethods]
+    </span><span class="kw">impl </span>Textures {
+        <span class="attribute">#[getter]
+        </span><span class="kw">fn </span>textures(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;BTreeMap&lt;u16, u16&gt;&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.textures.clone())
+        }
+    }
+
+    <span class="kw">impl </span>Textures {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; Textures {
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>textures = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16()))
+                .take(count)
+                .collect::&lt;BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;();
+            Textures { textures }
+        }
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone)]
+    </span><span class="kw">pub struct </span>Quests {
+        <span class="kw">pub </span>quests: Vec&lt;u16&gt;,
+    }
+
+    <span class="kw">impl </span>Quests {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>quests = iter::repeat_with(|| buffer.get_u16()).take(count).collect();
+            <span class="self">Self </span>{ quests }
+        }
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
+    </span><span class="kw">pub struct </span>StackInfo {
+        unknown_1: u16,
+        unknown_2: u16,
+    }
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    #[pymethods]
+    </span><span class="kw">impl </span>StackInfo {
+        <span class="attribute">#[getter]
+        </span><span class="kw">fn </span>unknown_1(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;u16&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.unknown_1)
+        }
+        <span class="attribute">#[getter]
+        </span><span class="kw">fn </span>unknown_2(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;u16&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.unknown_2)
+        }
+    }
+
+    <span class="kw">impl </span>StackInfo {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>unknown_1 = buffer.get_u16();
+            <span class="kw">let </span>unknown_2 = buffer.get_u16();
+            <span class="self">Self </span>{ unknown_1, unknown_2 }
+        }
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone)]
+    </span><span class="kw">pub struct </span>RecolourPalette {
+        <span class="kw">pub </span>palette: Vec&lt;i8&gt;,
+    }
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    #[pymethods]
+    </span><span class="kw">impl </span>RecolourPalette {
+        <span class="attribute">#[getter]
+        </span><span class="kw">fn </span>palette(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;Vec&lt;i8&gt;&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.palette.clone())
+        }
+    }
+
+    <span class="kw">impl </span>RecolourPalette {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+
+            <span class="kw">let </span>palette = iter::repeat_with(|| buffer.get_i8()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ palette }
+        }
+    }
+}
+
+<span class="kw">use </span>item_config_fields::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// Save the item configs as `item_configs.json`. Exposed as `--dump item_configs`.
+</span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>item_configs = ItemConfig::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    item_configs.sort_unstable_by_key(|loc| loc.id);
+
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;item_configs.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>item_configs).unwrap();
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

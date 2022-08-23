@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["render","Entry point for the map renderer."],["render_tile","Responsible for rendering a single `MapSquare`."],["save_smallest",""]],"static":[["CONFIG",""]],"struct":[["RenderConfig",""]]});
+window.SIDEBAR_ITEMS = {"fn":[["render","Entry point for the map renderer."],["render_tile","Responsible for rendering a single `MapSquare`."],["save_smallest",""]],"static":[["CONFIG",""]],"struct":[["RenderConfig",""]]};

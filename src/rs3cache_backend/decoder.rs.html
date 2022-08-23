@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/decoder.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decoder.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/decoder.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decoder.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -159,162 +154,249 @@
 <span id="154">154</span>
 <span id="155">155</span>
 <span id="156">156</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Functions to decompress cache data.</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">fmt</span>::{<span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>},
-    <span class="ident">io::Read</span>,
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Functions to decompress cache data.
+</span><span class="attribute">#![allow(deprecated)]
+</span><span class="kw">use </span>std::{
+    fmt::{Debug, Display, Formatter},
+    io::{Read, ReadBuf},
+    mem::MaybeUninit,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">libflate</span>::{<span class="ident">gzip</span>, <span class="ident">zlib</span>};
+<span class="kw">use </span>bytes::{Buf, BufMut, Bytes, BytesMut};
+<span class="kw">use </span>libflate::{gzip, zlib};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::buf::BufExtra</span>;
-<span class="doccomment">/// Enumeration of different compression types.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Compression</span>;
+<span class="kw">use </span><span class="kw">crate</span>::buf::BufExtra;
 
-<span class="kw">impl</span> <span class="ident">Compression</span> {
-    <span class="doccomment">/// Token for no compression.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NONE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="doccomment">/// Token for bzip compression.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BZIP</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="doccomment">/// Token for gzip compression.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">GZIP</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="doccomment">/// Token for zlib compression.</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ZLIB</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>] <span class="op">=</span> <span class="string">b&quot;ZLB&quot;</span>;
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">DAT_GZIP</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>] <span class="op">=</span> <span class="string">b&quot;\x1f\x8b\x08&quot;</span>;
-}
+<span class="doccomment">/// Decompresses index files.
+///
+/// Used internally by [`CacheIndex`](crate::index::CacheIndex).
+</span><span class="kw">pub fn </span>decompress(<span class="kw-2">mut </span>encoded_data: Vec&lt;u8&gt;, <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)] </span>xtea: <span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::xtea::Xtea&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Bytes, DecodeError&gt; {
+    <span class="kw">match </span><span class="kw-2">&amp;mut *</span>encoded_data {
+        <span class="comment">// The zlib format
+        </span>[<span class="string">b&#39;Z&#39;</span>, <span class="string">b&#39;L&#39;</span>, <span class="string">b&#39;B&#39;</span>, <span class="string">b&#39;\x01&#39;</span>, x0, x1, x2, x3, data @ ..] =&gt; {
+            <span class="kw">let </span>length = u32::from_be_bytes([<span class="kw-2">*</span>x0, <span class="kw-2">*</span>x1, <span class="kw-2">*</span>x2, <span class="kw-2">*</span>x3]);
+            <span class="kw">let </span>decoder = zlib::Decoder::new(<span class="kw-2">&amp;*</span>data)<span class="question-mark">?</span>;
+            <span class="kw">let </span>ret = do_read(decoder, length)<span class="question-mark">?</span>;
 
-<span class="doccomment">/// Decompresses index files.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Used internally by [`CacheIndex`](crate::index::CacheIndex).</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decompress</span>(
-    <span class="ident">encoded_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="ident">filesize</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span> <span class="ident">xtea</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::xtea::Xtea</span><span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Bytes</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
-    <span class="comment">// Return an error when someone packed an empty file</span>
-    <span class="comment">//#[cfg(any(feature = &quot;legacy&quot;, feature = &quot;2008_3_shim&quot;))]</span>
-    <span class="kw">if</span> <span class="ident">encoded_data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">3</span> {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError::Other</span>(<span class="string">&quot;File was empty&quot;</span>.<span class="ident">to_string</span>()));
-    }
-
-    <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">0</span>..<span class="number">3</span>] {
-        <span class="ident">Compression::ZLIB</span> =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">zlib::Decoder::new</span>(<span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">8</span>..])<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-            <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
+            <span class="prelude-val">Ok</span>(ret)
         }
 
-        <span class="kw-2">&amp;</span>[<span class="ident">Compression::NONE</span>, ..] =&gt; {
-            <span class="comment">// length is encoded_data[1..5] as u32 + 7</span>
-            <span class="prelude-val">Ok</span>(<span class="ident">encoded_data</span>[<span class="number">5</span>..(<span class="ident">encoded_data</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">2</span>)].<span class="ident">to_vec</span>().<span class="ident">into</span>())
+        <span class="comment">// No compression
+        </span>[<span class="number">0</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, data @ .., <span class="kw">_</span>, <span class="kw">_</span>] =&gt; {
+            <span class="kw">let </span>ret = Bytes::copy_from_slice(data);
+            <span class="prelude-val">Ok</span>(ret)
         }
 
-        <span class="kw-2">&amp;</span>[<span class="ident">Compression::BZIP</span>, ..] =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp</span> <span class="op">=</span> <span class="string">b&quot;BZh1&quot;</span>.<span class="ident">to_vec</span>();
-            <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">u32::from_be_bytes</span>([<span class="ident">encoded_data</span>[<span class="number">5</span>], <span class="ident">encoded_data</span>[<span class="number">6</span>], <span class="ident">encoded_data</span>[<span class="number">7</span>], <span class="ident">encoded_data</span>[<span class="number">8</span>]]) <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="comment">// The bzip format
+        </span>[<span class="number">1</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, data @ ..] =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>header = <span class="kw-2">*</span><span class="string">b&quot;BZh1&quot;</span>;
+            <span class="kw">let </span>length: <span class="kw-2">&amp;mut </span>[u8; <span class="number">4</span>] = data.get_mut(<span class="number">0</span>..<span class="number">4</span>).unwrap().try_into().unwrap();
+            std::mem::swap(<span class="kw-2">&amp;mut </span>header, length);
+            <span class="kw">let </span>length = u32::from_be_bytes(header);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">unwrap_or</span>(<span class="ident">length</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-
-            <span class="ident">temp</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">9</span>..]);
-
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">bzip2_rs::DecoderReader::new</span>(<span class="ident">temp</span>.<span class="ident">as_slice</span>());
-
-            <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
+            <span class="kw">let </span>decoder = bzip2_rs::DecoderReader::new(<span class="kw-2">&amp;*</span>data);
+            <span class="kw">let </span>ret = do_read(decoder, length)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(ret)
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-        <span class="kw-2">&amp;</span>[<span class="ident">Compression::GZIP</span>, ..] <span class="kw">if</span> <span class="ident">xtea</span>.<span class="ident">is_some</span>() =&gt; {
-            <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">u32::from_be_bytes</span>([<span class="ident">encoded_data</span>[<span class="number">1</span>], <span class="ident">encoded_data</span>[<span class="number">2</span>], <span class="ident">encoded_data</span>[<span class="number">3</span>], <span class="ident">encoded_data</span>[<span class="number">4</span>]]) <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="comment">// A xtea-encrypted gzip
+        </span><span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+        </span>[<span class="number">2</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, data @ .., <span class="kw">_</span>, <span class="kw">_</span>] <span class="kw">if </span>xtea.is_some() =&gt; {
+            <span class="kw">let </span>xtea = xtea.unwrap();
+            <span class="kw">let </span>decrypted = <span class="kw">crate</span>::xtea::Xtea::decrypt(data, xtea);
 
-            <span class="kw">let</span> <span class="ident">xtea</span> <span class="op">=</span> <span class="ident">xtea</span>.<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">decrypted</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::xtea::Xtea::decrypt</span>(<span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">5</span>..(<span class="ident">length</span> <span class="op">+</span> <span class="number">9</span>)], <span class="ident">xtea</span>);
-
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">gzip::Decoder::new</span>(<span class="kw-2">&amp;</span><span class="ident">decrypted</span>[<span class="number">4</span>..]) {
-                <span class="prelude-val">Ok</span>(<span class="ident">decoder</span>) =&gt; <span class="ident">decoder</span>,
-                <span class="prelude-val">Err</span>(<span class="ident">_e</span>) =&gt; {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError::XteaError</span>);
-                }
-            };
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-            <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded_data</span>).<span class="ident">expect</span>(<span class="string">&quot;oops&quot;</span>);
-
-            <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
-        }
-
-        <span class="kw-2">&amp;</span>[<span class="ident">Compression::GZIP</span>, ..] =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">gzip::Decoder::new</span>(<span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">9</span>..])<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-            <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded_data</span>)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
-        }
-
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>)]</span>
-        <span class="ident">Compression::DAT_GZIP</span> =&gt; {
-            <span class="comment">// Sometimes these trailing versions are missing, and the below code</span>
-            <span class="comment">// shouldn&#39;t omit the last two bytes.</span>
-            <span class="kw">if</span> <span class="kw">let</span> [<span class="ident">data</span> @ .., <span class="ident">_version</span>, <span class="ident">_version_part2</span>] <span class="op">=</span> <span class="ident">encoded_data</span>.<span class="ident">as_slice</span>() {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">gzip::Decoder::new</span>(<span class="ident">data</span>).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded_data</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">filesize</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-                <span class="ident">decoder</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">decoded_data</span>).<span class="ident">unwrap</span>();
-                <span class="prelude-val">Ok</span>(<span class="ident">decoded_data</span>.<span class="ident">into</span>())
-            } <span class="kw">else</span> {
+            <span class="kw">if let </span>[x0, x1, x2, x3, decrypted @ ..] = <span class="kw-2">&amp;*</span>decrypted {
+                <span class="kw">let </span>decoder = gzip::Decoder::new(decrypted).map_err(|<span class="kw">_</span>| DecodeError::XteaError)<span class="question-mark">?</span>;
+                <span class="kw">let </span>length = u32::from_be_bytes([<span class="kw-2">*</span>x0, <span class="kw-2">*</span>x1, <span class="kw-2">*</span>x2, <span class="kw-2">*</span>x3]);
+                <span class="kw">let </span>ret = do_read(decoder, length)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(ret)
+            } <span class="kw">else </span>{
                 <span class="macro">unreachable!</span>()
             }
         }
 
-        <span class="kw">_</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;unknown format {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">encoded_data</span>[<span class="number">0</span>..<span class="number">30</span>]),
+        <span class="comment">// The gzip format
+        </span>[<span class="number">2</span>, _y0, _y1, _y2, _y3, x0, x1, x2, x3, data @ ..] =&gt; {
+            <span class="kw">let </span>length = u32::from_be_bytes([<span class="kw-2">*</span>x0, <span class="kw-2">*</span>x1, <span class="kw-2">*</span>x2, <span class="kw-2">*</span>x3]);
+            <span class="kw">let </span>decoder = gzip::Decoder::new(<span class="kw-2">&amp;*</span>data)<span class="question-mark">?</span>;
+            <span class="kw">let </span>ret = do_read(decoder, length)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(ret)
+        }
+
+        <span class="comment">// An older variant of the gzip format
+        </span><span class="attribute">#[cfg(feature = <span class="string">&quot;dat&quot;</span>)]
+        </span>[<span class="string">b&#39;\x1f&#39;</span>, <span class="string">b&#39;\x8b&#39;</span>, <span class="string">b&#39;\x08&#39;</span>, data @ ..] =&gt; {
+            <span class="kw">if let </span>[data @ .., _version, _version_part2] = data {
+                <span class="kw">let </span>ret: <span class="prelude-ty">Result</span>&lt;Bytes, DecodeError&gt; = <span class="kw">try </span>{
+                    <span class="kw">let </span><span class="kw-2">mut </span>decoder = gzip::Decoder::new(<span class="kw-2">&amp;*</span>data)<span class="question-mark">?</span>;
+                    <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
+                    decoder.read_to_end(<span class="kw-2">&amp;mut </span>buf).unwrap();
+                    buf.into()
+                };
+                <span class="kw">if </span>ret.is_err() {
+                    <span class="comment">// Sometimes tools generate caches where trailing versions are missing,
+                    // and the below code includes the last two bytes.
+                    </span><span class="kw">let </span>data = encoded_data.as_slice();
+                    <span class="kw">let </span><span class="kw-2">mut </span>decoder = gzip::Decoder::new(data)<span class="question-mark">?</span>;
+                    <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
+                    decoder.read_to_end(<span class="kw-2">&amp;mut </span>buf).unwrap();
+                    <span class="prelude-val">Ok</span>(buf.into())
+                } <span class="kw">else </span>{
+                    ret
+                }
+            } <span class="kw">else </span>{
+                <span class="macro">unreachable!</span>()
+            }
+        }
+
+        <span class="comment">// Some tools pack empty files
+        </span>[] | [<span class="kw">_</span>] | [<span class="kw">_</span>, <span class="kw">_</span>] | [<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>] =&gt; <span class="prelude-val">Err</span>(DecodeError::Other(<span class="string">&quot;File was empty&quot;</span>.to_string())),
+
+        <span class="comment">// Oh no
+        </span><span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;unknown format {:?}&quot;</span>, <span class="kw-2">&amp;</span>encoded_data[<span class="number">0</span>..<span class="number">30</span>]),
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DecodeError</span> {
-    <span class="doccomment">/// Wraps [`std::io::Error`].</span>
-    <span class="ident">IoError</span>(<span class="ident">std::io::Error</span>),
-    <span class="doccomment">/// Wraps [`bzip2_rs::decoder::DecoderError`].</span>
-    <span class="ident">BZip2Error</span>(<span class="ident">bzip2_rs::decoder::DecoderError</span>),
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-    <span class="ident">XteaError</span>,
-    <span class="ident">Other</span>(<span class="ident">String</span>),
+<span class="kw">fn </span>do_read(<span class="kw-2">mut </span>decoder: <span class="kw">impl </span>Read, len: u32) -&gt; <span class="prelude-ty">Result</span>&lt;Bytes, DecodeError&gt; {
+    <span class="kw">if </span>len == <span class="number">0 </span>{
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(Bytes::new());
+    }
+    <span class="kw">let </span>len = len <span class="kw">as </span>usize;
+    <span class="kw">let </span><span class="kw-2">mut </span>buf = BytesMut::with_capacity(len);
+
+    <span class="kw">unsafe </span>{
+        <span class="kw">let </span>uninit = buf.chunk_mut();
+        <span class="kw">let </span>uninit = std::slice::from_raw_parts_mut(uninit.as_mut_ptr().cast::&lt;MaybeUninit&lt;u8&gt;&gt;(), uninit.len());
+        <span class="kw">let </span><span class="kw-2">mut </span>rbuf = ReadBuf::uninit(uninit);
+
+        decoder.read_buf_exact(<span class="kw-2">&amp;mut </span>rbuf)<span class="question-mark">?</span>;
+        <span class="kw">let </span>init_len = rbuf.initialized_len();
+        buf.set_len(init_len);
+    }
+    <span class="prelude-val">Ok</span>(buf.freeze())
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">std::io::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">std::io::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="ident">cause</span>)
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub enum </span>DecodeError {
+    <span class="doccomment">/// Wraps [`std::io::Error`].
+    </span>IoError(std::io::Error),
+    <span class="doccomment">/// Wraps [`bzip2_rs::decoder::DecoderError`].
+    </span>BZip2Error(bzip2_rs::decoder::DecoderError),
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+    </span>XteaError,
+    Other(String),
+}
+
+<span class="kw">impl </span>From&lt;std::io::Error&gt; <span class="kw">for </span>DecodeError {
+    <span class="kw">fn </span>from(cause: std::io::Error) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::IoError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">bzip2_rs::decoder::DecoderError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">bzip2_rs::decoder::DecoderError</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::BZip2Error</span>(<span class="ident">cause</span>)
+<span class="kw">impl </span>From&lt;bzip2_rs::decoder::DecoderError&gt; <span class="kw">for </span>DecodeError {
+    <span class="kw">fn </span>from(cause: bzip2_rs::decoder::DecoderError) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::BZip2Error(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::BZip2Error</span>(<span class="ident">e</span>) =&gt; <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>, <span class="ident">f</span>),
-            <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="ident">e</span>) =&gt; <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>, <span class="ident">f</span>),
-            <span class="ident"><span class="self">Self</span>::Other</span>(<span class="ident">e</span>) =&gt; <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>, <span class="ident">f</span>),
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>)]</span>
-            <span class="ident"><span class="self">Self</span>::XteaError</span> =&gt; <span class="ident">Display::fmt</span>(<span class="string">&quot;XteaError&quot;</span>, <span class="ident">f</span>),
+<span class="kw">impl </span>Display <span class="kw">for </span>DecodeError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::BZip2Error(e) =&gt; Display::fmt(<span class="kw-2">&amp;</span>e, f),
+            <span class="self">Self</span>::IoError(e) =&gt; Display::fmt(<span class="kw-2">&amp;</span>e, f),
+            <span class="self">Self</span>::Other(e) =&gt; Display::fmt(<span class="kw-2">&amp;</span>e, f),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+            </span><span class="self">Self</span>::XteaError =&gt; Display::fmt(<span class="string">&quot;XteaError&quot;</span>, f),
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
-    <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::BZip2Error</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>DecodeError {
+    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">&#39;static</span>)&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::BZip2Error(e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::IoError(e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
+    }
+}
+
+<span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;sqlite&quot;</span>))]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use </span>std::error::Error;
+
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>zlib() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+        <span class="kw">let </span>file = <span class="macro">include_bytes!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;CARGO_MANIFEST_DIR&quot;</span>), <span class="string">&quot;/data/zlib_encoded.dat&quot;</span>)).to_vec();
+        <span class="kw">let </span>buf = decompress(file)<span class="question-mark">?</span>;
+        <span class="kw">let </span>out = <span class="macro">include_bytes!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;CARGO_MANIFEST_DIR&quot;</span>), <span class="string">&quot;/data/zlib_decoded.dat&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>buf, out);
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>bzip() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+        <span class="kw">let </span>file = <span class="macro">include_bytes!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;CARGO_MANIFEST_DIR&quot;</span>), <span class="string">&quot;/data/bzip_encoded.dat&quot;</span>)).to_vec();
+        <span class="kw">let </span>buf = decompress(file)<span class="question-mark">?</span>;
+        <span class="kw">let </span>out = <span class="macro">include_bytes!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;CARGO_MANIFEST_DIR&quot;</span>), <span class="string">&quot;/data/bzip_decoded.dat&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>buf, out);
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>gzip() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+        <span class="kw">let </span>file = <span class="macro">include_bytes!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;CARGO_MANIFEST_DIR&quot;</span>), <span class="string">&quot;/data/gzip_encoded.dat&quot;</span>)).to_vec();
+        <span class="kw">let </span>buf = decompress(file)<span class="question-mark">?</span>;
+        <span class="kw">let </span>out = <span class="macro">include_bytes!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;CARGO_MANIFEST_DIR&quot;</span>), <span class="string">&quot;/data/gzip_decoded.dat&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>buf, out);
+        <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

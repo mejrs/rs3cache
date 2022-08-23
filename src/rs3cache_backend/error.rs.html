@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -205,208 +200,213 @@
 <span id="200">200</span>
 <span id="201">201</span>
 <span id="202">202</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">backtrace::Backtrace</span>, <span class="ident">path::PathBuf</span>};
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+</pre><pre class="rust"><code><span class="kw">use </span>std::{backtrace::Backtrace, path::PathBuf};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">buf::ReadError</span>, <span class="ident">decoder::DecodeError</span>};
-<span class="doccomment">/// Result wrapper for [`CacheError`].</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">CacheError</span><span class="op">&gt;</span>;
+<span class="kw">use crate</span>::{buf::ReadError, decoder::DecodeError};
+<span class="doccomment">/// Result wrapper for [`CacheError`].
+</span><span class="kw">pub type </span>CacheResult&lt;T&gt; = <span class="prelude-ty">Result</span>&lt;T, CacheError&gt;;
 
-<span class="doccomment">/// An error type for things that can go wrong when reading from the cache.</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CacheError</span> {
-    <span class="doccomment">/// Wraps [`sqlite::Error`].</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-    <span class="ident">SqliteError</span>(<span class="ident">sqlite::Error</span>),
-    <span class="ident">DecodeError</span>(<span class="ident">DecodeError</span>),
-    <span class="doccomment">/// Wraps [`io.error`](std::io::Error).</span>
-    <span class="ident">IoError</span>(<span class="ident">std::io::Error</span>),
-    <span class="doccomment">/// Wraps [`ParseIntError`](std::num::ParseIntError).</span>
-    <span class="ident">ParseIntError</span>(<span class="ident">std::num::ParseIntError</span>),
-    <span class="doccomment">/// Wraps [`image::ImageError`].</span>
-    <span class="ident">ImageError</span>(<span class="ident">image::ImageError</span>),
-    <span class="doccomment">/// Wraps [`serde_json::Error`].</span>
-    <span class="ident">JsonDecodeError</span>(<span class="ident">Backtrace</span>, <span class="ident">serde_json::Error</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Wraps [`serde_json::Error`].</span>
-    <span class="ident">JsonEncodeError</span>(<span class="ident">Backtrace</span>, <span class="ident">serde_json::Error</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Raised when the CRC field of the requested archive is unequal</span>
-    <span class="doccomment">/// to the one in its [`Metadata`](crate::meta::Metadata).</span>
-    <span class="ident">CrcError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">i64</span>, <span class="ident">i64</span>),
-    <span class="doccomment">/// Raised when the CRC field of the requested archive is unequal</span>
-    <span class="doccomment">/// to the one in its [`Metadata`](crate::meta::Metadata).</span>
-    <span class="ident">VersionError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">i64</span>, <span class="ident">i64</span>),
-    <span class="doccomment">/// Raised if a file fails during decompression.</span>
-    <span class="ident">DecompressionError</span>(<span class="ident">String</span>),
-    <span class="doccomment">/// Raised if the index cannot be found, usually if the cache is missing or malformed.</span>
-    <span class="ident">CacheNotFoundError</span>(<span class="ident">std::io::Error</span>, <span class="ident">PathBuf</span>),
-    <span class="doccomment">/// Raised if an [`Archive`](crate::arc::Archive) is not in the [`CacheIndex`](crate::index::CacheIndex).</span>
-    <span class="ident">ArchiveNotFoundError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>),
-    <span class="doccomment">/// Raised if a file is not in an [`Archive`](crate::arc::Archive).</span>
-    <span class="ident">FileNotFoundError</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">u32</span>),
-    <span class="doccomment">/// Raised if reading from a buffer fails</span>
-    <span class="ident">ReadError</span>(<span class="ident">ReadError</span>),
+<span class="doccomment">/// An error type for things that can go wrong when reading from the cache.
+</span><span class="kw">pub enum </span>CacheError {
+    <span class="doccomment">/// Wraps [`sqlite::Error`].
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+    </span>SqliteError(sqlite::Error),
+    DecodeError(DecodeError),
+    <span class="doccomment">/// Wraps [`io.error`](std::io::Error).
+    </span>IoError(std::io::Error),
+    <span class="doccomment">/// Wraps [`ParseIntError`](std::num::ParseIntError).
+    </span>ParseIntError(std::num::ParseIntError),
+    <span class="doccomment">/// Wraps [`image::ImageError`].
+    </span>ImageError(image::ImageError),
+    <span class="doccomment">/// Wraps [`serde_json::Error`].
+    </span>JsonDecodeError(Backtrace, serde_json::Error, <span class="prelude-ty">Option</span>&lt;PathBuf&gt;),
+    <span class="doccomment">/// Wraps [`serde_json::Error`].
+    </span>JsonEncodeError(Backtrace, serde_json::Error, <span class="prelude-ty">Option</span>&lt;PathBuf&gt;),
+    <span class="doccomment">/// Raised when the CRC field of the requested archive is unequal
+    /// to the one in its [`Metadata`](crate::meta::Metadata).
+    </span>CrcError(u32, u32, i64, i64),
+    <span class="doccomment">/// Raised when the CRC field of the requested archive is unequal
+    /// to the one in its [`Metadata`](crate::meta::Metadata).
+    </span>VersionError(u32, u32, i64, i64),
+    <span class="doccomment">/// Raised if a file fails during decompression.
+    </span>DecompressionError(String),
+    <span class="doccomment">/// Raised if the index cannot be found, usually if the cache is missing or malformed.
+    </span>CacheNotFoundError(std::io::Error, PathBuf),
+    <span class="doccomment">/// Raised if an [`Archive`](crate::arc::Archive) is not in the [`CacheIndex`](crate::index::CacheIndex).
+    </span>ArchiveNotFoundError(u32, u32),
+    <span class="doccomment">/// Raised if a file is not in an [`Archive`](crate::arc::Archive).
+    </span>FileNotFoundError(u32, u32, u32),
+    <span class="doccomment">/// Raised if reading from a buffer fails
+    </span>ReadError(ReadError),
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">sqlite::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">sqlite::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::SqliteError</span>(<span class="ident">cause</span>)
+<span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+</span><span class="kw">impl </span>From&lt;sqlite::Error&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: sqlite::Error) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::SqliteError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">std::io::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">std::io::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="ident">cause</span>)
+<span class="kw">impl </span>From&lt;std::io::Error&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: std::io::Error) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::IoError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">std::num::ParseIntError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">std::num::ParseIntError</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::ParseIntError</span>(<span class="ident">cause</span>)
+<span class="kw">impl </span>From&lt;std::num::ParseIntError&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: std::num::ParseIntError) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ParseIntError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">image::ImageError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">image::ImageError</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::ImageError</span>(<span class="ident">cause</span>)
+<span class="kw">impl </span>From&lt;image::ImageError&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: image::ImageError) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ImageError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">serde_json::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">serde_json::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">if</span> <span class="ident">cause</span>.<span class="ident">is_io</span>() {
-            <span class="ident"><span class="self">Self</span>::JsonDecodeError</span>(<span class="ident">Backtrace::force_capture</span>(), <span class="ident">cause</span>, <span class="prelude-val">None</span>)
-        } <span class="kw">else</span> {
-            <span class="ident"><span class="self">Self</span>::JsonEncodeError</span>(<span class="ident">Backtrace::force_capture</span>(), <span class="ident">cause</span>, <span class="prelude-val">None</span>)
+<span class="kw">impl </span>From&lt;serde_json::Error&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: serde_json::Error) -&gt; <span class="self">Self </span>{
+        <span class="kw">if </span>cause.is_io() {
+            <span class="self">Self</span>::JsonDecodeError(Backtrace::force_capture(), cause, <span class="prelude-val">None</span>)
+        } <span class="kw">else </span>{
+            <span class="self">Self</span>::JsonEncodeError(Backtrace::force_capture(), cause, <span class="prelude-val">None</span>)
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">DecodeError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">DecodeError</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::DecodeError</span>(<span class="ident">cause</span>)
+<span class="kw">impl </span>From&lt;DecodeError&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: DecodeError) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::DecodeError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ReadError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">cause</span>: <span class="ident">ReadError</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::ReadError</span>(<span class="ident">cause</span>)
+<span class="kw">impl </span>From&lt;ReadError&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: ReadError) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ReadError(cause)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">CacheError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">error</span>: <span class="kw-2">&amp;</span><span class="ident">CacheError</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// gross workaround for CacheError not being copy/clone-able</span>
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">error</span> {
-            <span class="ident"><span class="self">Self</span>::FileNotFoundError</span>(<span class="ident">index</span>, <span class="ident">archive</span>, <span class="ident">file</span>) =&gt; <span class="ident"><span class="self">Self</span>::FileNotFoundError</span>(<span class="ident">index</span>, <span class="ident">archive</span>, <span class="ident">file</span>),
-            <span class="kw">_</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Error can&#39;t be cloned&quot;</span>),
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>CacheError&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(error: <span class="kw-2">&amp;</span>CacheError) -&gt; <span class="self">Self </span>{
+        <span class="comment">// gross workaround for CacheError not being copy/clone-able
+        </span><span class="kw">match </span><span class="kw-2">*</span>error {
+            <span class="self">Self</span>::FileNotFoundError(index, archive, file) =&gt; <span class="self">Self</span>::FileNotFoundError(index, archive, file),
+            <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Error can&#39;t be cloned&quot;</span>),
         }
     }
 }
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
+<span class="kw">use </span>std::fmt::{Debug, Display, Formatter};
 
-<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="ident">Display::fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>)
+<span class="kw">impl </span>Debug <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        Display::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">use</span> <span class="ident">std::error::Error</span>;
+<span class="kw">impl </span>Display <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">use </span>std::error::Error;
 
-        <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;An error occurred while interpreting the cache.&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln!</span>(f, <span class="string">&quot;An error occurred while interpreting the cache.&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
 
-        <span class="comment">// Do some special formatting for the first source error</span>
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::JsonDecodeError</span>(<span class="kw">_</span>, <span class="ident">source</span>, <span class="prelude-val">Some</span>(<span class="ident">file</span>)) =&gt; <span class="macro">writeln!</span>(
-                <span class="ident">f</span>,
+        <span class="comment">// Do some special formatting for the first source error
+        </span><span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::JsonDecodeError(<span class="kw">_</span>, source, <span class="prelude-val">Some</span>(file)) =&gt; <span class="macro">writeln!</span>(
+                f,
                 <span class="string">&quot;Caused by `serde_json::Error`: {} while deserializing {}&quot;</span>,
-                <span class="ident">source</span>,
-                <span class="ident">file</span>.<span class="ident">to_string_lossy</span>()
+                source,
+                file.to_string_lossy()
             )<span class="question-mark">?</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
-            <span class="ident"><span class="self">Self</span>::CacheNotFoundError</span>(<span class="ident">e</span>, <span class="ident">file</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path_absolutize::Absolutize::absolutize</span>(<span class="ident">file</span>).<span class="ident">unwrap_or</span>(<span class="ident">std::borrow::Cow::Borrowed</span>(<span class="ident">file</span>));
+            <span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+            </span><span class="self">Self</span>::CacheNotFoundError(e, file) =&gt; {
+                <span class="kw">let </span>path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
                 <span class="macro">writeln!</span>(
-                    <span class="ident">f</span>,
+                    f,
                     <span class="string">&quot;Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n&quot;</span>,
-                    <span class="ident">e</span>, <span class="ident">path</span>
+                    e, path
                 )<span class="question-mark">?</span>;
             }
-            <span class="ident"><span class="self">Self</span>::CrcError</span>(<span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">crc1</span>, <span class="ident">crc2</span>) =&gt; {
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Index {} Archive {}: Crc does not match: {} !=  {}&quot;</span>, <span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">crc1</span>, <span class="ident">crc2</span>)<span class="question-mark">?</span>
-            }
-            <span class="ident"><span class="self">Self</span>::VersionError</span>(<span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">v1</span>, <span class="ident">v2</span>) =&gt; {
-                <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Index {} Archive {}: Version does not match: {} !=  {}&quot;</span>, <span class="ident">index_id</span>, <span class="ident">archive_id</span>, <span class="ident">v1</span>, <span class="ident">v2</span>)<span class="question-mark">?</span>
-            }
-            <span class="ident"><span class="self">Self</span>::ArchiveNotFoundError</span>(<span class="number">5</span>, <span class="ident">archive</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Index 5 does not contain mapsquare ({}, {})&quot;</span>, <span class="ident">archive</span> <span class="op">&amp;</span> <span class="number">0x7F</span>, <span class="ident">archive</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>)<span class="question-mark">?</span>,
-            <span class="ident"><span class="self">Self</span>::ArchiveNotFoundError</span>(<span class="ident">index</span>, <span class="ident">archive</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Index {} does not contain archive {}&quot;</span>, <span class="ident">index</span>, <span class="ident">archive</span>)<span class="question-mark">?</span>,
-            <span class="ident"><span class="self">Self</span>::FileNotFoundError</span>(<span class="ident">index</span>, <span class="ident">archive</span>, <span class="ident">file</span>) =&gt; <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;\nIndex {}, Archive {} does not contain file {}&quot;</span>, <span class="ident">index</span>, <span class="ident">archive</span>, <span class="ident">file</span>)<span class="question-mark">?</span>,
-            <span class="kw">_</span> =&gt; {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">source</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">source</span>() {
-                    <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Caused by: {}&quot;</span>, <span class="ident">source</span>)<span class="question-mark">?</span>;
+            <span class="self">Self</span>::CrcError(index_id, archive_id, crc1, crc2) =&gt; {
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Index {} Archive {}: Crc does not match: {} !=  {}&quot;</span>, index_id, archive_id, crc1, crc2)<span class="question-mark">?
+            </span>}
+            <span class="self">Self</span>::VersionError(index_id, archive_id, v1, v2) =&gt; {
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;Index {} Archive {}: Version does not match: {} !=  {}&quot;</span>, index_id, archive_id, v1, v2)<span class="question-mark">?
+            </span>}
+            <span class="self">Self</span>::ArchiveNotFoundError(<span class="number">5</span>, archive) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Index 5 does not contain mapsquare ({}, {})&quot;</span>, archive &amp; <span class="number">0x7F</span>, archive &gt;&gt; <span class="number">7</span>)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::ArchiveNotFoundError(index, archive) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Index {} does not contain archive {}&quot;</span>, index, archive)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::FileNotFoundError(index, archive, file) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;\nIndex {}, Archive {} does not contain file {}&quot;</span>, index, archive, file)<span class="question-mark">?</span>,
+            <span class="kw">_ </span>=&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(source) = <span class="self">self</span>.source() {
+                    <span class="macro">writeln!</span>(f, <span class="string">&quot;Caused by: {}&quot;</span>, source)<span class="question-mark">?</span>;
                 }
             }
         }
 
-        <span class="comment">// Display deeper source errors, if any.</span>
-        <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="ident">::chain</span>(<span class="self">self</span>).<span class="ident">skip</span>(<span class="number">2</span>) {
-            <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;Caused by: {}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
+        <span class="comment">// Display deeper source errors, if any.
+        </span><span class="kw">for </span>s <span class="kw">in </span>&lt;<span class="kw">dyn </span>Error&gt;::chain(<span class="self">self</span>).skip(<span class="number">2</span>) {
+            <span class="macro">writeln!</span>(f, <span class="string">&quot;Caused by: {}&quot;</span>, s)<span class="question-mark">?</span>;
         }
 
-        <span class="macro">writeln!</span>(<span class="ident">f</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">trace</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">backtrace</span>() {
-            <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;The following backtrace was captured:&quot;</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">trace</span>)<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="self">Self</span>::JsonDecodeError(trace, <span class="kw">_</span>, <span class="kw">_</span>) = <span class="self">self </span>{
+            <span class="macro">writeln!</span>(f, <span class="string">&quot;The following backtrace was captured:&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">&quot;{}&quot;</span>, trace)<span class="question-mark">?</span>;
         }
 
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">CacheError</span> {
-    <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>)]</span>
-            <span class="ident"><span class="self">Self</span>::SqliteError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::DecodeError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::IoError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::JsonDecodeError</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">e</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::ImageError</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::ParseIntError</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="ident"><span class="self">Self</span>::ReadError</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">&#39;static</span>)&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+            </span><span class="self">Self</span>::SqliteError(<span class="kw-2">ref </span>e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::DecodeError(<span class="kw-2">ref </span>e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::IoError(<span class="kw-2">ref </span>e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::JsonDecodeError(<span class="kw">_</span>, <span class="kw-2">ref </span>e, <span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::ImageError(<span class="kw-2">ref </span>e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::ParseIntError(e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="self">Self</span>::ReadError(e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">backtrace</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Backtrace</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::JsonDecodeError</span>(<span class="ident">trace</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">trace</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="kw">fn </span>provide&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>, req: <span class="kw-2">&amp;mut </span>core::any::Demand&lt;<span class="lifetime">&#39;a</span>&gt;) {
+        <span class="attribute">#![expect(clippy::single_match, reason = <span class="string">&quot;more error variants should have traces&quot;</span>)]
+        </span><span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::JsonDecodeError(trace, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
+                req.provide_ref::&lt;Backtrace&gt;(trace);
+            }
+            <span class="kw">_ </span>=&gt; {}
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">py_error_impl</span> {
-    <span class="kw">use</span> <span class="ident">pyo3</span>::{<span class="ident">exceptions::PyRuntimeError</span>, <span class="ident">PyErr</span>};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">mod </span>py_error_impl {
+    <span class="kw">use </span>pyo3::{exceptions::PyRuntimeError, PyErr};
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::CacheError</span>;
+    <span class="kw">use </span><span class="kw">super</span>::CacheError;
 
-    <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CacheError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PyErr</span> {
-        <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">CacheError</span>) -&gt; <span class="ident">PyErr</span> {
-            <span class="ident">PyRuntimeError::new_err</span>(<span class="ident">err</span>.<span class="ident">to_string</span>())
+    <span class="kw">impl </span>From&lt;CacheError&gt; <span class="kw">for </span>PyErr {
+        <span class="kw">fn </span>from(err: CacheError) -&gt; PyErr {
+            PyRuntimeError::new_err(err.to_string())
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">CacheError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PyErr</span> {
-        <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="kw-2">&amp;</span><span class="ident">CacheError</span>) -&gt; <span class="ident">PyErr</span> {
-            <span class="ident">PyRuntimeError::new_err</span>(<span class="ident">err</span>.<span class="ident">to_string</span>())
+    <span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>CacheError&gt; <span class="kw">for </span>PyErr {
+        <span class="kw">fn </span>from(err: <span class="kw-2">&amp;</span>CacheError) -&gt; PyErr {
+            PyRuntimeError::new_err(err.to_string())
         }
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

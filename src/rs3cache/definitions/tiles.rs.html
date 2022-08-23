@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/tiles.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tiles.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/tiles.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tiles.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -124,127 +119,126 @@
 <span id="119">119</span>
 <span id="120">120</span>
 <span id="121">121</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">ndarray</span>::{<span class="ident">Array</span>, <span class="ident">ArrayBase</span>, <span class="ident">Dim</span>, <span class="ident">OwnedRepr</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>ndarray::{Array, ArrayBase, Dim, OwnedRepr};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="doccomment">/// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TileArray</span> <span class="op">=</span> <span class="ident">ArrayBase</span><span class="op">&lt;</span><span class="ident">OwnedRepr</span><span class="op">&lt;</span><span class="ident">Tile</span><span class="op">&gt;</span>, <span class="ident">Dim</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">3</span>]<span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
+</span><span class="kw">pub type </span>TileArray = ArrayBase&lt;OwnedRepr&lt;Tile&gt;, Dim&lt;[usize; <span class="number">3</span>]&gt;&gt;;
 
-<span class="doccomment">/// Describes the properties of a tile in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Tile</span> {
-    <span class="doccomment">/// Reference to a [shape](crate::renderers::map::tileshape).</span>
-    <span class="kw">pub</span> <span class="ident">shape</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes the properties of a tile in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
+</span><span class="attribute">#[cfg_eval]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[derive(Default, Debug, Copy, Clone, Serialize)]
+</span><span class="kw">pub struct </span>Tile {
+    <span class="doccomment">/// Reference to a [shape](crate::renderers::map::tileshape).
+    </span><span class="kw">pub </span>shape: <span class="prelude-ty">Option</span>&lt;u8&gt;,
 
-    <span class="doccomment">/// Reference to an [`Overlay`](crate::definitions::overlays::Overlay).</span>
-    <span class="kw">pub</span> <span class="ident">overlay_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Reference to an [`Overlay`](crate::definitions::overlays::Overlay).
+    </span><span class="kw">pub </span>overlay_id: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 
-    <span class="doccomment">/// This tile&#39;s settings.</span>
-    <span class="kw">pub</span> <span class="ident">settings</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// This tile&#39;s settings.
+    </span><span class="kw">pub </span>settings: <span class="prelude-ty">Option</span>&lt;u8&gt;,
 
-    <span class="doccomment">/// Reference to an [`Underlay`](crate::definitions::underlays::Underlay).</span>
-    <span class="kw">pub</span> <span class="ident">underlay_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Reference to an [`Underlay`](crate::definitions::underlays::Underlay).
+    </span><span class="kw">pub </span>underlay_id: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 
-    <span class="doccomment">/// The height of the tile.</span>
-    <span class="kw">pub</span> <span class="ident">height</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The height of the tile.
+    </span><span class="kw">pub </span>height: <span class="prelude-ty">Option</span>&lt;u8&gt;,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">Tile</span> {
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">shape</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">shape</span>)
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>Tile {
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>shape(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.shape)
     }
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">overlay_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">overlay_id</span>)
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>overlay_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.overlay_id)
     }
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">settings</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">settings</span>)
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>settings(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.settings)
     }
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">underlay_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">underlay_id</span>)
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>underlay_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.underlay_id)
     }
-    <span class="attribute">#[<span class="ident">getter</span>]</span>
-    <span class="kw">fn</span> <span class="ident">height</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">height</span>)
+    <span class="attribute">#[getter]
+    </span><span class="kw">fn </span>height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.height)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Tile</span> {
-    <span class="doccomment">/// Constructor for a sequence of [`Tile`]s.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_shim&quot;</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">TileArray</span> {
-        <span class="kw">use</span> <span class="ident">rs3cache_backend::buf::BufExtra</span>;
+<span class="kw">impl </span>Tile {
+    <span class="doccomment">/// Constructor for a sequence of [`Tile`]s.
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_shim&quot;</span>))]
+    </span><span class="kw">pub fn </span>dump(<span class="kw-2">mut </span>buffer: Bytes) -&gt; TileArray {
+        <span class="kw">use </span>rs3cache_backend::buf::BufExtra;
 
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">Array::from_shape_simple_fn</span>((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>), <span class="op">|</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tile</span> <span class="op">=</span> <span class="ident">Tile::default</span>();
+        <span class="kw">let </span>tiles = Array::from_shape_simple_fn((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>), || {
+            <span class="kw">let </span><span class="kw-2">mut </span>tile = Tile::default();
 
-            <span class="kw">let</span> [<span class="ident">flag_1</span>, <span class="ident">flag_2</span>, <span class="ident">flag_3</span>, <span class="ident">flag_4</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
+            <span class="kw">let </span>[flag_1, flag_2, flag_3, flag_4, ..] = buffer.get_bitflags();
 
-            <span class="kw">if</span> <span class="ident">flag_1</span> {
-                <span class="ident">tile</span>.<span class="ident">shape</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
-                <span class="ident">tile</span>.<span class="ident">overlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>());
+            <span class="kw">if </span>flag_1 {
+                tile.shape = <span class="prelude-val">Some</span>(buffer.get_u8());
+                tile.overlay_id = <span class="prelude-val">Some</span>(buffer.get_unsigned_smart());
             }
 
-            <span class="kw">if</span> <span class="ident">flag_2</span> {
-                <span class="ident">tile</span>.<span class="ident">settings</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
+            <span class="kw">if </span>flag_2 {
+                tile.settings = <span class="prelude-val">Some</span>(buffer.get_u8());
             }
 
-            <span class="kw">if</span> <span class="ident">flag_3</span> {
-                <span class="ident">tile</span>.<span class="ident">underlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>());
+            <span class="kw">if </span>flag_3 {
+                tile.underlay_id = <span class="prelude-val">Some</span>(buffer.get_unsigned_smart());
             }
 
-            <span class="kw">if</span> <span class="ident">flag_4</span> {
-                <span class="ident">tile</span>.<span class="ident">height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
+            <span class="kw">if </span>flag_4 {
+                tile.height = <span class="prelude-val">Some</span>(buffer.get_u8());
             }
 
-            <span class="ident">tile</span>
+            tile
         });
 
-        <span class="kw">if</span> <span class="ident">buffer</span>.<span class="ident">remaining</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="comment">//println!(&quot;{}&quot;, buffer.remaining());</span>
-        }
-        <span class="ident">tiles</span>
+        <span class="kw">if </span>buffer.remaining() != <span class="number">0 </span>{
+            <span class="comment">//println!(&quot;{}&quot;, buffer.remaining());
+        </span>}
+        tiles
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>), <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;2013_shim&quot;</span>)))]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump</span>(<span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">TileArray</span> {
-        <span class="kw">let</span> <span class="ident">tiles</span> <span class="op">=</span> <span class="ident">Array::from_shape_simple_fn</span>((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>), <span class="op">|</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tile</span> <span class="op">=</span> <span class="ident">Tile::default</span>();
+    <span class="attribute">#[cfg(all(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>), not(feature = <span class="string">&quot;2013_shim&quot;</span>)))]
+    </span><span class="kw">pub fn </span>dump(<span class="kw-2">mut </span>buffer: Bytes) -&gt; TileArray {
+        <span class="kw">let </span>tiles = Array::from_shape_simple_fn((<span class="number">4</span>, <span class="number">64</span>, <span class="number">64</span>), || {
+            <span class="kw">let </span><span class="kw-2">mut </span>tile = Tile::default();
 
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-                    <span class="number">0</span> =&gt; <span class="kw">break</span> <span class="ident">tile</span>,
-                    <span class="number">1</span> =&gt; {
-                        <span class="ident">tile</span>.<span class="ident">height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>());
-                        <span class="kw">break</span> <span class="ident">tile</span>;
+            <span class="kw">loop </span>{
+                <span class="kw">match </span>buffer.get_u8() {
+                    <span class="number">0 </span>=&gt; <span class="kw">break </span>tile,
+                    <span class="number">1 </span>=&gt; {
+                        tile.height = <span class="prelude-val">Some</span>(buffer.get_u8());
+                        <span class="kw">break </span>tile;
                     }
-                    <span class="ident">opcode</span> <span class="kw">if</span> <span class="ident">opcode</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">49</span> =&gt; {
-                        <span class="ident">tile</span>.<span class="ident">shape</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">opcode</span> <span class="op">-</span> <span class="number">2</span>);
-                        <span class="ident">tile</span>.<span class="ident">overlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">u16</span>);
+                    opcode <span class="kw">if </span>opcode &lt;= <span class="number">49 </span>=&gt; {
+                        tile.shape = <span class="prelude-val">Some</span>(opcode - <span class="number">2</span>);
+                        tile.overlay_id = <span class="prelude-val">Some</span>(buffer.get_u8() <span class="kw">as </span>u16);
                     }
-                    <span class="ident">opcode</span> <span class="kw">if</span> <span class="ident">opcode</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">81</span> =&gt; <span class="ident">tile</span>.<span class="ident">settings</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">opcode</span> <span class="op">-</span> <span class="number">49</span>),
-                    <span class="ident">opcode</span> =&gt; <span class="ident">tile</span>.<span class="ident">underlay_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">opcode</span> <span class="op">-</span> <span class="number">81</span>) <span class="kw">as</span> <span class="ident">u16</span>),
+                    opcode <span class="kw">if </span>opcode &lt;= <span class="number">81 </span>=&gt; tile.settings = <span class="prelude-val">Some</span>(opcode - <span class="number">49</span>),
+                    opcode =&gt; tile.underlay_id = <span class="prelude-val">Some</span>((opcode - <span class="number">81</span>) <span class="kw">as </span>u16),
                 }
             }
         });
 
-        <span class="kw">if</span> <span class="ident">buffer</span>.<span class="ident">remaining</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="comment">//println!(&quot;{}&quot;, buffer.remaining());</span>
-        }
-        <span class="ident">tiles</span>
+        <span class="kw">if </span>buffer.remaining() != <span class="number">0 </span>{
+            <span class="comment">//println!(&quot;{}&quot;, buffer.remaining());
+        </span>}
+        tiles
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

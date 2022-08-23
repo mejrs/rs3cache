@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["rs3cache"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/iter/traits/exact_size/trait.ExactSizeIterator.html\" title=\"trait core::iter::traits::exact_size::ExactSizeIterator\">ExactSizeIterator</a> for <a class=\"struct\" href=\"rs3cache/definitions/mapsquares/struct.GroupMapSquareIterator.html\" title=\"struct rs3cache::definitions::mapsquares::GroupMapSquareIterator\">GroupMapSquareIterator</a>","synthetic":false,"types":["rs3cache::definitions::mapsquares::iterator::GroupMapSquareIterator"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"rs3cache":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/iter/traits/exact_size/trait.ExactSizeIterator.html\" title=\"trait core::iter::traits::exact_size::ExactSizeIterator\">ExactSizeIterator</a> for <a class=\"struct\" href=\"rs3cache/definitions/mapsquares/struct.GroupMapSquareIterator.html\" title=\"struct rs3cache::definitions::mapsquares::GroupMapSquareIterator\">GroupMapSquareIterator</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

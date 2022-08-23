@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_macros/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_macros/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -148,38 +143,38 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
-</pre><pre class="rust"><code><span class="comment">// Mostly adapted from `serde_with_macros`.</span>
-<span class="doccomment">//! Proc macro for the `rs3cache` crate.</span>
+</pre><pre class="rust"><code><span class="comment">// Mostly adapted from `serde_with_macros`.
+</span><span class="doccomment">//! Proc macro for the `rs3cache` crate.
 
-<span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">proc_macro2</span>::{<span class="ident">Span</span>, <span class="ident">TokenStream</span> <span class="kw">as</span> <span class="ident">TokenStream2</span>};
-<span class="kw">use</span> <span class="ident">quote::quote</span>;
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse::Parser</span>, <span class="ident">spanned::Spanned</span>, <span class="ident">Attribute</span>, <span class="ident">Error</span>, <span class="ident">Field</span>, <span class="ident">Fields</span>, <span class="ident">ItemEnum</span>, <span class="ident">ItemStruct</span>, <span class="ident">Meta</span>, <span class="ident">NestedMeta</span>, <span class="ident">Path</span>, <span class="ident">Type</span>};
+</span><span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>proc_macro2::{Span, TokenStream <span class="kw">as </span>TokenStream2};
+<span class="kw">use </span>quote::quote;
+<span class="kw">use </span>syn::{parse::Parser, spanned::Spanned, Attribute, Error, Field, Fields, ItemEnum, ItemStruct, Meta, NestedMeta, Path, Type};
 
-<span class="doccomment">/// Applies `#[pyo3(get)]` to all fields of a struct.</span>
-<span class="attribute">#[<span class="ident">proc_macro_attribute</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pyo3_get_all</span>(<span class="ident">_args</span>: <span class="ident">TokenStream</span>, <span class="ident">input</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">apply_function_to_struct_fields</span>(<span class="ident">input</span>, <span class="ident">add_pyo3_get_to_field</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>) =&gt; <span class="ident">res</span>,
-        <span class="prelude-val">Err</span>(<span class="ident">err</span>) =&gt; <span class="ident">err</span>.<span class="ident">to_compile_error</span>(),
+<span class="doccomment">/// Applies `#[pyo3(get)]` to all fields of a struct.
+</span><span class="attribute">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>pyo3_get_all(_args: TokenStream, input: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>res = <span class="kw">match </span>apply_function_to_struct_fields(input, add_pyo3_get_to_field) {
+        <span class="prelude-val">Ok</span>(res) =&gt; res,
+        <span class="prelude-val">Err</span>(err) =&gt; err.to_compile_error(),
     };
-    <span class="ident">TokenStream::from</span>(<span class="ident">res</span>)
+    TokenStream::from(res)
 }
 
-<span class="kw">fn</span> <span class="ident">is_std_option</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">bool</span> {
-    <span class="ident">path</span>.<span class="ident">leading_colon</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span>
-}
+<span class="kw">fn </span>is_std_option(path: <span class="kw-2">&amp;</span>Path) -&gt; bool {
+    path.leading_colon.is_none() &amp;&amp; path.segments.len() == <span class="number">1
+</span>}
 
-<span class="kw">fn</span> <span class="ident">field_has_attribute</span>(<span class="ident">field</span>: <span class="kw-2">&amp;</span><span class="ident">Field</span>, <span class="ident">namespace</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">for</span> <span class="ident">attr</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">field</span>.<span class="ident">attrs</span> {
-        <span class="kw">if</span> <span class="ident">attr</span>.<span class="ident">path</span>.<span class="ident">is_ident</span>(<span class="ident">namespace</span>) {
-            <span class="comment">// Ignore non parsable attributes, as these are not important for us</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">Meta::List</span>(<span class="ident">expr</span>)) <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">parse_meta</span>() {
-                <span class="kw">for</span> <span class="ident">expr</span> <span class="kw">in</span> <span class="ident">expr</span>.<span class="ident">nested</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">NestedMeta::Meta</span>(<span class="ident">Meta::NameValue</span>(<span class="ident">expr</span>)) <span class="op">=</span> <span class="ident">expr</span> {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ident</span>) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">path</span>.<span class="ident">get_ident</span>() {
-                            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">ident</span> <span class="op">==</span> <span class="ident">name</span> {
-                                <span class="kw">return</span> <span class="bool-val">true</span>;
+<span class="kw">fn </span>field_has_attribute(field: <span class="kw-2">&amp;</span>Field, namespace: <span class="kw-2">&amp;</span>str, name: <span class="kw-2">&amp;</span>str) -&gt; bool {
+    <span class="kw">for </span>attr <span class="kw">in </span><span class="kw-2">&amp;</span>field.attrs {
+        <span class="kw">if </span>attr.path.is_ident(namespace) {
+            <span class="comment">// Ignore non parsable attributes, as these are not important for us
+            </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(Meta::List(expr)) = attr.parse_meta() {
+                <span class="kw">for </span>expr <span class="kw">in </span>expr.nested {
+                    <span class="kw">if let </span>NestedMeta::Meta(Meta::NameValue(expr)) = expr {
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(ident) = expr.path.get_ident() {
+                            <span class="kw">if </span><span class="kw-2">*</span>ident == name {
+                                <span class="kw">return </span><span class="bool-val">true</span>;
                             }
                         }
                     }
@@ -187,112 +182,111 @@
             }
         }
     }
-    <span class="bool-val">false</span>
-}
+    <span class="bool-val">false
+</span>}
 
-<span class="kw">fn</span> <span class="ident">add_pyo3_get_to_field</span>(<span class="ident">field</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Field</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Type::Path</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">field</span>.<span class="ident">ty</span> {
-        <span class="kw">if</span> <span class="ident">is_std_option</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>.<span class="ident">path</span>) {
-            <span class="kw">let</span> <span class="ident">has_skip_serializing_if</span> <span class="op">=</span> <span class="ident">field_has_attribute</span>(<span class="ident">field</span>, <span class="string">&quot;serde&quot;</span>, <span class="string">&quot;skip_serializing_if&quot;</span>);
+<span class="kw">fn </span>add_pyo3_get_to_field(field: <span class="kw-2">&amp;mut </span>Field) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">if let </span>Type::Path(path) = <span class="kw-2">&amp;</span>field.ty {
+        <span class="kw">if </span>is_std_option(<span class="kw-2">&amp;</span>path.path) {
+            <span class="kw">let </span>has_skip_serializing_if = field_has_attribute(field, <span class="string">&quot;serde&quot;</span>, <span class="string">&quot;skip_serializing_if&quot;</span>);
 
-            <span class="comment">// Remove the `serialize_always` attribute</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">has_always_attr</span> <span class="op">=</span> <span class="bool-val">false</span>;
-            <span class="ident">field</span>.<span class="ident">attrs</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">attr</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">has_attr</span> <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">path</span>.<span class="ident">is_ident</span>(<span class="string">&quot;serialize_always&quot;</span>);
-                <span class="ident">has_always_attr</span> <span class="op">|</span><span class="op">=</span> <span class="ident">has_attr</span>;
-                <span class="op">!</span><span class="ident">has_attr</span>
+            <span class="comment">// Remove the `serialize_always` attribute
+            </span><span class="kw">let </span><span class="kw-2">mut </span>has_always_attr = <span class="bool-val">false</span>;
+            field.attrs.retain(|attr| {
+                <span class="kw">let </span>has_attr = attr.path.is_ident(<span class="string">&quot;serialize_always&quot;</span>);
+                has_always_attr |= has_attr;
+                !has_attr
             });
 
-            <span class="comment">// Error on conflicting attributes</span>
-            <span class="kw">if</span> <span class="ident">has_always_attr</span> <span class="op">&amp;&amp;</span> <span class="ident">has_skip_serializing_if</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">msg</span> <span class="op">=</span>
-                    <span class="string">r#&quot;The attributes `serialize_always` and `serde(skip_serializing_if = &quot;...&quot;)` cannot be used on the same field&quot;#</span>.<span class="ident">to_string</span>();
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ident</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">field</span>.<span class="ident">ident</span> {
-                    <span class="ident">msg</span> <span class="op">+</span><span class="op">=</span> <span class="string">&quot;: `&quot;</span>;
-                    <span class="ident">msg</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">ident</span>.<span class="ident">to_string</span>();
-                    <span class="ident">msg</span> <span class="op">+</span><span class="op">=</span> <span class="string">&quot;`&quot;</span>;
+            <span class="comment">// Error on conflicting attributes
+            </span><span class="kw">if </span>has_always_attr &amp;&amp; has_skip_serializing_if {
+                <span class="kw">let </span><span class="kw-2">mut </span>msg =
+                    <span class="string">r#&quot;The attributes `serialize_always` and `serde(skip_serializing_if = &quot;...&quot;)` cannot be used on the same field&quot;#</span>.to_string();
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(ident) = <span class="kw-2">&amp;</span>field.ident {
+                    msg += <span class="string">&quot;: `&quot;</span>;
+                    msg += <span class="kw-2">&amp;</span>ident.to_string();
+                    msg += <span class="string">&quot;`&quot;</span>;
                 }
-                <span class="ident">msg</span> <span class="op">+</span><span class="op">=</span> <span class="string">&quot;.&quot;</span>;
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">msg</span>);
+                msg += <span class="string">&quot;.&quot;</span>;
+                <span class="kw">return </span><span class="prelude-val">Err</span>(msg);
             }
 
-            <span class="comment">// Do nothing if `skip_serializing_if` or `serialize_always` is already present</span>
-            <span class="kw">if</span> <span class="ident">has_skip_serializing_if</span> <span class="op">|</span><span class="op">|</span> <span class="ident">has_always_attr</span> {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+            <span class="comment">// Do nothing if `skip_serializing_if` or `serialize_always` is already present
+            </span><span class="kw">if </span>has_skip_serializing_if || has_always_attr {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
             }
 
-            <span class="comment">// Add the `skip_serializing_if` attribute</span>
-            <span class="kw">let</span> <span class="ident">attr_tokens</span> <span class="op">=</span> <span class="macro">quote!</span>(
-                <span class="attribute">#[<span class="ident">pyo3</span>(<span class="ident">get</span>)]</span>
-            );
-            <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="ident">Attribute::parse_outer</span>.<span class="ident">parse2</span>(<span class="ident">attr_tokens</span>).<span class="ident">expect</span>(<span class="string">&quot;Static attr tokens should not panic&quot;</span>);
-            <span class="ident">field</span>.<span class="ident">attrs</span>.<span class="ident">extend</span>(<span class="ident">attrs</span>);
+            <span class="comment">// Add the `skip_serializing_if` attribute
+            </span><span class="kw">let </span>attr_tokens = <span class="macro">quote!</span>(
+                <span class="attribute">#[pyo3(get)]
+            </span>);
+            <span class="kw">let </span>attrs = Attribute::parse_outer.parse2(attr_tokens).expect(<span class="string">&quot;Static attr tokens should not panic&quot;</span>);
+            field.attrs.extend(attrs);
         }
     }
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">fn</span> <span class="ident">apply_function_to_struct_fields</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">input</span>: <span class="ident">TokenStream</span>, <span class="ident">function</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TokenStream2</span>, <span class="ident">Error</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Copy</span>,
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;mut</span> <span class="ident">Field</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span>,
+<span class="kw">fn </span>apply_function_to_struct_fields&lt;F&gt;(input: TokenStream, function: F) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream2, Error&gt;
+<span class="kw">where
+    </span>F: Copy,
+    F: Fn(<span class="kw-2">&amp;mut </span>Field) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt;,
 {
-    <span class="doccomment">/// Handle a single struct or a single enum variant</span>
-    <span class="kw">fn</span> <span class="ident">apply_on_fields</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">fields</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Fields</span>, <span class="ident">function</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;mut</span> <span class="ident">Field</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Handle a single struct or a single enum variant
+    </span><span class="kw">fn </span>apply_on_fields&lt;F&gt;(fields: <span class="kw-2">&amp;mut </span>Fields, function: F) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt;
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;mut </span>Field) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt;,
     {
-        <span class="kw">match</span> <span class="ident">fields</span> {
-            <span class="comment">// simple, no fields, do nothing</span>
-            <span class="ident">Fields::Unit</span> =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="ident">Fields::Named</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fields</span>) =&gt; <span class="ident">fields</span>
-                .<span class="ident">named</span>
-                .<span class="ident">iter_mut</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">field</span><span class="op">|</span> <span class="ident">function</span>(<span class="ident">field</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">Error::new</span>(<span class="ident">field</span>.<span class="ident">span</span>(), <span class="ident">err</span>)))
-                .<span class="ident">collect_error</span>(),
-            <span class="ident">Fields::Unnamed</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fields</span>) =&gt; <span class="ident">fields</span>
-                .<span class="ident">unnamed</span>
-                .<span class="ident">iter_mut</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">field</span><span class="op">|</span> <span class="ident">function</span>(<span class="ident">field</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">Error::new</span>(<span class="ident">field</span>.<span class="ident">span</span>(), <span class="ident">err</span>)))
-                .<span class="ident">collect_error</span>(),
+        <span class="kw">match </span>fields {
+            <span class="comment">// simple, no fields, do nothing
+            </span>Fields::Unit =&gt; <span class="prelude-val">Ok</span>(()),
+            Fields::Named(<span class="kw-2">ref mut </span>fields) =&gt; fields
+                .named
+                .iter_mut()
+                .map(|field| function(field).map_err(|err| Error::new(field.span(), err)))
+                .collect_error(),
+            Fields::Unnamed(<span class="kw-2">ref mut </span>fields) =&gt; fields
+                .unnamed
+                .iter_mut()
+                .map(|field| function(field).map_err(|err| Error::new(field.span(), err)))
+                .collect_error(),
         }
     }
 
-    <span class="comment">// For each field in the struct given by `input`, add the `skip_serializing_if` attribute,</span>
-    <span class="comment">// if and only if, it is of type `Option`</span>
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">input</span>) <span class="op">=</span> <span class="ident">syn::parse</span>::<span class="op">&lt;</span><span class="ident">ItemStruct</span><span class="op">&gt;</span>(<span class="ident">input</span>.<span class="ident">clone</span>()) {
-        <span class="ident">apply_on_fields</span>(<span class="kw-2">&amp;mut</span> <span class="ident">input</span>.<span class="ident">fields</span>, <span class="ident">function</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="macro">quote!</span>(#<span class="ident">input</span>))
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">input</span>) <span class="op">=</span> <span class="ident">syn::parse</span>::<span class="op">&lt;</span><span class="ident">ItemEnum</span><span class="op">&gt;</span>(<span class="ident">input</span>) {
-        <span class="ident">input</span>
-            .<span class="ident">variants</span>
-            .<span class="ident">iter_mut</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">variant</span><span class="op">|</span> <span class="ident">apply_on_fields</span>(<span class="kw-2">&amp;mut</span> <span class="ident">variant</span>.<span class="ident">fields</span>, <span class="ident">function</span>))
-            .<span class="ident">collect_error</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="macro">quote!</span>(#<span class="ident">input</span>))
-    } <span class="kw">else</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">Error::new</span>(<span class="ident">Span::call_site</span>(), <span class="string">&quot;The attribute can only be applied to struct definitions.&quot;</span>))
+    <span class="comment">// For each field in the struct given by `input`, add the `skip_serializing_if` attribute,
+    // if and only if, it is of type `Option`
+    </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>input) = syn::parse::&lt;ItemStruct&gt;(input.clone()) {
+        apply_on_fields(<span class="kw-2">&amp;mut </span>input.fields, function)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="macro">quote!</span>(#input))
+    } <span class="kw">else if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>input) = syn::parse::&lt;ItemEnum&gt;(input) {
+        input
+            .variants
+            .iter_mut()
+            .map(|variant| apply_on_fields(<span class="kw-2">&amp;mut </span>variant.fields, function))
+            .collect_error()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="macro">quote!</span>(#input))
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Err</span>(Error::new(Span::call_site(), <span class="string">&quot;The attribute can only be applied to struct definitions.&quot;</span>))
     }
 }
 
-<span class="doccomment">/// Merge multiple [`syn::Error`] into one.</span>
-<span class="kw">trait</span> <span class="ident">IteratorExt</span> {
-    <span class="kw">fn</span> <span class="ident">collect_error</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span>,
+<span class="doccomment">/// Merge multiple [`syn::Error`] into one.
+</span><span class="kw">trait </span>IteratorExt {
+    <span class="kw">fn </span>collect_error(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Iterator&lt;Item = <span class="prelude-ty">Result</span>&lt;(), Error&gt;&gt; + Sized,
     {
-        <span class="kw">let</span> <span class="ident">accu</span> <span class="op">=</span> <span class="prelude-val">Ok</span>(());
-        <span class="self">self</span>.<span class="ident">fold</span>(<span class="ident">accu</span>, <span class="op">|</span><span class="ident">accu</span>, <span class="ident">error</span><span class="op">|</span> <span class="kw">match</span> (<span class="ident">accu</span>, <span class="ident">error</span>) {
-            (<span class="prelude-val">Ok</span>(()), <span class="ident">error</span>) =&gt; <span class="ident">error</span>,
-            (<span class="ident">accu</span>, <span class="prelude-val">Ok</span>(())) =&gt; <span class="ident">accu</span>,
-            (<span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">err</span>), <span class="prelude-val">Err</span>(<span class="ident">error</span>)) =&gt; {
-                <span class="ident">err</span>.<span class="ident">combine</span>(<span class="ident">error</span>);
-                <span class="prelude-val">Err</span>(<span class="ident">err</span>)
+        <span class="kw">let </span>accu = <span class="prelude-val">Ok</span>(());
+        <span class="self">self</span>.fold(accu, |accu, error| <span class="kw">match </span>(accu, error) {
+            (<span class="prelude-val">Ok</span>(()), error) =&gt; error,
+            (accu, <span class="prelude-val">Ok</span>(())) =&gt; accu,
+            (<span class="prelude-val">Err</span>(<span class="kw-2">mut </span>err), <span class="prelude-val">Err</span>(error)) =&gt; {
+                err.combine(error);
+                <span class="prelude-val">Err</span>(err)
             }
         })
     }
 }
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">IteratorExt</span> <span class="kw">for</span> <span class="ident">I</span> <span class="kw">where</span> <span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span> {}
+<span class="kw">impl</span>&lt;I&gt; IteratorExt <span class="kw">for </span>I <span class="kw">where </span>I: Iterator&lt;Item = <span class="prelude-ty">Result</span>&lt;(), Error&gt;&gt; + Sized {}
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

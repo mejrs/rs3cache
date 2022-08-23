@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/maplabel_configs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>maplabel_configs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/maplabel_configs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>maplabel_configs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -290,293 +285,292 @@
 <span id="285">285</span>
 <span id="286">286</span>
 <span id="287">287</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::BTreeMap</span>,
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    collections::BTreeMap,
+    fs::{<span class="self">self</span>, File},
+    io::Write,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
-    <span class="ident">structures::paramtable::ParamTable</span>,
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
+    structures::paramtable::ParamTable,
 };
 
-<span class="doccomment">/// Map element on the ingame world map.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This can be a text label, sprite, polygon or interactive.</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MapLabelConfig</span> {
-    <span class="doccomment">/// File id of the [`MapLabelConfig`].</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// Text shown when the label is rightclicked.</span>
-    <span class="kw">pub</span> <span class="ident">rightclick_1</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Text shown when the label is rightclicked.</span>
-    <span class="kw">pub</span> <span class="ident">rightclick_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// A toggle that controls whether the label is shown.</span>
-    <span class="kw">pub</span> <span class="ident">toggle_1</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Toggle</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Contains another toggle that controls whether the label is shown.</span>
-    <span class="kw">pub</span> <span class="ident">toggle_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Toggle</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// If present, the label is text on the map, with the given `String`.</span>
-    <span class="kw">pub</span> <span class="ident">text</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Text colour.</span>
-    <span class="kw">pub</span> <span class="ident">label_colour_1</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
-    <span class="doccomment">/// Text colour 2.</span>
-    <span class="kw">pub</span> <span class="ident">label_colour_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
-    <span class="doccomment">/// Font size ( any of 0, 1, 2, 3), if the label is text.</span>
-    <span class="kw">pub</span> <span class="ident">font_size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The sprite shown on the map.</span>
-    <span class="kw">pub</span> <span class="ident">sprite</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The sprite shown on the map on mouseover.</span>
-    <span class="kw">pub</span> <span class="ident">hover_sprite</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The sprite shown on the map behind the main sprite.</span>
-    <span class="kw">pub</span> <span class="ident">background_sprite</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_7</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_8</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Customizes label creation in script 7590.</span>
-    <span class="kw">pub</span> <span class="ident">category</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Describes the polygon drawn on the map, if present.</span>
-    <span class="kw">pub</span> <span class="ident">polygon</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Polygon</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_21</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>,
-    <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_22</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>,
-    <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_28</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Unknown field.</span>
-    <span class="kw">pub</span> <span class="ident">unknown_30</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Switch between the &quot;new&quot; and &quot;legacy&quot; icons.</span>
-    <span class="kw">pub</span> <span class="ident">legacy_switch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LegacySwitch</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Contains additional options:</span>
-    <span class="doccomment">/// # Possible param keys (non-exhaustive)</span>
-    <span class="doccomment">/// | key | type | description |</span>
-    <span class="doccomment">/// | :-------------: | :----------: | :-----------: |</span>
-    <span class="doccomment">/// | 4147 | `u32` | Corresponds to a field of enum 2252|</span>
-    <span class="doccomment">/// | 4148 | `u32` | Coordinate that the map pans to, if the label is clicked|</span>
-    <span class="doccomment">/// | 4149 | `String` | Tooltip |</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">params</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ParamTable</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Map element on the ingame world map.
+///
+/// This can be a text label, sprite, polygon or interactive.
+</span><span class="attribute">#[cfg_eval]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
+</span><span class="kw">pub struct </span>MapLabelConfig {
+    <span class="doccomment">/// File id of the [`MapLabelConfig`].
+    </span><span class="kw">pub </span>id: u32,
+    <span class="doccomment">/// Text shown when the label is rightclicked.
+    </span><span class="kw">pub </span>rightclick_1: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// Text shown when the label is rightclicked.
+    </span><span class="kw">pub </span>rightclick_2: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// A toggle that controls whether the label is shown.
+    </span><span class="kw">pub </span>toggle_1: <span class="prelude-ty">Option</span>&lt;Toggle&gt;,
+    <span class="doccomment">/// Contains another toggle that controls whether the label is shown.
+    </span><span class="kw">pub </span>toggle_2: <span class="prelude-ty">Option</span>&lt;Toggle&gt;,
+    <span class="doccomment">/// If present, the label is text on the map, with the given `String`.
+    </span><span class="kw">pub </span>text: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// Text colour.
+    </span><span class="kw">pub </span>label_colour_1: <span class="prelude-ty">Option</span>&lt;[u8; <span class="number">3</span>]&gt;,
+    <span class="doccomment">/// Text colour 2.
+    </span><span class="kw">pub </span>label_colour_2: <span class="prelude-ty">Option</span>&lt;[u8; <span class="number">3</span>]&gt;,
+    <span class="doccomment">/// Font size ( any of 0, 1, 2, 3), if the label is text.
+    </span><span class="kw">pub </span>font_size: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="doccomment">/// The sprite shown on the map.
+    </span><span class="kw">pub </span>sprite: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="doccomment">/// The sprite shown on the map on mouseover.
+    </span><span class="kw">pub </span>hover_sprite: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="doccomment">/// The sprite shown on the map behind the main sprite.
+    </span><span class="kw">pub </span>background_sprite: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="doccomment">/// Unknown field.
+    </span><span class="kw">pub </span>unknown_7: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="doccomment">/// Unknown field.
+    </span><span class="kw">pub </span>unknown_8: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="doccomment">/// Customizes label creation in script 7590.
+    </span><span class="kw">pub </span>category: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="doccomment">/// Describes the polygon drawn on the map, if present.
+    </span><span class="kw">pub </span>polygon: <span class="prelude-ty">Option</span>&lt;Polygon&gt;,
+    <span class="doccomment">/// Unknown field.
+    </span><span class="kw">pub </span>unknown_21: <span class="prelude-ty">Option</span>&lt;[u8; <span class="number">4</span>]&gt;,
+    <span class="doccomment">/// Unknown field.
+    </span><span class="kw">pub </span>unknown_22: <span class="prelude-ty">Option</span>&lt;[u8; <span class="number">4</span>]&gt;,
+    <span class="doccomment">/// Unknown field.
+    </span><span class="kw">pub </span>unknown_28: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="doccomment">/// Unknown field.
+    </span><span class="kw">pub </span>unknown_30: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="doccomment">/// Switch between the &quot;new&quot; and &quot;legacy&quot; icons.
+    </span><span class="kw">pub </span>legacy_switch: <span class="prelude-ty">Option</span>&lt;LegacySwitch&gt;,
+    <span class="doccomment">/// Contains additional options:
+    /// # Possible param keys (non-exhaustive)
+    /// | key | type | description |
+    /// | :-------------: | :----------: | :-----------: |
+    /// | 4147 | `u32` | Corresponds to a field of enum 2252|
+    /// | 4148 | `u32` | Coordinate that the map pans to, if the label is clicked|
+    /// | 4149 | `String` | Tooltip |
+    </span><span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>params: <span class="prelude-ty">Option</span>&lt;ParamTable&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">MapLabelConfig</span> {
-    <span class="doccomment">/// Returns a mapping of all [`MapLabelConfig`]s.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">MapLabelConfig</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-            .<span class="ident">archive</span>(<span class="ident">ConfigType::MAPLABELS</span>)<span class="question-mark">?</span>
-            .<span class="ident">take_files</span>()
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">file_id</span>, <span class="ident">MapLabelConfig::deserialize</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>())
+<span class="kw">impl </span>MapLabelConfig {
+    <span class="doccomment">/// Returns a mapping of all [`MapLabelConfig`]s.
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, MapLabelConfig&gt;&gt; {
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+            </span>.archive(ConfigType::MAPLABELS)<span class="question-mark">?
+            </span>.take_files()
+            .into_iter()
+            .map(|(file_id, file)| (file_id, MapLabelConfig::deserialize(file_id, file)))
+            .collect())
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">MapLabelConfig</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">maplabel</span> <span class="op">=</span> <span class="ident">MapLabelConfig</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
+    <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; MapLabelConfig {
+        <span class="kw">let </span><span class="kw-2">mut </span>maplabel = MapLabelConfig { id, ..Default::default() };
 
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-                <span class="number">0</span> =&gt; {
-                    <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>(), <span class="string">&quot;{:?}&quot;</span>, <span class="ident">buffer</span>);
-                    <span class="kw">break</span> <span class="ident">maplabel</span>;
+        <span class="kw">loop </span>{
+            <span class="kw">match </span>buffer.get_u8() {
+                <span class="number">0 </span>=&gt; {
+                    <span class="macro">debug_assert!</span>(!buffer.has_remaining(), <span class="string">&quot;{:?}&quot;</span>, buffer);
+                    <span class="kw">break </span>maplabel;
                 }
-                <span class="number">1</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">2</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">hover_sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">3</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">text</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">4</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">label_colour_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_rgb</span>()),
-                <span class="number">5</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">label_colour_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_rgb</span>()),
-                <span class="number">6</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">font_size</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">7</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">unknown_7</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">8</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">unknown_8</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">9</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">toggle_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Toggle::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">10</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">rightclick_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">15</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">polygon</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Polygon::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">17</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">rightclick_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">19</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">20</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">toggle_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Toggle::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">21</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">unknown_21</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_array</span>()),
-                <span class="number">22</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">unknown_22</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_array</span>()),
-                <span class="number">25</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">background_sprite</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">26</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">legacy_switch</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">LegacySwitch::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">28</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">unknown_28</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">30</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">unknown_30</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">249</span> =&gt; <span class="ident">maplabel</span>.<span class="ident">params</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ParamTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="ident">other</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">other</span>),
+                <span class="number">1 </span>=&gt; maplabel.sprite = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">2 </span>=&gt; maplabel.hover_sprite = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">3 </span>=&gt; maplabel.text = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">4 </span>=&gt; maplabel.label_colour_1 = <span class="prelude-val">Some</span>(buffer.get_rgb()),
+                <span class="number">5 </span>=&gt; maplabel.label_colour_2 = <span class="prelude-val">Some</span>(buffer.get_rgb()),
+                <span class="number">6 </span>=&gt; maplabel.font_size = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">7 </span>=&gt; maplabel.unknown_7 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">8 </span>=&gt; maplabel.unknown_8 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">9 </span>=&gt; maplabel.toggle_1 = <span class="prelude-val">Some</span>(Toggle::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">10 </span>=&gt; maplabel.rightclick_1 = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">15 </span>=&gt; maplabel.polygon = <span class="prelude-val">Some</span>(Polygon::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">17 </span>=&gt; maplabel.rightclick_2 = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">19 </span>=&gt; maplabel.category = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">20 </span>=&gt; maplabel.toggle_2 = <span class="prelude-val">Some</span>(Toggle::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">21 </span>=&gt; maplabel.unknown_21 = <span class="prelude-val">Some</span>(buffer.get_array()),
+                <span class="number">22 </span>=&gt; maplabel.unknown_22 = <span class="prelude-val">Some</span>(buffer.get_array()),
+                <span class="number">25 </span>=&gt; maplabel.background_sprite = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">26 </span>=&gt; maplabel.legacy_switch = <span class="prelude-val">Some</span>(LegacySwitch::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">28 </span>=&gt; maplabel.unknown_28 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">30 </span>=&gt; maplabel.unknown_30 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">249 </span>=&gt; maplabel.params = <span class="prelude-val">Some</span>(ParamTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                other =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;{}&quot;</span>, other),
             }
         }
     }
 }
 
-<span class="doccomment">///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">labels</span> <span class="op">=</span> <span class="ident">MapLabelConfig::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">labels</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span>);
+<span class="doccomment">///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
+</span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>labels = MapLabelConfig::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    labels.sort_unstable_by_key(|loc| loc.id);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;map_labels.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">labels</span>)<span class="question-mark">?</span>;
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;map_labels.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>labels)<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Defines the structs used as fields of [`MapLabelConfig`],</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">maplabel_config_fields</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="kw">use</span> <span class="ident">std::iter</span>;
+<span class="doccomment">/// Defines the structs used as fields of [`MapLabelConfig`],
+</span><span class="kw">pub mod </span>maplabel_config_fields {
+    <span class="attribute">#![allow(missing_docs)]
+    </span><span class="kw">use </span>std::iter;
 
-    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-    <span class="kw">use</span> <span class="ident">itertools::izip</span>;
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+    <span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="kw">use </span>itertools::izip;
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+    <span class="kw">use </span>serde::Serialize;
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::variables</span>::{<span class="ident">Varbit</span>, <span class="ident">Varp</span>, <span class="ident">VarpOrVarbit</span>};
-    <span class="doccomment">/// A polygon</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Polygon</span> {
-        <span class="doccomment">/// Colour of the polygon.</span>
-        <span class="kw">pub</span> <span class="ident">colour</span>: [<span class="ident">u8</span>; <span class="number">4</span>],
+    <span class="kw">use </span><span class="kw">crate</span>::types::variables::{Varbit, Varp, VarpOrVarbit};
+    <span class="doccomment">/// A polygon
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Clone, Default, Serialize)]
+    </span><span class="kw">pub struct </span>Polygon {
+        <span class="doccomment">/// Colour of the polygon.
+        </span><span class="kw">pub </span>colour: [u8; <span class="number">4</span>],
 
-        <span class="doccomment">/// Fill colour of the polygon.</span>
-        <span class="doccomment">/// # Notes</span>
-        <span class="doccomment">/// A value of `[255, 0, 255, 255]` indicates transparency.</span>
-        <span class="kw">pub</span> <span class="ident">background_colour</span>: [<span class="ident">u8</span>; <span class="number">4</span>],
+        <span class="doccomment">/// Fill colour of the polygon.
+        /// # Notes
+        /// A value of `[255, 0, 255, 255]` indicates transparency.
+        </span><span class="kw">pub </span>background_colour: [u8; <span class="number">4</span>],
 
-        <span class="doccomment">/// The coordinates spanning the `Polygon`.</span>
-        <span class="kw">pub</span> <span class="ident">points</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PolygonPoint</span><span class="op">&gt;</span>,
+        <span class="doccomment">/// The coordinates spanning the `Polygon`.
+        </span><span class="kw">pub </span>points: Vec&lt;PolygonPoint&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">Polygon</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="ident">Polygon</span> {
-            <span class="kw">let</span> <span class="ident">point_count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">xy</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_i16</span>(), <span class="ident">buffer</span>.<span class="ident">get_i16</span>()))
-                .<span class="ident">take</span>(<span class="ident">point_count</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i16</span>, <span class="ident">i16</span>)<span class="op">&gt;</span><span class="op">&gt;</span>();
+    <span class="kw">impl </span>Polygon {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; Polygon {
+            <span class="kw">let </span>point_count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>xy = iter::repeat_with(|| (buffer.get_i16(), buffer.get_i16()))
+                .take(point_count)
+                .collect::&lt;Vec&lt;(i16, i16)&gt;&gt;();
 
-            <span class="kw">let</span> <span class="ident">colour</span> <span class="op">=</span> [<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()];
-            <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="number">1_u8</span>);
+            <span class="kw">let </span>colour = [buffer.get_u8(), buffer.get_u8(), buffer.get_u8(), buffer.get_u8()];
+            <span class="macro">assert_eq!</span>(buffer.get_u8(), <span class="number">1_u8</span>);
 
-            <span class="kw">let</span> <span class="ident">background_colour</span> <span class="op">=</span> [<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()];
+            <span class="kw">let </span>background_colour = [buffer.get_u8(), buffer.get_u8(), buffer.get_u8(), buffer.get_u8()];
 
-            <span class="kw">let</span> <span class="ident">planes</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>()).<span class="ident">take</span>(<span class="ident">point_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="kw">let</span> <span class="ident">points</span> <span class="op">=</span> <span class="macro">izip!</span>(<span class="ident">planes</span>, <span class="ident">xy</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">plane</span>, (<span class="ident">dx</span>, <span class="ident">dy</span>))<span class="op">|</span> <span class="ident">PolygonPoint</span> { <span class="ident">plane</span>, <span class="ident">dx</span>, <span class="ident">dy</span> }).<span class="ident">collect</span>();
+            <span class="kw">let </span>planes = iter::repeat_with(|| buffer.get_u8()).take(point_count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="kw">let </span>points = <span class="macro">izip!</span>(planes, xy).map(|(plane, (dx, dy))| PolygonPoint { plane, dx, dy }).collect();
 
-            <span class="ident">Polygon</span> {
-                <span class="ident">colour</span>,
-                <span class="ident">background_colour</span>,
-                <span class="ident">points</span>,
+            Polygon {
+                colour,
+                background_colour,
+                points,
             }
         }
     }
 
-    <span class="doccomment">/// Controls whether the [`MapLabelConfig`](super::MapLabelConfig) is shown.</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Toggle</span> {
-        <span class="doccomment">/// The [`Varp`] or [`Varbit`] controlling the toggle.</span>
+    <span class="doccomment">/// Controls whether the [`MapLabelConfig`](super::MapLabelConfig) is shown.
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Clone, Copy, Serialize)]
+    </span><span class="kw">pub struct </span>Toggle {
+        <span class="doccomment">/// The [`Varp`] or [`Varbit`] controlling the toggle.
 
-        <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-        <span class="kw">pub</span> <span class="ident">var</span>: <span class="ident">VarpOrVarbit</span>,
+        </span><span class="attribute">#[serde(flatten)]
+        </span><span class="kw">pub </span>var: VarpOrVarbit,
 
-        <span class="doccomment">/// Lower bound of showing the [`MapLabelConfig`](super::MapLabelConfig).</span>
-        <span class="kw">pub</span> <span class="ident">lower</span>: <span class="ident">u32</span>,
+        <span class="doccomment">/// Lower bound of showing the [`MapLabelConfig`](super::MapLabelConfig).
+        </span><span class="kw">pub </span>lower: u32,
 
-        <span class="doccomment">/// Upper bound of showing the [`MapLabelConfig`](super::MapLabelConfig).</span>
-        <span class="kw">pub</span> <span class="ident">upper</span>: <span class="ident">u32</span>,
+        <span class="doccomment">/// Upper bound of showing the [`MapLabelConfig`](super::MapLabelConfig).
+        </span><span class="kw">pub </span>upper: u32,
     }
 
-    <span class="kw">impl</span> <span class="ident">Toggle</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
+    <span class="kw">impl </span>Toggle {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="kw">let </span>varp = Varp::new(buffer.get_u16());
+            <span class="kw">let </span>var = VarpOrVarbit::new(varp, varbit);
 
-            <span class="kw">let</span> <span class="ident">lower</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
-            <span class="kw">let</span> <span class="ident">upper</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u32</span>();
+            <span class="kw">let </span>lower = buffer.get_u32();
+            <span class="kw">let </span>upper = buffer.get_u32();
 
-            <span class="self">Self</span> { <span class="ident">var</span>, <span class="ident">lower</span>, <span class="ident">upper</span> }
+            <span class="self">Self </span>{ var, lower, upper }
         }
     }
 
-    <span class="doccomment">/// Whether to show &quot;new&quot; or &quot;legacy&quot; map icon.</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LegacySwitch</span> {
-        <span class="doccomment">/// The [`Varp`] or [`Varbit`] controlling legacy toggle.</span>
+    <span class="doccomment">/// Whether to show &quot;new&quot; or &quot;legacy&quot; map icon.
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Clone, Copy, Serialize)]
+    </span><span class="kw">pub struct </span>LegacySwitch {
+        <span class="doccomment">/// The [`Varp`] or [`Varbit`] controlling legacy toggle.
 
-        <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-        <span class="kw">pub</span> <span class="ident">var</span>: <span class="ident">VarpOrVarbit</span>,
+        </span><span class="attribute">#[serde(flatten)]
+        </span><span class="kw">pub </span>var: VarpOrVarbit,
 
-        <span class="doccomment">/// Switch for the [`Varp`] or [`Varbit`].</span>
-        <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">u8</span>,
+        <span class="doccomment">/// Switch for the [`Varp`] or [`Varbit`].
+        </span><span class="kw">pub </span>value: u8,
 
-        <span class="doccomment">/// A reference pointing to the default [`MapLabelConfig`](super::MapLabelConfig).</span>
-        <span class="kw">pub</span> <span class="ident">default_reference</span>: <span class="ident">u16</span>,
+        <span class="doccomment">/// A reference pointing to the default [`MapLabelConfig`](super::MapLabelConfig).
+        </span><span class="kw">pub </span>default_reference: u16,
 
-        <span class="doccomment">/// A reference pointing to the legacy [`MapLabelConfig`](super::MapLabelConfig).</span>
-        <span class="kw">pub</span> <span class="ident">legacy_reference</span>: <span class="ident">u16</span>,
+        <span class="doccomment">/// A reference pointing to the legacy [`MapLabelConfig`](super::MapLabelConfig).
+        </span><span class="kw">pub </span>legacy_reference: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">LegacySwitch</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
+    <span class="kw">impl </span>LegacySwitch {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="kw">let </span>varp = Varp::new(buffer.get_u16());
+            <span class="kw">let </span>var = VarpOrVarbit::new(varp, varbit);
 
-            <span class="comment">// always 0 or 1 (boolean)</span>
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">default_reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">legacy_reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+            <span class="comment">// always 0 or 1 (boolean)
+            </span><span class="kw">let </span>value = buffer.get_u8();
+            <span class="kw">let </span>default_reference = buffer.get_u16();
+            <span class="kw">let </span>legacy_reference = buffer.get_u16();
 
-            <span class="self">Self</span> {
-                <span class="ident">var</span>,
-                <span class="ident">value</span>,
-                <span class="ident">default_reference</span>,
-                <span class="ident">legacy_reference</span>,
+            <span class="self">Self </span>{
+                var,
+                value,
+                default_reference,
+                legacy_reference,
             }
         }
     }
 
-    <span class="doccomment">/// Points that span a [`Polygon`].</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Serialize</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PolygonPoint</span> {
-        <span class="doccomment">/// Plane. Always zero.</span>
-        <span class="kw">pub</span> <span class="ident">plane</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// Points that span a [`Polygon`].
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Clone, Copy, Serialize)]
+    </span><span class="kw">pub struct </span>PolygonPoint {
+        <span class="doccomment">/// Plane. Always zero.
+        </span><span class="kw">pub </span>plane: u8,
 
-        <span class="doccomment">/// X-coordinate offset from the [`MapLabelConfig`](super::MapLabelConfig) position.</span>
-        <span class="kw">pub</span> <span class="ident">dx</span>: <span class="ident">i16</span>,
+        <span class="doccomment">/// X-coordinate offset from the [`MapLabelConfig`](super::MapLabelConfig) position.
+        </span><span class="kw">pub </span>dx: i16,
 
-        <span class="doccomment">/// Y-coordinate offset from the [`MapLabelConfig`](super::MapLabelConfig) position.</span>
-        <span class="kw">pub</span> <span class="ident">dy</span>: <span class="ident">i16</span>,
+        <span class="doccomment">/// Y-coordinate offset from the [`MapLabelConfig`](super::MapLabelConfig) position.
+        </span><span class="kw">pub </span>dy: i16,
     }
 }
 
-<span class="kw">use</span> <span class="ident">maplabel_config_fields</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>maplabel_config_fields::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)))]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(all(test, any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>)))]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">dump_maplabels</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>dump_maplabels() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-        <span class="ident">MapLabelConfig::dump_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
+        MapLabelConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

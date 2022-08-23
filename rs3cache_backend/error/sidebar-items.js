@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["CacheError","An error type for things that can go wrong when reading from the cache."]],"type":[["CacheResult","Result wrapper for [`CacheError`]."]]});
+window.SIDEBAR_ITEMS = {"enum":[["CacheError","An error type for things that can go wrong when reading from the cache."]],"type":[["CacheResult","Result wrapper for [`CacheError`]."]]};

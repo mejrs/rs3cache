@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ReadErrorKind",""]],"struct":[["ReadError",""]],"trait":[["BufExtra",""]]});
+window.SIDEBAR_ITEMS = {"enum":[["ReadErrorKind",""]],"struct":[["ReadError",""]],"trait":[["BufExtra",""]]};

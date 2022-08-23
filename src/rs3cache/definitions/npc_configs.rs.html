@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/npc_configs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>npc_configs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/npc_configs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>npc_configs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -682,685 +677,684 @@
 <span id="677">677</span>
 <span id="678">678</span>
 <span id="679">679</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::BTreeMap</span>,
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    collections::BTreeMap,
+    fs::{<span class="self">self</span>, File},
+    io::Write,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::definitions::indextype::ConfigType</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype::IndexType</span>,
-    <span class="ident">structures::paramtable::ParamTable</span>,
+<span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::definitions::indextype::ConfigType;
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
+    structures::paramtable::ParamTable,
 };
 
-<span class="doccomment">/// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NpcConfig</span> {
-    <span class="doccomment">/// Its id.</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">models</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NpcModels</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">standing_animation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">walking_animation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">rotate_180_animation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">rotate_90_right_animation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">rotate_90_left_animation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
+</span><span class="attribute">#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
+</span><span class="kw">pub struct </span>NpcConfig {
+    <span class="doccomment">/// Its id.
+    </span><span class="kw">pub </span>id: u32,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>models: <span class="prelude-ty">Option</span>&lt;NpcModels&gt;,
+    <span class="kw">pub </span>name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>size: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>standing_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>walking_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>rotate_180_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>rotate_90_right_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>rotate_90_left_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">category</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>category: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 
-    <span class="kw">pub</span> <span class="ident">actions</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">colour_replacements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ColourReplacements</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">texture_replacements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Textures</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">recolour_palette</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RecolourPalette</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">recolour_indices</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">retexture_indices</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">head_models</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HeadModels</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">draw_map_dot</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">combat</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">scale_xz</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">scale_y</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_99</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ambience</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">model_contract</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">head_icon_data</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">head_icon_data</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_103</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">morphs_1</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NpcMorphTable</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_107</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">slow_walk</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">animate_idle</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">shadow</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Shadow</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">shadow_alpha_intensity</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ShadowIntensity</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">morphs_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedNpcMorphTable</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">movement_capabilities</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">translations</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Translations</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">icon_height</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">respawn_direction</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">animation_group</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">movement_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ambient_sound</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AmbientSounds</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">old_cursor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OldCursors</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">old_cursor_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OldCursors</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">attack_cursor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">army_icon</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_140</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_141</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">mapfunction</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_143</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">member_actions</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>; <span class="number">5</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_155</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown155</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_158</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_159</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">quests</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Quests</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_162</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_163</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_164</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown164</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_165</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_168</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_169</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">action_cursors</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>; <span class="number">6</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_178</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_179</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Unknown179</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_180</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_182</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_184</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">params</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ParamTable</span><span class="op">&gt;</span>,
+    <span class="kw">pub </span>actions: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;String&gt;; <span class="number">5</span>]&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>colour_replacements: <span class="prelude-ty">Option</span>&lt;ColourReplacements&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>texture_replacements: <span class="prelude-ty">Option</span>&lt;Textures&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>recolour_palette: <span class="prelude-ty">Option</span>&lt;RecolourPalette&gt;,
+    <span class="kw">pub </span>recolour_indices: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>retexture_indices: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>head_models: <span class="prelude-ty">Option</span>&lt;HeadModels&gt;,
+    <span class="kw">pub </span>draw_map_dot: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>combat: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>scale_xz: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>scale_y: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>unknown_99: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>ambience: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="kw">pub </span>model_contract: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+    </span><span class="kw">pub </span>head_icon_data: <span class="prelude-ty">Option</span>&lt;Vec&lt;(<span class="prelude-ty">Option</span>&lt;u32&gt;, <span class="prelude-ty">Option</span>&lt;u32&gt;)&gt;&gt;,
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>head_icon_data: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>unknown_103: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>morphs_1: <span class="prelude-ty">Option</span>&lt;NpcMorphTable&gt;,
+    <span class="kw">pub </span>unknown_107: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>slow_walk: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>animate_idle: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>shadow: <span class="prelude-ty">Option</span>&lt;Shadow&gt;,
+    <span class="kw">pub </span>shadow_alpha_intensity: <span class="prelude-ty">Option</span>&lt;ShadowIntensity&gt;,
+    <span class="kw">pub </span>morphs_2: <span class="prelude-ty">Option</span>&lt;ExtendedNpcMorphTable&gt;,
+    <span class="kw">pub </span>movement_capabilities: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>translations: <span class="prelude-ty">Option</span>&lt;Translations&gt;,
+    <span class="kw">pub </span>icon_height: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>respawn_direction: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="kw">pub </span>animation_group: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>movement_type: <span class="prelude-ty">Option</span>&lt;i8&gt;,
+    <span class="kw">pub </span>ambient_sound: <span class="prelude-ty">Option</span>&lt;AmbientSounds&gt;,
+    <span class="kw">pub </span>old_cursor: <span class="prelude-ty">Option</span>&lt;OldCursors&gt;,
+    <span class="kw">pub </span>old_cursor_2: <span class="prelude-ty">Option</span>&lt;OldCursors&gt;,
+    <span class="kw">pub </span>attack_cursor: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>army_icon: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="kw">pub </span>unknown_140: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_141: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>mapfunction: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>unknown_143: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>member_actions: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;String&gt;; <span class="number">5</span>]&gt;,
+    <span class="kw">pub </span>unknown_155: <span class="prelude-ty">Option</span>&lt;Unknown155&gt;,
+    <span class="kw">pub </span>unknown_158: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_159: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>quests: <span class="prelude-ty">Option</span>&lt;Quests&gt;,
+    <span class="kw">pub </span>unknown_162: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_163: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_164: <span class="prelude-ty">Option</span>&lt;Unknown164&gt;,
+    <span class="kw">pub </span>unknown_165: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_168: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_169: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>action_cursors: <span class="prelude-ty">Option</span>&lt;[<span class="prelude-ty">Option</span>&lt;u16&gt;; <span class="number">6</span>]&gt;,
+    <span class="kw">pub </span>unknown_178: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_179: <span class="prelude-ty">Option</span>&lt;Unknown179&gt;,
+    <span class="kw">pub </span>unknown_180: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_182: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_184: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attribute">#[serde(flatten)]
+    </span><span class="kw">pub </span>params: <span class="prelude-ty">Option</span>&lt;ParamTable&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">NpcConfig</span> {
-    <span class="doccomment">/// Returns a mapping of all [npc configurations](NpcConfig)</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::NPC_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
+<span class="kw">impl </span>NpcConfig {
+    <span class="doccomment">/// Returns a mapping of all [npc configurations](NpcConfig)
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="kw">let </span>archives = CacheIndex::new(IndexType::NPC_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">let</span> <span class="ident">npc_configs</span> <span class="op">=</span> <span class="ident">archives</span>
-            .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
-            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
-                <span class="ident">archive</span>
-                    .<span class="ident">take_files</span>()
-                    .<span class="ident">into_iter</span>()
-                    .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">archive_id</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span> <span class="op">|</span> <span class="ident">file_id</span>, <span class="ident">file</span>))
+        <span class="kw">let </span>npc_configs = archives
+            .map(Result::unwrap)
+            .flat_map(|archive| {
+                <span class="kw">let </span>archive_id = archive.archive_id();
+                archive
+                    .take_files()
+                    .into_iter()
+                    .map(<span class="kw">move </span>|(file_id, file)| (archive_id &lt;&lt; <span class="number">7 </span>| file_id, file))
             })
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-        <span class="prelude-val">Ok</span>(<span class="ident">npc_configs</span>)
+            .map(|(id, file)| (id, <span class="self">Self</span>::deserialize(id, file)))
+            .collect::&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt;();
+        <span class="prelude-val">Ok</span>(npc_configs)
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>
-            .<span class="ident">archive</span>(<span class="ident">ConfigType::NPC_CONFIG</span>)<span class="question-mark">?</span>
-            .<span class="ident">take_files</span>()
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">file_id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>())
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+            </span>.archive(ConfigType::NPC_CONFIG)<span class="question-mark">?
+            </span>.take_files()
+            .into_iter()
+            .map(|(file_id, file)| (file_id, <span class="self">Self</span>::deserialize(file_id, file)))
+            .collect())
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
         <span class="macro">todo!</span>()
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">npc</span> <span class="op">=</span> <span class="self">Self</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
+    <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>npc = <span class="self">Self </span>{ id, ..Default::default() };
 
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-                <span class="number">0</span> =&gt; {
-                    <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>, <span class="string">&quot;The buffer was not fully read. {}&quot;</span>, <span class="ident">npc</span>);
-                    <span class="kw">break</span> <span class="ident">npc</span>;
+        <span class="kw">loop </span>{
+            <span class="kw">match </span>buffer.get_u8() {
+                <span class="number">0 </span>=&gt; {
+                    <span class="macro">debug_assert_eq!</span>(buffer.remaining(), <span class="number">0</span>, <span class="string">&quot;The buffer was not fully read. {}&quot;</span>, npc);
+                    <span class="kw">break </span>npc;
                 }
-                <span class="number">1</span> =&gt; <span class="ident">npc</span>.<span class="ident">models</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">NpcModels::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">2</span> =&gt; <span class="ident">npc</span>.<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>()),
-                <span class="number">12</span> =&gt; <span class="ident">npc</span>.<span class="ident">size</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-                <span class="number">13</span> =&gt; <span class="ident">npc</span>.<span class="ident">standing_animation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-                <span class="number">14</span> =&gt; <span class="ident">npc</span>.<span class="ident">walking_animation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-                <span class="number">17</span> =&gt; {
-                    <span class="ident">npc</span>.<span class="ident">walking_animation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-                    <span class="ident">npc</span>.<span class="ident">rotate_180_animation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-                    <span class="ident">npc</span>.<span class="ident">rotate_90_right_animation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-                    <span class="ident">npc</span>.<span class="ident">rotate_90_left_animation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+                <span class="number">1 </span>=&gt; npc.models = <span class="prelude-val">Some</span>(NpcModels::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">2 </span>=&gt; npc.name = <span class="prelude-val">Some</span>(buffer.get_string()),
+                <span class="number">12 </span>=&gt; npc.size = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">13 </span>=&gt; npc.standing_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">14 </span>=&gt; npc.walking_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">17 </span>=&gt; {
+                    npc.walking_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.rotate_180_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.rotate_90_right_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.rotate_90_left_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
                 }
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-                <span class="number">18</span> =&gt; <span class="ident">npc</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="ident">opcode</span> @ <span class="number">30</span>..<span class="op">=</span><span class="number">34</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">actions</span> <span class="op">=</span> <span class="ident">npc</span>.<span class="ident">actions</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
-                    <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">30</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>());
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">18 </span>=&gt; npc.category = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                opcode @ <span class="number">30</span>..=<span class="number">34 </span>=&gt; {
+                    <span class="kw">let </span>actions = npc.actions.get_or_insert([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
+                    actions[opcode <span class="kw">as </span>usize - <span class="number">30</span>] = <span class="prelude-val">Some</span>(buffer.get_string());
                 }
-                <span class="number">40</span> =&gt; <span class="ident">npc</span>.<span class="ident">colour_replacements</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ColourReplacements::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">41</span> =&gt; <span class="ident">npc</span>.<span class="ident">texture_replacements</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Textures::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">42</span> =&gt; <span class="ident">npc</span>.<span class="ident">recolour_palette</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">RecolourPalette::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">44</span> =&gt; <span class="ident">npc</span>.<span class="ident">recolour_indices</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_masked_index</span>()),
-                <span class="number">45</span> =&gt; <span class="ident">npc</span>.<span class="ident">retexture_indices</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_masked_index</span>()),
-                <span class="number">60</span> =&gt; <span class="ident">npc</span>.<span class="ident">head_models</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">HeadModels::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">93</span> =&gt; <span class="ident">npc</span>.<span class="ident">draw_map_dot</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="number">95</span> =&gt; <span class="ident">npc</span>.<span class="ident">combat</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">97</span> =&gt; <span class="ident">npc</span>.<span class="ident">scale_xz</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">98</span> =&gt; <span class="ident">npc</span>.<span class="ident">scale_y</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">99</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_99</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="number">100</span> =&gt; <span class="ident">npc</span>.<span class="ident">ambience</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="number">101</span> =&gt; <span class="ident">npc</span>.<span class="ident">ambience</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-                <span class="number">102</span> =&gt; <span class="ident">npc</span>.<span class="ident">head_icon_data</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_masked_data</span>()),
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>)]</span>
-                <span class="number">102</span> =&gt; <span class="ident">npc</span>.<span class="ident">head_icon_data</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">103</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_103</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">106</span> =&gt; <span class="ident">npc</span>.<span class="ident">morphs_1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">NpcMorphTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">107</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_107</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="number">109</span> =&gt; <span class="ident">npc</span>.<span class="ident">slow_walk</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="number">111</span> =&gt; <span class="ident">npc</span>.<span class="ident">animate_idle</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="number">113</span> =&gt; <span class="ident">npc</span>.<span class="ident">shadow</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Shadow::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">114</span> =&gt; <span class="ident">npc</span>.<span class="ident">shadow_alpha_intensity</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ShadowIntensity::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">118</span> =&gt; <span class="ident">npc</span>.<span class="ident">morphs_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ExtendedNpcMorphTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">119</span> =&gt; <span class="ident">npc</span>.<span class="ident">movement_capabilities</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="number">121</span> =&gt; <span class="ident">npc</span>.<span class="ident">translations</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Translations::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">123</span> =&gt; <span class="ident">npc</span>.<span class="ident">icon_height</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">125</span> =&gt; <span class="ident">npc</span>.<span class="ident">respawn_direction</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="number">127</span> =&gt; <span class="ident">npc</span>.<span class="ident">animation_group</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">128</span> =&gt; <span class="ident">npc</span>.<span class="ident">movement_type</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_i8</span>()),
-                <span class="number">134</span> =&gt; <span class="ident">npc</span>.<span class="ident">ambient_sound</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">AmbientSounds::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">135</span> =&gt; <span class="ident">npc</span>.<span class="ident">old_cursor</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">OldCursors::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">136</span> =&gt; <span class="ident">npc</span>.<span class="ident">old_cursor_2</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">OldCursors::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">137</span> =&gt; <span class="ident">npc</span>.<span class="ident">attack_cursor</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">138</span> =&gt; <span class="ident">npc</span>.<span class="ident">army_icon</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">140</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_140</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">141</span> =&gt; <span class="ident">npc</span>.<span class="ident">animate_idle</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">142</span> =&gt; <span class="ident">npc</span>.<span class="ident">mapfunction</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">143</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_143</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="ident">opcode</span> @ <span class="number">150</span>..<span class="op">=</span><span class="number">154</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">actions</span> <span class="op">=</span> <span class="ident">npc</span>.<span class="ident">member_actions</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
-                    <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">150</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>());
+                <span class="number">40 </span>=&gt; npc.colour_replacements = <span class="prelude-val">Some</span>(ColourReplacements::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">41 </span>=&gt; npc.texture_replacements = <span class="prelude-val">Some</span>(Textures::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">42 </span>=&gt; npc.recolour_palette = <span class="prelude-val">Some</span>(RecolourPalette::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">44 </span>=&gt; npc.recolour_indices = <span class="prelude-val">Some</span>(buffer.get_masked_index()),
+                <span class="number">45 </span>=&gt; npc.retexture_indices = <span class="prelude-val">Some</span>(buffer.get_masked_index()),
+                <span class="number">60 </span>=&gt; npc.head_models = <span class="prelude-val">Some</span>(HeadModels::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">93 </span>=&gt; npc.draw_map_dot = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                <span class="number">95 </span>=&gt; npc.combat = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">97 </span>=&gt; npc.scale_xz = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">98 </span>=&gt; npc.scale_y = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">99 </span>=&gt; npc.unknown_99 = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                <span class="number">100 </span>=&gt; npc.ambience = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="number">101 </span>=&gt; npc.ambience = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+                </span><span class="number">102 </span>=&gt; npc.head_icon_data = <span class="prelude-val">Some</span>(buffer.get_masked_data()),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">102 </span>=&gt; npc.head_icon_data = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">103 </span>=&gt; npc.unknown_103 = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">106 </span>=&gt; npc.morphs_1 = <span class="prelude-val">Some</span>(NpcMorphTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">107 </span>=&gt; npc.unknown_107 = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                <span class="number">109 </span>=&gt; npc.slow_walk = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                <span class="number">111 </span>=&gt; npc.animate_idle = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                <span class="number">113 </span>=&gt; npc.shadow = <span class="prelude-val">Some</span>(Shadow::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">114 </span>=&gt; npc.shadow_alpha_intensity = <span class="prelude-val">Some</span>(ShadowIntensity::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">118 </span>=&gt; npc.morphs_2 = <span class="prelude-val">Some</span>(ExtendedNpcMorphTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">119 </span>=&gt; npc.movement_capabilities = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="number">121 </span>=&gt; npc.translations = <span class="prelude-val">Some</span>(Translations::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">123 </span>=&gt; npc.icon_height = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">125 </span>=&gt; npc.respawn_direction = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="number">127 </span>=&gt; npc.animation_group = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">128 </span>=&gt; npc.movement_type = <span class="prelude-val">Some</span>(buffer.get_i8()),
+                <span class="number">134 </span>=&gt; npc.ambient_sound = <span class="prelude-val">Some</span>(AmbientSounds::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">135 </span>=&gt; npc.old_cursor = <span class="prelude-val">Some</span>(OldCursors::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">136 </span>=&gt; npc.old_cursor_2 = <span class="prelude-val">Some</span>(OldCursors::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">137 </span>=&gt; npc.attack_cursor = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">138 </span>=&gt; npc.army_icon = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">140 </span>=&gt; npc.unknown_140 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">141 </span>=&gt; npc.animate_idle = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">142 </span>=&gt; npc.mapfunction = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">143 </span>=&gt; npc.unknown_143 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                opcode @ <span class="number">150</span>..=<span class="number">154 </span>=&gt; {
+                    <span class="kw">let </span>actions = npc.member_actions.get_or_insert([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
+                    actions[opcode <span class="kw">as </span>usize - <span class="number">150</span>] = <span class="prelude-val">Some</span>(buffer.get_string());
                 }
-                <span class="number">155</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_155</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown155::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">158</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_158</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">159</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_159</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="number">160</span> =&gt; <span class="ident">npc</span>.<span class="ident">quests</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Quests::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">162</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_162</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">163</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_163</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">164</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_164</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown164::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">165</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_165</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">168</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_168</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">169</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_169</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-                <span class="ident">opcode</span> @ <span class="number">170</span>..<span class="op">=</span><span class="number">175</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">actions</span> <span class="op">=</span> <span class="ident">npc</span>.<span class="ident">action_cursors</span>.<span class="ident">get_or_insert</span>([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
-                    <span class="ident">actions</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">170</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+                <span class="number">155 </span>=&gt; npc.unknown_155 = <span class="prelude-val">Some</span>(Unknown155::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">158 </span>=&gt; npc.unknown_158 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">159 </span>=&gt; npc.unknown_159 = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                <span class="number">160 </span>=&gt; npc.quests = <span class="prelude-val">Some</span>(Quests::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">162 </span>=&gt; npc.unknown_162 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">163 </span>=&gt; npc.unknown_163 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">164 </span>=&gt; npc.unknown_164 = <span class="prelude-val">Some</span>(Unknown164::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">165 </span>=&gt; npc.unknown_165 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">168 </span>=&gt; npc.unknown_168 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">169 </span>=&gt; npc.unknown_169 = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+                opcode @ <span class="number">170</span>..=<span class="number">175 </span>=&gt; {
+                    <span class="kw">let </span>actions = npc.action_cursors.get_or_insert([<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>]);
+                    actions[opcode <span class="kw">as </span>usize - <span class="number">170</span>] = <span class="prelude-val">Some</span>(buffer.get_u16());
                 }
-                <span class="number">178</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_178</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">179</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_179</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Unknown179::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="number">180</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="number">181</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="number">182</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_182</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">184</span> =&gt; <span class="ident">npc</span>.<span class="ident">unknown_184</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>()),
-                <span class="number">249</span> =&gt; <span class="ident">npc</span>.<span class="ident">params</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ParamTable::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)),
-                <span class="ident">missing</span> =&gt; {
-                    <span class="macro">unimplemented!</span>(<span class="string">&quot;NpcConfig::deserialize cannot deserialize opcode {} in npc: \n {}\n&quot;</span>, <span class="ident">missing</span>, <span class="ident">npc</span>)
+                <span class="number">178 </span>=&gt; npc.unknown_178 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">179 </span>=&gt; npc.unknown_179 = <span class="prelude-val">Some</span>(Unknown179::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="number">180 </span>=&gt; <span class="macro">unimplemented!</span>(),
+                <span class="number">181 </span>=&gt; <span class="macro">unimplemented!</span>(),
+                <span class="number">182 </span>=&gt; npc.unknown_182 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">184 </span>=&gt; npc.unknown_184 = <span class="prelude-val">Some</span>(buffer.get_unsigned_smart()),
+                <span class="number">249 </span>=&gt; npc.params = <span class="prelude-val">Some</span>(ParamTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                missing =&gt; {
+                    <span class="macro">unimplemented!</span>(<span class="string">&quot;NpcConfig::deserialize cannot deserialize opcode {} in npc: \n {}\n&quot;</span>, missing, npc)
                 }
             }
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">NpcConfig</span> {
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;NpcConfig({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>NpcConfig {
+    <span class="kw">fn </span>__repr__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;NpcConfig({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;NpcConfig({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
-    }
-}
-
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
-
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">NpcConfig</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>).<span class="ident">unwrap</span>())
+    <span class="kw">fn </span>__str__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;NpcConfig({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 }
 
-<span class="doccomment">/// Defines the structs used as fields of [`NpcConfig`],</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">npc_config_fields</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display, Formatter};
 
-    <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BTreeMap</span>, <span class="ident">iter</span>};
+<span class="kw">impl </span>Display <span class="kw">for </span>NpcConfig {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, serde_json::to_string_pretty(<span class="kw-2">&amp;</span><span class="self">self</span>).unwrap())
+    }
+}
 
-    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="doccomment">/// Defines the structs used as fields of [`NpcConfig`],
+</span><span class="kw">pub mod </span>npc_config_fields {
+    <span class="attribute">#![allow(missing_docs)]
 
-    <span class="kw">use</span> <span class="kw">crate</span>::{
-        <span class="ident">cache::buf::BufExtra</span>,
-        <span class="ident">types::variables</span>::{<span class="ident">Varbit</span>, <span class="ident">Varp</span>, <span class="ident">VarpOrVarbit</span>},
+    </span><span class="kw">use </span>std::{collections::BTreeMap, iter};
+
+    <span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+    <span class="kw">use </span>serde::Serialize;
+
+    <span class="kw">use crate</span>::{
+        cache::buf::BufExtra,
+        types::variables::{Varbit, Varp, VarpOrVarbit},
     };
 
-    <span class="doccomment">/// Contains an array of possible ids this npc can morph into, controlled by either a varbit or varp.</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NpcMorphTable</span> {
-        <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">flatten</span>)]</span>
-        <span class="kw">pub</span> <span class="ident">var</span>: <span class="ident">VarpOrVarbit</span>,
+    <span class="doccomment">/// Contains an array of possible ids this npc can morph into, controlled by either a varbit or varp.
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>NpcMorphTable {
+        <span class="attribute">#[serde(flatten)]
+        </span><span class="kw">pub </span>var: VarpOrVarbit,
 
-        <span class="kw">pub</span> <span class="ident">ids</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="kw">pub </span>ids: Vec&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">NpcMorphTable</span> {
-        <span class="doccomment">/// Constructor for [`NpcMorphTable`]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
+    <span class="kw">impl </span>NpcMorphTable {
+        <span class="doccomment">/// Constructor for [`NpcMorphTable`]
+        </span><span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="kw">let </span>varp = Varp::new(buffer.get_u16());
+            <span class="kw">let </span>var = VarpOrVarbit::new(varp, varbit);
 
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>) {
-                <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>
-            } <span class="kw">else</span> {
-                <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>
+            <span class="kw">let </span>count = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;rs3&quot;</span>) {
+                buffer.get_unsigned_smart() <span class="kw">as </span>usize
+            } <span class="kw">else </span>{
+                buffer.get_u8() <span class="kw">as </span>usize
             };
 
-            <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() {
-                <span class="ident">u16::MAX</span> =&gt; <span class="prelude-val">None</span>,
-                <span class="ident">id</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span>),
+            <span class="kw">let </span>ids = iter::repeat_with(|| <span class="kw">match </span>buffer.get_u16() {
+                u16::MAX =&gt; <span class="prelude-val">None</span>,
+                id =&gt; <span class="prelude-val">Some</span>(id <span class="kw">as </span>u32),
             })
-            .<span class="ident">take</span>(<span class="ident">count</span> <span class="op">+</span> <span class="number">1</span>)
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            .take(count + <span class="number">1</span>)
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            <span class="self">Self</span> { <span class="ident">var</span>, <span class="ident">ids</span> }
+            <span class="self">Self </span>{ var, ids }
         }
     }
-    <span class="doccomment">/// Like [`NpcMorphTable`], but with a default value.</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExtendedNpcMorphTable</span> {
-        <span class="kw">pub</span> <span class="ident">var</span>: <span class="ident">VarpOrVarbit</span>,
+    <span class="doccomment">/// Like [`NpcMorphTable`], but with a default value.
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>ExtendedNpcMorphTable {
+        <span class="kw">pub </span>var: VarpOrVarbit,
 
-        <span class="kw">pub</span> <span class="ident">ids</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="kw">pub </span>ids: Vec&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
 
-        <span class="kw">pub</span> <span class="ident">default_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+        <span class="kw">pub </span>default_id: <span class="prelude-ty">Option</span>&lt;u32&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">ExtendedNpcMorphTable</span> {
-        <span class="doccomment">/// Constructor for [`ExtendedNpcMorphTable`]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">varp</span> <span class="op">=</span> <span class="ident">Varp::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
+    <span class="kw">impl </span>ExtendedNpcMorphTable {
+        <span class="doccomment">/// Constructor for [`ExtendedNpcMorphTable`]
+        </span><span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="kw">let </span>varp = Varp::new(buffer.get_u16());
 
-            <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">VarpOrVarbit::new</span>(<span class="ident">varp</span>, <span class="ident">varbit</span>);
+            <span class="kw">let </span>var = VarpOrVarbit::new(varp, varbit);
 
-            <span class="kw">let</span> <span class="ident">default_id</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>();
+            <span class="kw">let </span>default_id = buffer.get_smart32();
 
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>) {
-                <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>
-            } <span class="kw">else</span> {
-                <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>
+            <span class="kw">let </span>count = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;rs3&quot;</span>) {
+                buffer.get_unsigned_smart() <span class="kw">as </span>usize
+            } <span class="kw">else </span>{
+                buffer.get_u8() <span class="kw">as </span>usize
             };
 
-            <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() {
-                <span class="ident">u16::MAX</span> =&gt; <span class="prelude-val">None</span>,
-                <span class="ident">id</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span>),
+            <span class="kw">let </span>ids = iter::repeat_with(|| <span class="kw">match </span>buffer.get_u16() {
+                u16::MAX =&gt; <span class="prelude-val">None</span>,
+                id =&gt; <span class="prelude-val">Some</span>(id <span class="kw">as </span>u32),
             })
-            .<span class="ident">take</span>(<span class="ident">count</span> <span class="op">+</span> <span class="number">1</span>)
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            .take(count + <span class="number">1</span>)
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            <span class="self">Self</span> { <span class="ident">var</span>, <span class="ident">ids</span>, <span class="ident">default_id</span> }
+            <span class="self">Self </span>{ var, ids, default_id }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NpcModels</span> {
-        <span class="kw">pub</span> <span class="ident">models</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>NpcModels {
+        <span class="kw">pub </span>models: Vec&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">NpcModels</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+    <span class="kw">impl </span>NpcModels {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+        </span><span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_i8() <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">models</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">models</span> }
+            <span class="kw">let </span>models = iter::repeat_with(|| buffer.get_smart32()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ models }
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="attribute">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
+        </span><span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">models</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() {
-                <span class="ident">u16::MAX</span> =&gt; <span class="prelude-val">None</span>,
-                <span class="ident">other</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">other</span> <span class="kw">as</span> <span class="ident">u32</span>),
+            <span class="kw">let </span>models = iter::repeat_with(|| <span class="kw">match </span>buffer.get_u16() {
+                u16::MAX =&gt; <span class="prelude-val">None</span>,
+                other =&gt; <span class="prelude-val">Some</span>(other <span class="kw">as </span>u32),
             })
-            .<span class="ident">take</span>(<span class="ident">count</span>)
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">models</span> }
+            .take(count)
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ models }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ShadowIntensity</span> {
-        <span class="kw">pub</span> <span class="ident">src_colour</span>: <span class="ident">i8</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone, Copy)]
+    </span><span class="kw">pub struct </span>ShadowIntensity {
+        <span class="kw">pub </span>src_colour: i8,
 
-        <span class="kw">pub</span> <span class="ident">dst_colour</span>: <span class="ident">i8</span>,
+        <span class="kw">pub </span>dst_colour: i8,
     }
 
-    <span class="kw">impl</span> <span class="ident">ShadowIntensity</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">src_colour</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>();
-            <span class="kw">let</span> <span class="ident">dst_colour</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>();
-            <span class="self">Self</span> { <span class="ident">src_colour</span>, <span class="ident">dst_colour</span> }
+    <span class="kw">impl </span>ShadowIntensity {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>src_colour = buffer.get_i8();
+            <span class="kw">let </span>dst_colour = buffer.get_i8();
+            <span class="self">Self </span>{ src_colour, dst_colour }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Shadow</span> {
-        <span class="kw">pub</span> <span class="ident">src_colour</span>: <span class="ident">u16</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone, Copy)]
+    </span><span class="kw">pub struct </span>Shadow {
+        <span class="kw">pub </span>src_colour: u16,
 
-        <span class="kw">pub</span> <span class="ident">dst_colour</span>: <span class="ident">u16</span>,
+        <span class="kw">pub </span>dst_colour: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">Shadow</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">src_colour</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">dst_colour</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="self">Self</span> { <span class="ident">src_colour</span>, <span class="ident">dst_colour</span> }
+    <span class="kw">impl </span>Shadow {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>src_colour = buffer.get_u16();
+            <span class="kw">let </span>dst_colour = buffer.get_u16();
+            <span class="self">Self </span>{ src_colour, dst_colour }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HeadModels</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-        <span class="kw">pub</span> <span class="ident">models</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-        <span class="kw">pub</span> <span class="ident">models</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>HeadModels {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+        </span><span class="kw">pub </span>models: Vec&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
+        <span class="attribute">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
+        </span><span class="kw">pub </span>models: Vec&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">HeadModels</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+    <span class="kw">impl </span>HeadModels {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+        </span><span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_i8() <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">models</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">models</span> }
+            <span class="kw">let </span>models = iter::repeat_with(|| buffer.get_smart32()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ models }
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;osrs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;legacy&quot;</span>))]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="attribute">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
+        </span><span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">models</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() {
-                <span class="ident">u16::MAX</span> =&gt; <span class="prelude-val">None</span>,
-                <span class="ident">other</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">other</span>),
+            <span class="kw">let </span>models = iter::repeat_with(|| <span class="kw">match </span>buffer.get_u16() {
+                u16::MAX =&gt; <span class="prelude-val">None</span>,
+                other =&gt; <span class="prelude-val">Some</span>(other),
             })
-            .<span class="ident">take</span>(<span class="ident">count</span>)
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">models</span> }
+            .take(count)
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ models }
         }
     }
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ColourReplacements</span> {
-        <span class="kw">pub</span> <span class="ident">colour_replacements</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u16</span>, <span class="ident">u16</span>)<span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>ColourReplacements {
+        <span class="kw">pub </span>colour_replacements: Vec&lt;(u16, u16)&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">ColourReplacements</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">colour_replacements</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>(), <span class="ident">buffer</span>.<span class="ident">get_u16</span>())).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">colour_replacements</span> }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Textures</span> {
-        <span class="kw">pub</span> <span class="ident">textures</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u16</span>, <span class="ident">u16</span><span class="op">&gt;</span>,
-    }
-
-    <span class="kw">impl</span> <span class="ident">Textures</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">textures</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>(), <span class="ident">buffer</span>.<span class="ident">get_u16</span>()))
-                .<span class="ident">take</span>(<span class="ident">count</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">textures</span> }
+    <span class="kw">impl </span>ColourReplacements {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>colour_replacements = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16())).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ colour_replacements }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AmbientSounds</span> {
-        <span class="kw">pub</span> <span class="ident">unknown_1</span>: <span class="ident">u16</span>,
-
-        <span class="kw">pub</span> <span class="ident">unknown_2</span>: <span class="ident">u16</span>,
-
-        <span class="kw">pub</span> <span class="ident">unknown_3</span>: <span class="ident">u16</span>,
-
-        <span class="kw">pub</span> <span class="ident">unknown_4</span>: <span class="ident">u16</span>,
-
-        <span class="kw">pub</span> <span class="ident">unknown_5</span>: <span class="ident">u8</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>Textures {
+        <span class="kw">pub </span>textures: BTreeMap&lt;u16, u16&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">AmbientSounds</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">unknown_3</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">unknown_4</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">unknown_5</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+    <span class="kw">impl </span>Textures {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>textures = iter::repeat_with(|| (buffer.get_u16(), buffer.get_u16()))
+                .take(count)
+                .collect::&lt;BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ textures }
+        }
+    }
 
-            <span class="self">Self</span> {
-                <span class="ident">unknown_1</span>,
-                <span class="ident">unknown_2</span>,
-                <span class="ident">unknown_3</span>,
-                <span class="ident">unknown_4</span>,
-                <span class="ident">unknown_5</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
+    </span><span class="kw">pub struct </span>AmbientSounds {
+        <span class="kw">pub </span>unknown_1: u16,
+
+        <span class="kw">pub </span>unknown_2: u16,
+
+        <span class="kw">pub </span>unknown_3: u16,
+
+        <span class="kw">pub </span>unknown_4: u16,
+
+        <span class="kw">pub </span>unknown_5: u8,
+    }
+
+    <span class="kw">impl </span>AmbientSounds {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>unknown_1 = buffer.get_u16();
+            <span class="kw">let </span>unknown_2 = buffer.get_u16();
+            <span class="kw">let </span>unknown_3 = buffer.get_u16();
+            <span class="kw">let </span>unknown_4 = buffer.get_u16();
+            <span class="kw">let </span>unknown_5 = buffer.get_u8();
+
+            <span class="self">Self </span>{
+                unknown_1,
+                unknown_2,
+                unknown_3,
+                unknown_4,
+                unknown_5,
             }
         }
     }
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Translations</span> {
-        <span class="kw">pub</span> <span class="ident">translations</span>: <span class="ident">Vec</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone)]
+    </span><span class="kw">pub struct </span>Translations {
+        <span class="kw">pub </span>translations: Vec&lt;[u8; <span class="number">4</span>]&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">Translations</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">translations</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> [<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()])
-                .<span class="ident">take</span>(<span class="ident">count</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+    <span class="kw">impl </span>Translations {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>translations = iter::repeat_with(|| [buffer.get_u8(), buffer.get_u8(), buffer.get_u8(), buffer.get_u8()])
+                .take(count)
+                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            <span class="self">Self</span> { <span class="ident">translations</span> }
+            <span class="self">Self </span>{ translations }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RecolourPalette</span> {
-        <span class="kw">pub</span> <span class="ident">recolour_palette</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone)]
+    </span><span class="kw">pub struct </span>RecolourPalette {
+        <span class="kw">pub </span>recolour_palette: Vec&lt;i8&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">RecolourPalette</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+    <span class="kw">impl </span>RecolourPalette {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
 
-            <span class="kw">let</span> <span class="ident">recolour_palette</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">recolour_palette</span> }
+            <span class="kw">let </span>recolour_palette = iter::repeat_with(|| buffer.get_i8()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ recolour_palette }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OldCursors</span> {
-        <span class="kw">pub</span> <span class="ident">op</span>: <span class="ident">u8</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
+    </span><span class="kw">pub struct </span>OldCursors {
+        <span class="kw">pub </span>op: u8,
 
-        <span class="kw">pub</span> <span class="ident">cursor</span>: <span class="ident">u16</span>,
+        <span class="kw">pub </span>cursor: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">OldCursors</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="self">Self</span> { <span class="ident">op</span>, <span class="ident">cursor</span> }
+    <span class="kw">impl </span>OldCursors {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>op = buffer.get_u8();
+            <span class="kw">let </span>cursor = buffer.get_u16();
+            <span class="self">Self </span>{ op, cursor }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Unknown155</span> {
-        <span class="kw">pub</span> <span class="ident">unknown_1</span>: <span class="ident">i8</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_2</span>: <span class="ident">i8</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_3</span>: <span class="ident">i8</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_4</span>: <span class="ident">i8</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
+    </span><span class="kw">pub struct </span>Unknown155 {
+        <span class="kw">pub </span>unknown_1: i8,
+        <span class="kw">pub </span>unknown_2: i8,
+        <span class="kw">pub </span>unknown_3: i8,
+        <span class="kw">pub </span>unknown_4: i8,
     }
 
-    <span class="kw">impl</span> <span class="ident">Unknown155</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>();
-            <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>();
-            <span class="kw">let</span> <span class="ident">unknown_3</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>();
-            <span class="kw">let</span> <span class="ident">unknown_4</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_i8</span>();
+    <span class="kw">impl </span>Unknown155 {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>unknown_1 = buffer.get_i8();
+            <span class="kw">let </span>unknown_2 = buffer.get_i8();
+            <span class="kw">let </span>unknown_3 = buffer.get_i8();
+            <span class="kw">let </span>unknown_4 = buffer.get_i8();
 
-            <span class="self">Self</span> {
-                <span class="ident">unknown_1</span>,
-                <span class="ident">unknown_2</span>,
-                <span class="ident">unknown_3</span>,
-                <span class="ident">unknown_4</span>,
-            }
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Unknown179</span> {
-        <span class="kw">pub</span> <span class="ident">unknown_1</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_2</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_3</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_4</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_5</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_6</span>: <span class="ident">u16</span>,
-    }
-
-    <span class="kw">impl</span> <span class="ident">Unknown179</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">unknown_3</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">unknown_4</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">unknown_5</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">unknown_6</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-
-            <span class="self">Self</span> {
-                <span class="ident">unknown_1</span>,
-                <span class="ident">unknown_2</span>,
-                <span class="ident">unknown_3</span>,
-                <span class="ident">unknown_4</span>,
-                <span class="ident">unknown_5</span>,
-                <span class="ident">unknown_6</span>,
+            <span class="self">Self </span>{
+                unknown_1,
+                unknown_2,
+                unknown_3,
+                unknown_4,
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Unknown164</span> {
-        <span class="kw">pub</span> <span class="ident">unknown_1</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">unknown_2</span>: <span class="ident">u16</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
+    </span><span class="kw">pub struct </span>Unknown179 {
+        <span class="kw">pub </span>unknown_1: u16,
+        <span class="kw">pub </span>unknown_2: u16,
+        <span class="kw">pub </span>unknown_3: u16,
+        <span class="kw">pub </span>unknown_4: u16,
+        <span class="kw">pub </span>unknown_5: u16,
+        <span class="kw">pub </span>unknown_6: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">Unknown164</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">unknown_1</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="kw">let</span> <span class="ident">unknown_2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
+    <span class="kw">impl </span>Unknown179 {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>unknown_1 = buffer.get_unsigned_smart();
+            <span class="kw">let </span>unknown_2 = buffer.get_unsigned_smart();
+            <span class="kw">let </span>unknown_3 = buffer.get_unsigned_smart();
+            <span class="kw">let </span>unknown_4 = buffer.get_unsigned_smart();
+            <span class="kw">let </span>unknown_5 = buffer.get_unsigned_smart();
+            <span class="kw">let </span>unknown_6 = buffer.get_unsigned_smart();
 
-            <span class="self">Self</span> { <span class="ident">unknown_1</span>, <span class="ident">unknown_2</span> }
+            <span class="self">Self </span>{
+                unknown_1,
+                unknown_2,
+                unknown_3,
+                unknown_4,
+                unknown_5,
+                unknown_6,
+            }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Quests</span> {
-        <span class="kw">pub</span> <span class="ident">quests</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone, Copy)]
+    </span><span class="kw">pub struct </span>Unknown164 {
+        <span class="kw">pub </span>unknown_1: u16,
+        <span class="kw">pub </span>unknown_2: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">Quests</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">quests</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-            <span class="self">Self</span> { <span class="ident">quests</span> }
+    <span class="kw">impl </span>Unknown164 {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>unknown_1 = buffer.get_u16();
+            <span class="kw">let </span>unknown_2 = buffer.get_u16();
+
+            <span class="self">Self </span>{ unknown_1, unknown_2 }
+        }
+    }
+
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Debug, Serialize, Clone)]
+    </span><span class="kw">pub struct </span>Quests {
+        <span class="kw">pub </span>quests: Vec&lt;u16&gt;,
+    }
+
+    <span class="kw">impl </span>Quests {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>quests = iter::repeat_with(|| buffer.get_u16()).take(count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="self">Self </span>{ quests }
         }
     }
 }
 
-<span class="kw">use</span> <span class="ident">npc_config_fields</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>npc_config_fields::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Save the npc configs as `npc_configs.json`. Exposed as `--dump npc_configs`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">npc_configs</span> <span class="op">=</span> <span class="ident">NpcConfig::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">npc_configs</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span>);
+<span class="doccomment">/// Save the npc configs as `npc_configs.json`. Exposed as `--dump npc_configs`.
+</span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>npc_configs = NpcConfig::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    npc_configs.sort_unstable_by_key(|loc| loc.id);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;npc_configs.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">npc_configs</span>).<span class="ident">unwrap</span>();
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;npc_configs.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>npc_configs).unwrap();
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rs3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">zero_is_hans</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::cli::Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>zero_is_hans() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-        <span class="kw">let</span> <span class="ident">npc_config</span> <span class="op">=</span> <span class="ident">NpcConfig::dump_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">npc</span> <span class="op">=</span> <span class="ident">npc_config</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">npc</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">name</span>, <span class="string">&quot;Hans&quot;</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">npc</span>);
+        <span class="kw">let </span>npc_config = NpcConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
+        <span class="kw">let </span>npc = npc_config.get(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap();
+        <span class="kw">let </span>name = npc.name.as_ref().unwrap();
+        <span class="macro">assert_eq!</span>(name, <span class="string">&quot;Hans&quot;</span>, <span class="string">&quot;{:?}&quot;</span>, npc);
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

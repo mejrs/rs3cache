@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/achievements.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>achievements.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/achievements.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>achievements.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -502,505 +497,504 @@
 <span id="497">497</span>
 <span id="498">498</span>
 <span id="499">499</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.</span>
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::BTreeMap</span>,
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
-    <span class="ident">iter</span>,
+</pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.
+</span><span class="kw">use </span>std::{
+    collections::BTreeMap,
+    fs::{<span class="self">self</span>, File},
+    io::Write,
+    iter,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype::IndexType</span>,
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::IndexType,
 };
-<span class="doccomment">/// Describes the properties of a given Achievement.</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Achievement</span> {
-    <span class="doccomment">/// Its id.</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// Its name, if present.</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ironman_description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">category</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">sprite_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">points</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes the properties of a given Achievement.
+</span><span class="attribute">#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
+</span><span class="kw">pub struct </span>Achievement {
+    <span class="doccomment">/// Its id.
+    </span><span class="kw">pub </span>id: u32,
+    <span class="doccomment">/// Its name, if present.
+    </span><span class="kw">pub </span>name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>description: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>ironman_description: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>category: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>sprite_id: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="kw">pub </span>points: <span class="prelude-ty">Option</span>&lt;u8&gt;,
 
-    <span class="doccomment">/// 331 - Following In The Footsteps - 7126</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 332 - Totem Pole Position - 6830</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 334 - From Ardougne with Love - 6830</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 1087 - Penguin Adoption Agency - 6790</span>
-    <span class="kw">pub</span> <span class="ident">unknown_6</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">reward</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">skill_requirements_1</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MaybeIronmanSkillRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_9</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">VarbitRequirement10</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_10</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">VarbitRequirement10</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">previous_achievements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">skill_requirements_2</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SkillRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_13</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MultipleVarbitsRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">subreqs_14</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MultipleVarbitsRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">sub_achievements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">sub_category</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// 331 - Following In The Footsteps - 7126
+    ///
+    /// 332 - Totem Pole Position - 6830
+    ///
+    /// 334 - From Ardougne with Love - 6830
+    ///
+    /// 1087 - Penguin Adoption Agency - 6790
+    </span><span class="kw">pub </span>unknown_6: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="kw">pub </span>reward: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>skill_requirements_1: <span class="prelude-ty">Option</span>&lt;Vec&lt;MaybeIronmanSkillRequirement&gt;&gt;,
+    <span class="kw">pub </span>unknown_9: <span class="prelude-ty">Option</span>&lt;Vec&lt;VarbitRequirement10&gt;&gt;,
+    <span class="kw">pub </span>unknown_10: <span class="prelude-ty">Option</span>&lt;Vec&lt;VarbitRequirement10&gt;&gt;,
+    <span class="kw">pub </span>previous_achievements: <span class="prelude-ty">Option</span>&lt;Vec&lt;u32&gt;&gt;,
+    <span class="kw">pub </span>skill_requirements_2: <span class="prelude-ty">Option</span>&lt;Vec&lt;SkillRequirement&gt;&gt;,
+    <span class="kw">pub </span>unknown_13: <span class="prelude-ty">Option</span>&lt;Vec&lt;MultipleVarbitsRequirement&gt;&gt;,
+    <span class="kw">pub </span>subreqs_14: <span class="prelude-ty">Option</span>&lt;Vec&lt;MultipleVarbitsRequirement&gt;&gt;,
+    <span class="kw">pub </span>sub_achievements: <span class="prelude-ty">Option</span>&lt;Vec&lt;u32&gt;&gt;,
+    <span class="kw">pub </span>sub_category: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 
-    <span class="doccomment">/// 1: hidden (e.g. chained achievements)</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 2: extra hidden (e.g. 4k telos)</span>
-    <span class="kw">pub</span> <span class="ident">hidden</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">free_to_play</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">quest_req_for_miniquests</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">required_quest_ids</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">reqs_23</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PackedVarbitRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">reqs_25</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PackedVarbitRequirement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_27</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_17</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="comment">//</span>
-    <span class="kw">pub</span> <span class="ident">skill_req_count</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// 1: hidden (e.g. chained achievements)
+    ///
+    /// 2: extra hidden (e.g. 4k telos)
+    </span><span class="kw">pub </span>hidden: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>free_to_play: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>quest_req_for_miniquests: <span class="prelude-ty">Option</span>&lt;Vec&lt;u32&gt;&gt;,
+    <span class="kw">pub </span>required_quest_ids: <span class="prelude-ty">Option</span>&lt;Vec&lt;u32&gt;&gt;,
+    <span class="kw">pub </span>reqs_23: <span class="prelude-ty">Option</span>&lt;Vec&lt;PackedVarbitRequirement&gt;&gt;,
+    <span class="kw">pub </span>reqs_25: <span class="prelude-ty">Option</span>&lt;Vec&lt;PackedVarbitRequirement&gt;&gt;,
+    <span class="kw">pub </span>unknown_27: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_17: <span class="prelude-ty">Option</span>&lt;bool&gt;, <span class="comment">//
+    </span><span class="kw">pub </span>skill_req_count: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;,
 
-    <span class="doccomment">/// 355 - Seven Colours in Their Hat - 1</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 573 - Totem Pole Position - 1</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 642 - 99 With a Flake - 1</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 831 - Always Be Prepared - 1</span>
-    <span class="kw">pub</span> <span class="ident">unknown_29</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">sub_req_count</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_31</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_32</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_35</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_37</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_38</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// 355 - Seven Colours in Their Hat - 1
+    ///
+    /// 573 - Totem Pole Position - 1
+    ///
+    /// 642 - 99 With a Flake - 1
+    ///
+    /// 831 - Always Be Prepared - 1
+    </span><span class="kw">pub </span>unknown_29: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>sub_req_count: <span class="prelude-ty">Option</span>&lt;Vec&lt;u16&gt;&gt;,
+    <span class="kw">pub </span>unknown_31: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_32: <span class="prelude-ty">Option</span>&lt;[u8; <span class="number">3</span>]&gt;,
+    <span class="kw">pub </span>unknown_35: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="kw">pub </span>unknown_37: <span class="prelude-ty">Option</span>&lt;u8&gt;,
+    <span class="kw">pub </span>unknown_38: <span class="prelude-ty">Option</span>&lt;u8&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">Achievement</span> {
-    <span class="doccomment">/// Returns a mapping of all [`Achievement`]s.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::ACHIEVEMENT_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
+<span class="kw">impl </span>Achievement {
+    <span class="doccomment">/// Returns a mapping of all [`Achievement`]s.
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="kw">let </span>archives = CacheIndex::new(IndexType::ACHIEVEMENT_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">let</span> <span class="ident">Achievements</span> <span class="op">=</span> <span class="ident">archives</span>
-            .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
-            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
-                <span class="ident">archive</span>
-                    .<span class="ident">take_files</span>()
-                    .<span class="ident">into_iter</span>()
-                    .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">archive_id</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span> <span class="op">|</span> <span class="ident">file_id</span>, <span class="ident">file</span>))
+        <span class="kw">let </span>Achievements = archives
+            .map(Result::unwrap)
+            .flat_map(|archive| {
+                <span class="kw">let </span>archive_id = archive.archive_id();
+                archive
+                    .take_files()
+                    .into_iter()
+                    .map(<span class="kw">move </span>|(file_id, file)| (archive_id &lt;&lt; <span class="number">7 </span>| file_id, file))
             })
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-        <span class="prelude-val">Ok</span>(<span class="ident">Achievements</span>)
+            .map(|(id, file)| (id, <span class="self">Self</span>::deserialize(id, file)))
+            .collect::&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt;();
+        <span class="prelude-val">Ok</span>(Achievements)
     }
 
-    <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">achievement</span> <span class="op">=</span> <span class="self">Self</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
+    <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>achievement = <span class="self">Self </span>{ id, ..Default::default() };
 
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-                <span class="number">0</span> =&gt; {
-                    <span class="macro">debug_assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">remaining</span>(), <span class="number">0</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">achievement</span>);
-                    <span class="kw">break</span> <span class="ident">achievement</span>;
+        <span class="kw">loop </span>{
+            <span class="kw">match </span>buffer.get_u8() {
+                <span class="number">0 </span>=&gt; {
+                    <span class="macro">debug_assert_eq!</span>(buffer.remaining(), <span class="number">0</span>, <span class="string">&quot;{}&quot;</span>, achievement);
+                    <span class="kw">break </span>achievement;
                 }
-                <span class="number">1</span> =&gt; <span class="ident">achievement</span>.<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>()),
-                <span class="number">2</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">is_ironman</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="number">0</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
+                <span class="number">1 </span>=&gt; achievement.name = <span class="prelude-val">Some</span>(buffer.get_padded_string()),
+                <span class="number">2 </span>=&gt; {
+                    <span class="kw">let </span>is_ironman = buffer.get_u8();
+                    <span class="macro">assert_eq!</span>(buffer.get_u8(), <span class="number">0</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
 
-                    <span class="ident">achievement</span>.<span class="ident">description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>());
-                    <span class="kw">if</span> <span class="ident">is_ironman</span> <span class="op">==</span> <span class="number">2</span> {
-                        <span class="macro">assert_eq!</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="number">1</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
-                        <span class="ident">achievement</span>.<span class="ident">ironman_description</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>());
+                    achievement.description = <span class="prelude-val">Some</span>(buffer.get_padded_string());
+                    <span class="kw">if </span>is_ironman == <span class="number">2 </span>{
+                        <span class="macro">assert_eq!</span>(buffer.get_u8(), <span class="number">1</span>, <span class="string">&quot;I&#39;m unsure whether this is an invariant&quot;</span>);
+                        achievement.ironman_description = <span class="prelude-val">Some</span>(buffer.get_padded_string());
                     }
                 }
-                <span class="number">3</span> =&gt; <span class="ident">achievement</span>.<span class="ident">category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">4</span> =&gt; <span class="ident">achievement</span>.<span class="ident">sprite_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()),
-                <span class="number">5</span> =&gt; <span class="ident">achievement</span>.<span class="ident">points</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">6</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_6</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">7</span> =&gt; <span class="ident">achievement</span>.<span class="ident">reward</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_padded_string</span>()),
-                <span class="number">8</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">skill_requirements_1</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="number">3 </span>=&gt; achievement.category = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">4 </span>=&gt; achievement.sprite_id = <span class="prelude-val">Some</span>(buffer.get_smart32().unwrap()),
+                <span class="number">5 </span>=&gt; achievement.points = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">6 </span>=&gt; achievement.unknown_6 = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">7 </span>=&gt; achievement.reward = <span class="prelude-val">Some</span>(buffer.get_padded_string()),
+                <span class="number">8 </span>=&gt; {
+                    achievement.skill_requirements_1 = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
                         <span class="prelude-val">Some</span>(
-                            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">MaybeIronmanSkillRequirement::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>))
-                                .<span class="ident">take</span>(<span class="ident">count</span>)
-                                .<span class="ident">collect</span>(),
+                            iter::repeat_with(|| MaybeIronmanSkillRequirement::deserialize(<span class="kw-2">&amp;mut </span>buffer))
+                                .take(count)
+                                .collect(),
                         )
                     }
                 }
-                <span class="number">9</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">unknown_9</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">VarbitRequirement10::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">9 </span>=&gt; {
+                    achievement.unknown_9 = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| VarbitRequirement10::deserialize(<span class="kw-2">&amp;mut </span>buffer)).take(count).collect())
                     }
                 }
-                <span class="number">10</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">unknown_10</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">VarbitRequirement10::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">10 </span>=&gt; {
+                    achievement.unknown_10 = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| VarbitRequirement10::deserialize(<span class="kw-2">&amp;mut </span>buffer)).take(count).collect())
                     }
                 }
-                <span class="number">11</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">previous_achievements</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">11 </span>=&gt; {
+                    achievement.previous_achievements = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| buffer.get_uint(<span class="number">3</span>) <span class="kw">as </span>u32).take(count).collect())
                     }
                 }
-                <span class="number">12</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">skill_requirements_2</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SkillRequirement::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>)).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">12 </span>=&gt; {
+                    achievement.skill_requirements_2 = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| SkillRequirement::deserialize(<span class="kw-2">&amp;mut </span>buffer)).take(count).collect())
                     }
                 }
-                <span class="number">13</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">unknown_13</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="number">13 </span>=&gt; {
+                    achievement.unknown_13 = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
                         <span class="prelude-val">Some</span>(
-                            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">MultipleVarbitsRequirement::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>))
-                                .<span class="ident">take</span>(<span class="ident">count</span>)
-                                .<span class="ident">collect</span>(),
+                            iter::repeat_with(|| MultipleVarbitsRequirement::deserialize(<span class="kw-2">&amp;mut </span>buffer))
+                                .take(count)
+                                .collect(),
                         )
                     }
                 }
-                <span class="number">14</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">subreqs_14</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="number">14 </span>=&gt; {
+                    achievement.subreqs_14 = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
                         <span class="prelude-val">Some</span>(
-                            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">MultipleVarbitsRequirement::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>))
-                                .<span class="ident">take</span>(<span class="ident">count</span>)
-                                .<span class="ident">collect</span>(),
+                            iter::repeat_with(|| MultipleVarbitsRequirement::deserialize(<span class="kw-2">&amp;mut </span>buffer))
+                                .take(count)
+                                .collect(),
                         )
                     }
                 }
-                <span class="number">15</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">sub_achievements</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">15 </span>=&gt; {
+                    achievement.sub_achievements = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| buffer.get_uint(<span class="number">3</span>) <span class="kw">as </span>u32).take(count).collect())
                     }
                 }
-                <span class="number">16</span> =&gt; <span class="ident">achievement</span>.<span class="ident">sub_category</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>()),
-                <span class="number">17</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_17</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">18</span> =&gt; <span class="ident">achievement</span>.<span class="ident">hidden</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">19</span> =&gt; <span class="ident">achievement</span>.<span class="ident">free_to_play</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">20</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">quest_req_for_miniquests</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">16 </span>=&gt; achievement.sub_category = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="number">17 </span>=&gt; achievement.unknown_17 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">18 </span>=&gt; achievement.hidden = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">19 </span>=&gt; achievement.free_to_play = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">20 </span>=&gt; {
+                    achievement.quest_req_for_miniquests = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| buffer.get_uint(<span class="number">3</span>) <span class="kw">as </span>u32).take(count).collect())
                     }
                 }
-                <span class="number">21</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">required_quest_ids</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_uint</span>(<span class="number">3</span>) <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">21 </span>=&gt; {
+                    achievement.required_quest_ids = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| buffer.get_uint(<span class="number">3</span>) <span class="kw">as </span>u32).take(count).collect())
                     }
                 }
-                <span class="number">23</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">reqs_23</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="number">23 </span>=&gt; {
+                    achievement.reqs_23 = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
                         <span class="prelude-val">Some</span>(
-                            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PackedVarbitRequirement::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>))
-                                .<span class="ident">take</span>(<span class="ident">count</span>)
-                                .<span class="ident">collect</span>(),
+                            iter::repeat_with(|| PackedVarbitRequirement::deserialize(<span class="kw-2">&amp;mut </span>buffer))
+                                .take(count)
+                                .collect(),
                         )
                     }
                 }
-                <span class="number">25</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">reqs_25</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="number">25 </span>=&gt; {
+                    achievement.reqs_25 = {
+                        <span class="kw">let </span>count = buffer.get_unsigned_smart() <span class="kw">as </span>usize;
                         <span class="prelude-val">Some</span>(
-                            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">PackedVarbitRequirement::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>))
-                                .<span class="ident">take</span>(<span class="ident">count</span>)
-                                .<span class="ident">collect</span>(),
+                            iter::repeat_with(|| PackedVarbitRequirement::deserialize(<span class="kw-2">&amp;mut </span>buffer))
+                                .take(count)
+                                .collect(),
                         )
                     }
                 }
-                <span class="number">27</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_27</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">28</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">skill_req_count</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">27 </span>=&gt; achievement.unknown_27 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">28 </span>=&gt; {
+                    achievement.skill_req_count = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| buffer.get_u8()).take(count).collect())
                     }
                 }
-                <span class="number">29</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_29</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">30</span> =&gt; {
-                    <span class="ident">achievement</span>.<span class="ident">sub_req_count</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="prelude-val">Some</span>(<span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>()).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>())
+                <span class="number">29 </span>=&gt; achievement.unknown_29 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">30 </span>=&gt; {
+                    achievement.sub_req_count = {
+                        <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+                        <span class="prelude-val">Some</span>(iter::repeat_with(|| buffer.get_unsigned_smart()).take(count).collect())
                     }
                 }
-                <span class="number">31</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_31</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">32</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_32</span> <span class="op">=</span> <span class="prelude-val">Some</span>([<span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>(), <span class="ident">buffer</span>.<span class="ident">get_u8</span>()]),
-                <span class="number">35</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_35</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
-                <span class="number">37</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_37</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="number">38</span> =&gt; <span class="ident">achievement</span>.<span class="ident">unknown_38</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u8</span>()),
-                <span class="ident">missing</span> =&gt; <span class="macro">unimplemented!</span>(
+                <span class="number">31 </span>=&gt; achievement.unknown_31 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">32 </span>=&gt; achievement.unknown_32 = <span class="prelude-val">Some</span>([buffer.get_u8(), buffer.get_u8(), buffer.get_u8()]),
+                <span class="number">35 </span>=&gt; achievement.unknown_35 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">37 </span>=&gt; achievement.unknown_37 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                <span class="number">38 </span>=&gt; achievement.unknown_38 = <span class="prelude-val">Some</span>(buffer.get_u8()),
+                missing =&gt; <span class="macro">unimplemented!</span>(
                     <span class="string">&quot;Achievement::deserialize cannot deserialize opcode {} in id {}: \n {}&quot;</span>,
-                    <span class="ident">missing</span>,
-                    <span class="ident">id</span>,
-                    <span class="ident">achievement</span>
+                    missing,
+                    id,
+                    achievement
                 ),
             }
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">achievement_fields_impl</span> {
-    <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="kw">use</span> <span class="ident">std::iter</span>;
+<span class="kw">pub mod </span>achievement_fields_impl {
+    <span class="attribute">#![allow(missing_docs)]
+    </span><span class="kw">use </span>std::iter;
 
-    <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-    <span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+    <span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+    </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+    <span class="kw">use </span>serde::Serialize;
 
-    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">cache::buf::BufExtra</span>, <span class="ident">types::variables::Varbit</span>};
+    <span class="kw">use crate</span>::{cache::buf::BufExtra, types::variables::Varbit};
 
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">u16</span>,
-        <span class="kw">pub</span> <span class="ident">varbit</span>: <span class="ident">Varbit</span>,
-        <span class="kw">pub</span> <span class="ident">step_size</span>: <span class="ident">u8</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>VarbitRequirement {
+        <span class="kw">pub </span>description: String,
+        <span class="kw">pub </span>value: u16,
+        <span class="kw">pub </span>varbit: Varbit,
+        <span class="kw">pub </span>step_size: u8,
     }
 
-    <span class="kw">impl</span> <span class="ident">VarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_unsigned_smart</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="self">Self</span> {
-                <span class="ident">description</span>,
-                <span class="ident">value</span>,
-                <span class="ident">varbit</span>,
-                <span class="ident">step_size</span>,
+    <span class="kw">impl </span>VarbitRequirement {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>_type = buffer.get_u8();
+            <span class="kw">let </span>value = buffer.get_unsigned_smart();
+            <span class="kw">let </span>description = buffer.get_padded_string();
+            <span class="kw">let </span>step_size = buffer.get_u8();
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="self">Self </span>{
+                description,
+                value,
+                varbit,
+                step_size,
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VarbitRequirement10</span> {
-        <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">u32</span>,
-        <span class="kw">pub</span> <span class="ident">varbit</span>: <span class="ident">Varbit</span>,
-        <span class="kw">pub</span> <span class="ident">step_size</span>: <span class="ident">u8</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>VarbitRequirement10 {
+        <span class="kw">pub </span>description: String,
+        <span class="kw">pub </span>value: u32,
+        <span class="kw">pub </span>varbit: Varbit,
+        <span class="kw">pub </span>step_size: u8,
     }
 
-    <span class="kw">impl</span> <span class="ident">VarbitRequirement10</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="self">Self</span> {
-                <span class="ident">description</span>,
-                <span class="ident">value</span>,
-                <span class="ident">varbit</span>,
-                <span class="ident">step_size</span>,
+    <span class="kw">impl </span>VarbitRequirement10 {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>_type = buffer.get_u8();
+            <span class="kw">let </span>value = buffer.get_smart32().unwrap();
+            <span class="kw">let </span>description = buffer.get_padded_string();
+            <span class="kw">let </span>step_size = buffer.get_u8();
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="self">Self </span>{
+                description,
+                value,
+                varbit,
+                step_size,
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SkillRequirement</span> {
-        <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="kw">pub</span> <span class="ident">level</span>: <span class="ident">u8</span>,
-        <span class="kw">pub</span> <span class="ident">skill</span>: <span class="ident">u16</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>SkillRequirement {
+        <span class="kw">pub </span>description: String,
+        <span class="kw">pub </span>level: u8,
+        <span class="kw">pub </span>skill: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">SkillRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">r#type</span>, <span class="number">0</span>);
-            <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">r#type2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">r#type2</span>, <span class="number">1</span>);
+    <span class="kw">impl </span>SkillRequirement {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>r#type = buffer.get_u8();
+            <span class="macro">assert_eq!</span>(r#type, <span class="number">0</span>);
+            <span class="kw">let </span>level = buffer.get_u8();
+            <span class="kw">let </span>description = buffer.get_padded_string();
+            <span class="kw">let </span>r#type2 = buffer.get_u8();
+            <span class="macro">assert_eq!</span>(r#type2, <span class="number">1</span>);
 
-            <span class="kw">let</span> <span class="ident">skill</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="self">Self</span> { <span class="ident">description</span>, <span class="ident">level</span>, <span class="ident">skill</span> }
+            <span class="kw">let </span>skill = buffer.get_u16();
+            <span class="self">Self </span>{ description, level, skill }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MaybeIronmanSkillRequirement</span> {
-        <span class="kw">pub</span> <span class="ident">is_ironman</span>: <span class="ident">bool</span>,
-        <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="kw">pub</span> <span class="ident">level</span>: <span class="ident">u8</span>,
-        <span class="kw">pub</span> <span class="ident">skill</span>: <span class="ident">u16</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>MaybeIronmanSkillRequirement {
+        <span class="kw">pub </span>is_ironman: bool,
+        <span class="kw">pub </span>description: String,
+        <span class="kw">pub </span>level: u8,
+        <span class="kw">pub </span>skill: u16,
     }
 
-    <span class="kw">impl</span> <span class="ident">MaybeIronmanSkillRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">is_ironman</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="op">==</span> <span class="number">1</span>;
+    <span class="kw">impl </span>MaybeIronmanSkillRequirement {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>is_ironman = buffer.get_u8() == <span class="number">1</span>;
 
-            <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
+            <span class="kw">let </span>level = buffer.get_u8();
+            <span class="kw">let </span>description = buffer.get_padded_string();
 
-            <span class="kw">let</span> <span class="ident">r#type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">r#type</span>, <span class="number">1</span>);
+            <span class="kw">let </span>r#type = buffer.get_u8();
+            <span class="macro">assert_eq!</span>(r#type, <span class="number">1</span>);
 
-            <span class="kw">let</span> <span class="ident">skill</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-            <span class="self">Self</span> {
-                <span class="ident">is_ironman</span>,
-                <span class="ident">description</span>,
-                <span class="ident">level</span>,
-                <span class="ident">skill</span>,
+            <span class="kw">let </span>skill = buffer.get_u16();
+            <span class="self">Self </span>{
+                is_ironman,
+                description,
+                level,
+                skill,
             }
         }
     }
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MultipleVarbitsRequirement</span> {
-        <span class="ident">value</span>: <span class="ident">u32</span>,
-        <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="ident">varbits</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Varbit</span><span class="op">&gt;</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>MultipleVarbitsRequirement {
+        value: u32,
+        description: String,
+        varbits: Vec&lt;Varbit&gt;,
     }
 
-    <span class="kw">impl</span> <span class="ident">MultipleVarbitsRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">varbits</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>())).<span class="ident">take</span>(<span class="ident">count</span>).<span class="ident">collect</span>();
-            <span class="self">Self</span> { <span class="ident">value</span>, <span class="ident">description</span>, <span class="ident">varbits</span> }
+    <span class="kw">impl </span>MultipleVarbitsRequirement {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>_type = buffer.get_u8();
+            <span class="kw">let </span>value = buffer.get_smart32().unwrap();
+            <span class="kw">let </span>description = buffer.get_padded_string();
+            <span class="kw">let </span>count = buffer.get_u8() <span class="kw">as </span>usize;
+            <span class="kw">let </span>varbits = iter::repeat_with(|| Varbit::new(buffer.get_u16())).take(count).collect();
+            <span class="self">Self </span>{ value, description, varbits }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PartialVarbitRequirement</span> {
-        <span class="ident">value</span>: <span class="ident">u32</span>,
-        <span class="ident">step_size</span>: <span class="ident">u8</span>,
-        <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="ident">varbit</span>: <span class="ident">Varbit</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>PartialVarbitRequirement {
+        value: u32,
+        step_size: u8,
+        description: String,
+        varbit: Varbit,
     }
 
-    <span class="kw">impl</span> <span class="ident">PartialVarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">step_size</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>();
+    <span class="kw">impl </span>PartialVarbitRequirement {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>_type = buffer.get_u8();
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="kw">let </span>step_size = buffer.get_u8();
+            <span class="kw">let </span>description = buffer.get_padded_string();
+            <span class="kw">let </span>value = buffer.get_smart32().unwrap();
 
-            <span class="self">Self</span> {
-                <span class="ident">value</span>,
-                <span class="ident">description</span>,
-                <span class="ident">varbit</span>,
-                <span class="ident">step_size</span>,
+            <span class="self">Self </span>{
+                value,
+                description,
+                varbit,
+                step_size,
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PackedVarbitRequirement</span> {
-        <span class="ident">value</span>: <span class="ident">u8</span>,
-        <span class="ident">value2</span>: <span class="ident">u8</span>,
-        <span class="ident">description</span>: <span class="ident">String</span>,
-        <span class="ident">varbit</span>: <span class="ident">Varbit</span>,
+    <span class="attribute">#[cfg_eval]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[derive(Serialize, Debug, Clone)]
+    </span><span class="kw">pub struct </span>PackedVarbitRequirement {
+        value: u8,
+        value2: u8,
+        description: String,
+        varbit: Varbit,
     }
 
-    <span class="kw">impl</span> <span class="ident">PackedVarbitRequirement</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">varbit</span> <span class="op">=</span> <span class="ident">Varbit::new</span>(<span class="ident">buffer</span>.<span class="ident">get_u16</span>());
-            <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
-            <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_padded_string</span>();
-            <span class="kw">let</span> <span class="ident">value2</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>();
+    <span class="kw">impl </span>PackedVarbitRequirement {
+        <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span>_type = buffer.get_u8();
+            <span class="kw">let </span>varbit = Varbit::new(buffer.get_u16());
+            <span class="kw">let </span>value = buffer.get_u8();
+            <span class="kw">let </span>description = buffer.get_padded_string();
+            <span class="kw">let </span>value2 = buffer.get_u8();
 
-            <span class="self">Self</span> {
-                <span class="ident">value</span>,
-                <span class="ident">description</span>,
-                <span class="ident">varbit</span>,
-                <span class="ident">value2</span>,
+            <span class="self">Self </span>{
+                value,
+                description,
+                varbit,
+                value2,
             }
         }
     }
 }
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display, Formatter};
 
-<span class="kw">use</span> <span class="ident">achievement_fields_impl</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>achievement_fields_impl::<span class="kw-2">*</span>;
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Achievement</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>).<span class="ident">unwrap</span>())
+<span class="kw">impl </span>Display <span class="kw">for </span>Achievement {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, serde_json::to_string_pretty(<span class="kw-2">&amp;</span><span class="self">self</span>).unwrap())
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">Achievement</span> {
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Achievement({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>Achievement {
+    <span class="kw">fn </span>__repr__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Achievement({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Achievement({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+    <span class="kw">fn </span>__str__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Achievement({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 }
 
-<span class="doccomment">/// Save the Achievement configs as `Achievement&gt;.json`. Exposed as `--dump Achievement`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">achievement_configs</span> <span class="op">=</span> <span class="ident">Achievement::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">achievement_configs</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span>);
+<span class="doccomment">/// Save the Achievement configs as `Achievement&gt;.json`. Exposed as `--dump Achievement`.
+</span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>achievement_configs = Achievement::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    achievement_configs.sort_unstable_by_key(|loc| loc.id);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;achievements.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">achievement_configs</span>).<span class="ident">unwrap</span>();
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;achievements.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>achievement_configs).unwrap();
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli::Config</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::cli::Config;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">t</span>() -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">Config::env</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>t() -&gt; CacheResult&lt;()&gt; {
+        <span class="kw">let </span>config = Config::env();
 
-        <span class="kw">let</span> <span class="ident">_achievement_config</span> <span class="op">=</span> <span class="ident">Achievement::dump_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>_achievement_config = Achievement::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

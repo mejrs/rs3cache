@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/meta.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>meta.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_backend/src/meta.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>meta.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_backend/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -357,360 +352,359 @@
 <span id="352">352</span>
 <span id="353">353</span>
 <span id="354">354</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Metadata about the cache itself.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Metadata about the cache itself.
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections</span>::{
-        <span class="ident">btree_map</span>::{<span class="ident">IntoIter</span>, <span class="ident">Iter</span>, <span class="ident">Keys</span>},
-        <span class="ident">BTreeMap</span>,
+</span><span class="kw">use </span>std::{
+    collections::{
+        btree_map::{IntoIter, Iter, Keys},
+        BTreeMap,
     },
-    <span class="ident">iter</span>,
-    <span class="ident">ops::Add</span>,
+    iter,
+    ops::Add,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">itertools::izip</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> {
-    <span class="ident">pyo3::class::basic::CompareOp</span>,
-    <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>,
-    <span class="ident">std::collections</span>::{<span class="ident">btree_map</span>, <span class="ident">hash_map::DefaultHasher</span>},
-    <span class="ident">std::hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>},
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>itertools::izip;
+<span class="kw">use </span>serde::{Serialize, Serializer};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>{
+    pyo3::class::basic::CompareOp,
+    pyo3::prelude::<span class="kw-2">*</span>,
+    std::collections::{btree_map, hash_map::DefaultHasher},
+    std::hash::{Hash, Hasher},
 };
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">buf</span>::{<span class="ident">BufExtra</span>, <span class="ident">ReadError</span>},
-    <span class="ident">error::CacheResult</span>,
-    <span class="ident">utils::adapters::Accumulator</span>,
+<span class="kw">use crate</span>::{
+    buf::{BufExtra, ReadError},
+    error::CacheResult,
+    utils::adapters::Accumulator,
 };
 
-<span class="doccomment">/// Metadata about [`Archive`](crate::arc::Archive)s.</span>
+<span class="doccomment">/// Metadata about [`Archive`](crate::arc::Archive)s.
 
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Hash</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Metadata</span> {
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">index_id</span>: <span class="ident">u32</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">archive_id</span>: <span class="ident">u32</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">crc</span>: <span class="ident">i32</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">version</span>: <span class="ident">i32</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">unknown</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">compressed_size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">serialize_with</span> <span class="op">=</span> <span class="string">&quot;bytes_to_vec&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">digest</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">child_count</span>: <span class="ident">u32</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">child_indices</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+</span><span class="attribute">#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default, Hash, Eq, PartialOrd, Ord, PartialEq)]
+</span><span class="kw">pub struct </span>Metadata {
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>index_id: u32,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>archive_id: u32,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>name: <span class="prelude-ty">Option</span>&lt;i32&gt;,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>crc: i32,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>version: i32,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>unknown: <span class="prelude-ty">Option</span>&lt;i32&gt;,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>compressed_size: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>size: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+    <span class="attribute">#[serde(serialize_with = <span class="string">&quot;bytes_to_vec&quot;</span>)]
+    </span><span class="kw">pub </span>digest: <span class="prelude-ty">Option</span>&lt;Bytes&gt;,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>child_count: u32,
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>child_indices: Vec&lt;u32&gt;,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pyo3::pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">Metadata</span> {
-    <span class="attribute">#[<span class="ident">getter</span>(<span class="ident">digest</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">py_digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyAny</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">digest</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">b</span>) =&gt; <span class="ident">pyo3::types::PyBytes::new</span>(<span class="ident">py</span>, <span class="ident">b</span>).<span class="ident">into</span>(),
-            <span class="prelude-val">None</span> =&gt; <span class="ident">py</span>.<span class="prelude-val">None</span>(),
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pyo3::pymethods]
+</span><span class="kw">impl </span>Metadata {
+    <span class="attribute">#[getter(digest)]
+    </span><span class="kw">fn </span>py_digest(<span class="kw-2">&amp;</span><span class="self">self</span>, py: Python) -&gt; Py&lt;PyAny&gt; {
+        <span class="kw">match </span><span class="self">self</span>.digest {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>b) =&gt; pyo3::types::PyBytes::new(py, b).into(),
+            <span class="prelude-val">None </span>=&gt; py.<span class="prelude-val">None</span>(),
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+    <span class="kw">fn </span>__repr__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+    <span class="kw">fn </span>__str__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Metadata({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__hash__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">DefaultHasher::new</span>();
-        <span class="self">self</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;mut</span> <span class="ident">hasher</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">hasher</span>.<span class="ident">finish</span>())
+    <span class="kw">fn </span>__hash__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;u64&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = DefaultHasher::new();
+        <span class="self">self</span>.hash(<span class="kw-2">&amp;mut </span>hasher);
+        <span class="prelude-val">Ok</span>(hasher.finish())
     }
 
-    <span class="kw">fn</span> <span class="ident">__richcmp__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>, <span class="ident">op</span>: <span class="ident">CompareOp</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">op</span> {
-            <span class="ident">CompareOp::Lt</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&lt;</span> <span class="ident">other</span>),
-            <span class="ident">CompareOp::Le</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">other</span>),
-            <span class="ident">CompareOp::Eq</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">==</span> <span class="ident">other</span>),
-            <span class="ident">CompareOp::Ne</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>),
-            <span class="ident">CompareOp::Gt</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&gt;</span> <span class="ident">other</span>),
-            <span class="ident">CompareOp::Ge</span> =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">other</span>),
+    <span class="kw">fn </span>__richcmp__(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Metadata, op: CompareOp) -&gt; PyResult&lt;bool&gt; {
+        <span class="kw">match </span>op {
+            CompareOp::Lt =&gt; <span class="prelude-val">Ok</span>(<span class="self">self </span>&lt; other),
+            CompareOp::Le =&gt; <span class="prelude-val">Ok</span>(<span class="self">self </span>&lt;= other),
+            CompareOp::Eq =&gt; <span class="prelude-val">Ok</span>(<span class="self">self </span>== other),
+            CompareOp::Ne =&gt; <span class="prelude-val">Ok</span>(<span class="self">self </span>!= other),
+            CompareOp::Gt =&gt; <span class="prelude-val">Ok</span>(<span class="self">self </span>&gt; other),
+            CompareOp::Ge =&gt; <span class="prelude-val">Ok</span>(<span class="self">self </span>&gt;= other),
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bytes_to_vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Bytes</span><span class="op">&gt;</span>, <span class="ident">s</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">pub fn </span>bytes_to_vec&lt;S&gt;(bytes: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Bytes&gt;, s: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+<span class="kw">where
+    </span>S: Serializer,
 {
-    <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">bytes</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">s</span>.<span class="ident">serialize_some</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">value</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="ident">s</span>.<span class="ident">serialize_none</span>(),
+    <span class="kw">match </span><span class="kw-2">*</span>bytes {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; s.serialize_some(<span class="kw-2">&amp;**</span>value),
+        <span class="prelude-val">None </span>=&gt; s.serialize_none(),
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Metadata</span> {
-    <span class="doccomment">/// The [index id](crate::indextype::IndexType) of this Metadata.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">index_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">index_id</span>
+<span class="kw">impl </span>Metadata {
+    <span class="doccomment">/// The [index id](crate::indextype::IndexType) of this Metadata.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>index_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.index_id
     }
 
-    <span class="doccomment">/// The archive_id of the [`Archive`](crate::arc::Archive).</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">archive_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">archive_id</span>
+    <span class="doccomment">/// The archive_id of the [`Archive`](crate::arc::Archive).
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>archive_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.archive_id
     }
 
-    <span class="doccomment">/// The hashed name of the [`Archive`](crate::arc::Archive), if present.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">name</span>
+    <span class="doccomment">/// The hashed name of the [`Archive`](crate::arc::Archive), if present.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;i32&gt; {
+        <span class="self">self</span>.name
     }
 
-    <span class="doccomment">/// See [CRC](https://en.wikipedia.org/wiki/Cyclic_redundancy_check).</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">crc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-        <span class="self">self</span>.<span class="ident">crc</span>
+    <span class="doccomment">/// See [CRC](https://en.wikipedia.org/wiki/Cyclic_redundancy_check).
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>crc(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+        <span class="self">self</span>.crc
     }
 
-    <span class="doccomment">/// Usually, the amount of seconds between [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time)</span>
-    <span class="doccomment">/// and when the [`Archive`](crate::arc::Archive) was compiled,</span>
-    <span class="doccomment">/// but it can also be a version counter.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-        <span class="self">self</span>.<span class="ident">version</span>
+    <span class="doccomment">/// Usually, the amount of seconds between [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time)
+    /// and when the [`Archive`](crate::arc::Archive) was compiled,
+    /// but it can also be a version counter.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+        <span class="self">self</span>.version
     }
 
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">unknown</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">unknown</span>
+    <span class="attribute">#[allow(missing_docs)]
+    #[inline(always)]
+    </span><span class="kw">pub const fn </span>unknown(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;i32&gt; {
+        <span class="self">self</span>.unknown
     }
 
-    <span class="doccomment">/// Size of the [`Archive`](crate::arc::Archive).</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">compressed_size</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">compressed_size</span>
+    <span class="doccomment">/// Size of the [`Archive`](crate::arc::Archive).
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>compressed_size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
+        <span class="self">self</span>.compressed_size
     }
 
-    <span class="doccomment">/// Size of the [`Archive`](crate::arc::Archive) once decompressed.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">size</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">size</span>
+    <span class="doccomment">/// Size of the [`Archive`](crate::arc::Archive) once decompressed.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
+        <span class="self">self</span>.size
     }
 
-    <span class="doccomment">/// See [whirlpool digest](https://en.wikipedia.org/wiki/Whirlpool_(hash_function) ).</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">digest</span>.<span class="ident">as_deref</span>()
+    <span class="doccomment">/// See [whirlpool digest](https://en.wikipedia.org/wiki/Whirlpool_(hash_function) ).
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt; {
+        <span class="self">self</span>.digest.as_deref()
     }
 
-    <span class="doccomment">/// The count of files in `self`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">child_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">child_count</span>
+    <span class="doccomment">/// The count of files in `self`.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub const fn </span>child_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.child_count
     }
 
-    <span class="doccomment">/// Enumerated file ids of files in the [`Archive`](crate::arc::Archive).</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">child_indices</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">u32</span>] {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">child_indices</span>
+    <span class="doccomment">/// Enumerated file ids of files in the [`Archive`](crate::arc::Archive).
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>child_indices(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u32] {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.child_indices
     }
 }
 
-<span class="doccomment">/// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Hash</span>, <span class="ident">Eq</span>, <span class="ident">Ord</span>, <span class="ident">PartialOrd</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IndexMetadata</span> {
-    <span class="ident">metadatas</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Metadata</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.
+</span><span class="attribute">#[cfg_eval]
+#[allow(missing_docs)]
+#[derive(Serialize, Clone, Debug, Default, Hash, Eq, Ord, PartialOrd, PartialEq)]
+</span><span class="kw">pub struct </span>IndexMetadata {
+    metadatas: BTreeMap&lt;u32, Metadata&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">IndexMetadata</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat&quot;</span>))]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">empty</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">metadatas</span>: <span class="ident">BTreeMap::default</span>(),
+<span class="kw">impl </span>IndexMetadata {
+    <span class="attribute">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>empty() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            metadatas: BTreeMap::default(),
         }
     }
-    <span class="doccomment">/// Returns the ids of the archives in the index.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">keys</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Keys</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">u32</span>, <span class="ident">Metadata</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">metadatas</span>.<span class="ident">keys</span>()
+    <span class="doccomment">/// Returns the ids of the archives in the index.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>keys(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Keys&lt;<span class="lifetime">&#39;_</span>, u32, Metadata&gt; {
+        <span class="self">self</span>.metadatas.keys()
     }
 
-    <span class="doccomment">/// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_backend::indextype::IndexType).</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sqlite&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dat2&quot;</span>))]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">index_id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">format</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">try_get_i8</span>()<span class="question-mark">?</span>;
+    <span class="doccomment">/// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_backend::indextype::IndexType).
+    </span><span class="attribute">#[cfg(any(feature = <span class="string">&quot;sqlite&quot;</span>, feature = <span class="string">&quot;dat2&quot;</span>))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>deserialize(index_id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; CacheResult&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>format = buffer.try_get_i8()<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">_index_utc_stamp</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">format</span> <span class="op">&gt;</span> <span class="number">5</span> { <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_i32</span>()<span class="question-mark">?</span>) } <span class="kw">else</span> { <span class="prelude-val">None</span> };
+        <span class="kw">let </span>_index_utc_stamp = <span class="kw">if </span>format &gt; <span class="number">5 </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
 
-        <span class="kw">let</span> [<span class="ident">named</span>, <span class="ident">hashed</span>, <span class="ident">unk4</span>, ..] <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_bitflags</span>();
+        <span class="kw">let </span>[named, hashed, unk4, ..] = buffer.get_bitflags();
 
-        <span class="kw">let</span> <span class="ident">entry_count</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">format</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">7</span> {
-            <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>.<span class="ident">unwrap</span>() <span class="kw">as</span> <span class="ident">usize</span>
-        } <span class="kw">else</span> {
-            <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>
+        <span class="kw">let </span>entry_count = <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
+            buffer.try_get_smart32()<span class="question-mark">?</span>.unwrap() <span class="kw">as </span>usize
+        } <span class="kw">else </span>{
+            buffer.try_get_u16()<span class="question-mark">? </span><span class="kw">as </span>usize
         };
 
-        <span class="kw">let</span> <span class="ident">archive_ids</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">try</span> {
-            <span class="kw">if</span> <span class="ident">format</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">7</span> {
-                <span class="ident">buffer</span>.<span class="ident">try_get_smart32</span>()<span class="question-mark">?</span>.<span class="ident">unwrap</span>()
-            } <span class="kw">else</span> {
-                <span class="ident">buffer</span>.<span class="ident">try_get_u16</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>
+        <span class="kw">let </span>archive_ids = iter::repeat_with(|| <span class="kw">try </span>{
+            <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
+                buffer.try_get_smart32()<span class="question-mark">?</span>.unwrap()
+            } <span class="kw">else </span>{
+                buffer.try_get_u16()<span class="question-mark">? </span><span class="kw">as </span>u32
             }
         })
-        .<span class="ident">take</span>(<span class="ident">entry_count</span>)
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>
-        .<span class="ident">into_iter</span>()
-        .<span class="ident">accumulate</span>(<span class="ident">Add::add</span>)
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+        .take(entry_count)
+        .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;u32&gt;, ReadError&gt;&gt;()<span class="question-mark">?
+        </span>.into_iter()
+        .accumulate(Add::add)
+        .collect::&lt;Vec&lt;u32&gt;&gt;();
 
-        <span class="kw">let</span> <span class="ident">names</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">named</span> {
-            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">try</span> { <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_i32</span>()<span class="question-mark">?</span>) })
-                .<span class="ident">take</span>(<span class="ident">entry_count</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>
-        } <span class="kw">else</span> {
-            <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">entry_count</span>]
+        <span class="kw">let </span>names = <span class="kw">if </span>named {
+            iter::repeat_with(|| <span class="kw">try </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) })
+                .take(entry_count)
+                .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt;, ReadError&gt;&gt;()<span class="question-mark">?
+        </span>} <span class="kw">else </span>{
+            <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count]
         };
 
-        <span class="kw">let</span> <span class="ident">crcs</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">try_get_i32</span>())
-            .<span class="ident">take</span>(<span class="ident">entry_count</span>)
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
+        <span class="kw">let </span>crcs = iter::repeat_with(|| buffer.try_get_i32())
+            .take(entry_count)
+            .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;i32&gt;, ReadError&gt;&gt;()<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">unknowns</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">unk4</span> {
-            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">try</span> { <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">try_get_i32</span>()<span class="question-mark">?</span>) })
-                .<span class="ident">take</span>(<span class="ident">entry_count</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">ReadError</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>
-        } <span class="kw">else</span> {
-            <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">entry_count</span>]
+        <span class="kw">let </span>unknowns = <span class="kw">if </span>unk4 {
+            iter::repeat_with(|| <span class="kw">try </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) })
+                .take(entry_count)
+                .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt;, ReadError&gt;&gt;()<span class="question-mark">?
+        </span>} <span class="kw">else </span>{
+            <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count]
         };
 
-        <span class="kw">let</span> <span class="ident">digests</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">hashed</span> {
-            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">copy_to_bytes</span>(<span class="number">64</span>))).<span class="ident">take</span>(<span class="ident">entry_count</span>).<span class="ident">collect</span>()
-        } <span class="kw">else</span> {
-            <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">entry_count</span>]
+        <span class="kw">let </span>digests = <span class="kw">if </span>hashed {
+            iter::repeat_with(|| <span class="prelude-val">Some</span>(buffer.copy_to_bytes(<span class="number">64</span>))).take(entry_count).collect()
+        } <span class="kw">else </span>{
+            <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count]
         };
 
-        <span class="kw">let</span> (<span class="ident">compressed_sizes</span>, <span class="ident">sizes</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">unk4</span> {
-            <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u32</span>()), <span class="prelude-val">Some</span>(<span class="ident">buffer</span>.<span class="ident">get_u32</span>())))
-                .<span class="ident">take</span>(<span class="ident">entry_count</span>)
-                .<span class="ident">unzip</span>()
-        } <span class="kw">else</span> {
-            (<span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">entry_count</span>], <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">entry_count</span>])
+        <span class="kw">let </span>(compressed_sizes, sizes): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = <span class="kw">if </span>unk4 {
+            iter::repeat_with(|| (<span class="prelude-val">Some</span>(buffer.get_u32()), <span class="prelude-val">Some</span>(buffer.get_u32())))
+                .take(entry_count)
+                .unzip()
+        } <span class="kw">else </span>{
+            (<span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count], <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count])
         };
 
-        <span class="kw">let</span> <span class="ident">versions</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">buffer</span>.<span class="ident">get_i32</span>()).<span class="ident">take</span>(<span class="ident">entry_count</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+        <span class="kw">let </span>versions = iter::repeat_with(|| buffer.get_i32()).take(entry_count).collect::&lt;Vec&lt;i32&gt;&gt;();
 
-        <span class="kw">let</span> <span class="ident">child_counts</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="ident">format</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">7</span> {
-                <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()
-            } <span class="kw">else</span> {
-                <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">u32</span>
+        <span class="kw">let </span>child_counts = iter::repeat_with(|| {
+            <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
+                buffer.get_smart32().unwrap()
+            } <span class="kw">else </span>{
+                buffer.get_u16() <span class="kw">as </span>u32
             }
         })
-        .<span class="ident">take</span>(<span class="ident">entry_count</span>)
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+        .take(entry_count)
+        .collect::&lt;Vec&lt;u32&gt;&gt;();
 
-        <span class="kw">let</span> <span class="ident">child_indices</span> <span class="op">=</span> <span class="ident">child_counts</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">count</span><span class="op">|</span> {
-                <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="ident">format</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">7</span> {
-                        <span class="ident">buffer</span>.<span class="ident">get_smart32</span>().<span class="ident">unwrap</span>()
-                    } <span class="kw">else</span> {
-                        <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">u32</span>
+        <span class="kw">let </span>child_indices = child_counts
+            .iter()
+            .map(|count| {
+                iter::repeat_with(|| {
+                    <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
+                        buffer.get_smart32().unwrap()
+                    } <span class="kw">else </span>{
+                        buffer.get_u16() <span class="kw">as </span>u32
                     }
                 })
-                .<span class="ident">take</span>(<span class="kw-2">*</span><span class="ident">count</span> <span class="kw">as</span> <span class="ident">usize</span>)
-                .<span class="ident">accumulate</span>(<span class="ident">Add::add</span>)
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                .take(<span class="kw-2">*</span>count <span class="kw">as </span>usize)
+                .accumulate(Add::add)
+                .collect::&lt;Vec&lt;u32&gt;&gt;()
             })
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+            .collect::&lt;Vec&lt;Vec&lt;u32&gt;&gt;&gt;();
 
-        <span class="kw">let</span> <span class="ident">metadatas</span> <span class="op">=</span> <span class="macro">izip!</span>(
-            <span class="ident">archive_ids</span>,
-            <span class="ident">names</span>,
-            <span class="ident">crcs</span>,
-            <span class="ident">unknowns</span>,
-            <span class="ident">digests</span>,
-            <span class="ident">compressed_sizes</span>,
-            <span class="ident">sizes</span>,
-            <span class="ident">versions</span>,
-            <span class="ident">child_counts</span>,
-            <span class="ident">child_indices</span>
+        <span class="kw">let </span>metadatas = <span class="macro">izip!</span>(
+            archive_ids,
+            names,
+            crcs,
+            unknowns,
+            digests,
+            compressed_sizes,
+            sizes,
+            versions,
+            child_counts,
+            child_indices
         )
-        .<span class="ident">map</span>(
-            <span class="op">|</span>(<span class="ident">archive_id</span>, <span class="ident">name</span>, <span class="ident">crc</span>, <span class="ident">unknown</span>, <span class="ident">digest</span>, <span class="ident">compressed_size</span>, <span class="ident">size</span>, <span class="ident">version</span>, <span class="ident">child_count</span>, <span class="ident">child_indices</span>)<span class="op">|</span> {
+        .map(
+            |(archive_id, name, crc, unknown, digest, compressed_size, size, version, child_count, child_indices)| {
                 (
-                    <span class="ident">archive_id</span>,
-                    <span class="ident">Metadata</span> {
-                        <span class="ident">index_id</span>,
-                        <span class="ident">archive_id</span>,
-                        <span class="ident">name</span>,
-                        <span class="ident">crc</span>,
-                        <span class="ident">version</span>,
-                        <span class="ident">unknown</span>,
-                        <span class="ident">compressed_size</span>,
-                        <span class="ident">size</span>,
-                        <span class="ident">digest</span>,
-                        <span class="ident">child_count</span>,
-                        <span class="ident">child_indices</span>,
+                    archive_id,
+                    Metadata {
+                        index_id,
+                        archive_id,
+                        name,
+                        crc,
+                        version,
+                        unknown,
+                        compressed_size,
+                        size,
+                        digest,
+                        child_count,
+                        child_indices,
                     },
                 )
             },
         )
-        .<span class="ident">collect</span>();
+        .collect();
 
-        <span class="comment">//assert!(!buffer.buf.has_remaining());</span>
+        <span class="comment">//assert!(!buffer.buf.has_remaining());
 
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">metadatas</span> })
+        </span><span class="prelude-val">Ok</span>(<span class="self">Self </span>{ metadatas })
     }
 
-    <span class="doccomment">/// View a specific [`Metadata`] of `self`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">archive_id</span>: <span class="kw-2">&amp;</span><span class="ident">u32</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Metadata</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">metadatas</span>.<span class="ident">get</span>(<span class="ident">archive_id</span>)
+    <span class="doccomment">/// View a specific [`Metadata`] of `self`.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, archive_id: <span class="kw-2">&amp;</span>u32) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Metadata&gt; {
+        <span class="self">self</span>.metadatas.get(archive_id)
     }
 
-    <span class="doccomment">/// An iterator visiting all key-value pairs in arbitrary order. The iterator element type is `(&amp;&#39;a u32, &amp;&#39;a Metadata)`.</span>
-    <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">u32</span>, <span class="ident">Metadata</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">metadatas</span>.<span class="ident">iter</span>()
+    <span class="doccomment">/// An iterator visiting all key-value pairs in arbitrary order. The iterator element type is `(&amp;&#39;a u32, &amp;&#39;a Metadata)`.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Iter&lt;<span class="lifetime">&#39;_</span>, u32, Metadata&gt; {
+        <span class="self">self</span>.metadatas.iter()
     }
 
-    <span class="doccomment">/// Get a reference to the index metadata&#39;s metadatas.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadatas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Metadata</span><span class="op">&gt;</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">metadatas</span>
+    <span class="doccomment">/// Get a reference to the index metadata&#39;s metadatas.
+    </span><span class="kw">pub fn </span>metadatas(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>BTreeMap&lt;u32, Metadata&gt; {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.metadatas
     }
 }
 
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">IndexMetadata</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">u32</span>, <span class="ident">Metadata</span>);
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>IndexMetadata {
+    <span class="kw">type </span>Item = (u32, Metadata);
 
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">Metadata</span><span class="op">&gt;</span>;
+    <span class="kw">type </span>IntoIter = IntoIter&lt;u32, Metadata&gt;;
 
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="self">self</span>.<span class="ident">metadatas</span>.<span class="ident">into_iter</span>()
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="self">self</span>.metadatas.into_iter()
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

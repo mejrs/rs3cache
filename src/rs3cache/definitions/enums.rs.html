@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/enums.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>enums.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/definitions/enums.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>enums.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rs3cache/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rs3cache/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -344,347 +339,346 @@
 <span id="339">339</span>
 <span id="340">340</span>
 <span id="341">341</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of enums.</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>, <span class="ident">missing_docs</span>)]</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of enums.
+</span><span class="attribute">#![allow(non_camel_case_types, missing_docs)]
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::BTreeMap</span>,
-    <span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>},
-    <span class="ident">io::Write</span>,
-    <span class="ident">iter</span>,
+</span><span class="kw">use </span>std::{
+    collections::BTreeMap,
+    fs::{<span class="self">self</span>, File},
+    io::Write,
+    iter,
 };
 
-<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>};
-<span class="kw">use</span> <span class="ident">path_macro::path</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">pyo3::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>path_macro::path;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">cache</span>::{<span class="ident">buf::BufExtra</span>, <span class="ident">error::CacheResult</span>, <span class="ident">index::CacheIndex</span>},
-    <span class="ident">definitions::indextype</span>::{<span class="ident">ConfigType</span>, <span class="ident">IndexType</span>},
+<span class="kw">use crate</span>::{
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    definitions::indextype::{ConfigType, IndexType},
 };
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">KeyType</span> {
-    <span class="ident">Uninit</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>,
-    <span class="ident">Int_0</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">Int_9</span> <span class="op">=</span> <span class="number">9</span>,
-    <span class="ident">Int_10</span> <span class="op">=</span> <span class="number">10</span>,
-    <span class="ident">Int_17</span> <span class="op">=</span> <span class="number">17</span>,
-    <span class="ident">Int_22</span> <span class="op">=</span> <span class="number">22</span>,
-    <span class="ident">Int_23</span> <span class="op">=</span> <span class="number">23</span>,
-    <span class="ident">Int_25</span> <span class="op">=</span> <span class="number">25</span>,
-    <span class="ident">Int_26</span> <span class="op">=</span> <span class="number">26</span>,
-    <span class="ident">Int_30</span> <span class="op">=</span> <span class="number">30</span>,
-    <span class="ident">Int_32</span> <span class="op">=</span> <span class="number">32</span>,
-    <span class="ident">Int_33</span> <span class="op">=</span> <span class="number">33</span>,
-    <span class="ident">Int_39</span> <span class="op">=</span> <span class="number">39</span>,
-    <span class="ident">Int_41</span> <span class="op">=</span> <span class="number">41</span>,
-    <span class="ident">Int_42</span> <span class="op">=</span> <span class="number">42</span>,
-    <span class="ident">Int_73</span> <span class="op">=</span> <span class="number">73</span>,
-    <span class="ident">Int_74</span> <span class="op">=</span> <span class="number">74</span>,
-    <span class="ident">Int_105</span> <span class="op">=</span> <span class="number">105</span>,
-    <span class="ident">Int_115</span> <span class="op">=</span> <span class="number">115</span>,
-    <span class="ident">Int_126</span> <span class="op">=</span> <span class="number">126</span>,
-    <span class="ident">Int_128</span> <span class="op">=</span> <span class="number">128</span>,
+<span class="attribute">#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
+</span><span class="kw">pub enum </span>KeyType {
+    Uninit = -<span class="number">1</span>,
+    Int_0 = <span class="number">0</span>,
+    Int_9 = <span class="number">9</span>,
+    Int_10 = <span class="number">10</span>,
+    Int_17 = <span class="number">17</span>,
+    Int_22 = <span class="number">22</span>,
+    Int_23 = <span class="number">23</span>,
+    Int_25 = <span class="number">25</span>,
+    Int_26 = <span class="number">26</span>,
+    Int_30 = <span class="number">30</span>,
+    Int_32 = <span class="number">32</span>,
+    Int_33 = <span class="number">33</span>,
+    Int_39 = <span class="number">39</span>,
+    Int_41 = <span class="number">41</span>,
+    Int_42 = <span class="number">42</span>,
+    Int_73 = <span class="number">73</span>,
+    Int_74 = <span class="number">74</span>,
+    Int_105 = <span class="number">105</span>,
+    Int_115 = <span class="number">115</span>,
+    Int_126 = <span class="number">126</span>,
+    Int_128 = <span class="number">128</span>,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">PyObject</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">KeyType</span> {
-    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">PyObject</span> {
-        (<span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into_py</span>(<span class="ident">py</span>)
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">impl </span>IntoPy&lt;PyObject&gt; <span class="kw">for </span>KeyType {
+    <span class="kw">fn </span>into_py(<span class="self">self</span>, py: Python) -&gt; PyObject {
+        (<span class="self">self </span><span class="kw">as </span>i32).into_py(py)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">KeyType</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">discriminant</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">discriminant</span> {
-            <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_0</span>),
-            <span class="number">9</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_9</span>),
-            <span class="number">10</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_10</span>),
-            <span class="number">17</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_17</span>),
-            <span class="number">22</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_22</span>),
-            <span class="number">23</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_23</span>),
-            <span class="number">25</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_25</span>),
-            <span class="number">26</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_26</span>),
-            <span class="number">30</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_30</span>),
-            <span class="number">32</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_32</span>),
-            <span class="number">33</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_33</span>),
-            <span class="number">39</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_39</span>),
-            <span class="number">41</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_41</span>),
-            <span class="number">42</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_42</span>),
-            <span class="number">73</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_73</span>),
-            <span class="number">74</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_74</span>),
-            <span class="number">105</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_105</span>),
-            <span class="number">126</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_126</span>),
-            <span class="number">128</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_128</span>),
-            <span class="ident">other</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown keytype discriminant {}&quot;</span>, <span class="ident">other</span>)),
+<span class="kw">impl </span>TryFrom&lt;u8&gt; <span class="kw">for </span>KeyType {
+    <span class="kw">type </span>Error = String;
+    <span class="kw">fn </span>try_from(discriminant: u8) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">match </span>discriminant {
+            <span class="number">0 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_0),
+            <span class="number">9 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_9),
+            <span class="number">10 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_10),
+            <span class="number">17 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_17),
+            <span class="number">22 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_22),
+            <span class="number">23 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_23),
+            <span class="number">25 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_25),
+            <span class="number">26 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_26),
+            <span class="number">30 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_30),
+            <span class="number">32 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_32),
+            <span class="number">33 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_33),
+            <span class="number">39 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_39),
+            <span class="number">41 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_41),
+            <span class="number">42 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_42),
+            <span class="number">73 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_73),
+            <span class="number">74 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_74),
+            <span class="number">105 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_105),
+            <span class="number">126 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_126),
+            <span class="number">128 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_128),
+            other =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown keytype discriminant {}&quot;</span>, other)),
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">KeyType</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_init</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="op">==</span> <span class="ident"><span class="self">Self</span>::Uninit</span>
+<span class="kw">impl </span>KeyType {
+    <span class="kw">pub fn </span>is_init(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw-2">*</span><span class="self">self </span>== <span class="self">Self</span>::Uninit
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">KeyType</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::Uninit</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>KeyType {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::Uninit
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ValueType</span> {
-    <span class="ident">Uninit</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>,
-    <span class="ident">Int_0</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">Int_1</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">Int_3</span> <span class="op">=</span> <span class="number">3</span>,
-    <span class="ident">Int_6</span> <span class="op">=</span> <span class="number">6</span>,
-    <span class="ident">Int_8</span> <span class="op">=</span> <span class="number">8</span>,
-    <span class="ident">Int_9</span> <span class="op">=</span> <span class="number">9</span>,
-    <span class="ident">Int_10</span> <span class="op">=</span> <span class="number">10</span>,
-    <span class="ident">Int_11</span> <span class="op">=</span> <span class="number">11</span>,
-    <span class="ident">Int_17</span> <span class="op">=</span> <span class="number">17</span>,
-    <span class="ident">Int_21</span> <span class="op">=</span> <span class="number">21</span>,
-    <span class="ident">COORDINATE</span> <span class="op">=</span> <span class="number">22</span>,
-    <span class="ident">Int_23</span> <span class="op">=</span> <span class="number">23</span>,
-    <span class="ident">Int_24</span> <span class="op">=</span> <span class="number">24</span>,
-    <span class="ident">Int_25</span> <span class="op">=</span> <span class="number">25</span>,
-    <span class="ident">Int_26</span> <span class="op">=</span> <span class="number">26</span>,
-    <span class="ident">Int_28</span> <span class="op">=</span> <span class="number">28</span>,
-    <span class="ident">Int_29</span> <span class="op">=</span> <span class="number">29</span>,
-    <span class="ident">Int_30</span> <span class="op">=</span> <span class="number">30</span>,
-    <span class="ident">Int_31</span> <span class="op">=</span> <span class="number">31</span>,
-    <span class="ident">Int_32</span> <span class="op">=</span> <span class="number">32</span>,
-    <span class="ident">Int_33</span> <span class="op">=</span> <span class="number">33</span>,
-    <span class="ident">STRING_36</span> <span class="op">=</span> <span class="number">36</span>,
-    <span class="ident">Int_37</span> <span class="op">=</span> <span class="number">37</span>,
-    <span class="ident">Int_39</span> <span class="op">=</span> <span class="number">39</span>,
-    <span class="ident">Int_41</span> <span class="op">=</span> <span class="number">41</span>,
-    <span class="ident">Int_42</span> <span class="op">=</span> <span class="number">42</span>,
-    <span class="ident">Int_57</span> <span class="op">=</span> <span class="number">57</span>,
-    <span class="ident">Int_73</span> <span class="op">=</span> <span class="number">73</span>,
-    <span class="ident">Int_74</span> <span class="op">=</span> <span class="number">74</span>,
-    <span class="ident">Int_97</span> <span class="op">=</span> <span class="number">97</span>,
-    <span class="ident">Int_99</span> <span class="op">=</span> <span class="number">99</span>,
-    <span class="ident">Int_102</span> <span class="op">=</span> <span class="number">102</span>,
-    <span class="ident">Int_105</span> <span class="op">=</span> <span class="number">105</span>,
-    <span class="ident">Int_115</span> <span class="op">=</span> <span class="number">115</span>,
-    <span class="ident">Int_126</span> <span class="op">=</span> <span class="number">126</span>,
-    <span class="ident">Int_128</span> <span class="op">=</span> <span class="number">128</span>,
+<span class="attribute">#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
+</span><span class="kw">pub enum </span>ValueType {
+    Uninit = -<span class="number">1</span>,
+    Int_0 = <span class="number">0</span>,
+    Int_1 = <span class="number">1</span>,
+    Int_3 = <span class="number">3</span>,
+    Int_6 = <span class="number">6</span>,
+    Int_8 = <span class="number">8</span>,
+    Int_9 = <span class="number">9</span>,
+    Int_10 = <span class="number">10</span>,
+    Int_11 = <span class="number">11</span>,
+    Int_17 = <span class="number">17</span>,
+    Int_21 = <span class="number">21</span>,
+    COORDINATE = <span class="number">22</span>,
+    Int_23 = <span class="number">23</span>,
+    Int_24 = <span class="number">24</span>,
+    Int_25 = <span class="number">25</span>,
+    Int_26 = <span class="number">26</span>,
+    Int_28 = <span class="number">28</span>,
+    Int_29 = <span class="number">29</span>,
+    Int_30 = <span class="number">30</span>,
+    Int_31 = <span class="number">31</span>,
+    Int_32 = <span class="number">32</span>,
+    Int_33 = <span class="number">33</span>,
+    STRING_36 = <span class="number">36</span>,
+    Int_37 = <span class="number">37</span>,
+    Int_39 = <span class="number">39</span>,
+    Int_41 = <span class="number">41</span>,
+    Int_42 = <span class="number">42</span>,
+    Int_57 = <span class="number">57</span>,
+    Int_73 = <span class="number">73</span>,
+    Int_74 = <span class="number">74</span>,
+    Int_97 = <span class="number">97</span>,
+    Int_99 = <span class="number">99</span>,
+    Int_102 = <span class="number">102</span>,
+    Int_105 = <span class="number">105</span>,
+    Int_115 = <span class="number">115</span>,
+    Int_126 = <span class="number">126</span>,
+    Int_128 = <span class="number">128</span>,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">PyObject</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ValueType</span> {
-    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">PyObject</span> {
-        (<span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into_py</span>(<span class="ident">py</span>)
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">impl </span>IntoPy&lt;PyObject&gt; <span class="kw">for </span>ValueType {
+    <span class="kw">fn </span>into_py(<span class="self">self</span>, py: Python) -&gt; PyObject {
+        (<span class="self">self </span><span class="kw">as </span>i32).into_py(py)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ValueType</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">discriminant</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">discriminant</span> {
-            <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_0</span>),
-            <span class="number">1</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_1</span>),
-            <span class="number">3</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_3</span>),
-            <span class="number">6</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_6</span>),
-            <span class="number">8</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_8</span>),
-            <span class="number">9</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_9</span>),
-            <span class="number">10</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_10</span>),
-            <span class="number">11</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_11</span>),
-            <span class="number">17</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_17</span>),
-            <span class="number">21</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_21</span>),
-            <span class="number">22</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::COORDINATE</span>),
-            <span class="number">23</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_23</span>),
-            <span class="number">24</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_24</span>),
-            <span class="number">25</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_25</span>),
-            <span class="number">26</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_26</span>),
-            <span class="number">28</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_28</span>),
-            <span class="number">29</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_29</span>),
-            <span class="number">30</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_30</span>),
-            <span class="number">31</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_31</span>),
-            <span class="number">32</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_32</span>),
-            <span class="number">33</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_33</span>),
-            <span class="number">36</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::STRING_36</span>),
-            <span class="number">37</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_37</span>),
-            <span class="number">39</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_39</span>),
-            <span class="number">41</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_41</span>),
-            <span class="number">42</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_42</span>),
-            <span class="number">57</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_57</span>),
-            <span class="number">73</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_73</span>),
-            <span class="number">74</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_74</span>),
-            <span class="number">97</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_97</span>),
-            <span class="number">99</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_99</span>),
-            <span class="number">102</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_102</span>),
-            <span class="number">105</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_105</span>),
-            <span class="number">115</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_115</span>),
-            <span class="number">126</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_126</span>),
-            <span class="number">128</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::Int_128</span>),
-            <span class="ident">other</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown valuetype discriminant {}&quot;</span>, <span class="ident">other</span>)),
+<span class="kw">impl </span>TryFrom&lt;u8&gt; <span class="kw">for </span>ValueType {
+    <span class="kw">type </span>Error = String;
+    <span class="kw">fn </span>try_from(discriminant: u8) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">match </span>discriminant {
+            <span class="number">0 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_0),
+            <span class="number">1 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_1),
+            <span class="number">3 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_3),
+            <span class="number">6 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_6),
+            <span class="number">8 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_8),
+            <span class="number">9 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_9),
+            <span class="number">10 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_10),
+            <span class="number">11 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_11),
+            <span class="number">17 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_17),
+            <span class="number">21 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_21),
+            <span class="number">22 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::COORDINATE),
+            <span class="number">23 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_23),
+            <span class="number">24 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_24),
+            <span class="number">25 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_25),
+            <span class="number">26 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_26),
+            <span class="number">28 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_28),
+            <span class="number">29 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_29),
+            <span class="number">30 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_30),
+            <span class="number">31 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_31),
+            <span class="number">32 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_32),
+            <span class="number">33 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_33),
+            <span class="number">36 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::STRING_36),
+            <span class="number">37 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_37),
+            <span class="number">39 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_39),
+            <span class="number">41 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_41),
+            <span class="number">42 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_42),
+            <span class="number">57 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_57),
+            <span class="number">73 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_73),
+            <span class="number">74 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_74),
+            <span class="number">97 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_97),
+            <span class="number">99 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_99),
+            <span class="number">102 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_102),
+            <span class="number">105 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_105),
+            <span class="number">115 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_115),
+            <span class="number">126 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_126),
+            <span class="number">128 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Int_128),
+            other =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown valuetype discriminant {}&quot;</span>, other)),
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ValueType</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_init</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="op">==</span> <span class="ident"><span class="self">Self</span>::Uninit</span>
+<span class="kw">impl </span>ValueType {
+    <span class="kw">pub fn </span>is_init(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw-2">*</span><span class="self">self </span>== <span class="self">Self</span>::Uninit
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ValueType</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::Uninit</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>ValueType {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::Uninit
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Value</span> {
-    <span class="doccomment">/// The integer variant.</span>
-    <span class="ident">Integer</span>(<span class="ident">i32</span>),
-    <span class="doccomment">/// The string variant.</span>
-    <span class="ident">String</span>(<span class="ident">String</span>),
+<span class="attribute">#[derive(Serialize, Debug, Eq, PartialEq, Clone)]
+#[serde(untagged)]
+</span><span class="kw">pub enum </span>Value {
+    <span class="doccomment">/// The integer variant.
+    </span>Integer(i32),
+    <span class="doccomment">/// The string variant.
+    </span>String(String),
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">IntoPy</span><span class="op">&lt;</span><span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyAny</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Value</span> {
-    <span class="kw">fn</span> <span class="ident">into_py</span>(<span class="self">self</span>, <span class="ident">py</span>: <span class="ident">Python</span>) -&gt; <span class="ident">Py</span><span class="op">&lt;</span><span class="ident">PyAny</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Integer</span>(<span class="ident">val</span>) =&gt; <span class="ident">val</span>.<span class="ident">into_py</span>(<span class="ident">py</span>),
-            <span class="ident"><span class="self">Self</span>::String</span>(<span class="ident">val</span>) =&gt; <span class="ident">val</span>.<span class="ident">into_py</span>(<span class="ident">py</span>),
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+</span><span class="kw">impl </span>IntoPy&lt;Py&lt;PyAny&gt;&gt; <span class="kw">for </span>Value {
+    <span class="kw">fn </span>into_py(<span class="self">self</span>, py: Python) -&gt; Py&lt;PyAny&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Integer(val) =&gt; val.into_py(py),
+            <span class="self">Self</span>::String(val) =&gt; val.into_py(py),
         }
     }
 }
 
-<span class="doccomment">/// Describes the properties of a given enum.</span>
-<span class="attribute">#[<span class="ident">cfg_eval</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">rs3cache_macros::pyo3_get_all</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyclass</span>)]</span>
-<span class="attribute">#[<span class="ident">serde_with::skip_serializing_none</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Enum</span> {
-    <span class="doccomment">/// Its id.</span>
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">u32</span>,
-    <span class="kw">pub</span> <span class="ident">unknown_131</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;KeyType::is_init&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="ident">key_type</span>: <span class="ident">KeyType</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;ValueType::is_init&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="ident">value_type</span>: <span class="ident">ValueType</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;BTreeMap::is_empty&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>, <span class="ident">pyo3</span>(<span class="ident">get</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">variants</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Value</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes the properties of a given enum.
+</span><span class="attribute">#[cfg_eval]
+#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[serde_with::skip_serializing_none]
+#[derive(Serialize, Clone, Debug, Default)]
+</span><span class="kw">pub struct </span>Enum {
+    <span class="doccomment">/// Its id.
+    </span><span class="kw">pub </span>id: u32,
+    <span class="kw">pub </span>unknown_131: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;KeyType::is_init&quot;</span>)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span>key_type: KeyType,
+    <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;ValueType::is_init&quot;</span>)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span>value_type: ValueType,
+    <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;BTreeMap::is_empty&quot;</span>)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
+    </span><span class="kw">pub </span>variants: BTreeMap&lt;i32, Value&gt;,
+    <span class="kw">pub </span>default: <span class="prelude-ty">Option</span>&lt;Value&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">Enum</span> {
-    <span class="doccomment">/// Returns a mapping of all [`Enum`]s.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dump_all</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">archives</span> <span class="op">=</span> <span class="ident">CacheIndex::new</span>(<span class="ident">IndexType::ENUM_CONFIG</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">input</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>();
+<span class="kw">impl </span>Enum {
+    <span class="doccomment">/// Returns a mapping of all [`Enum`]s.
+    </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="kw">let </span>archives = CacheIndex::new(IndexType::ENUM_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">let</span> <span class="ident">enums</span> <span class="op">=</span> <span class="ident">archives</span>
-            .<span class="ident">map</span>(<span class="ident">Result::unwrap</span>)
-            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">archive</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">archive_id</span> <span class="op">=</span> <span class="ident">archive</span>.<span class="ident">archive_id</span>();
-                <span class="ident">archive</span>
-                    .<span class="ident">take_files</span>()
-                    .<span class="ident">into_iter</span>()
-                    .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">file_id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">archive_id</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> <span class="ident">file_id</span>, <span class="ident">file</span>))
+        <span class="kw">let </span>enums = archives
+            .map(Result::unwrap)
+            .flat_map(|archive| {
+                <span class="kw">let </span>archive_id = archive.archive_id();
+                archive
+                    .take_files()
+                    .into_iter()
+                    .map(<span class="kw">move </span>|(file_id, file)| (archive_id &lt;&lt; <span class="number">8 </span>| file_id, file))
             })
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">file</span>)<span class="op">|</span> (<span class="ident">id</span>, <span class="ident"><span class="self">Self</span>::deserialize</span>(<span class="ident">id</span>, <span class="ident">file</span>)))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-        <span class="prelude-val">Ok</span>(<span class="ident">enums</span>)
+            .map(|(id, file)| (id, <span class="self">Self</span>::deserialize(id, file)))
+            .collect::&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt;();
+        <span class="prelude-val">Ok</span>(enums)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize</span>(<span class="ident">id</span>: <span class="ident">u32</span>, <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Bytes</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r#enum</span> <span class="op">=</span> <span class="self">Self</span> { <span class="ident">id</span>, ..<span class="ident">Default::default</span>() };
+    <span class="kw">pub fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>r#enum = <span class="self">Self </span>{ id, ..Default::default() };
 
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>() {
-                <span class="number">0</span> =&gt; {
-                    <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">buffer</span>.<span class="ident">has_remaining</span>());
+        <span class="kw">loop </span>{
+            <span class="kw">match </span>buffer.get_u8() {
+                <span class="number">0 </span>=&gt; {
+                    <span class="macro">debug_assert!</span>(!buffer.has_remaining());
 
-                    <span class="kw">break</span> <span class="ident">r#enum</span>;
+                    <span class="kw">break </span>r#enum;
                 }
-                <span class="number">1</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">key_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">2</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">value_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">101</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">key_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">102</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">value_type</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u8</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
-                <span class="number">3</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">default</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())),
-                <span class="number">4</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">default</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>())),
-                <span class="number">5</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_i32</span>(), <span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())))
-                        .<span class="ident">take</span>(<span class="ident">count</span>)
-                        .<span class="ident">collect</span>();
+                <span class="number">1 </span>=&gt; r#enum.key_type = buffer.get_u8().try_into().unwrap(),
+                <span class="number">2 </span>=&gt; r#enum.value_type = buffer.get_u8().try_into().unwrap(),
+                <span class="number">101 </span>=&gt; r#enum.key_type = buffer.get_u8().try_into().unwrap(),
+                <span class="number">102 </span>=&gt; r#enum.value_type = buffer.get_u8().try_into().unwrap(),
+                <span class="number">3 </span>=&gt; r#enum.default = <span class="prelude-val">Some</span>(Value::String(buffer.get_string())),
+                <span class="number">4 </span>=&gt; r#enum.default = <span class="prelude-val">Some</span>(Value::Integer(buffer.get_i32())),
+                <span class="number">5 </span>=&gt; {
+                    <span class="kw">let </span>count = buffer.get_u16() <span class="kw">as </span>usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_i32(), Value::String(buffer.get_string())))
+                        .take(count)
+                        .collect();
                 }
-                <span class="number">6</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_i32</span>(), <span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>())))
-                        .<span class="ident">take</span>(<span class="ident">count</span>)
-                        .<span class="ident">collect</span>();
+                <span class="number">6 </span>=&gt; {
+                    <span class="kw">let </span>count = buffer.get_u16() <span class="kw">as </span>usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_i32(), Value::Integer(buffer.get_i32())))
+                        .take(count)
+                        .collect();
                 }
-                <span class="number">7</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">_max</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">Value::String</span>(<span class="ident">buffer</span>.<span class="ident">get_string</span>())))
-                        .<span class="ident">take</span>(<span class="ident">count</span>)
-                        .<span class="ident">collect</span>();
+                <span class="number">7 </span>=&gt; {
+                    <span class="kw">let </span>_max = buffer.get_u16();
+                    <span class="kw">let </span>count = buffer.get_u16() <span class="kw">as </span>usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_u16() <span class="kw">as </span>i32, Value::String(buffer.get_string())))
+                        .take(count)
+                        .collect();
                 }
-                <span class="number">8</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">_max</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>();
-                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">r#enum</span>.<span class="ident">variants</span> <span class="op">=</span> <span class="ident">iter::repeat_with</span>(<span class="op">|</span><span class="op">|</span> (<span class="ident">buffer</span>.<span class="ident">get_u16</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">Value::Integer</span>(<span class="ident">buffer</span>.<span class="ident">get_i32</span>())))
-                        .<span class="ident">take</span>(<span class="ident">count</span>)
-                        .<span class="ident">collect</span>();
+                <span class="number">8 </span>=&gt; {
+                    <span class="kw">let </span>_max = buffer.get_u16();
+                    <span class="kw">let </span>count = buffer.get_u16() <span class="kw">as </span>usize;
+                    r#enum.variants = iter::repeat_with(|| (buffer.get_u16() <span class="kw">as </span>i32, Value::Integer(buffer.get_i32())))
+                        .take(count)
+                        .collect();
                 }
-                <span class="number">131</span> =&gt; <span class="ident">r#enum</span>.<span class="ident">unknown_131</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
+                <span class="number">131 </span>=&gt; r#enum.unknown_131 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
 
-                <span class="ident">missing</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Enum::deserialize cannot deserialize opcode {} in id {}&quot;</span>, <span class="ident">missing</span>, <span class="ident">id</span>),
+                missing =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Enum::deserialize cannot deserialize opcode {} in id {}&quot;</span>, missing, id),
             }
         }
     }
 }
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display, Formatter};
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Enum</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>).<span class="ident">unwrap</span>())
+<span class="kw">impl </span>Display <span class="kw">for </span>Enum {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, serde_json::to_string_pretty(<span class="kw-2">&amp;</span><span class="self">self</span>).unwrap())
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;pyo3&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">pymethods</span>]</span>
-<span class="kw">impl</span> <span class="ident">Enum</span> {
-    <span class="kw">fn</span> <span class="ident">__repr__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Enum({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
+#[pymethods]
+</span><span class="kw">impl </span>Enum {
+    <span class="kw">fn </span>__repr__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Enum({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 
-    <span class="kw">fn</span> <span class="ident">__str__</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PyResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Enum({})&quot;</span>, <span class="ident">serde_json::to_string</span>(<span class="self">self</span>).<span class="ident">unwrap</span>()))
+    <span class="kw">fn </span>__str__(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;String&gt; {
+        <span class="prelude-val">Ok</span>(<span class="macro">format!</span>(<span class="string">&quot;Enum({})&quot;</span>, serde_json::to_string(<span class="self">self</span>).unwrap()))
     }
 }
 
-<span class="doccomment">/// Save the item configs as `enums.json`. Exposed as `--dump enums`.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">export</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::cli::Config</span>) -&gt; <span class="ident">CacheResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">output</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">enums</span> <span class="op">=</span> <span class="ident">Enum::dump_all</span>(<span class="ident">config</span>)<span class="question-mark">?</span>.<span class="ident">into_values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">enums</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="ident">loc</span><span class="op">|</span> <span class="ident">loc</span>.<span class="ident">id</span>);
+<span class="doccomment">/// Save the item configs as `enums.json`. Exposed as `--dump enums`.
+</span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>enums = Enum::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    enums.sort_unstable_by_key(|loc| loc.id);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="macro">path!</span>(<span class="ident">config</span>.<span class="ident">output</span> <span class="op">/</span> <span class="string">&quot;enums.json&quot;</span>))<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">enums</span>).<span class="ident">unwrap</span>();
-    <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">data</span>.<span class="ident">as_bytes</span>())<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(config.output / <span class="string">&quot;enums.json&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>enums).unwrap();
+    file.write_all(data.as_bytes())<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rs3cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

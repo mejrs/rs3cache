@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_utils/src/adapters.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>adapters.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_utils/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_utils/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_utils/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rs3cache_utils/src/adapters.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>adapters.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rs3cache_utils/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rs3cache_utils/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rs3cache_utils/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -243,246 +238,245 @@
 <span id="238">238</span>
 <span id="239">239</span>
 <span id="240">240</span>
-</pre><pre class="rust"><code><span class="doccomment">/// An iterator to maintain state while iterating another iterator.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `Accumulate` is created by the [`accumulate`] method on [`Iterator`]. See its</span>
-<span class="doccomment">/// documentation for more.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`accumulate`]: trait.Accumulator.html#method.accumulate</span>
-<span class="doccomment">/// [`Iterator`]: ../../std/iter/trait.Iterator.html</span>
-<span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Accumulate</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">F</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Iterator</span>,
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">I::Item</span>, <span class="ident">I::Item</span>) -&gt; <span class="ident">I::Item</span>,
+</pre><pre class="rust"><code><span class="doccomment">/// An iterator to maintain state while iterating another iterator.
+///
+/// `Accumulate` is created by the [`accumulate`] method on [`Iterator`]. See its
+/// documentation for more.
+///
+/// [`accumulate`]: trait.Accumulator.html#method.accumulate
+/// [`Iterator`]: ../../std/iter/trait.Iterator.html
+</span><span class="attribute">#[must_use = <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]
+</span><span class="kw">pub struct </span>Accumulate&lt;I, F&gt;
+<span class="kw">where
+    </span>I: Iterator,
+    F: Fn(I::Item, I::Item) -&gt; I::Item,
 {
-    <span class="ident">accum</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">I::Item</span><span class="op">&gt;</span>,
-    <span class="ident">underlying</span>: <span class="ident">I</span>,
-    <span class="ident">acc_fn</span>: <span class="ident">F</span>,
+    accum: <span class="prelude-ty">Option</span>&lt;I::Item&gt;,
+    underlying: I,
+    acc_fn: F,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">F</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Accumulate</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">F</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Iterator</span>,
-    <span class="ident">I::Item</span>: <span class="ident">Copy</span>,
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">I::Item</span>, <span class="ident">I::Item</span>) -&gt; <span class="ident">I::Item</span>,
+<span class="kw">impl</span>&lt;I, F&gt; Iterator <span class="kw">for </span>Accumulate&lt;I, F&gt;
+<span class="kw">where
+    </span>I: Iterator,
+    I::Item: Copy,
+    F: Fn(I::Item, I::Item) -&gt; I::Item,
 {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">I::Item</span>;
+    <span class="kw">type </span>Item = I::Item;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">underlying</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">new_accum</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">accum</span> {
-                    <span class="comment">// Apply function to item-so-far and current item</span>
-                    <span class="prelude-val">Some</span>(<span class="ident">accum</span>) =&gt; (<span class="self">self</span>.<span class="ident">acc_fn</span>)(<span class="ident">accum</span>, <span class="ident">x</span>),
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">match </span><span class="self">self</span>.underlying.next() {
+            <span class="prelude-val">Some</span>(x) =&gt; {
+                <span class="kw">let </span>new_accum = <span class="kw">match </span><span class="self">self</span>.accum {
+                    <span class="comment">// Apply function to item-so-far and current item
+                    </span><span class="prelude-val">Some</span>(accum) =&gt; (<span class="self">self</span>.acc_fn)(accum, x),
 
-                    <span class="comment">// This is the first item</span>
-                    <span class="prelude-val">None</span> =&gt; <span class="ident">x</span>,
+                    <span class="comment">// This is the first item
+                    </span><span class="prelude-val">None </span>=&gt; x,
                 };
-                <span class="self">self</span>.<span class="ident">accum</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">new_accum</span>);
-                <span class="prelude-val">Some</span>(<span class="ident">new_accum</span>)
+                <span class="self">self</span>.accum = <span class="prelude-val">Some</span>(new_accum);
+                <span class="prelude-val">Some</span>(new_accum)
             }
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="doccomment">/// An iterator to maintain state while iterating another iterator.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `Accumulate` is created by the [`accumulate`] method on [`Iterator`]. See its</span>
-<span class="doccomment">/// documentation for more.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`accumulate`]: trait.Accumulator.html#method.accumulate</span>
-<span class="doccomment">/// [`Iterator`]: ../../std/iter/trait.Iterator.html</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Accumulator</span>: <span class="ident">Iterator</span> {
-    <span class="doccomment">/// An iterator adaptor that yields the computation of the closure `F` over the</span>
-    <span class="doccomment">/// accumulated value and the next element of the preceding iterator.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `accumulate()` takes a function or closure with two arguments,</span>
-    <span class="doccomment">/// the first being the previous yielded value and the second an element from the preceding iterator.</span>
-    <span class="doccomment">/// The iterator maintains the state of the last yielded value.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The first element of the preceding iterator is yielded as-is.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Basic usage:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use rs3cache::utils::adapters::Accumulator;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut iter = (1..6).accumulate(|x, y| x + y);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(1));  // 1</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(3));  // 1+2</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(6));  // (1+2) + 3</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(10)); // (1+2+3) + 4</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(15)); // (1+2+3+4) + 5</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), None);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">accumulate</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="ident">Accumulate</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">F</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident"><span class="self">Self</span>::Item</span>, <span class="ident"><span class="self">Self</span>::Item</span>) -&gt; <span class="ident"><span class="self">Self</span>::Item</span>,
-        <span class="ident"><span class="self">Self</span>::Item</span>: <span class="ident">Copy</span>,
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
-        <span class="self">Self</span>: <span class="ident">Iterator</span>,
+<span class="doccomment">/// An iterator to maintain state while iterating another iterator.
+///
+/// `Accumulate` is created by the [`accumulate`] method on [`Iterator`]. See its
+/// documentation for more.
+///
+/// [`accumulate`]: trait.Accumulator.html#method.accumulate
+/// [`Iterator`]: ../../std/iter/trait.Iterator.html
+</span><span class="kw">pub trait </span>Accumulator: Iterator {
+    <span class="doccomment">/// An iterator adaptor that yields the computation of the closure `F` over the
+    /// accumulated value and the next element of the preceding iterator.
+    ///
+    /// `accumulate()` takes a function or closure with two arguments,
+    /// the first being the previous yielded value and the second an element from the preceding iterator.
+    /// The iterator maintains the state of the last yielded value.
+    ///
+    /// The first element of the preceding iterator is yielded as-is.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use rs3cache::utils::adapters::Accumulator;
+    ///
+    /// let mut iter = (1..6).accumulate(|x, y| x + y);
+    ///
+    /// assert_eq!(iter.next(), Some(1));  // 1
+    /// assert_eq!(iter.next(), Some(3));  // 1+2
+    /// assert_eq!(iter.next(), Some(6));  // (1+2) + 3
+    /// assert_eq!(iter.next(), Some(10)); // (1+2+3) + 4
+    /// assert_eq!(iter.next(), Some(15)); // (1+2+3+4) + 5
+    /// assert_eq!(iter.next(), None);
+    /// ```
+    </span><span class="kw">fn </span>accumulate&lt;F&gt;(<span class="self">self</span>, f: F) -&gt; Accumulate&lt;<span class="self">Self</span>, F&gt;
+    <span class="kw">where
+        </span>F: Fn(<span class="self">Self</span>::Item, <span class="self">Self</span>::Item) -&gt; <span class="self">Self</span>::Item,
+        <span class="self">Self</span>::Item: Copy,
+        <span class="self">Self</span>: Sized,
+        <span class="self">Self</span>: Iterator,
     {
-        <span class="ident">Accumulate</span> {
-            <span class="ident">accum</span>: <span class="prelude-val">None</span>,
-            <span class="ident">underlying</span>: <span class="self">self</span>,
-            <span class="ident">acc_fn</span>: <span class="ident">f</span>,
+        Accumulate {
+            accum: <span class="prelude-val">None</span>,
+            underlying: <span class="self">self</span>,
+            acc_fn: f,
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&gt;</span> <span class="ident">Accumulator</span> <span class="kw">for</span> <span class="ident">I</span> {}
+<span class="kw">impl</span>&lt;I: Iterator&gt; Accumulator <span class="kw">for </span>I {}
 
-<span class="doccomment">/// An iterator that returns pair values ofn the preceding iterator.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `Pairwise` is created by the [`pairwise`] method on [`Iterator`]. See its</span>
-<span class="doccomment">/// documentation for more.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`pairwise`]: trait.Pairwisor.html#method.pairwise</span>
-<span class="doccomment">/// [`Iterator`]: trait.Iterator.html</span>
-<span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Pairwise</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Iterator</span>,
+<span class="doccomment">/// An iterator that returns pair values ofn the preceding iterator.
+///
+/// `Pairwise` is created by the [`pairwise`] method on [`Iterator`]. See its
+/// documentation for more.
+///
+/// [`pairwise`]: trait.Pairwisor.html#method.pairwise
+/// [`Iterator`]: trait.Iterator.html
+</span><span class="attribute">#[must_use = <span class="string">&quot;iterators are lazy and do nothing unless consumed&quot;</span>]
+</span><span class="kw">pub struct </span>Pairwise&lt;I&gt;
+<span class="kw">where
+    </span>I: Iterator,
 {
-    <span class="ident">state</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">I::Item</span><span class="op">&gt;</span>,
-    <span class="ident">underlying_iterator</span>: <span class="ident">I</span>,
+    state: <span class="prelude-ty">Option</span>&lt;I::Item&gt;,
+    underlying_iterator: I,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Pairwise</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Iterator</span>,
-    <span class="ident">I::Item</span>: <span class="ident">Copy</span>,
+<span class="kw">impl</span>&lt;I&gt; Iterator <span class="kw">for </span>Pairwise&lt;I&gt;
+<span class="kw">where
+    </span>I: Iterator,
+    I::Item: Copy,
 {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">I::Item</span>, <span class="ident">I::Item</span>);
+    <span class="kw">type </span>Item = (I::Item, I::Item);
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">underlying_iterator</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) =&gt; <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">y</span>) =&gt; {
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>);
-                    <span class="prelude-val">Some</span>((<span class="ident">y</span>, <span class="ident">x</span>))
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">match </span><span class="self">self</span>.underlying_iterator.next() {
+            <span class="prelude-val">Some</span>(x) =&gt; <span class="kw">match </span><span class="self">self</span>.state {
+                <span class="prelude-val">Some</span>(y) =&gt; {
+                    <span class="self">self</span>.state = <span class="prelude-val">Some</span>(x);
+                    <span class="prelude-val">Some</span>((y, x))
                 }
-                <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="self">self</span>.<span class="ident">underlying_iterator</span>.<span class="ident">next</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">y</span>) =&gt; {
-                        <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">y</span>);
-                        <span class="prelude-val">Some</span>((<span class="ident">x</span>, <span class="ident">y</span>))
+                <span class="prelude-val">None </span>=&gt; <span class="kw">match </span><span class="self">self</span>.underlying_iterator.next() {
+                    <span class="prelude-val">Some</span>(y) =&gt; {
+                        <span class="self">self</span>.state = <span class="prelude-val">Some</span>(y);
+                        <span class="prelude-val">Some</span>((x, y))
                     }
-                    <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+                    <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 },
             },
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">underlying_iterator</span>.<span class="ident">size_hint</span>()
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        <span class="self">self</span>.underlying_iterator.size_hint()
     }
 }
 
-<span class="doccomment">/// An iterator that returns pair values of the preceding iterator.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `Pairwise` is created by the [`pairwise`] method on [`Iterator`]. See its</span>
-<span class="doccomment">/// documentation for more.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`pairwise`]: trait.Pairwisor.html#method.pairwise</span>
-<span class="doccomment">/// [`Iterator`]: trait.Iterator.html</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Pairwisor</span>: <span class="ident">Iterator</span> {
-    <span class="doccomment">/// An iterator adaptor that yields the preceding iterator in pairs.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Similar to the [`windows`] method on [`slices`], but with owned elements.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The first element of the preceding iterator is yielded unchanged.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Basic usage:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use rs3cache::utils::adapters::Pairwisor;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut iter = (0..6).pairwise();</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some((0, 1)));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some((1, 2)));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some((2, 3)));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some((3, 4)));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some((4, 5)));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), None);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`windows`]: ../../std/primitive.slice.html#method.windows</span>
-    <span class="doccomment">/// [`slices`]: ../../std/primitive.slice.html</span>
-    <span class="kw">fn</span> <span class="ident">pairwise</span>(<span class="self">self</span>) -&gt; <span class="ident">Pairwise</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident"><span class="self">Self</span>::Item</span>: <span class="ident">Copy</span>,
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
-        <span class="self">Self</span>: <span class="ident">Iterator</span>,
+<span class="doccomment">/// An iterator that returns pair values of the preceding iterator.
+///
+/// `Pairwise` is created by the [`pairwise`] method on [`Iterator`]. See its
+/// documentation for more.
+///
+/// [`pairwise`]: trait.Pairwisor.html#method.pairwise
+/// [`Iterator`]: trait.Iterator.html
+</span><span class="kw">pub trait </span>Pairwisor: Iterator {
+    <span class="doccomment">/// An iterator adaptor that yields the preceding iterator in pairs.
+    ///
+    /// Similar to the [`windows`] method on [`slices`], but with owned elements.
+    ///
+    /// The first element of the preceding iterator is yielded unchanged.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use rs3cache::utils::adapters::Pairwisor;
+    ///
+    /// let mut iter = (0..6).pairwise();
+    ///
+    /// assert_eq!(iter.next(), Some((0, 1)));
+    /// assert_eq!(iter.next(), Some((1, 2)));
+    /// assert_eq!(iter.next(), Some((2, 3)));
+    /// assert_eq!(iter.next(), Some((3, 4)));
+    /// assert_eq!(iter.next(), Some((4, 5)));
+    /// assert_eq!(iter.next(), None);
+    /// ```
+    ///
+    /// [`windows`]: ../../std/primitive.slice.html#method.windows
+    /// [`slices`]: ../../std/primitive.slice.html
+    </span><span class="kw">fn </span>pairwise(<span class="self">self</span>) -&gt; Pairwise&lt;<span class="self">Self</span>&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>::Item: Copy,
+        <span class="self">Self</span>: Sized,
+        <span class="self">Self</span>: Iterator,
     {
-        <span class="ident">Pairwise</span> {
-            <span class="ident">state</span>: <span class="prelude-val">None</span>,
-            <span class="ident">underlying_iterator</span>: <span class="self">self</span>,
+        Pairwise {
+            state: <span class="prelude-val">None</span>,
+            underlying_iterator: <span class="self">self</span>,
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&gt;</span> <span class="ident">Pairwisor</span> <span class="kw">for</span> <span class="ident">I</span> {}
+<span class="kw">impl</span>&lt;I: Iterator&gt; Pairwisor <span class="kw">for </span>I {}
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">accumulator_tests</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::Accumulator</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>accumulator_tests {
+    <span class="kw">use </span><span class="kw">super</span>::Accumulator;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_accumulator_cumulative</span>() {
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">1</span>..<span class="number">6</span>).<span class="ident">accumulate</span>(<span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">x</span> <span class="op">+</span> <span class="ident">y</span>).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected_result</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">10</span>, <span class="number">15</span>];
-        <span class="macro">assert!</span>(<span class="ident">result</span> <span class="op">==</span> <span class="ident">expected_result</span>)
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_accumulator_cumulative() {
+        <span class="kw">let </span>result: Vec&lt;i32&gt; = (<span class="number">1</span>..<span class="number">6</span>).accumulate(|x, y| x + y).collect();
+        <span class="kw">let </span>expected_result: Vec&lt;i32&gt; = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">10</span>, <span class="number">15</span>];
+        <span class="macro">assert!</span>(result == expected_result)
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_accumulator_rolling_factorial</span>() {
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">1</span>..<span class="number">6</span>).<span class="ident">accumulate</span>(<span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">y</span>).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected_result</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">24</span>, <span class="number">120</span>];
-        <span class="macro">assert!</span>(<span class="ident">result</span> <span class="op">==</span> <span class="ident">expected_result</span>)
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_accumulator_rolling_factorial() {
+        <span class="kw">let </span>result: Vec&lt;i32&gt; = (<span class="number">1</span>..<span class="number">6</span>).accumulate(|x, y| x * y).collect();
+        <span class="kw">let </span>expected_result: Vec&lt;i32&gt; = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">24</span>, <span class="number">120</span>];
+        <span class="macro">assert!</span>(result == expected_result)
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">pairwise_tests</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::Pairwisor</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>pairwise_tests {
+    <span class="kw">use </span><span class="kw">super</span>::Pairwisor;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_pairwise</span>() {
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="number">6</span>).<span class="ident">pairwise</span>().<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected_result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">4</span>, <span class="number">5</span>)];
-        <span class="macro">assert_eq!</span>(<span class="ident">result</span>, <span class="ident">expected_result</span>)
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_pairwise() {
+        <span class="kw">let </span>result: Vec&lt;(i32, i32)&gt; = (<span class="number">0</span>..<span class="number">6</span>).pairwise().collect();
+        <span class="kw">let </span>expected_result: Vec&lt;(i32, i32)&gt; = <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">4</span>, <span class="number">5</span>)];
+        <span class="macro">assert_eq!</span>(result, expected_result)
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_empty_pairwise</span>() {
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>().<span class="ident">into_iter</span>().<span class="ident">pairwise</span>().<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected_result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">result</span>, <span class="ident">expected_result</span>)
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_empty_pairwise() {
+        <span class="kw">let </span>result: Vec&lt;(i32, i32)&gt; = Vec::new().into_iter().pairwise().collect();
+        <span class="kw">let </span>expected_result: Vec&lt;(i32, i32)&gt; = Vec::new();
+        <span class="macro">assert_eq!</span>(result, expected_result)
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_single_pairwise</span>() {
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="number">1</span>).<span class="ident">pairwise</span>().<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected_result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">result</span>, <span class="ident">expected_result</span>)
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_single_pairwise() {
+        <span class="kw">let </span>result: Vec&lt;(i32, i32)&gt; = (<span class="number">0</span>..<span class="number">1</span>).pairwise().collect();
+        <span class="kw">let </span>expected_result: Vec&lt;(i32, i32)&gt; = Vec::new();
+        <span class="macro">assert_eq!</span>(result, expected_result)
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_double_pairwise</span>() {
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="number">2</span>).<span class="ident">pairwise</span>().<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected_result</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">i32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>)];
-        <span class="macro">assert_eq!</span>(<span class="ident">result</span>, <span class="ident">expected_result</span>)
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_double_pairwise() {
+        <span class="kw">let </span>result: Vec&lt;(i32, i32)&gt; = (<span class="number">0</span>..<span class="number">2</span>).pairwise().collect();
+        <span class="kw">let </span>expected_result: Vec&lt;(i32, i32)&gt; = <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>)];
+        <span class="macro">assert_eq!</span>(result, expected_result)
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_utils" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0-nightly (03918badd 2022-03-07)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rs3cache_utils" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>
