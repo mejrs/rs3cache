@@ -215,6 +215,16 @@ pub trait BufExtra: Buf {
         dst
     }
 
+    fn try_get_array<const LENGTH: usize>(&mut self) -> Result<[u8; LENGTH], ReadError> {
+        if self.remaining() >= LENGTH {
+            Err(ReadError::eof())
+        } else {
+            let mut dst = [0; LENGTH];
+            self.copy_to_slice(&mut dst);
+            Ok(dst)
+        }
+    }
+
     /// Reads two or four unsigned bytes as an 32-bit unsigned integer.
     #[track_caller]
     fn try_get_smart32(&mut self) -> Result<Option<u32>, ReadError> {
