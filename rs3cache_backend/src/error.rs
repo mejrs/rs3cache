@@ -144,7 +144,7 @@ impl Display for CacheError {
         }
 
         // Display deeper source errors, if any.
-        for s in <dyn Error>::chain(self).skip(2) {
+        for s in <dyn Error>::sources(self).skip(2) {
             writeln!(f, "Caused by: {}", s)?;
         }
 

@@ -2,7 +2,7 @@
 #![allow(deprecated)]
 use std::{
     fmt::{Debug, Display, Formatter},
-    io::{Read, ReadBuf},
+    io::Read,
     mem::MaybeUninit,
 };
 
@@ -105,19 +105,9 @@ fn do_read(mut decoder: impl Read, len: u32) -> Result<Bytes, DecodeError> {
     if len == 0 {
         return Ok(Bytes::new());
     }
-    let len = len as usize;
-    let mut buf = BytesMut::with_capacity(len);
-
-    unsafe {
-        let uninit = buf.chunk_mut();
-        let uninit = std::slice::from_raw_parts_mut(uninit.as_mut_ptr().cast::<MaybeUninit<u8>>(), uninit.len());
-        let mut rbuf = ReadBuf::uninit(uninit);
-
-        decoder.read_buf_exact(&mut rbuf)?;
-        let init_len = rbuf.initialized_len();
-        buf.set_len(init_len);
-    }
-    Ok(buf.freeze())
+    let mut decoded_data = Vec::with_capacity(len as usize);
+    decoder.read_to_end(&mut decoded_data).unwrap();
+    Ok(decoded_data.into())
 }
 
 #[derive(Debug)]
