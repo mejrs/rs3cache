@@ -29,31 +29,6 @@ pub struct Tile {
     pub height: Option<u8>,
 }
 
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl Tile {
-    #[getter]
-    fn shape(&self) -> PyResult<Option<u8>> {
-        Ok(self.shape)
-    }
-    #[getter]
-    fn overlay_id(&self) -> PyResult<Option<u16>> {
-        Ok(self.overlay_id)
-    }
-    #[getter]
-    fn settings(&self) -> PyResult<Option<u8>> {
-        Ok(self.settings)
-    }
-    #[getter]
-    fn underlay_id(&self) -> PyResult<Option<u16>> {
-        Ok(self.underlay_id)
-    }
-    #[getter]
-    fn height(&self) -> PyResult<Option<u8>> {
-        Ok(self.height)
-    }
-}
-
 impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
     #[cfg(any(feature = "rs3", feature = "2013_shim"))]

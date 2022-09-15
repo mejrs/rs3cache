@@ -19,10 +19,12 @@ fn main() -> Result<(), DynError> {
             check_formatting(&cargo)?;
             run_clippy(&cargo)?;
             run_tests(&cargo)?;
+            run_pytests()?;
         },
         Some("fmt") => check_formatting(&cargo)?,
         Some("test") => run_tests(&cargo)?,
         Some("clippy") => run_clippy(&cargo)?,
+        Some("pytests") => run_pytests()?,
         _ => print_help(),
     }
     Ok(())
@@ -31,7 +33,11 @@ fn main() -> Result<(), DynError> {
 fn print_help() {
     eprintln!(
         "Tasks:
+all             All the below
+fmt             Test formatting
 test            Test with various feature flags
+clippy          Run clippy with various feature flags
+pytests         Build python extensions and test examples
 "
     )
 }
@@ -46,6 +52,32 @@ fn run_tests(cargo: &str) -> Result<(), DynError> {
     test_with(cargo, &["test", "--features=dat", "--manifest-path=rs3cache_backend/Cargo.toml"])?.exit_ok()?;
     Ok(())
 }
+
+fn run_pytests() ->  Result<(), DynError>  {
+
+       let mut command =  Command::new("nox");
+       command
+            .arg("--non-interactive")
+            .arg("-f")
+            .arg("rs3_py/noxfile.py");
+        println!("Running {command:?}");
+        command
+        .status()
+        .map_err(|e| format!("failed to execute {:?}", e))?.exit_ok()?;
+
+        let mut command =  Command::new("nox");
+       command
+            .arg("--non-interactive")
+            .arg("-f")
+            .arg("osrs_py/noxfile.py");
+        println!("Running {command:?}");
+        command
+        .status()
+        .map_err(|e| format!("failed to execute {:?}", e))?.exit_ok()?;
+        Ok(())
+
+}
+
 
 fn check_formatting(cargo: &str) -> Result<(), DynError>{
     test_with(cargo, &["fmt", "--all", "--", "--check"])?.exit_ok()?;

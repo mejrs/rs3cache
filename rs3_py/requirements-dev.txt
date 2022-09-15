@@ -1,0 +1,2 @@
+pytest>=6.0
+pillow>=9.0

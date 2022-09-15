@@ -11,3 +11,6 @@ for id, meta in Index(47).metadatas():
 
     # We just print here, you should do something more imaginative :)
     print(id, time)
+
+def test():
+    pass

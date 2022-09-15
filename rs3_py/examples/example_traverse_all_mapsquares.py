@@ -13,10 +13,13 @@ loc_configs = get_location_configs()
 for mapsquare in MapSquares():
 	try:
 		locations = mapsquare.locations()
-	except FileNotFoundError:
+	except (RuntimeError, FileNotFoundError):
 		# not all mapsquares contain locations.
 		pass
 	else:
 		for loc in locations:
 			if loc.id == 106208:
 				print("hi")
+
+def test():
+	pass

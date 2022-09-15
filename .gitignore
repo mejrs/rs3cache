@@ -12,3 +12,4 @@ __pycache__
 /.vscode
 /raw
 /xtask/target
+rs3_py/login_backgrounds/*

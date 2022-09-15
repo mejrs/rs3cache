@@ -33,12 +33,14 @@ def process(struct, name):
         image_id = struct.params[param]
         segment = sprites[image_id][0].image()
         canvas.paste(segment, offset)
+
     canvas.save(f"{OUTPUT_FOLDER}/{name}.png")
 
-sprites = Sprites()
 
-enums = get_enum_configs()
-structs = get_struct_configs()
+sprites = Sprites(path = "../test_data/rs3_cache")
+
+enums = get_enum_configs(path = "../test_data/rs3_cache")
+structs = get_struct_configs(path = "../test_data/rs3_cache")
 background_names = enums[12590].variants
 backgrounds = enums[12591].variants
 
@@ -58,3 +60,10 @@ for id, key in backgrounds.items():
         pass
     else:
         process(struct, name)
+
+
+    print("We're bailing after just this one, because otherwise the test takes way too long")
+    break
+
+def test():
+    pass

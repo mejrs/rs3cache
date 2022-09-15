@@ -3,7 +3,7 @@ from rs3 import *
 mapsquares = MapSquares()
 
 lumbridge = mapsquares.get(50,50)
-print(lumbridge.metadata)
+
 for _, loc in zip(range(10), lumbridge.locations()):
     print(loc)
 
@@ -19,3 +19,7 @@ npc_configs = get_npc_configs()
 
 print(npc_configs[0])
 assert npc_configs[0].name == "Hans"
+
+
+def test():
+    pass

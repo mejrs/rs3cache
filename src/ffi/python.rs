@@ -93,32 +93,52 @@ pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Loc
 
 /// Wrapper for [`NpcConfig::dump_all`]
 #[pyfunction]
-pub fn get_npc_configs() -> PyResult<BTreeMap<u32, NpcConfig>> {
-    Ok(NpcConfig::dump_all(&Config::env())?)
+pub fn get_npc_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, NpcConfig>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
+    }
+    Ok(NpcConfig::dump_all(&config)?)
 }
 
 /// Wrapper for [`NpcConfig::dump_all`]
 #[pyfunction]
-pub fn get_item_configs() -> PyResult<BTreeMap<u32, ItemConfig>> {
-    Ok(ItemConfig::dump_all(&Config::env())?)
+pub fn get_item_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, ItemConfig>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
+    }
+    Ok(ItemConfig::dump_all(&config)?)
 }
 
 /// Wrapper for [`Struct::dump_all`]
 #[pyfunction]
-pub fn get_struct_configs() -> PyResult<BTreeMap<u32, Struct>> {
-    Ok(Struct::dump_all(&Config::env())?)
+pub fn get_struct_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Struct>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
+    }
+    Ok(Struct::dump_all(&config)?)
 }
 
 /// Wrapper for [`Struct::dump_all`]
 #[pyfunction]
-pub fn get_enum_configs() -> PyResult<BTreeMap<u32, Enum>> {
-    Ok(Enum::dump_all(&Config::env())?)
+pub fn get_enum_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Enum>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
+    }
+    Ok(Enum::dump_all(&config)?)
 }
 
 /// Wrapper for [`VarbitConfig::dump_all`]
 #[pyfunction]
-pub fn get_varbit_configs() -> PyResult<BTreeMap<u32, VarbitConfig>> {
-    Ok(VarbitConfig::dump_all(&Config::env())?)
+pub fn get_varbit_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, VarbitConfig>> {
+    let mut config = Config::env();
+    if let Some(path) = path {
+        config.input = path
+    }
+    Ok(VarbitConfig::dump_all(&config)?)
 }
 
 #[pyfunction]

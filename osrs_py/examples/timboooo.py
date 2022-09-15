@@ -5,22 +5,22 @@ from itertools import product
 An utility for tracking when trees are added or removed.
 """
 
-new = MapSquares()
+new = MapSquares(path = "../test_data/osrs_cache")
 
 #path to any old cache
-old = MapSquares(path = "C:/Users/bruno/runescape/cache/raw")
+old = MapSquares(path = "../test_data/osrs_cache_old")
 
-loc_config = get_location_configs()
+loc_config = get_location_configs(path = "../test_data/osrs_cache")
 
 for i, j in product(range(100), range(200)):
     try:
         new_objs = set(new.get(i,j).locations())
-    except (ValueError, FileNotFoundError, RuntimeError):
+    except (ValueError, FileNotFoundError, RuntimeError, KeyError):
         new_objs = set()
 
     try:
         old_objs = set(old.get(i,j).locations())
-    except (ValueError, FileNotFoundError, RuntimeError):
+    except (ValueError, FileNotFoundError, RuntimeError, KeyError):
         old_objs = set()
 
     added = new_objs - old_objs
@@ -39,3 +39,6 @@ for i, j in product(range(100), range(200)):
             name = loc_config[loc.id].name
             if name and ("tree" in name or "Tree" in name):
                 print("removed", pos, loc.id, name)
+
+def test():
+    pass

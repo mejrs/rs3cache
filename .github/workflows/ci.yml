@@ -38,20 +38,11 @@ jobs:
           submodules: 'true'
       - run: cargo test --features=rs3,mockdata
       - run: cargo test --features=osrs,mockdata
-  maturin:
+  python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: messense/maturin-action@v1
-        with:
-          maturin-version: latest
-          command: build
-          args: -m rs3_py/Cargo.toml
-      - uses: messense/maturin-action@v1
-        with:
-          maturin-version: latest
-          command: build
-          args: -m osrs_py/Cargo.toml
+      - run: nox --non-interactive -f rs3_py/noxfile.py
+      - run: nox --non-interactive -f osrs_py/noxfile.py
 
   # This adds the docs to gh-pages branch
   doc:
