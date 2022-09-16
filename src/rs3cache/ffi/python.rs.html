@@ -125,6 +125,26 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Python bindings for `rs3cache`.
 //!
 //! See the README for help with installing this.
@@ -220,32 +240,52 @@
 
 <span class="doccomment">/// Wrapper for [`NpcConfig::dump_all`]
 </span><span class="attribute">#[pyfunction]
-</span><span class="kw">pub fn </span>get_npc_configs() -&gt; PyResult&lt;BTreeMap&lt;u32, NpcConfig&gt;&gt; {
-    <span class="prelude-val">Ok</span>(NpcConfig::dump_all(<span class="kw-2">&amp;</span>Config::env())<span class="question-mark">?</span>)
+</span><span class="kw">pub fn </span>get_npc_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, NpcConfig&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
+        config.input = path
+    }
+    <span class="prelude-val">Ok</span>(NpcConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
 
 <span class="doccomment">/// Wrapper for [`NpcConfig::dump_all`]
 </span><span class="attribute">#[pyfunction]
-</span><span class="kw">pub fn </span>get_item_configs() -&gt; PyResult&lt;BTreeMap&lt;u32, ItemConfig&gt;&gt; {
-    <span class="prelude-val">Ok</span>(ItemConfig::dump_all(<span class="kw-2">&amp;</span>Config::env())<span class="question-mark">?</span>)
+</span><span class="kw">pub fn </span>get_item_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, ItemConfig&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
+        config.input = path
+    }
+    <span class="prelude-val">Ok</span>(ItemConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
 
 <span class="doccomment">/// Wrapper for [`Struct::dump_all`]
 </span><span class="attribute">#[pyfunction]
-</span><span class="kw">pub fn </span>get_struct_configs() -&gt; PyResult&lt;BTreeMap&lt;u32, Struct&gt;&gt; {
-    <span class="prelude-val">Ok</span>(Struct::dump_all(<span class="kw-2">&amp;</span>Config::env())<span class="question-mark">?</span>)
+</span><span class="kw">pub fn </span>get_struct_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Struct&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
+        config.input = path
+    }
+    <span class="prelude-val">Ok</span>(Struct::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
 
 <span class="doccomment">/// Wrapper for [`Struct::dump_all`]
 </span><span class="attribute">#[pyfunction]
-</span><span class="kw">pub fn </span>get_enum_configs() -&gt; PyResult&lt;BTreeMap&lt;u32, Enum&gt;&gt; {
-    <span class="prelude-val">Ok</span>(Enum::dump_all(<span class="kw-2">&amp;</span>Config::env())<span class="question-mark">?</span>)
+</span><span class="kw">pub fn </span>get_enum_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Enum&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
+        config.input = path
+    }
+    <span class="prelude-val">Ok</span>(Enum::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
 
 <span class="doccomment">/// Wrapper for [`VarbitConfig::dump_all`]
 </span><span class="attribute">#[pyfunction]
-</span><span class="kw">pub fn </span>get_varbit_configs() -&gt; PyResult&lt;BTreeMap&lt;u32, VarbitConfig&gt;&gt; {
-    <span class="prelude-val">Ok</span>(VarbitConfig::dump_all(<span class="kw-2">&amp;</span>Config::env())<span class="question-mark">?</span>)
+</span><span class="kw">pub fn </span>get_varbit_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, VarbitConfig&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
+        config.input = path
+    }
+    <span class="prelude-val">Ok</span>(VarbitConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
 
 <span class="attribute">#[pyfunction]

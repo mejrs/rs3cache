@@ -94,31 +94,6 @@
 <span id="94">94</span>
 <span id="95">95</span>
 <span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
-<span id="100">100</span>
-<span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
 </pre><pre class="rust"><code><span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
@@ -148,31 +123,6 @@
 
     <span class="doccomment">/// The height of the tile.
     </span><span class="kw">pub </span>height: <span class="prelude-ty">Option</span>&lt;u8&gt;,
-}
-
-<span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
-#[pymethods]
-</span><span class="kw">impl </span>Tile {
-    <span class="attribute">#[getter]
-    </span><span class="kw">fn </span>shape(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.shape)
-    }
-    <span class="attribute">#[getter]
-    </span><span class="kw">fn </span>overlay_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.overlay_id)
-    }
-    <span class="attribute">#[getter]
-    </span><span class="kw">fn </span>settings(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.settings)
-    }
-    <span class="attribute">#[getter]
-    </span><span class="kw">fn </span>underlay_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u16&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.underlay_id)
-    }
-    <span class="attribute">#[getter]
-    </span><span class="kw">fn </span>height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.height)
-    }
 }
 
 <span class="kw">impl </span>Tile {
