@@ -41,8 +41,12 @@ jobs:
   python:
     runs-on: ubuntu-latest
     steps:
-      - run: nox --non-interactive -f rs3_py/noxfile.py
-      - run: nox --non-interactive -f osrs_py/noxfile.py
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+      - run: |
+          pip install nox
+          cargo xtask pytests
 
   # This adds the docs to gh-pages branch
   doc:
@@ -51,7 +55,7 @@ jobs:
       - fmt
       - clippy
       - test
-      - maturin
+      - python
     steps:
       - uses: actions/checkout@v2
       - name: Build the doc

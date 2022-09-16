@@ -36,9 +36,13 @@ for i, j in product(range(100), range(200)):
     if removed:
         for loc in removed:
             pos = (loc.plane, loc.i << 6 | loc.x,  loc.j << 6 | loc.y)
-            name = loc_config[loc.id].name
-            if name and ("tree" in name or "Tree" in name):
-                print("removed", pos, loc.id, name)
+            try:
+                name = loc_config[loc.id].name
+                if name and ("tree" in name or "Tree" in name):
+                    print("removed", pos, loc.id, name)
+            except KeyError:
+                # this object has been removed completely
+                pass
 
 def test():
     pass
