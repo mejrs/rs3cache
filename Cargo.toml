@@ -49,6 +49,7 @@ filetime = { version = "0.2.15", optional = true }
 image = "0.24.1"
 indicatif = "0.16.2"
 itertools = "0.10.3"
+memoffset = "0.6.5"
 ndarray = { version = "0.15.4", features = ["serde"] }
 path_macro = "1.0.0"
 pyo3 = { version = "0.17.1", features = ["extension-module"], optional = true }
