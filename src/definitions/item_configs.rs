@@ -22,7 +22,7 @@ use crate::{
 #[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct ItemConfig {
@@ -222,7 +222,7 @@ pub mod item_config_fields {
     use pyo3::prelude::*;
     use serde::Serialize;
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
     pub struct Rotation {
         pub yaw: u16,
@@ -230,14 +230,14 @@ pub mod item_config_fields {
         pub roll: u16,
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
     pub struct Translation {
         pub x: u16,
         pub y: u16,
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
         pub colours: Vec<(u16, u16)>,
@@ -260,7 +260,7 @@ pub mod item_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
         pub textures: BTreeMap<u16, u16>,
@@ -285,7 +285,7 @@ pub mod item_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     pub struct Quests {
         pub quests: Vec<u16>,
@@ -299,7 +299,7 @@ pub mod item_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     pub struct StackInfo {
         unknown_1: u16,
@@ -327,7 +327,7 @@ pub mod item_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     pub struct RecolourPalette {
         pub palette: Vec<i8>,

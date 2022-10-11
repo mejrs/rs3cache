@@ -12,7 +12,7 @@ use crate::cache::buf::BufExtra;
 /// [`NpcConfig`](crate::definitions::npc_configs::NpcConfig)s can have additional mapping of keys to properties.
 #[cfg_eval]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[derive(Serialize, Debug, Clone)]
 pub struct ParamTable {
     /// Key:Value pairs of additional properties.

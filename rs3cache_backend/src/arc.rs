@@ -23,7 +23,7 @@ use crate::{
 
 /// A collection of files.
 #[cfg_eval]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[derive(Clone, Default)]
 pub struct Archive {
     pub(crate) index_id: u32,

@@ -185,21 +185,31 @@ impl std::error::Error for CacheError {
     }
 }
 
+const EXPECTED_STRUCTURE = if cfg!(feature = "rs3")
+
 #[cfg(feature = "pyo3")]
 mod py_error_impl {
-    use pyo3::{exceptions::PyRuntimeError, PyErr};
+    use pyo3::{
+        exceptions::{PyException, PyRuntimeError},
+        PyErr,
+    };
+
+    pyo3::create_exception!(my_module, CacheNotFoundError, PyException, "Raised if the cache cannot be found");
 
     use super::CacheError;
 
-    impl From<CacheError> for PyErr {
-        fn from(err: CacheError) -> PyErr {
-            PyRuntimeError::new_err(err.to_string())
+    impl From<&CacheError> for PyErr {
+        fn from(err: &CacheError) -> PyErr {
+            match err {
+                CacheError::CacheNotFoundError(_, _) => CacheNotFoundError::new_err(err.to_string()),
+                _ => PyRuntimeError::new_err(err.to_string()),
+            }
         }
     }
 
-    impl From<&CacheError> for PyErr {
-        fn from(err: &CacheError) -> PyErr {
-            PyRuntimeError::new_err(err.to_string())
+    impl From<CacheError> for PyErr {
+        fn from(err: CacheError) -> PyErr {
+            (&err).into()
         }
     }
 }

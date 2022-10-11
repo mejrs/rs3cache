@@ -972,6 +972,7 @@ dependencies = [
  "image",
  "indicatif",
  "itertools",
+ "memoffset",
  "ndarray",
  "path_macro",
  "pyo3",

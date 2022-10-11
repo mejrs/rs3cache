@@ -23,7 +23,7 @@ use crate::{definitions::indextype::IndexType, structures::paramtable::ParamTabl
 #[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct LocationConfig {
@@ -438,7 +438,7 @@ pub mod location_config_fields {
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
     #[cfg_eval]
     #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
         #[serde(flatten)]
@@ -491,7 +491,7 @@ pub mod location_config_fields {
     /// Like [`LocationMorphTable`], but with a default value.
     #[cfg_eval]
     #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ExtendedLocationMorphTable {
@@ -559,7 +559,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
         pub colours: Vec<(u16, u16)>,
@@ -576,7 +576,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
         #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
@@ -627,7 +627,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models2 {
         #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2010_1_shim")))]
@@ -672,7 +672,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
         pub textures: BTreeMap<u16, u16>,
@@ -689,7 +689,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown79 {
         pub unknown_1: u16,
@@ -721,7 +721,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown173 {
         pub unknown_1: u16,
@@ -739,7 +739,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown163 {
         pub unknown_1: i8,
@@ -768,7 +768,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown78 {
         pub unknown_1: u16,
@@ -786,7 +786,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown160 {
         pub values: Vec<u16>,
@@ -801,7 +801,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown201 {
         pub unknown_1: u16,
@@ -838,7 +838,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
         pub headmodels: Vec<(Option<u32>, u8)>,
@@ -855,7 +855,7 @@ pub mod location_config_fields {
     }
 
     #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown204 {
         pub id: u16,

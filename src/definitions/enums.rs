@@ -219,7 +219,7 @@ impl IntoPy<Py<PyAny>> for Value {
 #[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Enum {

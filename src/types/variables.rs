@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use serde::Serialize;
 
 /// A bitmapping of a [`Varp`]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Varbit {
     ///The value of the `Varbit`. Cannot be `Some(u16::MAX)`.
@@ -36,7 +36,7 @@ impl Varbit {
 }
 
 /// A player variable
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Varp {
     ///The value of the `Varp`. Cannot be `Some(u16::MAX)`.

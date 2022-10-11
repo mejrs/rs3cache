@@ -20,7 +20,7 @@ use crate::cache::{
     indextype::{ConfigType, IndexType},
 };
 
-#[cfg_attr(feature = "pyo3", pyclass)]
+ #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[skip_serializing_none]
 #[derive(Debug, Default, Copy, Clone, Serialize)]
 

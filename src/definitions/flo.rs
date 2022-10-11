@@ -16,7 +16,7 @@ use crate::{
     definitions::indextype::{ConfigType, IndexType},
 };
 /// Describes (part of) ground colour.
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[skip_serializing_none]
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Flo {

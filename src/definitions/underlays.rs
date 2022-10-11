@@ -17,7 +17,7 @@ use crate::{
 };
 
 /// Describes the general ground colour. This colour is blended with surrounding tiles.
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[skip_serializing_none]
 #[derive(Debug, Default, Copy, Clone, Serialize)]
 

@@ -21,7 +21,7 @@ use crate::{
 /// This can be a text label, sprite, polygon or interactive.
 #[cfg_eval]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass)]
+#[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct MapLabelConfig {
@@ -150,7 +150,7 @@ pub mod maplabel_config_fields {
 
     use crate::types::variables::{Varbit, Varp, VarpOrVarbit};
     /// A polygon
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Clone, Default, Serialize)]
     pub struct Polygon {
         /// Colour of the polygon.
@@ -189,7 +189,7 @@ pub mod maplabel_config_fields {
     }
 
     /// Controls whether the [`MapLabelConfig`](super::MapLabelConfig) is shown.
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Clone, Copy, Serialize)]
     pub struct Toggle {
         /// The [`Varp`] or [`Varbit`] controlling the toggle.
@@ -218,7 +218,7 @@ pub mod maplabel_config_fields {
     }
 
     /// Whether to show "new" or "legacy" map icon.
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Clone, Copy, Serialize)]
     pub struct LegacySwitch {
         /// The [`Varp`] or [`Varbit`] controlling legacy toggle.
@@ -257,7 +257,7 @@ pub mod maplabel_config_fields {
     }
 
     /// Points that span a [`Polygon`].
-    #[cfg_attr(feature = "pyo3", pyclass)]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Debug, Clone, Copy, Serialize)]
     pub struct PolygonPoint {
         /// Plane. Always zero.
