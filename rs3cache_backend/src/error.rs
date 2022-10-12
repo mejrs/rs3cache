@@ -205,6 +205,7 @@ impl std::error::Error for CacheError {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 const STRUCTURE: &str = if cfg!(feature = "sqlite") {
     "/
         js5-1.JCACHE
