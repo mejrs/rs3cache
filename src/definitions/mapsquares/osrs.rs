@@ -16,7 +16,7 @@ use crate::{
 };
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
-        let index = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+        let index = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?;
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)), (i, j)))
             .collect();
@@ -93,7 +93,7 @@ pub struct GroupMapSquareIterator {
 impl GroupMapSquareIterator {
     /// Constructor for [`GroupMapSquareIterator`].
     pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
-        let inner = CacheIndex::new(IndexType::MAPSV2, &config.input)?;
+        let inner = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?;
 
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))

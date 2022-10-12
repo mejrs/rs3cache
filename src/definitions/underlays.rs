@@ -39,7 +39,7 @@ pub struct Underlay {
 impl Underlay {
     /// Returns a mapping of all [`Underlay`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Underlay>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::UNDERLAYS)?
             .take_files()
             .into_iter()

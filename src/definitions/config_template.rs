@@ -35,7 +35,7 @@ pub struct <Name> {
 impl <Name> {
     /// Returns a mapping of all [`<Name>`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, <Name>>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::<Name>)?
             .take_files()
             .into_iter()

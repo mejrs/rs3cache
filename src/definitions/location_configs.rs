@@ -166,7 +166,7 @@ impl LocationConfig {
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let index = IndexType::LOC_CONFIG;
 
-        let archives = CacheIndex::new(index, &config.input)?.into_iter();
+        let archives = CacheIndex::new(index, config.input.clone())?.into_iter();
         let locations = archives
             .map(Result::unwrap)
             .flat_map(|archive| {
@@ -184,7 +184,7 @@ impl LocationConfig {
 
     #[cfg(all(feature = "osrs", not(feature = "2008_3_shim"), not(feature = "legacy")))]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let locations = CacheIndex::new(IndexType::CONFIG, &config.input)?
+        let locations = CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::LOC_CONFIG)?
             .take_files()
             .into_iter()
@@ -197,7 +197,7 @@ impl LocationConfig {
 
     #[cfg(feature = "legacy")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let cache = CacheIndex::new(0, &config.input).unwrap();
+        let cache = CacheIndex::new(0, config.input.clone()).unwrap();
         let archive = cache.archive(2).unwrap();
         let mut file = archive.file_named("loc.dat").unwrap();
 
@@ -928,11 +928,11 @@ mod legacy {
 
     #[test]
     fn decode_locations() {
-        let path = "test_data/2005_cache";
+        let config = Config::env();
         let location_count = 7389;
         let first_section = 0..45;
 
-        let cache = CacheIndex::new(0, path).unwrap();
+        let cache = CacheIndex::new(0, config.input).unwrap();
         let archive = cache.archive(2).unwrap();
         let mut file = archive.file_named("loc.dat").unwrap();
 

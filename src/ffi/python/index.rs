@@ -2,6 +2,7 @@ use std::{
     collections::{btree_map, hash_map::DefaultHasher},
     hash::{Hash, Hasher},
     path::PathBuf,
+    sync::Arc,
 };
 
 use pyo3::{
@@ -9,6 +10,7 @@ use pyo3::{
     exceptions::{PyIndexError, PyReferenceError},
     prelude::*,
 };
+use rs3cache_backend::index::CachePath;
 
 use crate::{
     cache::{
@@ -28,7 +30,7 @@ use crate::{
 /// index = Index(2)
 ///```
 /// # Exceptions
-/// Raises `FileNotFoundError` if the cache cannot be found.
+/// Raises `FileMissingError` if the cache cannot be found.
 #[pyclass(name = "Index")]
 pub struct PyCacheIndex {
     inner: Option<CacheIndex<Initial>>,
@@ -42,11 +44,11 @@ impl PyCacheIndex {
     fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
-            config.input = path
+            config.input = Arc::new(CachePath::Given(path))
         }
 
         Ok(Self {
-            inner: Some(CacheIndex::new(index_id, &config.input)?),
+            inner: Some(CacheIndex::new(index_id, config.input)?),
         })
     }
 

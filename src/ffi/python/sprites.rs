@@ -1,10 +1,11 @@
-use std::{collections::BTreeMap, path::PathBuf};
+use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 use pyo3::{
     exceptions::{PyKeyError, PyReferenceError},
     prelude::*,
     types::PyBytes,
 };
+use rs3cache_backend::index::CachePath;
 
 use crate::{
     cache::{
@@ -74,13 +75,13 @@ impl PySprites {
     fn __new__(py: Python, path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
-            config.input = path
+            config.input = Arc::new(CachePath::Given(path))
         }
         let constructor = py.import("PIL")?.getattr("Image")?.getattr("frombytes")?.into();
 
         Ok(Self {
             constructor,
-            inner: Some(CacheIndex::new(IndexType::SPRITES, &config.input)?),
+            inner: Some(CacheIndex::new(IndexType::SPRITES, config.input)?),
         })
     }
 

@@ -1,4 +1,4 @@
-from rs3 import *
+from rs3 import get_location_configs, MapSquares, ArchiveNotFoundError, FileMissingError
 from itertools import product
 
 """
@@ -15,12 +15,20 @@ loc_config = get_location_configs(path = "../test_data/rs3_cache")
 for i, j in product(range(100), range(200)):
     try:
         new_objs = set(new.get(i,j).locations())
-    except (KeyError, ValueError, FileNotFoundError, RuntimeError):
+    except ArchiveNotFoundError:
+        # If the mapsquare is missing, use the empty set
         new_objs = set()
+    except FileMissingError:
+        # If the mapsquare has no tiles, use the empty set
+        old_objs = set()
 
     try:
         old_objs = set(old.get(i,j).locations())
-    except (KeyError, ValueError, FileNotFoundError, RuntimeError):
+    except ArchiveNotFoundError:
+        # If the mapsquare is missing, use the empty set
+        old_objs = set()
+    except FileMissingError:
+        # If the mapsquare has no tiles, use the empty set
         old_objs = set()
 
     added = new_objs - old_objs

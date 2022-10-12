@@ -6,6 +6,7 @@ use std::{
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 use bytes::{Buf, Bytes};
@@ -17,7 +18,7 @@ use crate::{
     buf::BufExtra,
     decoder,
     error::{CacheError, CacheResult},
-    index::{CacheIndex, IndexState, Initial},
+    index::{CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
 };
 
@@ -129,8 +130,8 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(folder / format!("js5-{index_id}.jcache"));
+    pub fn new(index_id: u32, path: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(path.as_ref() / format!("js5-{index_id}.jcache"));
 
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
@@ -143,11 +144,11 @@ impl CacheIndex<Initial> {
                     index_id,
                     metadatas,
                     connection,
-                    path: folder.as_ref().to_path_buf(),
+                    path,
                     state: Initial {},
                 })
             }
-            Err(e) => Err(CacheError::CacheNotFoundError(e, file)),
+            Err(e) => Err(CacheError::CacheNotFoundError(e, file, path)),
         }
     }
 }
@@ -161,12 +162,10 @@ impl CacheIndex<Initial> {
 ///
 /// Panics if compiled with feature `mockdata`.
 #[cfg(not(feature = "mockdata"))]
-pub fn assert_coherence(folder: impl AsRef<Path>) -> CacheResult<()> {
-    let folder = folder.as_ref();
-
+pub fn assert_coherence(folder: Arc<CachePath>) -> CacheResult<()> {
     for index_id in 0..70 {
-        if fs::metadata(path!(folder / format!("js5-{index_id}.jcache"))).is_ok() {
-            match CacheIndex::new(index_id, &folder)?.assert_coherence() {
+        if fs::metadata(path!(&*folder / format!("js5-{index_id}.jcache"))).is_ok() {
+            match CacheIndex::new(index_id, folder.clone())?.assert_coherence() {
                 Ok(_) => println!("Index {index_id} is coherent!"),
                 Err(e) => println!("Index {index_id} is not coherent: {e} and possibly others."),
             }

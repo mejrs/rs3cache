@@ -48,7 +48,7 @@ pub struct MapZone {
 impl MapZone {
     /// Returns a mapping of all [`MapZone`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::WORLDMAP, &config.input)?
+        Ok(CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
             .archive(WorldMapType::ZONES)?
             .take_files()
             .into_iter()
@@ -188,7 +188,7 @@ pub struct MapPastes {
 impl MapPastes {
     /// Returns a mapping of all [`MapPastes`].
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::WORLDMAP, &config.input)?
+        Ok(CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
             .archive(WorldMapType::PASTES)?
             .take_files()
             .into_iter()
@@ -334,7 +334,7 @@ pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(path!(config.output / "world_map_small"))?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP, &config.input)?
+    let files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
         .archive(WorldMapType::SMALL)?
         .take_files();
     for (id, data) in files {
@@ -350,7 +350,7 @@ pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
     fs::create_dir_all(path!(config.output / "world_map_big"))?;
 
-    let files = CacheIndex::new(IndexType::WORLDMAP, &config.input)?
+    let files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
         .archive(WorldMapType::BIG)?
         .take_files();
 

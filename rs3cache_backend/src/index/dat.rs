@@ -6,6 +6,7 @@ use std::{
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 use bytes::{Buf, Bytes};
@@ -17,7 +18,7 @@ use crate::{
     buf::BufExtra,
     decoder,
     error::{CacheError, CacheResult},
-    index::{CacheIndex, IndexState, Initial},
+    index::{CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
 };
 
@@ -25,9 +26,13 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    fn get_entry(a: u32, b: u32, folder: impl AsRef<Path>) -> CacheResult<(u32, u32)> {
-        let file = path!(folder / "cache" / format!("main_file_cache.idx{a}"));
-        let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
+    fn get_entry(a: u32, b: u32, path: &Arc<CachePath>) -> CacheResult<(u32, u32)> {
+        let file = path!(**path / "cache" / format!("main_file_cache.idx{a}"));
+        let entry_data = match fs::read(&file) {
+            Ok(f) => f,
+            Err(e) => return Err(CacheError::CacheNotFoundError(e, file, path.clone())),
+        };
+
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((buf.try_get_uint(3)? as u32, buf.try_get_uint(3)? as u32))
@@ -152,13 +157,16 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, folder: impl AsRef<Path>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(folder / "cache/main_file_cache.dat");
+    pub fn new(index_id: u32, path: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(&*path / "cache/main_file_cache.dat");
 
-        let file = File::open(&file).map_err(|e| CacheError::CacheNotFoundError(e, file))?;
+        let file = match File::open(&file) {
+            Ok(f) => f,
+            Err(e) => return Err(CacheError::CacheNotFoundError(e, file, path)),
+        };
 
         Ok(Self {
-            path: folder.as_ref().to_path_buf(),
+            path,
             index_id,
             metadatas: IndexMetadata::empty(),
             file,

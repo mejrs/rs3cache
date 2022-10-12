@@ -1,7 +1,7 @@
-use std::{path::PathBuf, str::FromStr};
+use std::{ffi::OsStr, path::PathBuf, str::FromStr, sync::Arc};
 
 use clap::{ArgEnum, Args, Parser, Subcommand};
-use rs3cache_backend::error::CacheResult;
+use rs3cache_backend::{error::CacheResult, index::CachePath};
 
 use crate::definitions;
 #[cfg(not(target_arch = "wasm32"))]
@@ -128,19 +128,39 @@ impl Dump {
     }
 }
 
+fn path_helper(input: &OsStr) -> Arc<CachePath> {
+    todo!()
+}
+
+const INPUT: &str = if cfg!(feature = "rs3") {
+    "RS3_CACHE_INPUT_FOLDER"
+} else if cfg!(feature = "osrs") {
+    "OSRS_CACHE_INPUT_FOLDER"
+} else if cfg!(feature = "legacy") {
+    "LEGACY_CACHE_INPUT_FOLDER"
+} else {
+    unimplemented!()
+};
+
+const OUTPUT: &str = if cfg!(feature = "rs3") {
+    "RS3_CACHE_OUTPUT_FOLDER"
+} else if cfg!(feature = "osrs") {
+    "OSRS_CACHE_OUTPUT_FOLDER"
+} else if cfg!(feature = "legacy") {
+    "LEGACY_CACHE_OUTPUT_FOLDER"
+} else {
+    unimplemented!()
+};
+
 #[derive(Debug, Default, Parser)]
-#[clap(author, about = "Tools and api for reading and interpreting the RuneScape 3 game cache")]
+#[clap(author, about = "Tools and api for reading and interpreting the RuneScape game cache")]
 pub struct Config {
     /// The path where to look for the current cache.
-    #[cfg_attr(feature = "rs3", clap(long, env = "RS3_CACHE_INPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "osrs", clap(long, env = "OSRS_CACHE_INPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "legacy", clap(long))]
-    pub input: PathBuf,
+    #[clap(parse(from_os_str = path_helper), long, env = INPUT, default_value = "")]
+    pub input: Arc<CachePath>,
 
     /// The path where to place output.
-    #[cfg_attr(feature = "rs3", clap(long, env = "RS3_CACHE_OUTPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "osrs", clap(long, env = "OSRS_CACHE_OUTPUT_FOLDER", default_value = ""))]
-    #[cfg_attr(feature = "legacy", clap(long))]
+    #[clap(long, env = OUTPUT, default_value = "")]
     pub output: PathBuf,
 
     /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
@@ -164,15 +184,8 @@ impl Config {
     #[cfg(not(feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            #[cfg(feature = "rs3")]
-            input: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
-            #[cfg(feature = "rs3")]
-            output: std::env::var_os("RS3_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
-
-            #[cfg(feature = "osrs")]
-            input: std::env::var_os("OSRS_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
-            #[cfg(feature = "osrs")]
-            output: std::env::var_os("OSRS_CACHE_INPUT_FOLDER").unwrap_or_default().into(),
+            input: Arc::new(CachePath::Env(std::env::var_os(INPUT).unwrap_or_default().into())),
+            output: std::env::var_os(OUTPUT).unwrap_or_default().into(),
             ..Default::default()
         }
     }
@@ -180,7 +193,7 @@ impl Config {
     #[cfg(all(feature = "osrs", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: PathBuf::from("test_data/osrs_cache"),
+            input: Arc::new(CachePath::Given(PathBuf::from("test_data/osrs_cache"))),
             ..Default::default()
         }
     }
@@ -188,7 +201,7 @@ impl Config {
     #[cfg(all(feature = "rs3", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: PathBuf::from("test_data/rs3_cache"),
+            input: Arc::new(CachePath::Given(PathBuf::from("test_data/rs3_cache"))),
             ..Default::default()
         }
     }
@@ -196,7 +209,7 @@ impl Config {
     #[cfg(all(feature = "legacy", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: PathBuf::from("test_data/2005_cache"),
+            input: Arc::new(CachePath::Given(PathBuf::from("test_data/2005_cache"))),
             ..Default::default()
         }
     }

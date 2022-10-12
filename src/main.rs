@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(all(feature = "rs3", not(feature = "mockdata"), not(feature = "save_mockdata")))]
     if config.assert_coherence {
-        rs3cache::cache::index::assert_coherence(&config.input)?;
+        rs3cache::cache::index::assert_coherence(config.input.clone())?;
     }
 
     for archive in &(config.dump) {

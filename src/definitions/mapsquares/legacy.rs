@@ -26,7 +26,7 @@ use crate::{
 
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
-        let mut index = CacheIndex::new(4, &config.input)?;
+        let mut index = CacheIndex::new(4, config.input.clone())?;
         let meta = index.get_index();
         Ok(MapSquares { index, meta })
     }
@@ -77,7 +77,7 @@ pub struct GroupMapSquareIterator {
 impl GroupMapSquareIterator {
     /// Constructor for [`GroupMapSquareIterator`].
     pub fn new(range_i: RangeInclusive<i32>, range_j: RangeInclusive<i32>, config: &crate::cli::Config) -> CacheResult<GroupMapSquareIterator> {
-        let mut inner = CacheIndex::new(4, &config.input)?;
+        let mut inner = CacheIndex::new(4, config.input.clone())?;
         let meta = inner.get_index();
         let state = meta.keys().copied().collect::<Vec<_>>().into_iter();
         Ok(GroupMapSquareIterator {

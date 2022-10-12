@@ -1,7 +1,7 @@
 # This locates all locations (a.k.a. objects) that are named "[ph]".
 
 # Imports the library. You must have built python wheels to make this work.
-from rs3 import *
+from rs3 import MapSquares, get_location_configs, FileMissingError
 
 # Load all location properties (e.g. their name, models and so on).
 loc_configs = get_location_configs(path = "../test_data/rs3_cache")
@@ -13,7 +13,7 @@ loc_configs = get_location_configs(path = "../test_data/rs3_cache")
 for mapsquare in MapSquares(path = "../test_data/rs3_cache"):
 	try:
 		locations = mapsquare.locations()
-	except (RuntimeError, FileNotFoundError):
+	except FileMissingError:
 		# not all mapsquares contain locations.
 		pass
 	else:

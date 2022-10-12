@@ -24,7 +24,7 @@ pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
-    let index = CacheIndex::new(IndexType::SPRITES, &config.input)?;
+    let index = CacheIndex::new(IndexType::SPRITES, config.input.clone())?;
 
     #[cfg(feature = "rs3")]
     let versions: BTreeMap<u32, ::filetime::FileTime> = index
@@ -131,7 +131,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
-    let index = CacheIndex::new(0, &config.input)?;
+    let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
 
     let meta = files.remove(&hash_archive("index.dat")).unwrap();
@@ -160,7 +160,7 @@ pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTr
 
     std::fs::create_dir_all(path!(config.output / "sprites"))?;
 
-    let index = CacheIndex::new(0, &config.input)?;
+    let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
 
     let meta = files.remove(&hash_archive("index.dat")).unwrap();
@@ -205,7 +205,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
         })
     };
 
-    let sprites = CacheIndex::new(IndexType::SPRITES, &config.input)?
+    let sprites = CacheIndex::new(IndexType::SPRITES, config.input.clone())?
         .retain(ids)
         .into_iter()
         .map(Result::unwrap)
@@ -337,7 +337,7 @@ mod sprite_tests {
         fn dump(id: u32, frame: u32) -> CacheResult<Sprite> {
             let config = crate::cli::Config::env();
 
-            let archive = CacheIndex::new(IndexType::SPRITES, &config.input)?.archive(id)?;
+            let archive = CacheIndex::new(IndexType::SPRITES, config.input.clone())?.archive(id)?;
             let file = archive.file(&0)?;
             assert!(file.len() != 0, "{:?}", file);
             let mut images = deserialize(file).unwrap();

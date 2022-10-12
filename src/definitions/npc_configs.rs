@@ -118,7 +118,7 @@ impl NpcConfig {
     /// Returns a mapping of all [npc configurations](NpcConfig)
     #[cfg(feature = "rs3")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::NPC_CONFIG, &config.input)?.into_iter();
+        let archives = CacheIndex::new(IndexType::NPC_CONFIG, config.input.clone())?.into_iter();
 
         let npc_configs = archives
             .map(Result::unwrap)
@@ -136,7 +136,7 @@ impl NpcConfig {
 
     #[cfg(feature = "osrs")]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::NPC_CONFIG)?
             .take_files()
             .into_iter()

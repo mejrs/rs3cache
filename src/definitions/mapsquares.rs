@@ -94,7 +94,7 @@ impl MapSquare {
     pub fn new(i: u8, j: u8, config: &crate::cli::Config) -> CacheResult<MapSquare> {
         assert!(i < 0x7F, "Index out of range.");
         let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = CacheIndex::new(IndexType::MAPSV2, &config.input)?.archive(archive_id)?;
+        let archive = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?.archive(archive_id)?;
         Ok(Self::from_archive(archive))
     }
 
@@ -105,10 +105,10 @@ impl MapSquare {
         let _env = env.map(|k| index.archive(k));
 
         let tiles = Tile::dump(tiles);
-        let locations = if let Ok(ok_land) = land {
-            Ok(Location::dump(i, j, &tiles, ok_land))
-        } else {
-            Err(CacheError::ArchiveNotFoundError(5, 0))
+        let locations = match land {
+            Ok(land) => Ok(Location::dump(i, j, &tiles, land)),
+            // most likely, anyway...
+            Err(e) => Err(CacheError::XteaError(i, j)),
         };
 
         Ok(MapSquare {
@@ -143,7 +143,7 @@ impl MapSquare {
         let locations = match tiles {
             Ok(ref t) => archive.file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
             // can't generally clone or copy error
-            Err(CacheError::FileNotFoundError(i, a, f)) => Err(CacheError::FileNotFoundError(i, a, f)),
+            Err(CacheError::FileMissingError(i, a, f)) => Err(CacheError::FileMissingError(i, a, f)),
             _ => unreachable!(),
         };
         let water_locations = archive
@@ -437,7 +437,7 @@ mod legacy {
     fn decode_50_50() {
         let config = Config::env();
 
-        let mut cache = CacheIndex::new(4, &config.input).unwrap();
+        let mut cache = CacheIndex::new(4, config.input).unwrap();
         let index = cache.get_index();
         let meta = index[&(50, 50)];
         dbg!(meta);

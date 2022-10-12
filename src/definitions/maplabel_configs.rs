@@ -81,7 +81,7 @@ pub struct MapLabelConfig {
 impl MapLabelConfig {
     /// Returns a mapping of all [`MapLabelConfig`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, MapLabelConfig>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::MAPLABELS)?
             .take_files()
             .into_iter()

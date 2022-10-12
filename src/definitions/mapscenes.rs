@@ -26,7 +26,7 @@ pub struct MapScene {
 impl MapScene {
     /// Returns a mapping of all [`MapScene`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, MapScene>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::MAPSCENES)?
             .take_files()
             .into_iter()

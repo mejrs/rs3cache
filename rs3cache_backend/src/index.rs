@@ -7,7 +7,6 @@
 #[cfg_attr(feature = "dat2", path = "index/dat2.rs")]
 #[cfg_attr(feature = "dat", path = "index/dat.rs")]
 mod index_impl;
-
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
@@ -16,6 +15,7 @@ use std::{
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 use bytes::{Buf, Bytes};
@@ -56,7 +56,7 @@ pub struct CacheIndex<S: IndexState> {
     index_id: u32,
     metadatas: IndexMetadata,
     state: S,
-    path: PathBuf,
+    path: Arc<CachePath>,
 
     #[cfg(feature = "sqlite")]
     connection: sqlite::Connection,
@@ -66,6 +66,24 @@ pub struct CacheIndex<S: IndexState> {
 
     #[cfg(feature = "dat2")]
     xteas: Option<HashMap<u32, Xtea>>,
+}
+
+#[derive(Clone, Debug, Default)]
+pub enum CachePath {
+    #[default]
+    Omitted,
+    Env(PathBuf),
+    Given(PathBuf),
+}
+
+impl AsRef<Path> for CachePath {
+    fn as_ref(&self) -> &Path {
+        match self {
+            CachePath::Omitted => Path::new(""),
+            CachePath::Env(p) => p,
+            CachePath::Given(p) => p,
+        }
+    }
 }
 
 // methods valid in any state

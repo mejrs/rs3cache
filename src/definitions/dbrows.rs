@@ -35,7 +35,7 @@ pub struct DbRow {
 impl DbRow {
     /// Returns a mapping of all [`DbRow`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, DbRow>> {
-        let files = CacheIndex::new(IndexType::CONFIG, &config.input)?
+        let files = CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::DBROWS)?
             .take_files()
             .into_iter();

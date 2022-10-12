@@ -1,4 +1,4 @@
-from osrs import *
+from osrs import get_location_configs, MapSquares, ArchiveNotFoundError, FileMissingError, XteaError
 from itertools import product
 
 """
@@ -15,14 +15,25 @@ loc_config = get_location_configs(path = "../test_data/osrs_cache")
 for i, j in product(range(100), range(200)):
     try:
         new_objs = set(new.get(i,j).locations())
-    except (ValueError, FileNotFoundError, RuntimeError, KeyError):
+    except ArchiveNotFoundError:
         new_objs = set()
+    except FileMissingError:
+        # If the mapsquare has no tiles, use the empty set
+        old_objs = set()
+    except XteaError:
+		# We can't decode all mapsquares; some keys are not known.
+        pass
 
     try:
         old_objs = set(old.get(i,j).locations())
-    except (ValueError, FileNotFoundError, RuntimeError, KeyError):
+    except ArchiveNotFoundError:
         old_objs = set()
-
+    except FileMissingError:
+        # If the mapsquare has no tiles, use the empty set
+        old_objs = set()
+    except XteaError:
+		# We can't decode all mapsquares; some keys are not known.
+        pass
     added = new_objs - old_objs
     removed = old_objs - new_objs
 

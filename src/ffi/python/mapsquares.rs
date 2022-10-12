@@ -1,10 +1,11 @@
-use std::{collections::BTreeMap, path::PathBuf};
+use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 use pyo3::{
     exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::*,
     types::PyInt,
 };
+use rs3cache_backend::index::CachePath;
 
 use crate::{
     cli::Config,
@@ -35,7 +36,7 @@ impl PyMapSquares {
     fn new(path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
-            config.input = path
+            config.input = Arc::new(CachePath::Given(path))
         }
         Ok(Self {
             mapsquares: Some(MapSquares::new(&config)?),
@@ -78,8 +79,7 @@ impl PyMapSquares {
                 .mapsquares
                 .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?
-                .get(i, j)
-                .map_err(|_| PyKeyError::new_err(format!("Mapsquare {i}, {j} is not present.")))?;
+                .get(i, j)?;
 
             Ok(PyMapSquare { inner: sq })
         }

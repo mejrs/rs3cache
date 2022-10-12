@@ -241,7 +241,7 @@ pub struct Enum {
 impl Enum {
     /// Returns a mapping of all [`Enum`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::ENUM_CONFIG, &config.input)?.into_iter();
+        let archives = CacheIndex::new(IndexType::ENUM_CONFIG, config.input.clone())?.into_iter();
 
         let enums = archives
             .map(Result::unwrap)

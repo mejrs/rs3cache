@@ -41,7 +41,7 @@ pub struct VarbitConfig {
 impl VarbitConfig {
     /// Returns a mapping of all [`VarbitConfig`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        Ok(CacheIndex::new(IndexType::CONFIG, &config.input)?
+        Ok(CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::VARBITS)?
             .take_files()
             .into_iter()

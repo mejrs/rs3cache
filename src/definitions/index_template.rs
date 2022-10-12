@@ -35,7 +35,7 @@ pub struct <Name> {
 impl <Name> {
     /// Returns a mapping of all [`<Name>`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::OBJ_CONFIG, &config.input)?.into_iter();
+        let archives = CacheIndex::new(IndexType::OBJ_CONFIG, config.input.clone())?.into_iter();
 
         let <Name>s = archives
             .flat_map(|archive| {

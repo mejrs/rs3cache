@@ -35,7 +35,7 @@ pub struct Flo {
 impl Flo {
     /// Returns a mapping of all [`Flo`] configurations.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Flo>> {
-        let cache = CacheIndex::new(0, &config.input).unwrap();
+        let cache = CacheIndex::new(0, config.input.clone()).unwrap();
         let archive = cache.archive(2).unwrap();
         let mut file = archive.file_named("flo.dat").unwrap();
 
@@ -107,10 +107,10 @@ mod legacy {
 
     #[test]
     fn decode_flo() {
-        let path = "test_data/2005_cache";
+        let config = Config::env();
         let should_be_count = 125;
 
-        let cache = CacheIndex::new(0, path).unwrap();
+        let cache = CacheIndex::new(0, config.input).unwrap();
         let archive = cache.archive(2).unwrap();
         let mut file = archive.file_named("flo.dat").unwrap();
 

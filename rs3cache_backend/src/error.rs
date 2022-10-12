@@ -1,6 +1,10 @@
-use std::{backtrace::Backtrace, path::PathBuf};
+use std::{
+    backtrace::Backtrace,
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 
-use crate::{buf::ReadError, decoder::DecodeError};
+use crate::{buf::ReadError, decoder::DecodeError, index::CachePath};
 /// Result wrapper for [`CacheError`].
 pub type CacheResult<T> = Result<T, CacheError>;
 
@@ -29,13 +33,16 @@ pub enum CacheError {
     /// Raised if a file fails during decompression.
     DecompressionError(String),
     /// Raised if the index cannot be found, usually if the cache is missing or malformed.
-    CacheNotFoundError(std::io::Error, PathBuf),
+    CacheNotFoundError(std::io::Error, PathBuf, Arc<CachePath>),
     /// Raised if an [`Archive`](crate::arc::Archive) is not in the [`CacheIndex`](crate::index::CacheIndex).
     ArchiveNotFoundError(u32, u32),
     /// Raised if a file is not in an [`Archive`](crate::arc::Archive).
-    FileNotFoundError(u32, u32, u32),
+    FileMissingError(u32, u32, u32),
     /// Raised if reading from a buffer fails
     ReadError(ReadError),
+    /// ZIf this is raised then likely an xtea is wrong,
+    #[cfg(feature = "dat2")]
+    XteaError(u8, u8),
 }
 
 #[cfg(feature = "sqlite")]
@@ -89,7 +96,7 @@ impl From<&CacheError> for CacheError {
     fn from(error: &CacheError) -> Self {
         // gross workaround for CacheError not being copy/clone-able
         match *error {
-            Self::FileNotFoundError(index, archive, file) => Self::FileNotFoundError(index, archive, file),
+            Self::FileMissingError(index, archive, file) => Self::FileMissingError(index, archive, file),
             _ => unimplemented!("Error can't be cloned"),
         }
     }
@@ -119,13 +126,26 @@ impl Display for CacheError {
                 file.to_string_lossy()
             )?,
             #[cfg(not(target_arch = "wasm32"))]
-            Self::CacheNotFoundError(e, file) => {
+            Self::CacheNotFoundError(e, file, input) => {
                 let path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
                 writeln!(
                     f,
-                    "Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n",
-                    e, path
+                    "Encountered Error: \x1B[91m{e:?}\x1B[0m \n while looking for file \x1B[93m{path:?}\x1B[0m.\n",
                 )?;
+                match &**input {
+                    CachePath::Given(path) => writeln!(f, "note: looking in this location because the path {path:?} was given as an argument")?,
+                    CachePath::Env(path) => writeln!(
+                        f,
+                        "note: looking in this location because the path {path:?} was retrieved from an environment variable"
+                    )?,
+                    CachePath::Omitted => writeln!(f, "note: looking in the current directory because no path was given")?,
+                }
+                let path = (**input).as_ref();
+                let path = path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
+                let path = path.to_string_lossy();
+
+                writeln!(f, "note: expecting the following folder structure:")?;
+                writeln!(f, "    {path}{STRUCTURE}")?;
             }
             Self::CrcError(index_id, archive_id, crc1, crc2) => {
                 writeln!(f, "Index {} Archive {}: Crc does not match: {} !=  {}", index_id, archive_id, crc1, crc2)?
@@ -135,7 +155,7 @@ impl Display for CacheError {
             }
             Self::ArchiveNotFoundError(5, archive) => writeln!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7)?,
             Self::ArchiveNotFoundError(index, archive) => writeln!(f, "Index {} does not contain archive {}", index, archive)?,
-            Self::FileNotFoundError(index, archive, file) => writeln!(f, "\nIndex {}, Archive {} does not contain file {}", index, archive, file)?,
+            Self::FileMissingError(index, archive, file) => writeln!(f, "\nIndex {}, Archive {} does not contain file {}", index, archive, file)?,
             _ => {
                 if let Some(source) = self.source() {
                     writeln!(f, "Caused by: {}", source)?;
@@ -185,23 +205,58 @@ impl std::error::Error for CacheError {
     }
 }
 
-const EXPECTED_STRUCTURE = if cfg!(feature = "rs3")
+const STRUCTURE: &str = if cfg!(feature = "sqlite") {
+    "/
+        js5-1.JCACHE
+        js5-2.JCACHE
+        ...
+        js5-61.JCACHE"
+} else if cfg!(feature = "dat2") {
+    "/
+        cache /
+            main_file_cache.dat2
+            main_file_cache.idx0
+            main_file_cache.idx1
+            ...
+            main_file_cache.idx21
+            main_file_cache.idx255
+        xteas.json OR keys.json"
+} else if cfg!(feature = "dat") {
+    "/
+        cache /
+            main_file_cache.dat
+            main_file_cache.idx0
+            main_file_cache.idx1
+            main_file_cache.idx2
+            main_file_cache.idx3
+            main_file_cache.idx4"
+} else {
+    unimplemented!()
+};
 
 #[cfg(feature = "pyo3")]
-mod py_error_impl {
+pub mod py_error_impl {
     use pyo3::{
         exceptions::{PyException, PyRuntimeError},
         PyErr,
     };
 
-    pyo3::create_exception!(my_module, CacheNotFoundError, PyException, "Raised if the cache cannot be found");
+    use super::*;
 
-    use super::CacheError;
+    pyo3::create_exception!(cache, CacheNotFoundError, PyException, "Raised if the cache cannot be found");
+    pyo3::create_exception!(cache, ArchiveNotFoundError, PyException, "Raised if an archive is missing");
+    pyo3::create_exception!(cache, FileMissingError, PyException, "Raised if a file in an archive is missing");
+    #[cfg(feature = "dat2")]
+    pyo3::create_exception!(cache, XteaError, PyException, "Raised if somethign related to an xtea went wrong");
 
     impl From<&CacheError> for PyErr {
         fn from(err: &CacheError) -> PyErr {
             match err {
-                CacheError::CacheNotFoundError(_, _) => CacheNotFoundError::new_err(err.to_string()),
+                CacheError::CacheNotFoundError(..) => CacheNotFoundError::new_err(err.to_string()),
+                CacheError::ArchiveNotFoundError(..) => ArchiveNotFoundError::new_err(err.to_string()),
+                CacheError::FileMissingError(..) => FileMissingError::new_err(err.to_string()),
+                #[cfg(feature = "dat2")]
+                CacheError::XteaError(..) => XteaError::new_err(err.to_string()),
                 _ => PyRuntimeError::new_err(err.to_string()),
             }
         }

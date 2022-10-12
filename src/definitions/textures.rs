@@ -34,7 +34,7 @@ pub struct TextureConfig {
 impl TextureConfig {
     /// Returns a mapping of all [`TextureConfig`]s.
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<HashMap<u32, Self>> {
-        let archives = CacheIndex::new(IndexType::TEXTURES, &config.input)?.into_iter();
+        let archives = CacheIndex::new(IndexType::TEXTURES, config.input.clone())?.into_iter();
         let locations = archives
             .flat_map(|archive| archive.unwrap().take_files().into_iter())
             .map(|(id, file)| (id, Self::deserialize(id, file)))
