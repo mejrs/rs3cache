@@ -701,7 +701,7 @@
 </span><span class="attribute">#[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>NpcConfig {
@@ -797,7 +797,7 @@
     <span class="doccomment">/// Returns a mapping of all [npc configurations](NpcConfig)
     </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="kw">let </span>archives = CacheIndex::new(IndexType::NPC_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
+        <span class="kw">let </span>archives = CacheIndex::new(IndexType::NPC_CONFIG, config.input.clone())<span class="question-mark">?</span>.into_iter();
 
         <span class="kw">let </span>npc_configs = archives
             .map(Result::unwrap)
@@ -815,7 +815,7 @@
 
     <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, config.input.clone())<span class="question-mark">?
             </span>.archive(ConfigType::NPC_CONFIG)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
@@ -967,7 +967,7 @@
     };
 
     <span class="doccomment">/// Contains an array of possible ids this npc can morph into, controlled by either a varbit or varp.
-    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>NpcMorphTable {
         <span class="attribute">#[serde(flatten)]
@@ -1000,7 +1000,7 @@
         }
     }
     <span class="doccomment">/// Like [`NpcMorphTable`], but with a default value.
-    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>ExtendedNpcMorphTable {
         <span class="kw">pub </span>var: VarpOrVarbit,
@@ -1037,7 +1037,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>NpcModels {
         <span class="kw">pub </span>models: Vec&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
@@ -1066,7 +1066,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     </span><span class="kw">pub struct </span>ShadowIntensity {
         <span class="kw">pub </span>src_colour: i8,
@@ -1082,7 +1082,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     </span><span class="kw">pub struct </span>Shadow {
         <span class="kw">pub </span>src_colour: u16,
@@ -1098,7 +1098,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>HeadModels {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
@@ -1129,7 +1129,7 @@
             <span class="self">Self </span>{ models }
         }
     }
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>ColourReplacements {
         <span class="kw">pub </span>colour_replacements: Vec&lt;(u16, u16)&gt;,
@@ -1143,7 +1143,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Textures {
         <span class="kw">pub </span>textures: BTreeMap&lt;u16, u16&gt;,
@@ -1159,7 +1159,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     </span><span class="kw">pub struct </span>AmbientSounds {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1190,7 +1190,7 @@
             }
         }
     }
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     </span><span class="kw">pub struct </span>Translations {
         <span class="kw">pub </span>translations: Vec&lt;[u8; <span class="number">4</span>]&gt;,
@@ -1207,7 +1207,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     </span><span class="kw">pub struct </span>RecolourPalette {
         <span class="kw">pub </span>recolour_palette: Vec&lt;i8&gt;,
@@ -1222,7 +1222,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     </span><span class="kw">pub struct </span>OldCursors {
         <span class="kw">pub </span>op: u8,
@@ -1238,7 +1238,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown155 {
         <span class="kw">pub </span>unknown_1: i8,
@@ -1263,7 +1263,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown179 {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1294,7 +1294,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown164 {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1310,7 +1310,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     </span><span class="kw">pub struct </span>Quests {
         <span class="kw">pub </span>quests: Vec&lt;u16&gt;,

@@ -107,7 +107,7 @@
 <span class="kw">impl </span>MapScene {
     <span class="doccomment">/// Returns a mapping of all [`MapScene`] configurations.
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, MapScene&gt;&gt; {
-        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, config.input.clone())<span class="question-mark">?
             </span>.archive(ConfigType::MAPSCENES)<span class="question-mark">?
             </span>.take_files()
             .into_iter()

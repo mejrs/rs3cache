@@ -171,13 +171,14 @@
 <span id="171">171</span>
 <span id="172">172</span>
 <span id="173">173</span>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf};
+</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 <span class="kw">use </span>pyo3::{
     exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::<span class="kw-2">*</span>,
     types::PyInt,
 };
+<span class="kw">use </span>rs3cache_backend::index::CachePath;
 
 <span class="kw">use crate</span>::{
     cli::Config,
@@ -208,7 +209,7 @@
     </span><span class="kw">fn </span>new(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-            config.input = path
+            config.input = Arc::new(CachePath::Given(path))
         }
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             mapsquares: <span class="prelude-val">Some</span>(MapSquares::new(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>),
@@ -251,8 +252,7 @@
                 </span>.mapsquares
                 .as_ref()
                 .ok_or_else(|| PyReferenceError::new_err(<span class="string">&quot;Mapsquares is not available after using `iter()`&quot;</span>))<span class="question-mark">?
-                </span>.get(i, j)
-                .map_err(|<span class="kw">_</span>| PyKeyError::new_err(<span class="macro">format!</span>(<span class="string">&quot;Mapsquare {i}, {j} is not present.&quot;</span>)))<span class="question-mark">?</span>;
+                </span>.get(i, j)<span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(PyMapSquare { inner: sq })
         }

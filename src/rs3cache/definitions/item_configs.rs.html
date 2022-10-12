@@ -390,7 +390,7 @@
 </span><span class="attribute">#[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>ItemConfig {
@@ -461,7 +461,7 @@
 <span class="kw">impl </span>ItemConfig {
     <span class="doccomment">/// Returns a mapping of all [`ItemConfig`]s.
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="kw">let </span>archives = CacheIndex::new(IndexType::OBJ_CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
+        <span class="kw">let </span>archives = CacheIndex::new(IndexType::OBJ_CONFIG, config.input.clone())<span class="question-mark">?</span>.into_iter();
 
         <span class="kw">let </span>items = archives
             .map(Result::unwrap)
@@ -590,7 +590,7 @@
     </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
     <span class="kw">use </span>serde::Serialize;
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
     </span><span class="kw">pub struct </span>Rotation {
         <span class="kw">pub </span>yaw: u16,
@@ -598,14 +598,14 @@
         <span class="kw">pub </span>roll: u16,
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(PartialEq, Eq, Serialize, Debug, Default, Clone, Copy)]
     </span><span class="kw">pub struct </span>Translation {
         <span class="kw">pub </span>x: u16,
         <span class="kw">pub </span>y: u16,
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>ColourReplacements {
         <span class="kw">pub </span>colours: Vec&lt;(u16, u16)&gt;,
@@ -628,7 +628,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Textures {
         <span class="kw">pub </span>textures: BTreeMap&lt;u16, u16&gt;,
@@ -653,7 +653,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     </span><span class="kw">pub struct </span>Quests {
         <span class="kw">pub </span>quests: Vec&lt;u16&gt;,
@@ -667,7 +667,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone, Copy)]
     </span><span class="kw">pub struct </span>StackInfo {
         unknown_1: u16,
@@ -695,7 +695,7 @@
         }
     }
 
-    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Serialize, Clone)]
     </span><span class="kw">pub struct </span>RecolourPalette {
         <span class="kw">pub </span>palette: Vec&lt;i8&gt;,

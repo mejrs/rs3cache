@@ -1017,7 +1017,7 @@
 </span><span class="attribute">#[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>LocationConfig {
@@ -1160,7 +1160,7 @@
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
         <span class="kw">let </span>index = IndexType::LOC_CONFIG;
 
-        <span class="kw">let </span>archives = CacheIndex::new(index, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.into_iter();
+        <span class="kw">let </span>archives = CacheIndex::new(index, config.input.clone())<span class="question-mark">?</span>.into_iter();
         <span class="kw">let </span>locations = archives
             .map(Result::unwrap)
             .flat_map(|archive| {
@@ -1178,7 +1178,7 @@
 
     <span class="attribute">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2008_3_shim&quot;</span>), not(feature = <span class="string">&quot;legacy&quot;</span>)))]
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="kw">let </span>locations = CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="kw">let </span>locations = CacheIndex::new(IndexType::CONFIG, config.input.clone())<span class="question-mark">?
             </span>.archive(ConfigType::LOC_CONFIG)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
@@ -1191,7 +1191,7 @@
 
     <span class="attribute">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="kw">let </span>cache = CacheIndex::new(<span class="number">0</span>, <span class="kw-2">&amp;</span>config.input).unwrap();
+        <span class="kw">let </span>cache = CacheIndex::new(<span class="number">0</span>, config.input.clone()).unwrap();
         <span class="kw">let </span>archive = cache.archive(<span class="number">2</span>).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>file = archive.file_named(<span class="string">&quot;loc.dat&quot;</span>).unwrap();
 
@@ -1432,7 +1432,7 @@
     <span class="doccomment">/// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
     </span><span class="attribute">#[cfg_eval]
     #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>LocationMorphTable {
         <span class="attribute">#[serde(flatten)]
@@ -1485,7 +1485,7 @@
     <span class="doccomment">/// Like [`LocationMorphTable`], but with a default value.
     </span><span class="attribute">#[cfg_eval]
     #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>ExtendedLocationMorphTable {
@@ -1553,7 +1553,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>ColourReplacements {
         <span class="kw">pub </span>colours: Vec&lt;(u16, u16)&gt;,
@@ -1570,7 +1570,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Models {
         <span class="attribute">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2010_1_shim&quot;</span>))]
@@ -1621,7 +1621,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Models2 {
         <span class="attribute">#[cfg(all(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>), not(feature = <span class="string">&quot;2010_1_shim&quot;</span>)))]
@@ -1666,7 +1666,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Textures {
         <span class="kw">pub </span>textures: BTreeMap&lt;u16, u16&gt;,
@@ -1683,7 +1683,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Unknown79 {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1715,7 +1715,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown173 {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1733,7 +1733,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown163 {
         <span class="kw">pub </span>unknown_1: i8,
@@ -1762,7 +1762,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown78 {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1780,7 +1780,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Unknown160 {
         <span class="kw">pub </span>values: Vec&lt;u16&gt;,
@@ -1795,7 +1795,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     </span><span class="kw">pub struct </span>Unknown201 {
         <span class="kw">pub </span>unknown_1: u16,
@@ -1832,7 +1832,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>HeadModels {
         <span class="kw">pub </span>headmodels: Vec&lt;(<span class="prelude-ty">Option</span>&lt;u32&gt;, u8)&gt;,
@@ -1849,7 +1849,7 @@
     }
 
     <span class="attribute">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>Unknown204 {
         <span class="kw">pub </span>id: u16,
@@ -1922,11 +1922,11 @@
 
     <span class="attribute">#[test]
     </span><span class="kw">fn </span>decode_locations() {
-        <span class="kw">let </span>path = <span class="string">&quot;test_data/2005_cache&quot;</span>;
+        <span class="kw">let </span>config = Config::env();
         <span class="kw">let </span>location_count = <span class="number">7389</span>;
         <span class="kw">let </span>first_section = <span class="number">0</span>..<span class="number">45</span>;
 
-        <span class="kw">let </span>cache = CacheIndex::new(<span class="number">0</span>, path).unwrap();
+        <span class="kw">let </span>cache = CacheIndex::new(<span class="number">0</span>, config.input).unwrap();
         <span class="kw">let </span>archive = cache.archive(<span class="number">2</span>).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>file = archive.file_named(<span class="string">&quot;loc.dat&quot;</span>).unwrap();
 

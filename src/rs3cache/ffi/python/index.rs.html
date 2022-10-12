@@ -203,10 +203,13 @@
 <span id="203">203</span>
 <span id="204">204</span>
 <span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::{btree_map, hash_map::DefaultHasher},
     hash::{Hash, Hasher},
     path::PathBuf,
+    sync::Arc,
 };
 
 <span class="kw">use </span>pyo3::{
@@ -214,6 +217,7 @@
     exceptions::{PyIndexError, PyReferenceError},
     prelude::<span class="kw-2">*</span>,
 };
+<span class="kw">use </span>rs3cache_backend::index::CachePath;
 
 <span class="kw">use crate</span>::{
     cache::{
@@ -233,7 +237,7 @@
 /// index = Index(2)
 ///```
 /// # Exceptions
-/// Raises `FileNotFoundError` if the cache cannot be found.
+/// Raises `FileMissingError` if the cache cannot be found.
 </span><span class="attribute">#[pyclass(name = <span class="string">&quot;Index&quot;</span>)]
 </span><span class="kw">pub struct </span>PyCacheIndex {
     inner: <span class="prelude-ty">Option</span>&lt;CacheIndex&lt;Initial&gt;&gt;,
@@ -247,11 +251,11 @@
     </span><span class="kw">fn </span>new(index_id: u32, path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-            config.input = path
+            config.input = Arc::new(CachePath::Given(path))
         }
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-            inner: <span class="prelude-val">Some</span>(CacheIndex::new(index_id, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>),
+            inner: <span class="prelude-val">Some</span>(CacheIndex::new(index_id, config.input)<span class="question-mark">?</span>),
         })
     }
 

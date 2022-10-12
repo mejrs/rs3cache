@@ -188,13 +188,15 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf};
+<span id="191">191</span>
+</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 <span class="kw">use </span>pyo3::{
     exceptions::{PyKeyError, PyReferenceError},
     prelude::<span class="kw-2">*</span>,
     types::PyBytes,
 };
+<span class="kw">use </span>rs3cache_backend::index::CachePath;
 
 <span class="kw">use crate</span>::{
     cache::{
@@ -264,13 +266,13 @@
     </span><span class="kw">fn </span>__new__(py: Python, path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-            config.input = path
+            config.input = Arc::new(CachePath::Given(path))
         }
         <span class="kw">let </span>constructor = py.import(<span class="string">&quot;PIL&quot;</span>)<span class="question-mark">?</span>.getattr(<span class="string">&quot;Image&quot;</span>)<span class="question-mark">?</span>.getattr(<span class="string">&quot;frombytes&quot;</span>)<span class="question-mark">?</span>.into();
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             constructor,
-            inner: <span class="prelude-val">Some</span>(CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>),
+            inner: <span class="prelude-val">Some</span>(CacheIndex::new(IndexType::SPRITES, config.input)<span class="question-mark">?</span>),
         })
     }
 

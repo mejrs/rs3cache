@@ -308,7 +308,7 @@
 /// This can be a text label, sprite, polygon or interactive.
 </span><span class="attribute">#[cfg_eval]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>MapLabelConfig {
@@ -368,7 +368,7 @@
 <span class="kw">impl </span>MapLabelConfig {
     <span class="doccomment">/// Returns a mapping of all [`MapLabelConfig`]s.
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, MapLabelConfig&gt;&gt; {
-        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, config.input.clone())<span class="question-mark">?
             </span>.archive(ConfigType::MAPLABELS)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
@@ -437,7 +437,7 @@
 
     <span class="kw">use </span><span class="kw">crate</span>::types::variables::{Varbit, Varp, VarpOrVarbit};
     <span class="doccomment">/// A polygon
-    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Clone, Default, Serialize)]
     </span><span class="kw">pub struct </span>Polygon {
         <span class="doccomment">/// Colour of the polygon.
@@ -476,7 +476,7 @@
     }
 
     <span class="doccomment">/// Controls whether the [`MapLabelConfig`](super::MapLabelConfig) is shown.
-    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Clone, Copy, Serialize)]
     </span><span class="kw">pub struct </span>Toggle {
         <span class="doccomment">/// The [`Varp`] or [`Varbit`] controlling the toggle.
@@ -505,7 +505,7 @@
     }
 
     <span class="doccomment">/// Whether to show &quot;new&quot; or &quot;legacy&quot; map icon.
-    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Clone, Copy, Serialize)]
     </span><span class="kw">pub struct </span>LegacySwitch {
         <span class="doccomment">/// The [`Varp`] or [`Varbit`] controlling legacy toggle.
@@ -544,7 +544,7 @@
     }
 
     <span class="doccomment">/// Points that span a [`Polygon`].
-    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+    </span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
     #[derive(Debug, Clone, Copy, Serialize)]
     </span><span class="kw">pub struct </span>PolygonPoint {
         <span class="doccomment">/// Plane. Always zero.

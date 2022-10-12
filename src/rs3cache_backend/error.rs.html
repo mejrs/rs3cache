@@ -203,9 +203,79 @@
 <span id="203">203</span>
 <span id="204">204</span>
 <span id="205">205</span>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{backtrace::Backtrace, path::PathBuf};
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    backtrace::Backtrace,
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 
-<span class="kw">use crate</span>::{buf::ReadError, decoder::DecodeError};
+<span class="kw">use crate</span>::{buf::ReadError, decoder::DecodeError, index::CachePath};
 <span class="doccomment">/// Result wrapper for [`CacheError`].
 </span><span class="kw">pub type </span>CacheResult&lt;T&gt; = <span class="prelude-ty">Result</span>&lt;T, CacheError&gt;;
 
@@ -234,13 +304,16 @@
     <span class="doccomment">/// Raised if a file fails during decompression.
     </span>DecompressionError(String),
     <span class="doccomment">/// Raised if the index cannot be found, usually if the cache is missing or malformed.
-    </span>CacheNotFoundError(std::io::Error, PathBuf),
+    </span>CacheNotFoundError(std::io::Error, PathBuf, Arc&lt;CachePath&gt;),
     <span class="doccomment">/// Raised if an [`Archive`](crate::arc::Archive) is not in the [`CacheIndex`](crate::index::CacheIndex).
     </span>ArchiveNotFoundError(u32, u32),
     <span class="doccomment">/// Raised if a file is not in an [`Archive`](crate::arc::Archive).
-    </span>FileNotFoundError(u32, u32, u32),
+    </span>FileMissingError(u32, u32, u32),
     <span class="doccomment">/// Raised if reading from a buffer fails
     </span>ReadError(ReadError),
+    <span class="doccomment">/// ZIf this is raised then likely an xtea is wrong,
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+    </span>XteaError(u8, u8),
 }
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
@@ -294,7 +367,7 @@
     <span class="kw">fn </span>from(error: <span class="kw-2">&amp;</span>CacheError) -&gt; <span class="self">Self </span>{
         <span class="comment">// gross workaround for CacheError not being copy/clone-able
         </span><span class="kw">match </span><span class="kw-2">*</span>error {
-            <span class="self">Self</span>::FileNotFoundError(index, archive, file) =&gt; <span class="self">Self</span>::FileNotFoundError(index, archive, file),
+            <span class="self">Self</span>::FileMissingError(index, archive, file) =&gt; <span class="self">Self</span>::FileMissingError(index, archive, file),
             <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Error can&#39;t be cloned&quot;</span>),
         }
     }
@@ -324,13 +397,26 @@
                 file.to_string_lossy()
             )<span class="question-mark">?</span>,
             <span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
-            </span><span class="self">Self</span>::CacheNotFoundError(e, file) =&gt; {
+            </span><span class="self">Self</span>::CacheNotFoundError(e, file, input) =&gt; {
                 <span class="kw">let </span>path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
                 <span class="macro">writeln!</span>(
                     f,
-                    <span class="string">&quot;Encountered Error: \x1B[91m{:?}\x1B[0m \n while looking for file \x1B[93m{:?}\x1B[0m.\n&quot;</span>,
-                    e, path
+                    <span class="string">&quot;Encountered Error: \x1B[91m{e:?}\x1B[0m \n while looking for file \x1B[93m{path:?}\x1B[0m.\n&quot;</span>,
                 )<span class="question-mark">?</span>;
+                <span class="kw">match </span><span class="kw-2">&amp;**</span>input {
+                    CachePath::Given(path) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;note: looking in this location because the path {path:?} was given as an argument&quot;</span>)<span class="question-mark">?</span>,
+                    CachePath::Env(path) =&gt; <span class="macro">writeln!</span>(
+                        f,
+                        <span class="string">&quot;note: looking in this location because the path {path:?} was retrieved from an environment variable&quot;
+                    </span>)<span class="question-mark">?</span>,
+                    CachePath::Omitted =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;note: looking in the current directory because no path was given&quot;</span>)<span class="question-mark">?</span>,
+                }
+                <span class="kw">let </span>path = (<span class="kw-2">**</span>input).as_ref();
+                <span class="kw">let </span>path = path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
+                <span class="kw">let </span>path = path.to_string_lossy();
+
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;note: expecting the following folder structure:&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">&quot;    {path}{STRUCTURE}&quot;</span>)<span class="question-mark">?</span>;
             }
             <span class="self">Self</span>::CrcError(index_id, archive_id, crc1, crc2) =&gt; {
                 <span class="macro">writeln!</span>(f, <span class="string">&quot;Index {} Archive {}: Crc does not match: {} !=  {}&quot;</span>, index_id, archive_id, crc1, crc2)<span class="question-mark">?
@@ -340,7 +426,7 @@
             </span>}
             <span class="self">Self</span>::ArchiveNotFoundError(<span class="number">5</span>, archive) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Index 5 does not contain mapsquare ({}, {})&quot;</span>, archive &amp; <span class="number">0x7F</span>, archive &gt;&gt; <span class="number">7</span>)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ArchiveNotFoundError(index, archive) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Index {} does not contain archive {}&quot;</span>, index, archive)<span class="question-mark">?</span>,
-            <span class="self">Self</span>::FileNotFoundError(index, archive, file) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;\nIndex {}, Archive {} does not contain file {}&quot;</span>, index, archive, file)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::FileMissingError(index, archive, file) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;\nIndex {}, Archive {} does not contain file {}&quot;</span>, index, archive, file)<span class="question-mark">?</span>,
             <span class="kw">_ </span>=&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(source) = <span class="self">self</span>.source() {
                     <span class="macro">writeln!</span>(f, <span class="string">&quot;Caused by: {}&quot;</span>, source)<span class="question-mark">?</span>;
@@ -390,21 +476,67 @@
     }
 }
 
+<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+</span><span class="kw">const </span>STRUCTURE: <span class="kw-2">&amp;</span>str = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;sqlite&quot;</span>) {
+    <span class="string">&quot;/
+        js5-1.JCACHE
+        js5-2.JCACHE
+        ...
+        js5-61.JCACHE&quot;
+</span>} <span class="kw">else if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat2&quot;</span>) {
+    <span class="string">&quot;/
+        cache /
+            main_file_cache.dat2
+            main_file_cache.idx0
+            main_file_cache.idx1
+            ...
+            main_file_cache.idx21
+            main_file_cache.idx255
+        xteas.json OR keys.json&quot;
+</span>} <span class="kw">else if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat&quot;</span>) {
+    <span class="string">&quot;/
+        cache /
+            main_file_cache.dat
+            main_file_cache.idx0
+            main_file_cache.idx1
+            main_file_cache.idx2
+            main_file_cache.idx3
+            main_file_cache.idx4&quot;
+</span>} <span class="kw">else </span>{
+    <span class="macro">unimplemented!</span>()
+};
+
 <span class="attribute">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
-</span><span class="kw">mod </span>py_error_impl {
-    <span class="kw">use </span>pyo3::{exceptions::PyRuntimeError, PyErr};
+</span><span class="kw">pub mod </span>py_error_impl {
+    <span class="kw">use </span>pyo3::{
+        exceptions::{PyException, PyRuntimeError},
+        PyErr,
+    };
 
-    <span class="kw">use </span><span class="kw">super</span>::CacheError;
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">impl </span>From&lt;CacheError&gt; <span class="kw">for </span>PyErr {
-        <span class="kw">fn </span>from(err: CacheError) -&gt; PyErr {
-            PyRuntimeError::new_err(err.to_string())
-        }
-    }
+    <span class="macro">pyo3::create_exception!</span>(cache, CacheNotFoundError, PyException, <span class="string">&quot;Raised if the cache cannot be found&quot;</span>);
+    <span class="macro">pyo3::create_exception!</span>(cache, ArchiveNotFoundError, PyException, <span class="string">&quot;Raised if an archive is missing&quot;</span>);
+    <span class="macro">pyo3::create_exception!</span>(cache, FileMissingError, PyException, <span class="string">&quot;Raised if a file in an archive is missing&quot;</span>);
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+    </span><span class="macro">pyo3::create_exception!</span>(cache, XteaError, PyException, <span class="string">&quot;Raised if somethign related to an xtea went wrong&quot;</span>);
 
     <span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>CacheError&gt; <span class="kw">for </span>PyErr {
         <span class="kw">fn </span>from(err: <span class="kw-2">&amp;</span>CacheError) -&gt; PyErr {
-            PyRuntimeError::new_err(err.to_string())
+            <span class="kw">match </span>err {
+                CacheError::CacheNotFoundError(..) =&gt; CacheNotFoundError::new_err(err.to_string()),
+                CacheError::ArchiveNotFoundError(..) =&gt; ArchiveNotFoundError::new_err(err.to_string()),
+                CacheError::FileMissingError(..) =&gt; FileMissingError::new_err(err.to_string()),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+                </span>CacheError::XteaError(..) =&gt; XteaError::new_err(err.to_string()),
+                <span class="kw">_ </span>=&gt; PyRuntimeError::new_err(err.to_string()),
+            }
+        }
+    }
+
+    <span class="kw">impl </span>From&lt;CacheError&gt; <span class="kw">for </span>PyErr {
+        <span class="kw">fn </span>from(err: CacheError) -&gt; PyErr {
+            (<span class="kw-2">&amp;</span>err).into()
         }
     }
 }

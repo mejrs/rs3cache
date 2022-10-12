@@ -145,6 +145,14 @@
 <span id="145">145</span>
 <span id="146">146</span>
 <span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Python bindings for `rs3cache`.
 //!
 //! See the README for help with installing this.
@@ -182,11 +190,12 @@
 <span class="kw">mod </span>mapsquares;
 <span class="kw">mod </span>sprites;
 
-<span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf};
+<span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 <span class="kw">pub use </span>index::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>mapsquares::<span class="kw-2">*</span>;
 <span class="kw">use </span>pyo3::{prelude::<span class="kw-2">*</span>, wrap_pyfunction};
+<span class="kw">use </span>rs3cache_backend::{error::py_error_impl::<span class="kw-2">*</span>, index::CachePath};
 <span class="kw">pub use </span>sprites::<span class="kw-2">*</span>;
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
@@ -199,7 +208,7 @@
     },
 };
 
-<span class="kw">pub fn </span>initializer(_py: Python, m: <span class="kw-2">&amp;</span>PyModule) -&gt; PyResult&lt;()&gt; {
+<span class="kw">pub fn </span>initializer(py: Python, m: <span class="kw-2">&amp;</span>PyModule) -&gt; PyResult&lt;()&gt; {
     <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
     </span>m.add_function(<span class="macro">wrap_pyfunction!</span>(get_achievement_configs, m)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
     m.add_function(<span class="macro">wrap_pyfunction!</span>(get_location_configs, m)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
@@ -213,6 +222,13 @@
     m.add_class::&lt;PyMapSquares&gt;()<span class="question-mark">?</span>;
     m.add_class::&lt;PyCacheIndex&gt;()<span class="question-mark">?</span>;
     m.add_class::&lt;PySprites&gt;()<span class="question-mark">?</span>;
+
+    m.add(<span class="string">&quot;CacheNotFoundError&quot;</span>, py.get_type::&lt;CacheNotFoundError&gt;())<span class="question-mark">?</span>;
+    m.add(<span class="string">&quot;ArchiveNotFoundError&quot;</span>, py.get_type::&lt;ArchiveNotFoundError&gt;())<span class="question-mark">?</span>;
+    m.add(<span class="string">&quot;FileMissingError&quot;</span>, py.get_type::&lt;FileMissingError&gt;())<span class="question-mark">?</span>;
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span>m.add(<span class="string">&quot;XteaError&quot;</span>, py.get_type::&lt;XteaError&gt;())<span class="question-mark">?</span>;
+
     <span class="prelude-val">Ok</span>(())
 }
 
@@ -223,7 +239,7 @@
 </span><span class="kw">pub fn </span>get_achievement_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Achievement&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(Achievement::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -233,7 +249,7 @@
 </span><span class="kw">pub fn </span>get_location_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, LocationConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(LocationConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -243,7 +259,7 @@
 </span><span class="kw">pub fn </span>get_npc_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, NpcConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(NpcConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -253,7 +269,7 @@
 </span><span class="kw">pub fn </span>get_item_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, ItemConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(ItemConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -263,7 +279,7 @@
 </span><span class="kw">pub fn </span>get_struct_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Struct&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(Struct::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -273,7 +289,7 @@
 </span><span class="kw">pub fn </span>get_enum_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Enum&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(Enum::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -283,7 +299,7 @@
 </span><span class="kw">pub fn </span>get_varbit_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, VarbitConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = path
+        config.input = Arc::new(CachePath::Given(path))
     }
     <span class="prelude-val">Ok</span>(VarbitConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }

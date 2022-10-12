@@ -173,7 +173,6 @@
 <span id="173">173</span>
 <span id="174">174</span>
 <span id="175">175</span>
-<span id="176">176</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{<span class="self">self</span>, VarError},
@@ -182,6 +181,7 @@
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 <span class="kw">use </span>bytes::{Buf, Bytes};
@@ -193,7 +193,7 @@
     buf::BufExtra,
     decoder,
     error::{CacheError, CacheResult},
-    index::{CacheIndex, IndexState, Initial},
+    index::{CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
 };
 
@@ -305,8 +305,8 @@
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    </span><span class="kw">pub fn </span>new(index_id: u32, folder: <span class="kw">impl </span>AsRef&lt;Path&gt;) -&gt; CacheResult&lt;CacheIndex&lt;Initial&gt;&gt; {
-        <span class="kw">let </span>file = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>));
+    </span><span class="kw">pub fn </span>new(index_id: u32, path: Arc&lt;CachePath&gt;) -&gt; CacheResult&lt;CacheIndex&lt;Initial&gt;&gt; {
+        <span class="kw">let </span>file = <span class="macro">path!</span>(path.as_ref() / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>));
 
         <span class="comment">// check if database exists (without creating blank sqlite databases)
         </span><span class="kw">match </span>fs::metadata(<span class="kw-2">&amp;</span>file) {
@@ -319,11 +319,11 @@
                     index_id,
                     metadatas,
                     connection,
-                    path: folder.as_ref().to_path_buf(),
+                    path,
                     state: Initial {},
                 })
             }
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(CacheError::CacheNotFoundError(e, file)),
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(CacheError::CacheNotFoundError(e, file, path)),
         }
     }
 }
@@ -337,12 +337,10 @@
 ///
 /// Panics if compiled with feature `mockdata`.
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;mockdata&quot;</span>))]
-</span><span class="kw">pub fn </span>assert_coherence(folder: <span class="kw">impl </span>AsRef&lt;Path&gt;) -&gt; CacheResult&lt;()&gt; {
-    <span class="kw">let </span>folder = folder.as_ref();
-
+</span><span class="kw">pub fn </span>assert_coherence(folder: Arc&lt;CachePath&gt;) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">for </span>index_id <span class="kw">in </span><span class="number">0</span>..<span class="number">70 </span>{
-        <span class="kw">if </span>fs::metadata(<span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>))).is_ok() {
-            <span class="kw">match </span>CacheIndex::new(index_id, <span class="kw-2">&amp;</span>folder)<span class="question-mark">?</span>.assert_coherence() {
+        <span class="kw">if </span>fs::metadata(<span class="macro">path!</span>(<span class="kw-2">&amp;*</span>folder / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>))).is_ok() {
+            <span class="kw">match </span>CacheIndex::new(index_id, folder.clone())<span class="question-mark">?</span>.assert_coherence() {
                 <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="macro">println!</span>(<span class="string">&quot;Index {index_id} is coherent!&quot;</span>),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">println!</span>(<span class="string">&quot;Index {index_id} is not coherent: {e} and possibly others.&quot;</span>),
             }

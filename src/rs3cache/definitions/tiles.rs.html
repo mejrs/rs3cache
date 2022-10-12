@@ -106,7 +106,7 @@
 <span class="doccomment">/// Describes the properties of a tile in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 </span><span class="attribute">#[cfg_eval]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[derive(Default, Debug, Copy, Clone, Serialize)]
 </span><span class="kw">pub struct </span>Tile {
     <span class="doccomment">/// Reference to a [shape](crate::renderers::map::tileshape).

@@ -96,7 +96,7 @@
 /// [`NpcConfig`](crate::definitions::npc_configs::NpcConfig)s can have additional mapping of keys to properties.
 </span><span class="attribute">#[cfg_eval]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[derive(Serialize, Debug, Clone)]
 </span><span class="kw">pub struct </span>ParamTable {
     <span class="doccomment">/// Key:Value pairs of additional properties.

@@ -593,7 +593,7 @@
     </span><span class="kw">pub fn </span>new(i: u8, j: u8, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;MapSquare&gt; {
         <span class="macro">assert!</span>(i &lt; <span class="number">0x7F</span>, <span class="string">&quot;Index out of range.&quot;</span>);
         <span class="kw">let </span>archive_id = (i <span class="kw">as </span>u32) | (j <span class="kw">as </span>u32) &lt;&lt; <span class="number">7</span>;
-        <span class="kw">let </span>archive = CacheIndex::new(IndexType::MAPSV2, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.archive(archive_id)<span class="question-mark">?</span>;
+        <span class="kw">let </span>archive = CacheIndex::new(IndexType::MAPSV2, config.input.clone())<span class="question-mark">?</span>.archive(archive_id)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from_archive(archive))
     }
 
@@ -604,10 +604,10 @@
         <span class="kw">let </span>_env = env.map(|k| index.archive(k));
 
         <span class="kw">let </span>tiles = Tile::dump(tiles);
-        <span class="kw">let </span>locations = <span class="kw">if let </span><span class="prelude-val">Ok</span>(ok_land) = land {
-            <span class="prelude-val">Ok</span>(Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, ok_land))
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(CacheError::ArchiveNotFoundError(<span class="number">5</span>, <span class="number">0</span>))
+        <span class="kw">let </span>locations = <span class="kw">match </span>land {
+            <span class="prelude-val">Ok</span>(land) =&gt; <span class="prelude-val">Ok</span>(Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, land)),
+            <span class="comment">// most likely, anyway...
+            </span><span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(CacheError::XteaError(i, j)),
         };
 
         <span class="prelude-val">Ok</span>(MapSquare {
@@ -642,7 +642,7 @@
         <span class="kw">let </span>locations = <span class="kw">match </span>tiles {
             <span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>t) =&gt; archive.file(<span class="kw-2">&amp;</span>MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
             <span class="comment">// can&#39;t generally clone or copy error
-            </span><span class="prelude-val">Err</span>(CacheError::FileNotFoundError(i, a, f)) =&gt; <span class="prelude-val">Err</span>(CacheError::FileNotFoundError(i, a, f)),
+            </span><span class="prelude-val">Err</span>(CacheError::FileMissingError(i, a, f)) =&gt; <span class="prelude-val">Err</span>(CacheError::FileMissingError(i, a, f)),
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
         };
         <span class="kw">let </span>water_locations = archive
@@ -936,7 +936,7 @@
     </span><span class="kw">fn </span>decode_50_50() {
         <span class="kw">let </span>config = Config::env();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>cache = CacheIndex::new(<span class="number">4</span>, <span class="kw-2">&amp;</span>config.input).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>cache = CacheIndex::new(<span class="number">4</span>, config.input).unwrap();
         <span class="kw">let </span>index = cache.get_index();
         <span class="kw">let </span>meta = index[<span class="kw-2">&amp;</span>(<span class="number">50</span>, <span class="number">50</span>)];
         <span class="macro">dbg!</span>(meta);

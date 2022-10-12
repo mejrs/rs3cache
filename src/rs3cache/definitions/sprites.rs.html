@@ -404,7 +404,7 @@
 </span><span class="kw">pub fn </span>save_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     std::fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>index = CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
+    <span class="kw">let </span>index = CacheIndex::new(IndexType::SPRITES, config.input.clone())<span class="question-mark">?</span>;
 
     <span class="attribute">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
     </span><span class="kw">let </span>versions: BTreeMap&lt;u32, ::filetime::FileTime&gt; = index
@@ -511,7 +511,7 @@
 
     std::fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
+    <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, config.input.clone())<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>files = index.archive(<span class="number">4</span>)<span class="question-mark">?</span>.take_files_named();
 
     <span class="kw">let </span>meta = files.remove(<span class="kw-2">&amp;</span>hash_archive(<span class="string">&quot;index.dat&quot;</span>)).unwrap();
@@ -540,7 +540,7 @@
 
     std::fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>;
+    <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, config.input.clone())<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>files = index.archive(<span class="number">4</span>)<span class="question-mark">?</span>.take_files_named();
 
     <span class="kw">let </span>meta = files.remove(<span class="kw-2">&amp;</span>hash_archive(<span class="string">&quot;index.dat&quot;</span>)).unwrap();
@@ -585,7 +585,7 @@
         })
     };
 
-    <span class="kw">let </span>sprites = CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+    <span class="kw">let </span>sprites = CacheIndex::new(IndexType::SPRITES, config.input.clone())<span class="question-mark">?
         </span>.retain(ids)
         .into_iter()
         .map(Result::unwrap)
@@ -717,7 +717,7 @@
         <span class="kw">fn </span>dump(id: u32, frame: u32) -&gt; CacheResult&lt;Sprite&gt; {
             <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
-            <span class="kw">let </span>archive = CacheIndex::new(IndexType::SPRITES, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?</span>.archive(id)<span class="question-mark">?</span>;
+            <span class="kw">let </span>archive = CacheIndex::new(IndexType::SPRITES, config.input.clone())<span class="question-mark">?</span>.archive(id)<span class="question-mark">?</span>;
             <span class="kw">let </span>file = archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
             <span class="macro">assert!</span>(file.len() != <span class="number">0</span>, <span class="string">&quot;{:?}&quot;</span>, file);
             <span class="kw">let </span><span class="kw-2">mut </span>images = deserialize(file).unwrap();

@@ -299,7 +299,7 @@
 </span><span class="attribute">#[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Hash, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Location {

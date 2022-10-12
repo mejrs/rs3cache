@@ -107,7 +107,7 @@
 <span class="kw">use </span>serde::Serialize;
 
 <span class="doccomment">/// A bitmapping of a [`Varp`]
-</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Varbit {
     <span class="doccomment">///The value of the `Varbit`. Cannot be `Some(u16::MAX)`.
@@ -140,7 +140,7 @@
 }
 
 <span class="doccomment">/// A player variable
-</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Varp {
     <span class="doccomment">///The value of the `Varp`. Cannot be `Some(u16::MAX)`.

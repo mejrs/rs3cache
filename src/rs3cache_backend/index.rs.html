@@ -249,6 +249,24 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The interface between [rs3cache](crate) and the cache database.
 
 </span><span class="attribute">#![allow(unused_imports)] </span><span class="comment">// varies based on mock config flags
@@ -258,7 +276,6 @@
 #[cfg_attr(feature = <span class="string">&quot;dat2&quot;</span>, path = <span class="string">&quot;index/dat2.rs&quot;</span>)]
 #[cfg_attr(feature = <span class="string">&quot;dat&quot;</span>, path = <span class="string">&quot;index/dat.rs&quot;</span>)]
 </span><span class="kw">mod </span>index_impl;
-
 <span class="kw">use </span>std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{<span class="self">self</span>, VarError},
@@ -267,6 +284,7 @@
     marker::PhantomData,
     ops::RangeInclusive,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 <span class="kw">use </span>bytes::{Buf, Bytes};
@@ -307,7 +325,7 @@
     index_id: u32,
     metadatas: IndexMetadata,
     state: S,
-    path: PathBuf,
+    path: Arc&lt;CachePath&gt;,
 
     <span class="attribute">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
     </span>connection: sqlite::Connection,
@@ -317,6 +335,24 @@
 
     <span class="attribute">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
     </span>xteas: <span class="prelude-ty">Option</span>&lt;HashMap&lt;u32, Xtea&gt;&gt;,
+}
+
+<span class="attribute">#[derive(Clone, Debug, Default)]
+</span><span class="kw">pub enum </span>CachePath {
+    <span class="attribute">#[default]
+    </span>Omitted,
+    Env(PathBuf),
+    Given(PathBuf),
+}
+
+<span class="kw">impl </span>AsRef&lt;Path&gt; <span class="kw">for </span>CachePath {
+    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Path {
+        <span class="kw">match </span><span class="self">self </span>{
+            CachePath::Omitted =&gt; Path::new(<span class="string">&quot;&quot;</span>),
+            CachePath::Env(p) =&gt; p,
+            CachePath::Given(p) =&gt; p,
+        }
+    }
 }
 
 <span class="comment">// methods valid in any state

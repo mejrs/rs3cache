@@ -415,7 +415,7 @@
 <span class="kw">impl </span>MapZone {
     <span class="doccomment">/// Returns a mapping of all [`MapZone`] configurations.
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;HashMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::WORLDMAP, config.input.clone())<span class="question-mark">?
             </span>.archive(WorldMapType::ZONES)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
@@ -555,7 +555,7 @@
 <span class="kw">impl </span>MapPastes {
     <span class="doccomment">/// Returns a mapping of all [`MapPastes`].
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;HashMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
-        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::WORLDMAP, config.input.clone())<span class="question-mark">?
             </span>.archive(WorldMapType::PASTES)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
@@ -701,7 +701,7 @@
 </span><span class="kw">pub fn </span>dump_small(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_small&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+    <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())<span class="question-mark">?
         </span>.archive(WorldMapType::SMALL)<span class="question-mark">?
         </span>.take_files();
     <span class="kw">for </span>(id, data) <span class="kw">in </span>files {
@@ -717,7 +717,7 @@
 </span><span class="kw">pub fn </span>dump_big(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     fs::create_dir_all(<span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_big&quot;</span>))<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+    <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())<span class="question-mark">?
         </span>.archive(WorldMapType::BIG)<span class="question-mark">?
         </span>.take_files();
 

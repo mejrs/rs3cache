@@ -274,7 +274,7 @@
 
 <span class="doccomment">/// A collection of files.
 </span><span class="attribute">#[cfg_eval]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[derive(Clone, Default)]
 </span><span class="kw">pub struct </span>Archive {
     <span class="kw">pub</span>(<span class="kw">crate</span>) index_id: u32,
@@ -365,7 +365,7 @@
     </span><span class="kw">pub fn </span>file(<span class="kw-2">&amp;</span><span class="self">self</span>, file_id: <span class="kw-2">&amp;</span>u32) -&gt; CacheResult&lt;Bytes&gt; {
         <span class="self">self</span>.files
             .get(file_id)
-            .ok_or_else(|| CacheError::FileNotFoundError(<span class="self">self</span>.index_id(), <span class="self">self</span>.archive_id(), <span class="kw-2">*</span>file_id))
+            .ok_or_else(|| CacheError::FileMissingError(<span class="self">self</span>.index_id(), <span class="self">self</span>.archive_id(), <span class="kw-2">*</span>file_id))
             .cloned()
     }
 
@@ -465,7 +465,7 @@
 
         <span class="self">self</span>.files_named
             .get(<span class="kw-2">&amp;</span>hash)
-            .ok_or_else(|| CacheError::FileNotFoundError(<span class="self">self</span>.index_id(), <span class="self">self</span>.archive_id(), hash <span class="kw">as </span>u32))
+            .ok_or_else(|| CacheError::FileMissingError(<span class="self">self</span>.index_id(), <span class="self">self</span>.archive_id(), hash <span class="kw">as </span>u32))
             .cloned()
     }
 

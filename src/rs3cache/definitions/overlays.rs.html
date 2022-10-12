@@ -152,7 +152,7 @@
     definitions::indextype::{ConfigType, IndexType},
 };
 <span class="doccomment">/// Describes (part of) ground colour.
-</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass)]
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[skip_serializing_none]
 #[derive(Debug, Clone, Default, Serialize)]
 </span><span class="kw">pub struct </span>Overlay {
@@ -202,7 +202,7 @@
 <span class="kw">impl </span>Overlay {
     <span class="doccomment">/// Returns a mapping of all [`Overlay`] configurations.
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, Overlay&gt;&gt; {
-        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, <span class="kw-2">&amp;</span>config.input)<span class="question-mark">?
+        <span class="prelude-val">Ok</span>(CacheIndex::new(IndexType::CONFIG, config.input.clone())<span class="question-mark">?
             </span>.archive(ConfigType::OVERLAYS)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
