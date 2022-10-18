@@ -351,12 +351,7 @@ pub trait BufExtra: Buf {
     /// Reads a 0-terminated String from the buffer
     #[inline]
     fn get_string(&mut self) -> String {
-        let terminator = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
-
-        let nul_pos = memchr::memchr(terminator, self.chunk()).unwrap();
-        let s = self.chunk()[0..nul_pos].iter().map(|&i| i as char).collect::<String>();
-        self.advance(nul_pos + 1);
-        s
+        self.try_get_string().expect("terminator not found")
     }
 
     /// Reads a 0-start and 0-terminated String from the buffer.

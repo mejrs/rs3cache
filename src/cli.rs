@@ -129,7 +129,7 @@ impl Dump {
 }
 
 fn path_helper(input: &OsStr) -> Arc<CachePath> {
-    todo!()
+    Arc::new(CachePath::Given(input.into()))
 }
 
 const INPUT: &str = if cfg!(feature = "rs3") {
