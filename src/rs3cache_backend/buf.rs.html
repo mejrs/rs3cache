@@ -383,11 +383,6 @@
 <span id="383">383</span>
 <span id="384">384</span>
 <span id="385">385</span>
-<span id="386">386</span>
-<span id="387">387</span>
-<span id="388">388</span>
-<span id="389">389</span>
-<span id="390">390</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrapper around [`Cursor`](std::io::Cursor).
 //!
 //! This module provides various reads used to decode the cache data
@@ -741,12 +736,7 @@
     <span class="doccomment">/// Reads a 0-terminated String from the buffer
     </span><span class="attribute">#[inline]
     </span><span class="kw">fn </span>get_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
-        <span class="kw">let </span>terminator = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39; </span>} <span class="kw">else </span>{ <span class="string">b&#39;\0&#39; </span>};
-
-        <span class="kw">let </span>nul_pos = memchr::memchr(terminator, <span class="self">self</span>.chunk()).unwrap();
-        <span class="kw">let </span>s = <span class="self">self</span>.chunk()[<span class="number">0</span>..nul_pos].iter().map(|<span class="kw-2">&amp;</span>i| i <span class="kw">as </span>char).collect::&lt;String&gt;();
-        <span class="self">self</span>.advance(nul_pos + <span class="number">1</span>);
-        s
+        <span class="self">self</span>.try_get_string().expect(<span class="string">&quot;terminator not found&quot;</span>)
     }
 
     <span class="doccomment">/// Reads a 0-start and 0-terminated String from the buffer.

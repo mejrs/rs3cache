@@ -345,7 +345,7 @@
 }
 
 <span class="kw">fn </span>path_helper(input: <span class="kw-2">&amp;</span>OsStr) -&gt; Arc&lt;CachePath&gt; {
-    <span class="macro">todo!</span>()
+    Arc::new(CachePath::Given(input.into()))
 }
 
 <span class="kw">const </span>INPUT: <span class="kw-2">&amp;</span>str = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;rs3&quot;</span>) {
