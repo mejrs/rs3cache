@@ -10,7 +10,7 @@ use path_macro::path;
 use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use rs3cache_backend::{
-    buf::{BufExtra, ReadError},
+    buf::{BufExtra, JString, ReadError},
     error::{CacheError, CacheResult},
     index::CacheIndex,
 };
@@ -33,9 +33,9 @@ pub struct LocationConfig {
     #[serde(flatten)]
     pub models: Option<Models>,
     /// Its name, if present.
-    pub name: Option<String>,
+    pub name: Option<JString<Bytes>>,
     #[cfg(feature = "legacy")]
-    pub description: Option<String>,
+    pub description: Option<JString<Bytes>>,
     #[cfg(any(feature = "osrs", feature = "legacy"))]
     #[serde(flatten)]
     pub models_2: Option<Models2>,
@@ -62,7 +62,7 @@ pub struct LocationConfig {
     pub unknown_28: Option<u8>,
     pub ambient: Option<i8>,
     /// What rightclick options this location has, if any.
-    pub actions: Option<[Option<String>; 5]>,
+    pub actions: Option<[Option<JString<Bytes>>; 5]>,
     pub contrast: Option<i8>,
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
@@ -123,7 +123,7 @@ pub struct LocationConfig {
     pub headmodels: Option<HeadModels>,
     pub mapfunction: Option<u16>,
     pub unknown_array: Option<[Option<u8>; 5]>,
-    pub member_actions: Option<[Option<String>; 5]>,
+    pub member_actions: Option<[Option<JString<Bytes>>; 5]>,
     pub unknown_159: Option<u8>,
     pub unknown_160: Option<Unknown160>,
     pub unknown_162: Option<i32>,

@@ -3,6 +3,7 @@ use std::{collections::BTreeMap, iter};
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
 use pyo3::{exceptions::PyKeyError, prelude::*};
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::cache::buf::BufExtra;
@@ -60,7 +61,7 @@ pub enum Param {
     /// The integer variant.
     Integer(i32),
     /// The string variant.
-    String(String),
+    String(JString<Bytes>),
 }
 
 #[cfg(feature = "pyo3")]
@@ -78,7 +79,7 @@ impl IntoPy<PyObject> for &Param {
     fn into_py(self, py: Python) -> PyObject {
         match self {
             Param::Integer(val) => val.into_py(py),
-            Param::String(val) => val.into_py(py),
+            Param::String(val) => val.as_ref().into_py(py),
         }
     }
 }

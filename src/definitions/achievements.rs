@@ -10,6 +10,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
@@ -27,9 +28,9 @@ pub struct Achievement {
     /// Its id.
     pub id: u32,
     /// Its name, if present.
-    pub name: Option<String>,
-    pub description: Option<String>,
-    pub ironman_description: Option<String>,
+    pub name: Option<JString<Bytes>>,
+    pub description: Option<JString<Bytes>>,
+    pub ironman_description: Option<JString<Bytes>>,
     pub category: Option<u16>,
     pub sprite_id: Option<u32>,
     pub points: Option<u8>,
@@ -42,7 +43,7 @@ pub struct Achievement {
     ///
     /// 1087 - Penguin Adoption Agency - 6790
     pub unknown_6: Option<u16>,
-    pub reward: Option<String>,
+    pub reward: Option<JString<Bytes>>,
     pub skill_requirements_1: Option<Vec<MaybeIronmanSkillRequirement>>,
     pub unknown_9: Option<Vec<VarbitRequirement10>>,
     pub unknown_10: Option<Vec<VarbitRequirement10>>,
@@ -259,6 +260,7 @@ pub mod achievement_fields_impl {
     use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
+    use rs3cache_backend::buf::JString;
     use serde::Serialize;
 
     use crate::{cache::buf::BufExtra, types::variables::Varbit};
@@ -268,7 +270,7 @@ pub mod achievement_fields_impl {
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct VarbitRequirement {
-        pub description: String,
+        pub description: JString<Bytes>,
         pub value: u16,
         pub varbit: Varbit,
         pub step_size: u8,
@@ -295,7 +297,7 @@ pub mod achievement_fields_impl {
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct VarbitRequirement10 {
-        pub description: String,
+        pub description: JString<Bytes>,
         pub value: u32,
         pub varbit: Varbit,
         pub step_size: u8,
@@ -322,7 +324,7 @@ pub mod achievement_fields_impl {
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct SkillRequirement {
-        pub description: String,
+        pub description: JString<Bytes>,
         pub level: u8,
         pub skill: u16,
     }
@@ -347,7 +349,7 @@ pub mod achievement_fields_impl {
     #[derive(Serialize, Debug, Clone)]
     pub struct MaybeIronmanSkillRequirement {
         pub is_ironman: bool,
-        pub description: String,
+        pub description: JString<Bytes>,
         pub level: u8,
         pub skill: u16,
     }
@@ -377,7 +379,7 @@ pub mod achievement_fields_impl {
     #[derive(Serialize, Debug, Clone)]
     pub struct MultipleVarbitsRequirement {
         value: u32,
-        description: String,
+        description: JString<Bytes>,
         varbits: Vec<Varbit>,
     }
 
@@ -399,7 +401,7 @@ pub mod achievement_fields_impl {
     pub struct PartialVarbitRequirement {
         value: u32,
         step_size: u8,
-        description: String,
+        description: JString<Bytes>,
         varbit: Varbit,
     }
 
@@ -427,7 +429,7 @@ pub mod achievement_fields_impl {
     pub struct PackedVarbitRequirement {
         value: u8,
         value2: u8,
-        description: String,
+        description: JString<Bytes>,
         varbit: Varbit,
     }
 

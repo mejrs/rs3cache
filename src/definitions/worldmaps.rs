@@ -9,6 +9,7 @@ use std::{
 
 use bytes::{Buf, Bytes};
 use path_macro::path;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
@@ -35,8 +36,8 @@ impl WorldMapType {
 #[derive(Debug, Serialize)]
 pub struct MapZone {
     id: u32,
-    internal_name: String,
-    name: String,
+    internal_name: JString<Bytes>,
+    name: JString<Bytes>,
     center: Coordinate,
     unknown_1: u32,
     show: bool,

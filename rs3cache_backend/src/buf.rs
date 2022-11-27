@@ -1,6 +1,7 @@
 //! Wrapper around [`Cursor`](std::io::Cursor).
 //!
 //! This module provides various reads used to decode the cache data
+use core::ops::Deref;
 use std::{
     fmt::{self, Debug, Display, Formatter},
     io::{prelude::*, Cursor, SeekFrom},
@@ -9,6 +10,7 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
+use serde::{Serialize, Serializer};
 
 use crate::error::CacheError;
 
@@ -157,8 +159,9 @@ impl std::error::Error for ReadError {
     }
 }
 
-pub trait BufExtra: Buf {
+pub trait BufExtra: Buf + Sized + Clone {
     #[track_caller]
+    #[inline]
     fn try_get_u8(&mut self) -> Result<u8, ReadError> {
         if self.remaining() >= 1 {
             Ok(self.get_u8())
@@ -167,6 +170,7 @@ pub trait BufExtra: Buf {
         }
     }
     #[track_caller]
+    #[inline]
     fn try_get_i8(&mut self) -> Result<i8, ReadError> {
         if self.remaining() >= 1 {
             Ok(self.get_i8())
@@ -175,6 +179,7 @@ pub trait BufExtra: Buf {
         }
     }
     #[track_caller]
+    #[inline]
     fn try_get_u16(&mut self) -> Result<u16, ReadError> {
         if self.remaining() >= 2 {
             Ok(self.get_u16())
@@ -184,6 +189,7 @@ pub trait BufExtra: Buf {
     }
 
     #[track_caller]
+    #[inline]
     fn try_get_i32(&mut self) -> Result<i32, ReadError> {
         if self.remaining() >= 4 {
             Ok(self.get_i32())
@@ -192,6 +198,7 @@ pub trait BufExtra: Buf {
         }
     }
     #[track_caller]
+    #[inline]
     fn try_get_u32(&mut self) -> Result<u32, ReadError> {
         if self.remaining() >= 4 {
             Ok(self.get_u32())
@@ -201,6 +208,7 @@ pub trait BufExtra: Buf {
     }
 
     #[track_caller]
+    #[inline]
     fn try_get_uint(&mut self, nbytes: usize) -> Result<u64, ReadError> {
         if self.remaining() >= nbytes {
             Ok(self.get_uint(nbytes))
@@ -208,13 +216,13 @@ pub trait BufExtra: Buf {
             Err(ReadError::eof())
         }
     }
-
+    #[inline]
     fn get_array<const LENGTH: usize>(&mut self) -> [u8; LENGTH] {
         let mut dst = [0; LENGTH];
         self.copy_to_slice(&mut dst);
         dst
     }
-
+    #[inline]
     fn try_get_array<const LENGTH: usize>(&mut self) -> Result<[u8; LENGTH], ReadError> {
         if self.remaining() >= LENGTH {
             Err(ReadError::eof())
@@ -227,6 +235,7 @@ pub trait BufExtra: Buf {
 
     /// Reads two or four unsigned bytes as an 32-bit unsigned integer.
     #[track_caller]
+    #[inline]
     fn try_get_smart32(&mut self) -> Result<Option<u32>, ReadError> {
         let condition = self.chunk().first().ok_or_else(ReadError::eof)? & 0x80 == 0x80;
 
@@ -244,6 +253,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads two or four unsigned bytes as an 32-bit unsigned integer.
+    #[inline]
     fn get_smart32(&mut self) -> Option<u32> {
         let condition = self.chunk()[0] & 0x80 == 0x80;
 
@@ -285,6 +295,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads Kind one or two bytes.
+    #[inline]
     fn get_decr_smart(&mut self) -> Option<u16> {
         match self.get_u8() as u16 {
             first if first < 128 => first.checked_sub(1),
@@ -293,6 +304,7 @@ pub trait BufExtra: Buf {
     }
 
     /// Reads masked data.
+    #[inline]
     fn get_masked_data(&mut self) -> Vec<(Option<u32>, Option<u32>)> {
         let mut result = Vec::new();
         let mut mask = self.get_u8();
@@ -337,26 +349,33 @@ pub trait BufExtra: Buf {
 
     /// Reads a 0-terminated String from the buffer
     #[inline]
-    fn try_get_string(&mut self) -> Result<String, ReadError> {
-        let terminator = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
+    fn try_get_string(&mut self) -> Result<JString<Self>, ReadError> {
+        const TERMINATOR: u8 = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
 
-        let nul_pos = memchr::memchr(terminator, self.chunk()).ok_or_else(ReadError::not_nul_terminated)?;
+        let chunk = self.chunk();
+        let nul_pos = memchr::memchr(TERMINATOR, chunk).ok_or_else(ReadError::not_nul_terminated)?;
+        let chunk = unsafe { chunk.get_unchecked(0..nul_pos) };
 
-        // this string format is not utf8, of course :)
-        let s = self.chunk()[0..nul_pos].iter().map(|&i| i as char).collect::<String>();
+        let s = if std::str::from_utf8(chunk).is_ok() {
+            // SAFETY: We just checked that it's valid utf8
+            unsafe { JString::new(self.clone(), nul_pos) }
+        } else {
+            // this string format is not utf8, of course :)
+            chunk.iter().map(|&i| i as char).collect::<String>().into()
+        };
         self.advance(nul_pos + 1);
         Ok(s)
     }
 
     /// Reads a 0-terminated String from the buffer
     #[inline]
-    fn get_string(&mut self) -> String {
+    fn get_string(&mut self) -> JString<Self> {
         self.try_get_string().expect("terminator not found")
     }
 
     /// Reads a 0-start and 0-terminated String from the buffer.
     #[inline]
-    fn get_padded_string(&mut self) -> String {
+    fn get_padded_string(&mut self) -> JString<Self> {
         self.get_u8();
         self.get_string()
     }
@@ -382,4 +401,82 @@ pub trait BufExtra: Buf {
     }
 }
 
-impl<T: Buf> BufExtra for T {}
+impl<T: Buf + Clone> BufExtra for T {}
+
+#[derive(Clone, Debug)]
+pub struct JString<R: Buf> {
+    inner: JStringKind<R>,
+}
+
+impl<R: Buf> Serialize for JString<R> {
+    #[inline]
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(self)
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum JStringKind<R: Buf> {
+    Refcounted { buf: R, len: usize },
+    Allocated(String),
+}
+
+impl<R: Buf> JString<R> {
+    /// # Safety
+    ///
+    /// buf[0..len] must be in-bounds and be valid utf8.
+    pub unsafe fn new(buf: R, len: usize) -> Self {
+        Self {
+            inner: JStringKind::Refcounted { buf, len },
+        }
+    }
+}
+
+impl<R: Buf> From<String> for JString<R> {
+    fn from(s: String) -> Self {
+        Self {
+            inner: JStringKind::Allocated(s),
+        }
+    }
+}
+
+impl<R: Buf> AsRef<str> for JString<R> {
+    fn as_ref(&self) -> &str {
+        match &self.inner {
+            JStringKind::Refcounted { buf, len } => unsafe { std::str::from_utf8_unchecked(buf.chunk().get_unchecked(0..*len)) },
+            JStringKind::Allocated(s) => s.as_str(),
+        }
+    }
+}
+
+impl<R: Buf> Deref for JString<R> {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        self.as_ref()
+    }
+}
+
+impl<R: Buf> PartialEq for JString<R> {
+    fn eq(&self, other: &Self) -> bool {
+        self.deref() == other.deref()
+    }
+}
+
+impl<R: Buf> PartialEq<str> for JString<R> {
+    fn eq(&self, other: &str) -> bool {
+        self.deref() == other
+    }
+}
+
+impl<R: Buf> Eq for JString<R> {}
+
+#[cfg(feature = "pyo3")]
+impl<R: Buf> pyo3::IntoPy<pyo3::Py<pyo3::PyAny>> for JString<R> {
+    fn into_py(self, py: pyo3::Python<'_>) -> pyo3::Py<pyo3::PyAny> {
+        pyo3::types::PyString::new(py, &self).into()
+    }
+}

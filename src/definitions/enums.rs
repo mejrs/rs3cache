@@ -12,6 +12,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
@@ -202,7 +203,7 @@ pub enum Value {
     /// The integer variant.
     Integer(i32),
     /// The string variant.
-    String(String),
+    String(JString<Bytes>),
 }
 
 #[cfg(feature = "pyo3")]

@@ -10,6 +10,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
@@ -29,8 +30,8 @@ pub struct ItemConfig {
     /// Its id.
     pub id: u32,
     pub base_model: Option<u32>,
-    pub name: Option<String>,
-    pub buff_effect: Option<String>,
+    pub name: Option<JString<Bytes>>,
+    pub buff_effect: Option<JString<Bytes>>,
     pub rotation: Option<Rotation>,
     pub translation: Option<Translation>,
     pub stackable: Option<bool>,
@@ -43,8 +44,8 @@ pub struct ItemConfig {
     pub male_models: Option<[Option<u32>; 3]>,
     pub female_models: Option<[Option<u32>; 3]>,
     pub unknown_27: Option<u8>,
-    pub ground_actions: Option<[Option<String>; 5]>,
-    pub widget_actions: Option<[Option<String>; 5]>,
+    pub ground_actions: Option<[Option<JString<Bytes>>; 5]>,
+    pub widget_actions: Option<[Option<JString<Bytes>>; 5]>,
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
     #[serde(flatten)]
@@ -82,7 +83,7 @@ pub struct ItemConfig {
     pub combine_info: Option<u16>,
     pub combine_template: Option<u16>,
     pub combine_num_required: Option<u16>,
-    pub combine_shard_name: Option<String>,
+    pub combine_shard_name: Option<JString<Bytes>>,
     pub never_stackable: Option<bool>,
     pub unknown_167: Option<bool>,
     pub unknown_168: Option<bool>,

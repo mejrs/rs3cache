@@ -8,6 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
@@ -27,7 +28,7 @@ pub struct Flo {
     pub texture: Option<u8>,
     op_3: Option<bool>,
     op_5: Option<bool>,
-    name: Option<String>,
+    name: Option<JString<Bytes>>,
     /// Secondary colour of the [`Flo`] configuration.
     pub secondary_colour: Option<[u8; 3]>,
 }

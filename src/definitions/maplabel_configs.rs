@@ -8,6 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
@@ -28,15 +29,15 @@ pub struct MapLabelConfig {
     /// File id of the [`MapLabelConfig`].
     pub id: u32,
     /// Text shown when the label is rightclicked.
-    pub rightclick_1: Option<String>,
+    pub rightclick_1: Option<JString<Bytes>>,
     /// Text shown when the label is rightclicked.
-    pub rightclick_2: Option<String>,
+    pub rightclick_2: Option<JString<Bytes>>,
     /// A toggle that controls whether the label is shown.
     pub toggle_1: Option<Toggle>,
     /// Contains another toggle that controls whether the label is shown.
     pub toggle_2: Option<Toggle>,
     /// If present, the label is text on the map, with the given `String`.
-    pub text: Option<String>,
+    pub text: Option<JString<Bytes>>,
     /// Text colour.
     pub label_colour_1: Option<[u8; 3]>,
     /// Text colour 2.

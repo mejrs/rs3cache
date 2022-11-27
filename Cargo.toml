@@ -73,3 +73,10 @@ legacy = ["rs3cache_backend/dat"]
 2011_11_shim = ["2010_3_shim"]
 2013_shim = ["2011_11_shim"]
 2013_4_shim = ["2013_shim"]
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "bench"
+harness = false

@@ -28,7 +28,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
             // Check for bad filenames
             // Almost never happens, so we check first before possibly creating a new string
             Value::String(s) if s.chars().any(|c| ['?', '/', '\\'].contains(&c)) => s.chars().filter(|c| ['?', '/', '\\'].contains(c)).collect(),
-            Value::String(s) => s,
+            Value::String(s) => (*s).to_owned(),
             _ => unreachable!(),
         };
 

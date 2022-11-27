@@ -8,6 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 #[cfg(feature = "osrs")]
@@ -30,7 +31,7 @@ pub struct NpcConfig {
     pub id: u32,
     #[serde(flatten)]
     pub models: Option<NpcModels>,
-    pub name: Option<String>,
+    pub name: Option<JString<Bytes>>,
     pub size: Option<u8>,
     #[cfg(feature = "osrs")]
     pub standing_animation: Option<u16>,
@@ -46,7 +47,7 @@ pub struct NpcConfig {
     #[cfg(feature = "osrs")]
     pub category: Option<u16>,
 
-    pub actions: Option<[Option<String>; 5]>,
+    pub actions: Option<[Option<JString<Bytes>>; 5]>,
     #[serde(flatten)]
     pub colour_replacements: Option<ColourReplacements>,
     #[serde(flatten)]
@@ -92,7 +93,7 @@ pub struct NpcConfig {
     pub unknown_141: Option<bool>,
     pub mapfunction: Option<u16>,
     pub unknown_143: Option<bool>,
-    pub member_actions: Option<[Option<String>; 5]>,
+    pub member_actions: Option<[Option<JString<Bytes>>; 5]>,
     pub unknown_155: Option<Unknown155>,
     pub unknown_158: Option<bool>,
     pub unknown_159: Option<bool>,
