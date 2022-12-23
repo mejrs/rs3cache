@@ -22,6 +22,7 @@ use crate::{
 pub struct PySprite {
     #[pyo3(get)]
     archive_id: u32,
+    #[pyo3(get)]
     frames: BTreeMap<usize, PyFrame>,
 }
 

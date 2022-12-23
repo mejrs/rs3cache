@@ -32,10 +32,10 @@ pub struct Tile {
 impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
     #[cfg(any(feature = "rs3", feature = "2013_shim"))]
-    pub fn dump(mut buffer: Bytes) -> TileArray {
+    pub fn dump(buffer: &mut Bytes) -> TileArray {
         use rs3cache_backend::buf::BufExtra;
 
-        let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
+        Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();
 
             let [flag_1, flag_2, flag_3, flag_4, ..] = buffer.get_bitflags();
@@ -58,17 +58,12 @@ impl Tile {
             }
 
             tile
-        });
-
-        if buffer.remaining() != 0 {
-            //println!("{}", buffer.remaining());
-        }
-        tiles
+        })
     }
 
     #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2013_shim")))]
-    pub fn dump(mut buffer: Bytes) -> TileArray {
-        let tiles = Array::from_shape_simple_fn((4, 64, 64), || {
+    pub fn dump(buffer: &mut Bytes) -> TileArray {
+        Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();
 
             loop {
@@ -86,11 +81,6 @@ impl Tile {
                     opcode => tile.underlay_id = Some((opcode - 81) as u16),
                 }
             }
-        });
-
-        if buffer.remaining() != 0 {
-            //println!("{}", buffer.remaining());
-        }
-        tiles
+        })
     }
 }

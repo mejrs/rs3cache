@@ -25,10 +25,10 @@ use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+#[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
+use {crate::cache::arc::Archive, bytes::Buf};
 
 pub use self::iterator::*;
-#[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-use crate::cache::arc::Archive;
 #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
 use crate::cache::xtea::Xtea;
 use crate::{
@@ -59,6 +59,10 @@ pub struct MapSquare {
 
     /// Data on the tiles it contains.
     tiles: CacheResult<TileArray>,
+
+    /// Member status of chunks in bits.
+    #[cfg(feature = "rs3")]
+    pub members: CacheResult<u64>,
 
     /// All locations in this [`MapSquare`].
     ///
@@ -101,10 +105,10 @@ impl MapSquare {
     #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
     fn new(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
         let land = index.archive_with_xtea(land, xtea).and_then(|arch| arch.file(&0));
-        let tiles = index.archive(tiles)?.file(&0)?;
+        let mut tile_bytes = index.archive(tiles)?.file(&0)?;
         let _env = env.map(|k| index.archive(k));
 
-        let tiles = Tile::dump(tiles);
+        let tiles = Tile::dump(&mut tile_bytes);
         let locations = match land {
             Ok(land) => Ok(Location::dump(i, j, &tiles, land)),
             // most likely, anyway...
@@ -122,9 +126,9 @@ impl MapSquare {
     #[cfg(feature = "legacy")]
     fn new(index: &CacheIndex<Initial>, loc: u32, map: u32, i: u8, j: u8) -> CacheResult<MapSquare> {
         let land = index.archive(loc)?.file(&0)?;
-        let tiles = index.archive(map)?.file(&0)?;
+        let mut tile_bytes = index.archive(map)?.file(&0)?;
 
-        let tiles = Tile::dump(tiles);
+        let tiles = Tile::dump(&mut tile_bytes);
         let locations = Location::dump(i, j, &tiles, land);
 
         Ok(MapSquare {
@@ -139,13 +143,25 @@ impl MapSquare {
     pub(crate) fn from_archive(archive: Archive) -> MapSquare {
         let i = (archive.archive_id() & 0x7F) as u8;
         let j = (archive.archive_id() >> 7) as u8;
-        let tiles = archive.file(&MapFileType::TILES).map(Tile::dump);
-        let locations = match tiles {
-            Ok(ref t) => archive.file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, t, file)),
+        let mut tile_bytes = archive.file(&MapFileType::TILES);
+
+        let (tiles, members, locations) = match tile_bytes {
+            Ok(ref mut tile_bytes) => {
+                let tiles = Tile::dump(tile_bytes);
+                let members = tile_bytes.get_u64();
+                let locations = archive.file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, &tiles, file));
+                (Ok(tiles), Ok(members), locations)
+            }
+
             // can't generally clone or copy error
-            Err(CacheError::FileMissingError(i, a, f)) => Err(CacheError::FileMissingError(i, a, f)),
+            Err(CacheError::FileMissingError(i, a, f)) => (
+                Err(CacheError::FileMissingError(i, a, f)),
+                Err(CacheError::FileMissingError(i, a, f)),
+                Err(CacheError::FileMissingError(i, a, f)),
+            ),
             _ => unreachable!(),
         };
+
         let water_locations = archive
             .file(&MapFileType::WATER_LOCATIONS)
             .map(|file| Location::dump_water_locations(i, j, file));
@@ -154,6 +170,7 @@ impl MapSquare {
             i,
             j,
             tiles,
+            members,
             locations,
             water_locations,
         }
@@ -494,6 +511,21 @@ mod map_tests {
 
         let square = MapSquare::new(49, 54, &config)?;
         let _tile = square.get_tiles()?.get([0, 24, 25]);
+        Ok(())
+    }
+
+    #[test]
+    fn members() -> CacheResult<()> {
+        let config = crate::cli::Config::env();
+        let mapsquares = MapSquares::new(&config)?.into_iter();
+
+        for sq in mapsquares {
+            if let Ok(sq) = sq {
+                if let Ok(members) = sq.members {
+                    println!("({},{}):{:b}", sq.i, sq.j, members);
+                }
+            }
+        }
         Ok(())
     }
 }
