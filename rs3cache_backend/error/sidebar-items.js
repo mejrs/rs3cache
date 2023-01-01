@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["CacheError","An error type for things that can go wrong when reading from the cache."]],"mod":[["py_error_impl",""]],"type":[["CacheResult","Result wrapper for [`CacheError`]."]]};
+window.SIDEBAR_ITEMS = {"enum":[["CacheErrorKind",""]],"mod":[["py_error_impl",""]],"struct":[["CacheError","An error type for things that can go wrong when reading from the cache."]],"type":[["CacheResult","Result wrapper for [`CacheError`]."]]};

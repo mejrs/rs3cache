@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["ReadErrorKind",""]],"struct":[["ReadError",""]],"trait":[["BufExtra",""]]};
+window.SIDEBAR_ITEMS = {"enum":[["JStringKind",""],["ReadErrorKind",""]],"struct":[["JString",""],["ReadError",""]],"trait":[["BufExtra",""]]};
