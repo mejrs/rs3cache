@@ -25,6 +25,7 @@ use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+use rs3cache_utils::lazy::Lazy;
 #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
 use {crate::cache::arc::Archive, bytes::Buf};
 
@@ -73,7 +74,7 @@ pub struct MapSquare {
     ///
     /// Locations can overlap on surrounding mapsquares.
     #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-    water_locations: CacheResult<Vec<Location>>,
+    water_locations: Lazy<(CacheResult<bytes::Bytes>, u8, u8), Vec<Location>, CacheError>,
 }
 
 /// Iterator over a columns of planes with their x, y coordinates
@@ -112,7 +113,7 @@ impl MapSquare {
         let locations = match land {
             Ok(land) => Ok(Location::dump(i, j, &tiles, land)),
             // most likely, anyway...
-            Err(e) => Err(CacheError::XteaError(i, j)),
+            Err(e) => Err(CacheError::xtea_absent(i, j)),
         };
 
         Ok(MapSquare {
@@ -152,19 +153,11 @@ impl MapSquare {
                 let locations = archive.file(&MapFileType::LOCATIONS).map(|file| Location::dump(i, j, &tiles, file));
                 (Ok(tiles), Ok(members), locations)
             }
-
-            // can't generally clone or copy error
-            Err(CacheError::FileMissingError(i, a, f)) => (
-                Err(CacheError::FileMissingError(i, a, f)),
-                Err(CacheError::FileMissingError(i, a, f)),
-                Err(CacheError::FileMissingError(i, a, f)),
-            ),
-            _ => unreachable!(),
+            Err(e) => (Err(e.clone()), Err(e.clone()), Err(e)),
         };
 
-        let water_locations = archive
-            .file(&MapFileType::WATER_LOCATIONS)
-            .map(|file| Location::dump_water_locations(i, j, file));
+        let bytes = archive.file(&MapFileType::WATER_LOCATIONS);
+        let water_locations = Lazy::new((bytes, i, j), |(bytes, i, j)| Ok(Location::dump_water_locations(i, j, bytes?)));
 
         MapSquare {
             i,
@@ -177,13 +170,12 @@ impl MapSquare {
     }
 
     /// Iterator over a columns of planes with their x, y coordinates
-    pub fn indexed_columns(&self) -> Result<ColumnIter, &CacheError> {
-        self.get_tiles()
-            .map(|tiles| tiles.lanes(Axis(0)).into_iter().zip(iproduct!(0..64u32, 0..64u32)))
+    pub fn indexed_columns(&self) -> Result<ColumnIter, CacheError> {
+        Ok(self.tiles()?.lanes(Axis(0)).into_iter().zip(iproduct!(0..64u32, 0..64u32)))
     }
 
     /// Returns a view over the `tiles` field, if present
-    pub fn get_tiles(&self) -> Result<&TileArray, &CacheError> {
+    pub fn tiles(&self) -> Result<&TileArray, &CacheError> {
         self.tiles.as_ref()
     }
 
@@ -193,8 +185,11 @@ impl MapSquare {
     }
 
     /// Returns a view over the `locations` field, if present.
-    pub fn get_locations(&self) -> Result<&Vec<Location>, &CacheError> {
-        self.locations.as_ref()
+    pub fn locations(&self) -> Result<&[Location], CacheError> {
+        match &self.locations {
+            Ok(ref v) => Ok(v),
+            Err(e) => Err(e.into()),
+        }
     }
 
     /// Take its locations, consuming `self`.
@@ -204,14 +199,11 @@ impl MapSquare {
 
     /// Returns a view over the `locations` field, if present.
     #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-    pub fn get_water_locations(&self) -> Result<&Vec<Location>, &CacheError> {
-        self.water_locations.as_ref()
-    }
-
-    /// Take its locations, consuming `self`.
-    #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-    pub fn take_water_locations(self) -> Result<Vec<Location>, CacheError> {
-        self.water_locations
+    pub fn water_locations(&self) -> Result<&[Location], CacheError> {
+        match &*self.water_locations {
+            Ok(ref v) => Ok(v),
+            Err(e) => Err(e.into()),
+        }
     }
 }
 
@@ -308,7 +300,7 @@ impl GroupMapSquare {
         Box::new(
             self.iter()
                 .filter_map(move |((i, j), sq)| {
-                    sq.get_tiles().ok().map(|tiles| {
+                    sq.tiles().ok().map(|tiles| {
                         let di = (*i as isize) - (self.core_i as isize);
                         let dj = (*j as isize) - (self.core_j as isize);
                         ((di, dj), tiles)
@@ -330,7 +322,7 @@ impl GroupMapSquare {
     pub fn all_locations_iter(&self) -> Box<dyn Iterator<Item = &Location> + '_> {
         Box::new(
             self.iter()
-                .filter_map(|(_k, square)| square.get_locations().ok())
+                .filter_map(|(_k, square)| square.locations().ok())
                 .flat_map(IntoIterator::into_iter),
         )
     }
@@ -340,7 +332,7 @@ impl GroupMapSquare {
 pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
     let out = path_macro::path!(config.output / "locations");
 
-    fs::create_dir_all(&out)?;
+    fs::create_dir_all(&out).map_err(|e| CacheError::io(e, out.clone()))?;
 
     let last_id = {
         let squares = MapSquares::new(config)?.into_iter();
@@ -385,7 +377,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()> {
     let out = path_macro::path!(config.output / "locations");
 
-    fs::create_dir_all(&out)?;
+    fs::create_dir_all(&out).map_err(|e| CacheError::io(e, out.clone()))?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
         let sq = sq.expect("error deserializing mapsquare");
         let i = sq.i;
@@ -406,7 +398,7 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
 pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
     let out = path_macro::path!(config.output / "tiles");
 
-    fs::create_dir_all(&out)?;
+    fs::create_dir_all(&out).map_err(|e| CacheError::io(e, out.clone()))?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
         let sq = sq.expect("error deserializing mapsquare");
         let i = sq.i;
@@ -436,10 +428,10 @@ mod tests {
             let square = square.unwrap();
             if square.i() == 40 && square.j() == 62 {
                 for i in 0..4 {
-                    let tile = square.get_tiles()?.get([i, 10, 10]);
+                    let tile = square.tiles()?.get([i, 10, 10]);
                     dbg!(tile);
-                    return Ok(());
                 }
+                return Ok(());
             }
         }
         panic!("Unable to get some water");
@@ -473,7 +465,7 @@ mod mapsquare_iter {
         let sqs = MapSquares::new(&config)?.into_iter();
 
         for sq in sqs {
-            if let Ok(locations) = sq.expect("error deserializing mapsquare").get_locations() {
+            if let Ok(locations) = sq.expect("error deserializing mapsquare").locations() {
                 for loc in locations {
                     if loc.id == 3263 {
                         println!("{} {} {} {}", loc.i, loc.i, loc.x, loc.y);
@@ -499,7 +491,7 @@ mod map_tests {
         let id = 36687_u32;
         let square = MapSquare::new(50, 50, &config)?;
         assert!(square
-            .get_locations()?
+            .locations()?
             .iter()
             .any(|loc| loc.id == id && loc.plane.matches(&0) && loc.x == 9 && loc.y == 16));
         Ok(())
@@ -510,7 +502,7 @@ mod map_tests {
         let config = crate::cli::Config::env();
 
         let square = MapSquare::new(49, 54, &config)?;
-        let _tile = square.get_tiles()?.get([0, 24, 25]);
+        let _tile = square.tiles()?.get([0, 24, 25]);
         Ok(())
     }
 

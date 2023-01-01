@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use image::{GenericImage, Rgba, RgbaImage};
 use ndarray::{ArrayBase, Dim, ViewRepr};
 
-use super::{mapcore::CONFIG, tileshape};
+use super::{tileshape, CONFIG};
 #[cfg(feature = "legacy")]
 use crate::definitions::flo::Flo;
 use crate::definitions::{mapsquares::GroupMapSquare, tiles::Tile};

@@ -6,6 +6,7 @@ use itertools::{iproduct, izip};
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use regex::Regex;
+use rs3cache_backend::error::CacheError;
 
 use crate::{cache::error::CacheResult, renderers::scale};
 
@@ -15,27 +16,34 @@ static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>
 pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
     let zoom_levels = range.rev();
     for zoom in zoom_levels {
-        fs::create_dir_all(path!(folder / format!("{mapid}/{zoom}")))?;
+        let path = path!(folder / format!("{mapid}/{zoom}"));
+        fs::create_dir_all(&path).map_err(|e| CacheError::io(e, path))?;
 
         let new_tile_coordinates = get_future_filenames(&folder, mapid, zoom + 1)?.into_iter();
 
         let func = |(p, i, j)| {
-            let img = make_tile(&folder, mapid, zoom, p, i, j, backfill).unwrap();
+            let img = make_tile(&folder, mapid, zoom, p, i, j, backfill)?;
             let filename = path!(folder / format!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
-            img.save(filename).unwrap();
+
+            match img.save(&filename) {
+                Ok(()) => {}
+                Err(ImageError::IoError(e)) => return Err(CacheError::io(e, filename)),
+                Err(other) => panic!("{other}"),
+            };
+            Ok(())
         };
 
-        new_tile_coordinates.progress().par_bridge().for_each(func);
+        new_tile_coordinates.progress().par_bridge().try_for_each(func)?;
     }
     Ok(())
 }
 
-fn to_coordinates(text: OsString) -> CacheResult<(i32, i32, i32)> {
+fn to_coordinates(text: OsString) -> (i32, i32, i32) {
     let caps = RE.captures(text.to_str().unwrap()).unwrap();
-    let p = caps.name("p").unwrap().as_str().parse::<i32>()?;
-    let i = caps.name("i").unwrap().as_str().parse::<i32>()?;
-    let j = caps.name("j").unwrap().as_str().parse::<i32>()?;
-    Ok((p, i, j))
+    let p = caps.name("p").unwrap().as_str().parse::<i32>().unwrap();
+    let i = caps.name("i").unwrap().as_str().parse::<i32>().unwrap();
+    let j = caps.name("j").unwrap().as_str().parse::<i32>().unwrap();
+    (p, i, j)
 }
 
 fn make_tile(
@@ -59,7 +67,7 @@ fn make_tile(
             }
             // can be missing; if so, swallow
             Err(ImageError::IoError(ref e)) if e.kind() == io::ErrorKind::NotFound => {}
-            Err(other_error) => return Err(other_error.into()),
+            Err(other_error) => panic!("{other_error}"),
         }
     }
     let scaled = scale::resize_half(base);
@@ -86,15 +94,15 @@ fn get_files(
 fn get_future_filenames(folder: impl AsRef<Path>, mapid: i32, zoom: i8) -> CacheResult<HashSet<(i32, i32, i32)>> {
     let dir = path!(folder / format!("{mapid}/{zoom}"));
 
-    let new_tiles = fs::read_dir(&dir)?
-        .collect::<io::Result<Vec<_>>>()?
+    let new_tiles = fs::read_dir(&dir)
+        .map_err(|e| CacheError::io(e, dir.clone()))?
+        .collect::<io::Result<Vec<_>>>()
+        .map_err(|e| CacheError::io(e, dir))?
         .into_iter()
         .map(|entry| entry.file_name())
         .map(to_coordinates)
-        .collect::<CacheResult<Vec<_>>>()?
-        .into_iter()
         .map(|(p, i, j)| (p, i >> 1, j >> 1))
-        .collect::<HashSet<_>>();
+        .collect();
 
     Ok(new_tiles)
 }

@@ -7,7 +7,7 @@ use itertools::iproduct;
 use crate::definitions::mapscenes::MapScene;
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare, sprites::Sprite},
-    renderers::map::mapcore::CONFIG,
+    renderers::map::CONFIG,
     utils::rangeclamp::RangeClamp,
 };
 

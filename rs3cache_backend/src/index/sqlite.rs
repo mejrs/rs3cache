@@ -42,7 +42,7 @@ where
         let encoded_data = {
             let query = format!("SELECT DATA, CRC, VERSION FROM cache WHERE KEY={}", metadata.archive_id());
 
-            let mut statement = self.connection.prepare(&query)?;
+            let mut statement = self.connection.prepare(query)?;
             statement.next()?;
             let crc = statement.read::<i64>(1)?;
             let version = statement.read::<i64>(2)?;
@@ -55,16 +55,16 @@ where
             };
 
             if crc == 0 && version == 0 {
-                Err(CacheError::ArchiveNotFoundError(metadata.index_id(), metadata.archive_id()))
+                Err(CacheError::archive_missing(metadata.index_id(), metadata.archive_id()))
             } else if metadata.crc() as i64 + crc_offset != crc {
-                Err(CacheError::CrcError(
+                Err(CacheError::crc(
                     metadata.index_id(),
                     metadata.archive_id(),
                     metadata.crc() as i64 + crc_offset,
                     crc,
                 ))
             } else if metadata.version() as i64 != version {
-                Err(CacheError::VersionError(
+                Err(CacheError::version(
                     metadata.index_id(),
                     metadata.archive_id(),
                     metadata.version() as i64,
@@ -89,7 +89,7 @@ where
     /// For these, simply ignore [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError).
     pub fn assert_coherence(&self) -> CacheResult<()> {
         for (archive_id, metadata) in self.metadatas().iter() {
-            let query = format!("SELECT CRC, VERSION FROM cache WHERE KEY={}", archive_id);
+            let query = format!("SELECT CRC, VERSION FROM cache WHERE KEY={archive_id}");
 
             let mut statement = self.connection.prepare(&query)?;
             statement.next()?;
@@ -103,16 +103,16 @@ where
                 _ => 1_i64,
             };
             if crc == 0 && version == 0 {
-                return Err(CacheError::ArchiveNotFoundError(metadata.index_id(), metadata.archive_id()));
+                return Err(CacheError::archive_missing(metadata.index_id(), metadata.archive_id()));
             } else if metadata.crc() as i64 + crc_offset != crc {
-                return Err(CacheError::CrcError(
+                return Err(CacheError::crc(
                     metadata.index_id(),
                     metadata.archive_id(),
                     metadata.crc() as i64 + crc_offset,
                     crc,
                 ));
             } else if metadata.version() as i64 != version {
-                return Err(CacheError::VersionError(
+                return Err(CacheError::version(
                     metadata.index_id(),
                     metadata.archive_id(),
                     metadata.version() as i64,
@@ -148,7 +148,7 @@ impl CacheIndex<Initial> {
                     state: Initial {},
                 })
             }
-            Err(e) => Err(CacheError::CacheNotFoundError(e, file, path)),
+            Err(e) => Err(CacheError::cache_not_found(e, file, path)),
         }
     }
 }

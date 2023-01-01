@@ -12,7 +12,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
 
 use crate::{
@@ -75,7 +75,7 @@ impl TryFrom<u8> for KeyType {
             105 => Ok(Self::Int_105),
             126 => Ok(Self::Int_126),
             128 => Ok(Self::Int_128),
-            other => Err(format!("Unknown keytype discriminant {}", other)),
+            other => Err(format!("Unknown keytype discriminant {other}")),
         }
     }
 }
@@ -180,7 +180,7 @@ impl TryFrom<u8> for ValueType {
             115 => Ok(Self::Int_115),
             126 => Ok(Self::Int_126),
             128 => Ok(Self::Int_128),
-            other => Err(format!("Unknown valuetype discriminant {}", other)),
+            other => Err(format!("Unknown valuetype discriminant {other}")),
         }
     }
 }
@@ -330,13 +330,14 @@ impl Enum {
 
 /// Save the item configs as `enums.json`. Exposed as `--dump enums`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     let mut enums = Enum::dump_all(config)?.into_values().collect::<Vec<_>>();
     enums.sort_unstable_by_key(|loc| loc.id);
+    let path = path!(config.output / "enums.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
 
-    let mut file = File::create(path!(config.output / "enums.json"))?;
     let data = serde_json::to_string_pretty(&enums).unwrap();
-    file.write_all(data.as_bytes())?;
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
 
     Ok(())
 }

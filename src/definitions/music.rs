@@ -36,7 +36,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
             Some(Value::Integer(i)) => *i as u32,
             Some(_) => unreachable!(),
             None => {
-                println!("Unable to create \"{}\".", name);
+                println!("Unable to create \"{name}\".");
                 continue;
             }
         };
@@ -45,7 +45,7 @@ pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
             Ok(file) => file.file(&0).unwrap(),
             _ => {
                 // Seems like things are lazily loaded.
-                println!("Unable to create \"{}\".", name);
+                println!("Unable to create \"{name}\".");
                 continue;
             }
         };

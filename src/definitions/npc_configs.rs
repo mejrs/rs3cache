@@ -8,7 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
 
 #[cfg(feature = "osrs")]
@@ -156,7 +156,7 @@ impl NpcConfig {
         loop {
             match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0, "The buffer was not fully read. {}", npc);
+                    debug_assert_eq!(buffer.remaining(), 0, "The buffer was not fully read. {npc}");
                     break npc;
                 }
                 1 => npc.models = Some(NpcModels::deserialize(&mut buffer)),
@@ -651,13 +651,15 @@ use npc_config_fields::*;
 
 /// Save the npc configs as `npc_configs.json`. Exposed as `--dump npc_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     let mut npc_configs = NpcConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     npc_configs.sort_unstable_by_key(|loc| loc.id);
+    let path = path!(config.output / "npc_configs.json");
 
-    let mut file = File::create(path!(config.output / "npc_configs.json"))?;
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+
     let data = serde_json::to_string_pretty(&npc_configs).unwrap();
-    file.write_all(data.as_bytes())?;
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
 
     Ok(())
 }
@@ -674,7 +676,7 @@ mod tests {
         let npc_config = NpcConfig::dump_all(&config)?;
         let npc = npc_config.get(&0).unwrap();
         let name = npc.name.as_ref().unwrap();
-        assert_eq!(name, "Hans", "{:?}", npc);
+        assert_eq!(name, "Hans", "{npc:?}");
         Ok(())
     }
 }

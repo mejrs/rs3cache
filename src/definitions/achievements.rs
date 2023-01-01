@@ -10,7 +10,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
 
 use crate::{
@@ -108,7 +108,7 @@ impl Achievement {
         loop {
             match buffer.get_u8() {
                 0 => {
-                    debug_assert_eq!(buffer.remaining(), 0, "{}", achievement);
+                    debug_assert_eq!(buffer.remaining(), 0, "{achievement}");
                     break achievement;
                 }
                 1 => achievement.name = Some(buffer.get_padded_string()),
@@ -475,13 +475,14 @@ impl Achievement {
 
 /// Save the Achievement configs as `Achievement>.json`. Exposed as `--dump Achievement`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     let mut achievement_configs = Achievement::dump_all(config)?.into_values().collect::<Vec<_>>();
     achievement_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create(path!(config.output / "achievements.json"))?;
+    let path = path!(config.output / "achievements.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
     let data = serde_json::to_string_pretty(&achievement_configs).unwrap();
-    file.write_all(data.as_bytes())?;
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
 
     Ok(())
 }

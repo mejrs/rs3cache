@@ -52,7 +52,7 @@ impl MapSquares {
         let land = self
             .mapping
             .get(&("l", i, j))
-            .ok_or(CacheError::ArchiveNotFoundError(i as u32, j as u32))?;
+            .ok_or_else(|| CacheError::archive_missing(i as u32, j as u32))?;
         let map = self.mapping.get(&("m", i, j)).unwrap();
         let env = self.mapping.get(&("e", i, j)).copied();
         let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));
@@ -96,16 +96,16 @@ impl GroupMapSquareIterator {
         let inner = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?;
 
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{i}_{j}")), (i, j)))
             .collect();
         let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{i}_{j}")), (i, j)))
             .collect();
         let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("ul{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("ul{i}_{j}")), (i, j)))
             .collect();
         let env_hashes2: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{}_{}", i, j)), (i, j)))
+            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{i}_{j}")), (i, j)))
             .collect();
 
         let mapping: BTreeMap<(&'static str, u8, u8), u32> = inner
@@ -164,7 +164,7 @@ impl Iterator for GroupMapSquareIterator {
                 .map(|sq| ((sq.i, sq.j), sq))
                 .collect();
             if !(mapsquares.contains_key(&(core_i, core_j))) {
-                println!("failed reading mapsquare {}, {}", core_i, core_j);
+                println!("failed reading mapsquare {core_i}, {core_j}");
             };
 
             GroupMapSquare { core_i, core_j, mapsquares }

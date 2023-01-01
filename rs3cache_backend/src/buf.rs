@@ -14,7 +14,7 @@ use serde::{Serialize, Serializer};
 
 use crate::error::CacheError;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ReadError {
     location: &'static Location<'static>,
     kind: Kind,
@@ -89,7 +89,7 @@ impl ReadError {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum Kind {
     Error(ReadErrorKind),
     ContextId(u32, Box<ReadError>),
@@ -97,7 +97,7 @@ enum Kind {
     DecodeContext(#[cfg(debug_assertions)] Vec<u8>, Bytes, String, Box<ReadError>),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ReadErrorKind {
     Eof,
     NotNulTerminated,
@@ -128,9 +128,9 @@ impl Display for ReadError {
             #[cfg(debug_assertions)]
             DecodeContext(opcodes, remainder, parsed, src) => {
                 writeln!(f, "{src}")?;
-                writeln!(f, "Note: The unread remainder of the buffer consists of {:?}", remainder)?;
+                writeln!(f, "Note: The unread remainder of the buffer consists of {remainder:?}")?;
                 writeln!(f)?;
-                writeln!(f, "Note: The opcodes read were {:?}", opcodes)?;
+                writeln!(f, "Note: The opcodes read were {opcodes:?}")?;
                 writeln!(f)?;
                 writeln!(f, "Note: Managed to read up to:")?;
                 writeln!(f, "{parsed}")?;

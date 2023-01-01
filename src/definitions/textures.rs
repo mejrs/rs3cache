@@ -10,14 +10,15 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::error::CacheError;
 use serde::Serialize;
 
 use crate::{
     cache::{error::CacheResult, index::CacheIndex},
     definitions::indextype::{ConfigType, IndexType},
 };
-/// Describes the properties of a given item.
 
+/// Describes the properties of a given item.
 #[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
@@ -63,14 +64,14 @@ impl Display for TextureConfig {
 
 /// Save the textures as `textures.json`. Exposed as `--dump item_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
 
     let mut loc_configs = TextureConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     loc_configs.sort_unstable_by_key(|loc| loc.id);
-
-    let mut file = File::create(path!(config.output / "textures.json"))?;
+    let path = path!(config.output / "textures.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
-    file.write_all(data.as_bytes())?;
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
 
     Ok(())
 }

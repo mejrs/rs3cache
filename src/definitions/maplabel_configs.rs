@@ -8,7 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
 
 use crate::{
@@ -96,7 +96,7 @@ impl MapLabelConfig {
         loop {
             match buffer.get_u8() {
                 0 => {
-                    debug_assert!(!buffer.has_remaining(), "{:?}", buffer);
+                    debug_assert!(!buffer.has_remaining(), "{buffer:?}");
                     break maplabel;
                 }
                 1 => maplabel.sprite = Some(buffer.get_smart32().unwrap()),
@@ -128,13 +128,14 @@ impl MapLabelConfig {
 
 ///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     let mut labels = MapLabelConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     labels.sort_unstable_by_key(|loc| loc.id);
+    let path = path!(config.output / "map_labels.json");
 
-    let mut file = File::create(path!(config.output / "map_labels.json"))?;
-    let data = serde_json::to_string_pretty(&labels)?;
-    file.write_all(data.as_bytes())?;
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let data = serde_json::to_string_pretty(&labels).unwrap();
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
     Ok(())
 }
 

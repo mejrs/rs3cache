@@ -1,5 +1,6 @@
 //! Miscellanious utilities.
 #![forbid(unsafe_code)]
+#![feature(once_cell)]
 #![warn(
     unused_crate_dependencies,
     unused_imports,
@@ -19,6 +20,9 @@
 pub mod adapters;
 /// Various colour constants.
 pub mod color;
+
+/// Lazy primitives.
+pub mod lazy;
 
 /// Clamps a [`Range`](std::ops::Range) to a certain interval.
 pub mod rangeclamp;

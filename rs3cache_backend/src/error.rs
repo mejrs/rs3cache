@@ -1,5 +1,7 @@
 use std::{
-    backtrace::Backtrace,
+    backtrace::{Backtrace, BacktraceStatus},
+    io,
+    panic::{Location, PanicInfo},
     path::{Path, PathBuf},
     sync::Arc,
 };
@@ -9,21 +11,120 @@ use crate::{buf::ReadError, decoder::DecodeError, index::CachePath};
 pub type CacheResult<T> = Result<T, CacheError>;
 
 /// An error type for things that can go wrong when reading from the cache.
-pub enum CacheError {
+#[derive(Clone)]
+pub struct CacheError {
+    inner: Arc<Inner>,
+}
+
+struct Inner {
+    kind: CacheErrorKind,
+    backtrace: Backtrace,
+    location: &'static Location<'static>,
+}
+
+impl CacheError {
+    pub fn kind(&self) -> &CacheErrorKind {
+        &self.inner.kind
+    }
+
+    #[track_caller]
+    pub fn archive_missing(index: u32, archive: u32) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::ArchiveNotFoundError(index, archive),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[track_caller]
+    pub fn file_missing(index: u32, archive: u32, file: u32) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::FileMissingError(index, archive, file),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[track_caller]
+    pub fn cache_not_found(io: std::io::Error, path: PathBuf, path2: Arc<CachePath>) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::CacheNotFoundError(io, path, path2),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[track_caller]
+    pub fn crc(index: u32, archive: u32, crc1: i64, crc2: i64) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::CrcError(index, archive, crc1, crc2),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[track_caller]
+    pub fn version(index: u32, archive: u32, v1: i64, v2: i64) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::VersionError(index, archive, v1, v2),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[track_caller]
+    pub fn io(cause: io::Error, path: PathBuf) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::IoError(cause, path),
+                backtrace: Backtrace::force_capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[cfg(feature = "dat2")]
+    pub fn xtea_load_error(cause: serde_json::Error, path: PathBuf) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::XteaLoadError(cause, path),
+                backtrace: Backtrace::force_capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+
+    #[cfg(feature = "dat2")]
+    pub fn xtea_absent(i: u8, j: u8) -> Self {
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::XteaError { i, j },
+                backtrace: Backtrace::force_capture(),
+                location: Location::caller(),
+            }),
+        }
+    }
+}
+
+pub enum CacheErrorKind {
     /// Wraps [`sqlite::Error`].
     #[cfg(feature = "sqlite")]
     SqliteError(sqlite::Error),
     DecodeError(DecodeError),
     /// Wraps [`io.error`](std::io::Error).
-    IoError(std::io::Error),
-    /// Wraps [`ParseIntError`](std::num::ParseIntError).
-    ParseIntError(std::num::ParseIntError),
-    /// Wraps [`image::ImageError`].
-    ImageError(image::ImageError),
+    IoError(std::io::Error, PathBuf),
     /// Wraps [`serde_json::Error`].
-    JsonDecodeError(Backtrace, serde_json::Error, Option<PathBuf>),
-    /// Wraps [`serde_json::Error`].
-    JsonEncodeError(Backtrace, serde_json::Error, Option<PathBuf>),
+    JsonEncodeError(serde_json::Error, Option<PathBuf>),
     /// Raised when the CRC field of the requested archive is unequal
     /// to the one in its [`Metadata`](crate::meta::Metadata).
     CrcError(u32, u32, i64, i64),
@@ -42,63 +143,57 @@ pub enum CacheError {
     ReadError(ReadError),
     /// ZIf this is raised then likely an xtea is wrong,
     #[cfg(feature = "dat2")]
-    XteaError(u8, u8),
+    XteaError {
+        i: u8,
+        j: u8,
+    },
+    /// Wraps [`serde_json::Error`].
+    #[cfg(feature = "dat2")]
+    XteaLoadError(serde_json::Error, PathBuf),
 }
 
 #[cfg(feature = "sqlite")]
 impl From<sqlite::Error> for CacheError {
     fn from(cause: sqlite::Error) -> Self {
-        Self::SqliteError(cause)
-    }
-}
-
-impl From<std::io::Error> for CacheError {
-    fn from(cause: std::io::Error) -> Self {
-        Self::IoError(cause)
-    }
-}
-
-impl From<std::num::ParseIntError> for CacheError {
-    fn from(cause: std::num::ParseIntError) -> Self {
-        Self::ParseIntError(cause)
-    }
-}
-
-impl From<image::ImageError> for CacheError {
-    fn from(cause: image::ImageError) -> Self {
-        Self::ImageError(cause)
-    }
-}
-
-impl From<serde_json::Error> for CacheError {
-    fn from(cause: serde_json::Error) -> Self {
-        if cause.is_io() {
-            Self::JsonDecodeError(Backtrace::force_capture(), cause, None)
-        } else {
-            Self::JsonEncodeError(Backtrace::force_capture(), cause, None)
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::SqliteError(cause),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
         }
     }
 }
 
 impl From<DecodeError> for CacheError {
+    #[track_caller]
     fn from(cause: DecodeError) -> Self {
-        Self::DecodeError(cause)
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::DecodeError(cause),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
     }
 }
 
 impl From<ReadError> for CacheError {
+    #[track_caller]
     fn from(cause: ReadError) -> Self {
-        Self::ReadError(cause)
+        Self {
+            inner: Arc::new(Inner {
+                kind: CacheErrorKind::ReadError(cause),
+                backtrace: Backtrace::capture(),
+                location: Location::caller(),
+            }),
+        }
     }
 }
 
 impl From<&CacheError> for CacheError {
     fn from(error: &CacheError) -> Self {
-        // gross workaround for CacheError not being copy/clone-able
-        match *error {
-            Self::FileMissingError(index, archive, file) => Self::FileMissingError(index, archive, file),
-            _ => unimplemented!("Error can't be cloned"),
-        }
+        error.clone()
     }
 }
 
@@ -118,17 +213,18 @@ impl Display for CacheError {
         writeln!(f)?;
 
         // Do some special formatting for the first source error
-        match self {
-            Self::JsonDecodeError(_, source, Some(file)) => writeln!(
+        match self.kind() {
+            #[cfg(feature = "dat2")]
+            CacheErrorKind::XteaLoadError(source, file) => writeln!(
                 f,
                 "Caused by `serde_json::Error`: {} while deserializing {}",
                 source,
                 file.to_string_lossy()
             )?,
             #[cfg(not(target_arch = "wasm32"))]
-            Self::CacheNotFoundError(e, file, input) => {
+            CacheErrorKind::CacheNotFoundError(e, file, input) => {
                 let path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
-                writeln!(
+                write!(
                     f,
                     "Encountered Error: \x1B[91m{e:?}\x1B[0m \n while looking for file \x1B[93m{path:?}\x1B[0m.\n",
                 )?;
@@ -144,35 +240,46 @@ impl Display for CacheError {
                 let path = path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
                 let path = path.to_string_lossy();
 
-                writeln!(f, "note: expecting the following folder structure:")?;
-                writeln!(f, "    {path}{STRUCTURE}")?;
+                write!(f, "note: expecting the following folder structure:")?;
+                write!(f, "    {path}{STRUCTURE}")?;
             }
-            Self::CrcError(index_id, archive_id, crc1, crc2) => {
-                writeln!(f, "Index {} Archive {}: Crc does not match: {} !=  {}", index_id, archive_id, crc1, crc2)?
+            CacheErrorKind::CrcError(index_id, archive_id, crc1, crc2) => {
+                write!(f, "Index {index_id} Archive {archive_id}: Crc does not match: {crc1} !=  {crc2}")?
             }
-            Self::VersionError(index_id, archive_id, v1, v2) => {
-                writeln!(f, "Index {} Archive {}: Version does not match: {} !=  {}", index_id, archive_id, v1, v2)?
+            CacheErrorKind::VersionError(index_id, archive_id, v1, v2) => {
+                write!(f, "Index {index_id} Archive {archive_id}: Version does not match: {v1} !=  {v2}")?
             }
-            Self::ArchiveNotFoundError(5, archive) => writeln!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7)?,
-            Self::ArchiveNotFoundError(index, archive) => writeln!(f, "Index {} does not contain archive {}", index, archive)?,
-            Self::FileMissingError(index, archive, file) => writeln!(f, "\nIndex {}, Archive {} does not contain file {}", index, archive, file)?,
+            CacheErrorKind::ArchiveNotFoundError(5, archive) => {
+                write!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7)?
+            }
+            CacheErrorKind::ArchiveNotFoundError(index, archive) => writeln!(f, "Index {index} does not contain archive {archive}")?,
+            CacheErrorKind::FileMissingError(index, archive, file) => write!(f, "\nIndex {index}, Archive {archive} does not contain file {file}")?,
+            CacheErrorKind::IoError(io, path) => write!(f, "encountered {io} while handling path {path:?}")?,
             _ => {
                 if let Some(source) = self.source() {
-                    writeln!(f, "Caused by: {}", source)?;
+                    write!(f, "Caused by: {source}")?;
                 }
             }
         }
 
+        writeln!(f, ", at {}", self.inner.location)?;
+
         // Display deeper source errors, if any.
         for s in <dyn Error>::sources(self).skip(2) {
-            writeln!(f, "Caused by: {}", s)?;
+            writeln!(f, "Caused by: {s}")?;
         }
 
         writeln!(f)?;
 
-        if let Self::JsonDecodeError(trace, _, _) = self {
-            writeln!(f, "The following backtrace was captured:")?;
-            writeln!(f, "{}", trace)?;
+        if let Some(trace) = <dyn Error>::request_ref::<Backtrace>(self) {
+            match trace.status() {
+                BacktraceStatus::Disabled => writeln!(
+                    f,
+                    "No backtrace was captured. set `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` to capture a backtrace."
+                )?,
+                BacktraceStatus::Captured => writeln!(f, "The following backtrace was captured:\n {trace}")?,
+                _ => {}
+            }
         }
 
         Ok(())
@@ -181,27 +288,20 @@ impl Display for CacheError {
 
 impl std::error::Error for CacheError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
+        match self.kind() {
             #[cfg(feature = "sqlite")]
-            Self::SqliteError(ref e) => Some(e),
-            Self::DecodeError(ref e) => Some(e),
-            Self::IoError(ref e) => Some(e),
-            Self::JsonDecodeError(_, ref e, _) => Some(e),
-            Self::ImageError(ref e) => Some(e),
-            Self::ParseIntError(e) => Some(e),
-            Self::ReadError(e) => Some(e),
+            CacheErrorKind::SqliteError(ref e) => Some(e),
+            CacheErrorKind::DecodeError(ref e) => Some(e),
+            CacheErrorKind::IoError(ref e, _) => Some(e),
+            #[cfg(feature = "dat2")]
+            CacheErrorKind::XteaLoadError(ref e, _) => Some(e),
+            CacheErrorKind::ReadError(e) => Some(e),
             _ => None,
         }
     }
 
     fn provide<'a>(&'a self, req: &mut core::any::Demand<'a>) {
-        #![expect(clippy::single_match, reason = "more error variants should have traces")]
-        match self {
-            Self::JsonDecodeError(trace, _, _) => {
-                req.provide_ref::<Backtrace>(trace);
-            }
-            _ => {}
-        }
+        req.provide_ref::<Backtrace>(&self.inner.backtrace);
     }
 }
 
@@ -248,16 +348,16 @@ pub mod py_error_impl {
     pyo3::create_exception!(cache, ArchiveNotFoundError, PyException, "Raised if an archive is missing");
     pyo3::create_exception!(cache, FileMissingError, PyException, "Raised if a file in an archive is missing");
     #[cfg(feature = "dat2")]
-    pyo3::create_exception!(cache, XteaError, PyException, "Raised if somethign related to an xtea went wrong");
+    pyo3::create_exception!(cache, XteaError, PyException, "Raised if something related to an xtea went wrong");
 
     impl From<&CacheError> for PyErr {
         fn from(err: &CacheError) -> PyErr {
-            match err {
-                CacheError::CacheNotFoundError(..) => CacheNotFoundError::new_err(err.to_string()),
-                CacheError::ArchiveNotFoundError(..) => ArchiveNotFoundError::new_err(err.to_string()),
-                CacheError::FileMissingError(..) => FileMissingError::new_err(err.to_string()),
+            match err.kind() {
+                CacheErrorKind::CacheNotFoundError(..) => CacheNotFoundError::new_err(err.to_string()),
+                CacheErrorKind::ArchiveNotFoundError(..) => ArchiveNotFoundError::new_err(err.to_string()),
+                CacheErrorKind::FileMissingError(..) => FileMissingError::new_err(err.to_string()),
                 #[cfg(feature = "dat2")]
-                CacheError::XteaError(..) => XteaError::new_err(err.to_string()),
+                CacheErrorKind::XteaError { .. } => XteaError::new_err(err.to_string()),
                 _ => PyRuntimeError::new_err(err.to_string()),
             }
         }

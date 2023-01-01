@@ -9,7 +9,10 @@ use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-use rs3cache_backend::buf::BufExtra;
+use rs3cache_backend::{
+    buf::{BufExtra, ReadError},
+    error::CacheError,
+};
 
 use crate::{
     cache::{error::CacheResult, index::CacheIndex},
@@ -22,7 +25,8 @@ pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 /// Saves an image of every sprite to disk.
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
-    std::fs::create_dir_all(path!(config.output / "sprites"))?;
+    let folder = path!(config.output / "sprites");
+    std::fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder))?;
 
     let index = CacheIndex::new(IndexType::SPRITES, config.input.clone())?;
 
@@ -129,7 +133,8 @@ fn make_image(index_entry: &IndexEntry, entry: &Entry, data: Bytes) -> Sprite {
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     use rs3cache_backend::hash::hash_archive;
 
-    std::fs::create_dir_all(path!(config.output / "sprites"))?;
+    let folder = path!(config.output / "sprites");
+    std::fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder))?;
 
     let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
@@ -158,7 +163,8 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTreeMap<(u32, u32), Sprite>> {
     use rs3cache_backend::hash::hash_archive;
 
-    std::fs::create_dir_all(path!(config.output / "sprites"))?;
+    let folder = path!(config.output / "sprites");
+    std::fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder))?;
 
     let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
@@ -220,7 +226,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
 pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
     let mut buffer = Cursor::new(buffer);
 
-    buffer.seek(SeekFrom::End(-2))?;
+    buffer.seek(SeekFrom::End(-2)).map_err(|_| ReadError::eof())?;
 
     let data = buffer.get_u16();
     let format = data >> 15;
@@ -228,7 +234,7 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
 
     let imgs = match format {
         0 => {
-            buffer.seek(SeekFrom::End(-7 - (count as i64) * 8))?;
+            buffer.seek(SeekFrom::End(-7 - (count as i64) * 8)).map_err(|_| ReadError::eof())?;
 
             let _big_width = buffer.get_u16();
             let _big_height = buffer.get_u16();
@@ -241,11 +247,11 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
 
             let pos = -7 - (count as i64) * 8 - (palette_count as i64) * 3;
 
-            buffer.seek(SeekFrom::End(pos))?;
+            buffer.seek(SeekFrom::End(pos)).map_err(|_| ReadError::eof())?;
 
             let palette = iter::repeat_with(|| buffer.get_rgb()).take(palette_count).collect::<Vec<_>>();
 
-            buffer.seek(SeekFrom::Start(0))?;
+            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof())?;
 
             izip!(0..count, widths, heights)
                 .filter_map(|(index, width, height)| {
@@ -290,7 +296,7 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
                 .collect::<BTreeMap<_, _>>()
         }
         1 => {
-            buffer.seek(SeekFrom::Start(0))?;
+            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof())?;
             let ty = buffer.get_u8();
             assert_eq!(ty, 0, "Unknown image type.");
 
@@ -337,19 +343,19 @@ mod sprite_tests {
         fn dump(id: u32, frame: u32) -> CacheResult<Sprite> {
             let config = crate::cli::Config::env();
 
-            let archive = CacheIndex::new(IndexType::SPRITES, config.input.clone())?.archive(id)?;
+            let archive = CacheIndex::new(IndexType::SPRITES, config.input)?.archive(id)?;
             let file = archive.file(&0)?;
-            assert!(file.len() != 0, "{:?}", file);
+            assert!(!file.is_empty(), "{file:?}");
             let mut images = deserialize(file).unwrap();
             Ok(images.remove(&(frame as usize)).unwrap())
         }
 
-        std::fs::create_dir_all("test_data/sprites/method_0".to_string())?;
+        std::fs::create_dir_all("test_data/sprites/method_0").unwrap();
 
-        for id in vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 3034] {
+        for id in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 694, 3034] {
             let frame = 0;
             let sprite = dump(id, frame)?;
-            let filename = format!("test_data/sprites/method_0/{}-{}.png", id, frame);
+            let filename = format!("test_data/sprites/method_0/{id}-{frame}.png");
             sprite.save(filename).expect("Error saving image");
         }
         Ok(())

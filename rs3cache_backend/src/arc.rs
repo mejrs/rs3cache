@@ -114,7 +114,7 @@ impl Archive {
     pub fn file(&self, file_id: &u32) -> CacheResult<Bytes> {
         self.files
             .get(file_id)
-            .ok_or_else(|| CacheError::FileMissingError(self.index_id(), self.archive_id(), *file_id))
+            .ok_or_else(|| CacheError::file_missing(self.index_id(), self.archive_id(), *file_id))
             .cloned()
     }
 
@@ -214,7 +214,7 @@ impl Archive {
 
         self.files_named
             .get(&hash)
-            .ok_or_else(|| CacheError::FileMissingError(self.index_id(), self.archive_id(), hash as u32))
+            .ok_or_else(|| CacheError::file_missing(self.index_id(), self.archive_id(), hash as u32))
             .cloned()
     }
 
@@ -233,7 +233,7 @@ impl Archive {
         if let Some(file) = self.files.get(&file_id) {
             Ok(PyBytes::new(py, file))
         } else {
-            Err(PyKeyError::new_err(format!("File {} is not present.", file_id)))
+            Err(PyKeyError::new_err(format!("File {file_id} is not present.")))
         }
     }
 

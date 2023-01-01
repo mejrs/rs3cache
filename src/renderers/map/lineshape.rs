@@ -1,5 +1,5 @@
 pub fn draw(ty: u8, rotation: u8, size: u32, fun: impl FnMut((u32, u32))) {
-    debug_assert!(size.is_power_of_two(), "{} is an invalid size Only 2^n values are allowed.", size);
+    debug_assert!(size.is_power_of_two(), "{size} is an invalid size Only 2^n values are allowed.");
 
     match (ty, rotation) {
         (0, 0) => (0..(size / 4)).flat_map(|x| (0..size).map(move |y| (x, y))).for_each(fun),
@@ -44,7 +44,7 @@ mod line_shape_tests {
                 for size in &sizes {
                     draw(*ty, *rot, *size, |(x, y)| {
                         if !(x < *size && y < *size) {
-                            panic!("{} {} {} {} {}", x, y, ty, rot, size)
+                            panic!("{x} {y} {ty} {rot} {size}")
                         }
                     });
                 }

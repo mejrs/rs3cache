@@ -19,7 +19,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         // The zlib format
         [b'Z', b'L', b'B', b'\x01', x0, x1, x2, x3, data @ ..] => {
             let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
-            let decoder = zlib::Decoder::new(&*data)?;
+            let decoder = zlib::Decoder::new(&*data).map_err(DecodeError::ZlibError)?;
             let ret = do_read(decoder, length)?;
 
             Ok(ret)
@@ -45,8 +45,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
 
         // A xtea-encrypted gzip
         #[cfg(feature = "dat2")]
-        [2, _, _, _, _, data @ .., _, _] if xtea.is_some() => {
-            let xtea = xtea.unwrap();
+        [2, _, _, _, _, data @ .., _, _] if let Some(xtea) = xtea => {
             let decrypted = crate::xtea::Xtea::decrypt(data, xtea);
 
             if let [x0, x1, x2, x3, decrypted @ ..] = &*decrypted {
@@ -62,7 +61,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         // The gzip format
         [2, _y0, _y1, _y2, _y3, x0, x1, x2, x3, data @ ..] => {
             let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
-            let decoder = gzip::Decoder::new(&*data)?;
+            let decoder = gzip::Decoder::new(&*data).map_err(DecodeError::GzipError)?;
             let ret = do_read(decoder, length)?;
             Ok(ret)
         }
@@ -72,7 +71,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         [b'\x1f', b'\x8b', b'\x08', data @ ..] => {
             if let [data @ .., _version, _version_part2] = data {
                 let ret: Result<Bytes, DecodeError> = try {
-                    let mut decoder = gzip::Decoder::new(&*data)?;
+                    let mut decoder = gzip::Decoder::new(&*data).map_err(DecodeError::GzipError)?;
                     let mut buf = Vec::new();
                     decoder.read_to_end(&mut buf).unwrap();
                     buf.into()
@@ -81,7 +80,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
                     // Sometimes tools generate caches where trailing versions are missing,
                     // and the below code includes the last two bytes.
                     let data = encoded_data.as_slice();
-                    let mut decoder = gzip::Decoder::new(data)?;
+                    let mut decoder = gzip::Decoder::new(data).map_err(DecodeError::GzipError)?;
                     let mut buf = Vec::new();
                     decoder.read_to_end(&mut buf).unwrap();
                     Ok(buf.into())
@@ -94,7 +93,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         }
 
         // Some tools pack empty files
-        [] | [_] | [_, _] | [_, _, _] => Err(DecodeError::Other("File was empty".to_string())),
+        [] | [_] | [_, _] | [_, _, _] => Err(DecodeError::Other("File was empty")),
 
         // Oh no
         _ => unimplemented!("unknown format {:?}", &encoded_data[0..30]),
@@ -112,32 +111,20 @@ fn do_read(mut decoder: impl Read, len: u32) -> Result<Bytes, DecodeError> {
 
 #[derive(Debug)]
 pub enum DecodeError {
-    /// Wraps [`std::io::Error`].
-    IoError(std::io::Error),
+    ZlibError(std::io::Error),
+    GzipError(std::io::Error),
     /// Wraps [`bzip2_rs::decoder::DecoderError`].
     BZip2Error(bzip2_rs::decoder::DecoderError),
     #[cfg(feature = "dat2")]
     XteaError,
-    Other(String),
-}
-
-impl From<std::io::Error> for DecodeError {
-    fn from(cause: std::io::Error) -> Self {
-        Self::IoError(cause)
-    }
-}
-
-impl From<bzip2_rs::decoder::DecoderError> for DecodeError {
-    fn from(cause: bzip2_rs::decoder::DecoderError) -> Self {
-        Self::BZip2Error(cause)
-    }
+    Other(&'static str),
 }
 
 impl Display for DecodeError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::ZlibError(io) | Self::GzipError(io) => Display::fmt(&io, f),
             Self::BZip2Error(e) => Display::fmt(&e, f),
-            Self::IoError(e) => Display::fmt(&e, f),
             Self::Other(e) => Display::fmt(&e, f),
             #[cfg(feature = "dat2")]
             Self::XteaError => Display::fmt("XteaError", f),
@@ -149,7 +136,6 @@ impl std::error::Error for DecodeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::BZip2Error(e) => Some(e),
-            Self::IoError(e) => Some(e),
             _ => None,
         }
     }

@@ -1,12 +1,6 @@
 //! The interface between [rs3cache](crate) and the cache database.
 
 #![allow(unused_imports)] // varies based on mock config flags
-
-/// This contains the game-specific implementations.
-#[cfg_attr(feature = "sqlite", path = "index/sqlite.rs")]
-#[cfg_attr(feature = "dat2", path = "index/dat2.rs")]
-#[cfg_attr(feature = "dat", path = "index/dat.rs")]
-mod index_impl;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
@@ -19,7 +13,6 @@ use std::{
 };
 
 use bytes::{Buf, Bytes};
-pub use index_impl::*;
 use itertools::iproduct;
 use path_macro::path;
 
@@ -32,6 +25,15 @@ use crate::{
     error::{CacheError, CacheResult},
     meta::{IndexMetadata, Metadata},
 };
+
+/// This contains the game-specific implementations.
+#[cfg_attr(feature = "sqlite", path = "index/sqlite.rs")]
+#[cfg_attr(feature = "dat2", path = "index/dat2.rs")]
+#[cfg_attr(feature = "dat", path = "index/dat.rs")]
+mod index_impl;
+
+#[cfg(any(feature = "sqlite", feature = "dat"))]
+pub use index_impl::*;
 
 mod states {
     use std::ops::RangeInclusive;
@@ -80,8 +82,16 @@ impl AsRef<Path> for CachePath {
     fn as_ref(&self) -> &Path {
         match self {
             CachePath::Omitted => Path::new(""),
-            CachePath::Env(p) => p,
-            CachePath::Given(p) => p,
+            CachePath::Env(p) | CachePath::Given(p) => p,
+        }
+    }
+}
+
+impl CachePath {
+    pub fn to_path_buf(&self) -> PathBuf {
+        match self {
+            CachePath::Omitted => PathBuf::new(),
+            CachePath::Env(p) | CachePath::Given(p) => p.to_path_buf(),
         }
     }
 }
@@ -114,7 +124,7 @@ where
         let metadata = self
             .metadatas()
             .get(&archive_id)
-            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
+            .ok_or_else(|| CacheError::archive_missing(self.index_id(), archive_id))?;
         let data = self.get_file(metadata)?;
 
         Ok(Archive::deserialize(metadata, data))
@@ -161,7 +171,7 @@ impl CacheIndex<Initial> {
         let all_ids = self.metadatas().keys().copied().collect::<BTreeSet<_>>();
 
         if let Some(missing_id) = ids.iter().find(|id| !all_ids.contains(id)) {
-            panic!("Attempted to retain missing archive id {},", missing_id)
+            panic!("Attempted to retain missing archive id {missing_id},")
         }
         let Self {
             path,

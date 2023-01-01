@@ -1,7 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![feature(
     cfg_eval,
-    bench_black_box,
     doc_cfg,
     doc_auto_cfg,
     option_result_contains,

@@ -3,7 +3,7 @@ use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 use pyo3::{
     exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::*,
-    types::PyInt,
+    types::{PyInt, PyList},
 };
 use rs3cache_backend::index::CachePath;
 
@@ -63,17 +63,17 @@ impl PyMapSquares {
             .downcast::<PyInt>()
             .map_err(|_| PyTypeError::new_err(format!("i was of type {}. i must be an integer.", i.get_type())))?
             .extract::<u8>()
-            .map_err(|_| PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))?;
+            .map_err(|_| PyIndexError::new_err(format!("i was {i}. It must satisfy 0 <= i <= 100.")))?;
         let j = j
             .downcast::<PyInt>()
             .map_err(|_| PyTypeError::new_err(format!("j was of type {}. j must be an integer.", j.get_type())))?
             .extract::<u8>()
-            .map_err(|_| PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))?;
+            .map_err(|_| PyIndexError::new_err(format!("j was {j}. It must satisfy 0 <= j <= 200.")))?;
 
         if i >= 100 {
-            Err(PyIndexError::new_err(format!("i was {}. It must satisfy 0 <= i <= 100.", i)))
+            Err(PyIndexError::new_err(format!("i was {i}. It must satisfy 0 <= i <= 100.")))
         } else if j >= 200 {
-            Err(PyIndexError::new_err(format!("j was {}. It must satisfy 0 <= j <= 200.", j)))
+            Err(PyIndexError::new_err(format!("j was {j}. It must satisfy 0 <= j <= 200.")))
         } else {
             let sq = self
                 .mapsquares
@@ -144,21 +144,19 @@ impl PyMapSquare {
     }
 
     /// The [`Location`]s in a mapsquare.
-    pub fn locations(&self) -> PyResult<Vec<Location>> {
-        let locs = self.inner.get_locations()?.clone();
-        Ok(locs)
+    pub fn locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
+        Ok(PyList::new(py, self.inner.locations()?.iter().copied()))
     }
 
     /// The water [`Location`]s in a mapsquare.
     #[cfg(feature = "rs3")]
-    pub fn water_locations(&self) -> PyResult<Vec<Location>> {
-        let locs = self.inner.get_water_locations()?.clone();
-        Ok(locs)
+    pub fn water_locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
+        Ok(PyList::new(py, self.inner.water_locations()?.iter().copied()))
     }
 
     /// The [`Tile`]s in a mapsquare.   
     pub fn tiles(&self) -> PyResult<BTreeMap<(u8, u8, u8), Tile>> {
-        let tiles = self.inner.get_tiles()?;
+        let tiles = self.inner.tiles()?;
         let map: BTreeMap<(u8, u8, u8), Tile> = tiles.indexed_iter().map(|((p, x, y), &t)| ((p as u8, x as u8, y as u8), t)).collect();
         Ok(map)
     }

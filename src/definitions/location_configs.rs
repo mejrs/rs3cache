@@ -177,8 +177,7 @@ impl LocationConfig {
                     .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
             })
             .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
-            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
-            .map_err(CacheError::ReadError)?;
+            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()?;
         Ok(locations)
     }
 
@@ -189,9 +188,7 @@ impl LocationConfig {
             .take_files()
             .into_iter()
             .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
-            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
-            .map_err(CacheError::ReadError)?;
-
+            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()?;
         Ok(locations)
     }
 
@@ -880,11 +877,12 @@ use location_config_fields::*;
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     let loc_configs = LocationConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
-    let mut file = File::create(path!(config.output / "location_configs.json"))?;
+    let path = path!(config.output / "location_configs.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
-    file.write_all(data.as_bytes())?;
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
 
     Ok(())
 }
@@ -892,15 +890,19 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 ///Save the location configs as individual `json` files.
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(&config.output / "location_configs");
-    fs::create_dir_all(&folder)?;
+    fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder.clone()))?;
 
     let configs = LocationConfig::dump_all(config)?;
-    configs.into_iter().par_bridge().for_each(|(id, location_config)| {
-        let mut file = File::create(path!(&folder / format!("{id}.json"))).unwrap();
-
+    configs.into_iter().par_bridge().try_for_each(|(id, location_config)| {
+        let path = path!(&folder / format!("{id}.json"));
+        let mut file = match File::create(&path) {
+            Ok(f) => f,
+            Err(e) => return Err(CacheError::io(e, path)),
+        };
         let data = serde_json::to_string_pretty(&location_config).unwrap();
-        file.write_all(data.as_bytes()).unwrap();
-    });
+        file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+        Ok(())
+    })?;
 
     Ok(())
 }
@@ -972,7 +974,7 @@ mod map_tests {
         let loc = loc_config.get(&3263).expect("Swamp not present");
         let name = loc.name.as_ref().expect("Swamp has no name");
 
-        assert_eq!(name, "Swamp", "{:?}", loc);
+        assert_eq!(name, "Swamp", "{loc:?}");
 
         Ok(())
     }
@@ -988,7 +990,7 @@ mod map_tests {
         let bookcase = loc_config.get(&118445).unwrap();
         let paramtable = bookcase.params.as_ref().unwrap();
         let value = &paramtable.params[&8178];
-        assert_eq!(*value, Param::Integer(50923), "{:?}", paramtable);
+        assert_eq!(*value, Param::Integer(50923), "{paramtable:?}");
         Ok(())
     }
 }

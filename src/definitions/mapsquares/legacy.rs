@@ -111,7 +111,7 @@ impl Iterator for GroupMapSquareIterator {
                 .map(|sq| ((sq.i, sq.j), sq))
                 .collect();
             if !(mapsquares.contains_key(&(core_i, core_j))) {
-                println!("failed reading mapsquare {}, {}", core_i, core_j);
+                println!("failed reading mapsquare {core_i}, {core_j}");
             };
 
             GroupMapSquare { core_i, core_j, mapsquares }

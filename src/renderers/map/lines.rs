@@ -4,15 +4,15 @@ use image::{GenericImage, Rgba, RgbaImage};
 
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare},
-    renderers::map::{lineshape, mapcore::CONFIG},
+    renderers::map::{lineshape, CONFIG},
     utils::color::Color,
 };
 
 /// Applies lines of doors, fences, walls and so on to the base image.
 pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location_config: &BTreeMap<u32, LocationConfig>) {
     if let Some(core) = squares.core() {
-        if let Ok(locations) = core.get_locations() {
-            let tiles = core.get_tiles().expect("always some if it has locations");
+        if let Ok(locations) = core.locations() {
+            let tiles = core.tiles().expect("always some if it has locations");
             locations
                 .iter()
                 .map(|loc| (loc, &(location_config[&(loc.id)])))

@@ -15,21 +15,20 @@ use path_macro::path;
 
 use crate::{
     arc::Archive,
-    buf::BufExtra,
+    buf::{BufExtra, ReadError},
     decoder,
-    error::{CacheError, CacheResult},
+    error::{CacheError, CacheErrorKind, CacheResult},
     index::{CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
     xtea::Xtea,
 };
-
 impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
     fn get_entry(a: u32, b: u32, path: &Arc<CachePath>) -> CacheResult<(u32, u32)> {
         let file = path!(**path / "cache" / format!("main_file_cache.idx{a}"));
-        let entry_data = fs::read(&file).map_err(|e| CacheError::CacheNotFoundError(e, file, path.clone()))?;
+        let entry_data = fs::read(&file).map_err(|e| CacheError::cache_not_found(e, file, path.clone()))?;
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((buf.try_get_uint(3)? as u32, buf.try_get_uint(3)? as u32))
@@ -45,30 +44,30 @@ where
         let mut data = Vec::with_capacity(length as _);
 
         while sector != 0 {
-            buffer.seek(SeekFrom::Start((sector * 520) as _))?;
+            buffer.seek(SeekFrom::Start((sector * 520) as _)).map_err(|_| ReadError::eof())?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 (10, i32::from_be_bytes(buf), 510.min(length - read_count))
             } else {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 (8, u16::from_be_bytes(buf) as _, 512.min(length - read_count))
             };
 
             let current_part = {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 u16::from_be_bytes(buf)
             };
             let new_sector = {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf[1..4])?;
+                buffer.read_exact(&mut buf[1..4]).map_err(|_| ReadError::eof())?;
                 u32::from_be_bytes(buf)
             };
             let current_index = {
                 let mut buf = [0; 1];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 u8::from_be_bytes(buf)
             };
 
@@ -81,7 +80,7 @@ where
             sector = new_sector;
 
             let mut buf = [0u8; 512];
-            buffer.read_exact(&mut buf[..(block_size as usize)])?;
+            buffer.read_exact(&mut buf[..(block_size as usize)]).map_err(|_| ReadError::eof())?;
 
             data.extend_from_slice(&buf[..(block_size as usize)]);
         }
@@ -101,7 +100,7 @@ where
         let metadata = self
             .metadatas()
             .get(&archive_id)
-            .ok_or_else(|| CacheError::ArchiveNotFoundError(self.index_id(), archive_id))?;
+            .ok_or_else(|| CacheError::archive_missing(self.index_id(), archive_id))?;
         let data = self.read_index(metadata.index_id(), metadata.archive_id())?;
         let data = decoder::decompress(data, xtea)?;
         Ok(Archive::deserialize(metadata, data))
@@ -114,7 +113,7 @@ where
                 return self.get_file(m);
             }
         }
-        Err(CacheError::ArchiveNotFoundError(0, 0))
+        Err(CacheError::archive_missing(0, 0))
     }
 }
 
@@ -129,26 +128,21 @@ impl CacheIndex<Initial> {
 
         let file = match File::open(&file) {
             Ok(f) => f,
-            Err(e) => return Err(CacheError::CacheNotFoundError(e, file, path)),
+            Err(e) => return Err(CacheError::cache_not_found(e, file, path)),
         };
         let xteas = if index_id == 5 {
             let path = path!(&*path / "xteas.json");
 
-            // Try to laod either xteas.json or keys.json
+            // Try to load either xteas.json or keys.json
             match Xtea::load(&path) {
                 Ok(file) => Some(file),
-                Err(CacheError::IoError(e1)) if e1.kind() == io::ErrorKind::NotFound => {
+                // Let's try looking somewhere else
+                Err(e1) if let CacheErrorKind::IoError(cause, _) = e1.kind() && cause.kind() == io::ErrorKind::NotFound => {
                     let alt_path = path!(&*path / "keys.json");
-                    Some(Xtea::load(&alt_path).map_err(|e2| {
-                        let path = path.to_string_lossy();
-                        let alt_path = alt_path.to_string_lossy();
-                        let e1 = e1.to_string();
-                        let e2 = e2.to_string();
-                        io::Error::new(
-                            io::ErrorKind::NotFound,
-                            format!("Cannot to find xtea keys at either {path} or {alt_path}: {e1} \n {e2}"),
-                        )
-                    })?)
+                    match Xtea::load(alt_path){
+                        Ok(file) => Some(file),
+                        Err(_) => return Err(e1)
+                    }
                 }
                 Err(other) => return Err(other),
             }

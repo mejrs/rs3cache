@@ -88,7 +88,7 @@ impl VarpOrVarbit {
         match (varp.val, varbit.val) {
             (Some(id), None) => Self::Varp(id),
             (None, Some(id)) => Self::Varbit(id),
-            other => panic!("Invalid variable pattern {:?}.", other),
+            other => panic!("Invalid variable pattern {other:?}."),
         }
     }
 }

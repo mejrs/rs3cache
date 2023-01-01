@@ -1,5 +1,5 @@
 pub fn draw_overlay(shape: u8, size: u32, fun: impl FnMut((u32, u32))) {
-    debug_assert!(size.is_power_of_two(), "{} is an invalid size, only 2^n values are allowed.", size);
+    debug_assert!(size.is_power_of_two(), "{size} is an invalid size, only 2^n values are allowed.");
 
     match shape {
         0 => (0..size).flat_map(move |x| (0..size).map(move |y| (x, y))).for_each(fun),
@@ -69,7 +69,7 @@ pub fn draw_overlay(shape: u8, size: u32, fun: impl FnMut((u32, u32))) {
 }
 
 pub fn draw_underlay(shape: Option<u8>, size: u32, fun: impl FnMut((u32, u32))) {
-    debug_assert!(size.is_power_of_two(), "{} is an invalid size, only 2^n values are allowed.", size);
+    debug_assert!(size.is_power_of_two(), "{size} is an invalid size, only 2^n values are allowed.");
 
     match shape {
         None => (0..size).flat_map(move |x| (0..size).map(move |y| (x, y))).for_each(fun),
@@ -157,7 +157,7 @@ mod shape_tests {
             for shape in &shapes {
                 draw_overlay(*shape, *size, |(x, y)| {
                     if !(x < *size && y < *size) {
-                        panic!("{} {} {} {}", x, y, shape, size)
+                        panic!("{x} {y} {shape} {size}")
                     }
                 });
             }
@@ -175,14 +175,14 @@ mod shape_tests {
         for size in &sizes {
             draw_underlay(None, *size, |(x, y)| {
                 if !(x < *size && y < *size) {
-                    panic!("{} {} {}", x, y, size)
+                    panic!("{x} {y} {size}")
                 }
             });
 
             for shape in &shapes {
                 draw_underlay(Some(*shape), *size, |(x, y)| {
                     if !(x < *size && y < *size) {
-                        panic!("{} {} {}", x, y, size)
+                        panic!("{x} {y} {size}")
                     }
                 });
             }

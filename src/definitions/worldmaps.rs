@@ -9,7 +9,7 @@ use std::{
 
 use bytes::{Buf, Bytes};
 use path_macro::path;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
 
 use crate::{
@@ -308,40 +308,42 @@ pub use mappaste_fields_impl::*;
 
 /// Exports all world map pastes to `out/map_pastes.json`.
 pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     // btreemap has deterministic order
     let map_pastes: BTreeMap<u32, MapPastes> = MapPastes::dump_all(config)?.into_iter().collect();
 
-    let mut file = File::create(path!(config.output / "map_pastes.json"))?;
-    let data = serde_json::to_string_pretty(&map_pastes)?;
-    file.write_all(data.as_bytes())?;
+    let path = path!(config.output / "map_pastes.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let data = serde_json::to_string_pretty(&map_pastes).unwrap();
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
     Ok(())
 }
 
 /// Exports all world map zones to `out/map_zones.json`.
 pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
 
     let mut map_zones = MapZone::dump_all(config)?.into_values().collect::<Vec<_>>();
     map_zones.sort_unstable_by_key(|loc| loc.id);
-
-    let mut file = File::create(path!(config.output / "map_zones.json"))?;
-    let data = serde_json::to_string_pretty(&map_zones)?;
-    file.write_all(data.as_bytes())?;
+    let path = path!(config.output / "map_zones.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let data = serde_json::to_string_pretty(&map_zones).unwrap();
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
     Ok(())
 }
 
 /// Exports small images of world maps to `out/world_map_small`.
 pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(path!(config.output / "world_map_small"))?;
+    let folder = path!(config.output / "world_map_small");
+    fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder.clone()))?;
 
     let files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
         .archive(WorldMapType::SMALL)?
         .take_files();
     for (id, data) in files {
-        let filename = path!(config.output / "world_map_small" / format!("{id}.png"));
-        let mut file = File::create(filename)?;
-        file.write_all(&data)?;
+        let path = path!(config.output / "world_map_small" / format!("{id}.png"));
+        let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+        file.write_all(&data).map_err(|e| CacheError::io(e, path))?;
     }
 
     Ok(())
@@ -349,7 +351,8 @@ pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
 
 /// Exports big images of world maps to `out/world_map_big`.
 pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(path!(config.output / "world_map_big"))?;
+    let folder = path!(config.output / "world_map_big");
+    fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder.clone()))?;
 
     let files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
         .archive(WorldMapType::BIG)?
@@ -359,9 +362,9 @@ pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
         let size = buffer.get_u32() as usize;
         let img = buffer.copy_to_bytes(size);
 
-        let filename = path!(config.output / "world_map_big" / format!("{id}.png"));
-        let mut file = File::create(filename)?;
-        file.write_all(&img)?;
+        let filename = path!(folder / format!("{id}.png"));
+        let mut file = File::create(&filename).map_err(|e| CacheError::io(e, filename.clone()))?;
+        file.write_all(&img).map_err(|e| CacheError::io(e, filename))?;
     }
 
     Ok(())

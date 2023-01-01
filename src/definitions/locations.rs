@@ -70,7 +70,7 @@ impl IntoPy<PyObject> for Watery {
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Clone, Debug, Hash, Eq, PartialEq)]
+#[derive(Serialize, Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Location {
     /// The plane a.k.a elevation.
     ///
@@ -227,5 +227,12 @@ impl Location {
             pyo3::class::basic::CompareOp::Eq => Ok(*self == other),
             _ => todo!(),
         }
+    }
+}
+
+#[cfg(feature = "pyo3")]
+impl ToPyObject for Location {
+    fn to_object(&self, py: Python<'_>) -> PyObject {
+        (*self).into_py(py)
     }
 }

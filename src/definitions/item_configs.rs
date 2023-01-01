@@ -14,7 +14,11 @@ use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{CacheError, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
     structures::paramtable::ParamTable,
 };
@@ -357,13 +361,14 @@ use item_config_fields::*;
 
 /// Save the item configs as `item_configs.json`. Exposed as `--dump item_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output)?;
+    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
     let mut item_configs = ItemConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     item_configs.sort_unstable_by_key(|loc| loc.id);
 
-    let mut file = File::create(path!(config.output / "item_configs.json"))?;
+    let path = path!(config.output / "item_configs.json");
+    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
     let data = serde_json::to_string_pretty(&item_configs).unwrap();
-    file.write_all(data.as_bytes())?;
+    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
 
     Ok(())
 }

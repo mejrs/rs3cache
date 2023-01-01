@@ -15,7 +15,7 @@ use path_macro::path;
 
 use crate::{
     arc::Archive,
-    buf::BufExtra,
+    buf::{BufExtra, ReadError},
     decoder,
     error::{CacheError, CacheResult},
     index::{CacheIndex, CachePath, IndexState, Initial},
@@ -30,7 +30,7 @@ where
         let file = path!(**path / "cache" / format!("main_file_cache.idx{a}"));
         let entry_data = match fs::read(&file) {
             Ok(f) => f,
-            Err(e) => return Err(CacheError::CacheNotFoundError(e, file, path.clone())),
+            Err(e) => return Err(CacheError::cache_not_found(e, file, path.clone())),
         };
 
         let mut buf = Cursor::new(entry_data);
@@ -48,30 +48,30 @@ where
         let mut data = Vec::with_capacity(length as _);
 
         while sector != 0 {
-            buffer.seek(SeekFrom::Start((sector * 520) as _))?;
+            buffer.seek(SeekFrom::Start((sector * 520) as _)).map_err(|_| ReadError::eof())?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 (10, i32::from_be_bytes(buf), 510.min(length - read_count))
             } else {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 (8, u16::from_be_bytes(buf) as _, 512.min(length - read_count))
             };
 
             let current_part = {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 u16::from_be_bytes(buf)
             };
             let new_sector = {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf[1..4])?;
+                buffer.read_exact(&mut buf[1..4]).map_err(|_| ReadError::eof())?;
                 u32::from_be_bytes(buf)
             };
             let _current_index = {
                 let mut buf = [0; 1];
-                buffer.read_exact(&mut buf)?;
+                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof())?;
                 u8::from_be_bytes(buf)
             };
 
@@ -83,7 +83,7 @@ where
             sector = new_sector;
 
             let mut buf = [0u8; 512];
-            buffer.read_exact(&mut buf[..(block_size as usize)])?;
+            buffer.read_exact(&mut buf[..(block_size as usize)]).map_err(|_| ReadError::eof())?;
 
             data.extend_from_slice(&buf[..(block_size as usize)]);
         }
@@ -106,7 +106,7 @@ where
                 return self.get_file(m);
             }
         }
-        Err(CacheError::ArchiveNotFoundError(0, 0))
+        Err(CacheError::archive_missing(0, 0))
     }
 
     pub fn get_index(&mut self) -> BTreeMap<(u8, u8), MapsquareMeta> {
@@ -162,7 +162,7 @@ impl CacheIndex<Initial> {
 
         let file = match File::open(&file) {
             Ok(f) => f,
-            Err(e) => return Err(CacheError::CacheNotFoundError(e, file, path)),
+            Err(e) => return Err(CacheError::cache_not_found(e, file, path)),
         };
 
         Ok(Self {
