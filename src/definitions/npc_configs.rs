@@ -10,12 +10,13 @@ use path_macro::path;
 use pyo3::prelude::*;
 use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
+#[cfg(any(feature = "rs3", feature = "osrs"))]
+use {crate::definitions::indextype::IndexType, rs3cache_backend::index::CacheIndex};
 
 #[cfg(feature = "osrs")]
 use crate::definitions::indextype::ConfigType;
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
-    definitions::indextype::IndexType,
+    cache::{buf::BufExtra, error::CacheResult},
     structures::paramtable::ParamTable,
 };
 
@@ -146,11 +147,11 @@ impl NpcConfig {
     }
 
     #[cfg(feature = "legacy")]
-    pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+    pub fn dump_all(_config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         todo!()
     }
 
-    fn deserialize(id: u32, mut buffer: Bytes) -> Self {
+    pub fn deserialize(id: u32, mut buffer: Bytes) -> Self {
         let mut npc = Self { id, ..Default::default() };
 
         loop {

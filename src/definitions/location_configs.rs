@@ -16,9 +16,10 @@ use rs3cache_backend::{
 };
 use serde::Serialize;
 
-#[cfg(any(feature = "osrs", feature = "legacy"))]
-use crate::definitions::indextype::ConfigType;
-use crate::{definitions::indextype::IndexType, structures::paramtable::ParamTable};
+#[cfg(any(feature = "rs3", feature = "osrs"))]
+use crate::definitions::indextype::IndexType;
+use crate::structures::paramtable::ParamTable;
+
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 #[cfg_eval]
 #[allow(missing_docs)]
@@ -34,6 +35,7 @@ pub struct LocationConfig {
     pub models: Option<Models>,
     /// Its name, if present.
     pub name: Option<JString<Bytes>>,
+    /// Actually, this field is still in use for a little while after thw switch to dat2.
     #[cfg(feature = "legacy")]
     pub description: Option<JString<Bytes>>,
     #[cfg(any(feature = "osrs", feature = "legacy"))]
@@ -183,6 +185,8 @@ impl LocationConfig {
 
     #[cfg(all(feature = "osrs", not(feature = "2008_3_shim"), not(feature = "legacy")))]
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
+        use crate::definitions::indextype::ConfigType;
+
         let locations = CacheIndex::new(IndexType::CONFIG, config.input.clone())?
             .archive(ConfigType::LOC_CONFIG)?
             .take_files()
@@ -198,7 +202,7 @@ impl LocationConfig {
         let archive = cache.archive(2).unwrap();
         let mut file = archive.file_named("loc.dat").unwrap();
 
-        let count = file.try_get_u16().unwrap();
+        let _count = file.try_get_u16().unwrap();
         let mut offset_data = archive.file_named("loc.idx").unwrap();
 
         let mut locations = BTreeMap::new();
@@ -240,6 +244,7 @@ impl LocationConfig {
                     }
                     1 => loc.models = Some(Models::deserialize(&mut buffer)?),
                     2 => loc.name = Some(buffer.try_get_string()?),
+                    // Actually, this field is still in use for a little while after thw switch to dat2.
                     #[cfg(feature = "legacy")]
                     3 => loc.description = Some(buffer.try_get_string()?),
                     #[cfg(any(feature = "osrs", feature = "legacy"))]
@@ -416,7 +421,7 @@ pub mod location_config_fields {
     #![allow(missing_docs)]
     use std::{collections::BTreeMap, iter};
 
-    use bytes::{Buf, Bytes};
+    use bytes::Bytes;
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
     use serde::Serialize;
@@ -921,7 +926,6 @@ impl LocationConfig {
 
 #[cfg(all(test, feature = "legacy"))]
 mod legacy {
-    use std::path::PathBuf;
 
     use rs3cache_backend::index::CacheIndex;
 
@@ -952,7 +956,7 @@ mod legacy {
         for id in 0..len {
             let piece_len = offset_data.try_get_u16().unwrap();
             let data = file.split_to(piece_len as usize);
-            let loc = LocationConfig::deserialize(id as u32, data).unwrap();
+            let _loc = LocationConfig::deserialize(id as u32, data).unwrap();
             //println!("{}", loc);
         }
         assert_eq!(offset_data, &[].as_slice());

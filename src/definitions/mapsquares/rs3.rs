@@ -9,8 +9,8 @@ use crate::{
         index::{self, CacheIndex},
     },
     definitions::{
-        indextype::{ConfigType, IndexType},
-        mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
+        indextype::IndexType,
+        mapsquares::{GroupMapSquare, MapSquare, MapSquares},
     },
 };
 impl MapSquares {
@@ -44,6 +44,8 @@ impl Iterator for MapSquareIterator {
         self.state.size_hint()
     }
 }
+
+impl ExactSizeIterator for MapSquareIterator {}
 
 /// Iterates over [`GroupMapSquare`] in arbitrary order.
 

@@ -10,8 +10,8 @@ use crate::{
         index::{self, CacheIndex},
     },
     definitions::{
-        indextype::IndexType,
-        mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
+        indextype::{IndexType, MapFileType},
+        mapsquares::{GroupMapSquare, MapSquare, MapSquares},
     },
 };
 impl MapSquares {
@@ -80,6 +80,8 @@ impl Iterator for MapSquareIterator {
     }
 }
 
+impl ExactSizeIterator for MapSquareIterator {}
+
 /// Iterates over [`GroupMapSquare`] in arbitrary order.
 
 pub struct GroupMapSquareIterator {
@@ -103,9 +105,6 @@ impl GroupMapSquareIterator {
             .collect();
         let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
             .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("ul{i}_{j}")), (i, j)))
-            .collect();
-        let env_hashes2: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("e{i}_{j}")), (i, j)))
             .collect();
 
         let mapping: BTreeMap<(&'static str, u8, u8), u32> = inner
@@ -163,10 +162,6 @@ impl Iterator for GroupMapSquareIterator {
                 })
                 .map(|sq| ((sq.i, sq.j), sq))
                 .collect();
-            if !(mapsquares.contains_key(&(core_i, core_j))) {
-                println!("failed reading mapsquare {core_i}, {core_j}");
-            };
-
             GroupMapSquare { core_i, core_j, mapsquares }
         })
     }

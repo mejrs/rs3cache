@@ -1,6 +1,6 @@
 //! Miscellanious utilities.
 #![forbid(unsafe_code)]
-#![feature(once_cell)]
+#![feature(once_cell, lint_reasons)]
 #![warn(
     unused_crate_dependencies,
     unused_imports,
@@ -14,10 +14,14 @@
     trivial_numeric_casts,
     unreachable_pub
 )]
-#![deny(keyword_idents, macro_use_extern_crate, non_ascii_idents)]
+#![deny(keyword_idents, macro_use_extern_crate)]
 
 /// Adapters for iterators.
 pub mod adapters;
+
+/// Progress bars
+pub mod bar;
+
 /// Various colour constants.
 pub mod color;
 

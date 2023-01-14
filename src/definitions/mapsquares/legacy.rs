@@ -1,27 +1,15 @@
-use core::ops::{Range, RangeInclusive};
-use std::{
-    collections::{hash_map, BTreeMap, HashMap},
-    iter::Zip,
-};
+use core::ops::RangeInclusive;
+use std::collections::{BTreeMap, HashMap};
 
-use bytes::{Buf, Bytes};
-use itertools::{iproduct, Product};
-use ndarray::{iter::LanesIter, s, Axis, Dim};
+use itertools::iproduct;
 use rs3cache_backend::index::MapsquareMeta;
 
 use crate::{
     cache::{
-        arc::Archive,
-        error::{CacheError, CacheResult},
+        error::CacheResult,
         index::{self, CacheIndex},
     },
-    definitions::{
-        indextype::{IndexType, MapFileType},
-        locations::Location,
-        mapsquares::{GroupMapSquare, MapSquare, MapSquares},
-        tiles::{Tile, TileArray},
-    },
-    utils::rangeclamp::RangeClamp,
+    definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares},
 };
 
 impl MapSquares {
@@ -63,6 +51,8 @@ impl Iterator for MapSquareIterator {
         self.state.size_hint()
     }
 }
+
+impl ExactSizeIterator for MapSquareIterator {}
 
 /// Iterates over [`GroupMapSquare`] in arbitrary order.
 
@@ -110,10 +100,6 @@ impl Iterator for GroupMapSquareIterator {
                 })
                 .map(|sq| ((sq.i, sq.j), sq))
                 .collect();
-            if !(mapsquares.contains_key(&(core_i, core_j))) {
-                println!("failed reading mapsquare {core_i}, {core_j}");
-            };
-
             GroupMapSquare { core_i, core_j, mapsquares }
         })
     }

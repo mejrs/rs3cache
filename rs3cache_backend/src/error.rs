@@ -117,9 +117,9 @@ impl CacheError {
 }
 
 pub enum CacheErrorKind {
-    /// Wraps [`sqlite::Error`].
+    /// Wraps [`rusqlite::Error`].
     #[cfg(feature = "sqlite")]
-    SqliteError(sqlite::Error),
+    SqliteError(rusqlite::Error),
     DecodeError(DecodeError),
     /// Wraps [`io.error`](std::io::Error).
     IoError(std::io::Error, PathBuf),
@@ -153,8 +153,8 @@ pub enum CacheErrorKind {
 }
 
 #[cfg(feature = "sqlite")]
-impl From<sqlite::Error> for CacheError {
-    fn from(cause: sqlite::Error) -> Self {
+impl From<rusqlite::Error> for CacheError {
+    fn from(cause: rusqlite::Error) -> Self {
         Self {
             inner: Arc::new(Inner {
                 kind: CacheErrorKind::SqliteError(cause),

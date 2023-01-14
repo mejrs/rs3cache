@@ -1,29 +1,28 @@
 use std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, path::Path, sync::LazyLock};
 
-use image::{imageops, io::Reader as ImageReader, ImageBuffer, ImageError, ImageFormat, Rgba, RgbaImage};
-use indicatif::ProgressIterator;
-use itertools::{iproduct, izip};
+use image::{imageops, ImageBuffer, ImageError, Rgba, RgbaImage};
 use path_macro::path;
-use rayon::iter::{ParallelBridge, ParallelIterator};
+use rayon::iter::ParallelIterator;
 use regex::Regex;
 use rs3cache_backend::error::CacheError;
+use rs3cache_utils::bar::Render;
 
-use crate::{cache::error::CacheResult, renderers::scale};
+use crate::{cache::error::CacheResult, cli::Config, renderers::scale};
 
 static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 
 /// Given a folder and a range of zoom levels, recursively creates tiles for all zoom levels.
-pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
+pub fn render_zoom_levels(config: &Config, name: &str, mapid: i32, range: Range<i8>, backfill: [u8; 4]) -> CacheResult<()> {
     let zoom_levels = range.rev();
     for zoom in zoom_levels {
-        let path = path!(folder / format!("{mapid}/{zoom}"));
+        let path = path!(config.output / name / format!("{mapid}/{zoom}"));
         fs::create_dir_all(&path).map_err(|e| CacheError::io(e, path))?;
 
-        let new_tile_coordinates = get_future_filenames(&folder, mapid, zoom + 1)?.into_iter();
+        let new_tile_coordinates = get_future_filenames(config, name, mapid, zoom + 1)?.into_iter();
 
-        let func = |(p, i, j)| {
-            let img = make_tile(&folder, mapid, zoom, p, i, j, backfill)?;
-            let filename = path!(folder / format!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
+        let func = |((p, i, j), _)| {
+            let img = make_tile(&config.output, name, mapid, zoom, p, i, j, backfill)?;
+            let filename = path!(config.output / &name / format!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
 
             match img.save(&filename) {
                 Ok(()) => {}
@@ -33,7 +32,7 @@ pub fn render_zoom_levels(folder: impl AsRef<Path> + Send + Sync, mapid: i32, ra
             Ok(())
         };
 
-        new_tile_coordinates.progress().par_bridge().try_for_each(func)?;
+        new_tile_coordinates.render(format!("{name} zoom level {zoom}")).try_for_each(func)?;
     }
     Ok(())
 }
@@ -48,6 +47,7 @@ fn to_coordinates(text: OsString) -> (i32, i32, i32) {
 
 fn make_tile(
     folder: impl AsRef<Path>,
+    name: &str,
     mapid: i32,
     target_zoom: i8,
     target_plane: i32,
@@ -57,7 +57,7 @@ fn make_tile(
 ) -> CacheResult<ImageBuffer<Rgba<u8>, Vec<u8>>> {
     let mut base = RgbaImage::from_fn(512, 512, |_, _| Rgba(backfill));
 
-    let files = get_files(folder, mapid, target_zoom, target_plane, target_i, target_j);
+    let files = get_files(folder, name, mapid, target_zoom, target_plane, target_i, target_j);
 
     for ((di, dj), img) in files {
         match img {
@@ -76,6 +76,7 @@ fn make_tile(
 
 fn get_files(
     folder: impl AsRef<Path>,
+    name: &str,
     mapid: i32,
     target_zoom: i8,
     target_plane: i32,
@@ -86,13 +87,13 @@ fn get_files(
         let i = (target_i << 1) + di;
         let j = (target_j << 1) + dj;
         let zoom = target_zoom + 1;
-        let filename = path!(folder / format!("{mapid}/{zoom}/{target_plane}_{i}_{j}.png"));
+        let filename = path!(folder / name / format!("{mapid}/{zoom}/{target_plane}_{i}_{j}.png"));
         ((di, dj), image::open(filename))
     })
 }
 
-fn get_future_filenames(folder: impl AsRef<Path>, mapid: i32, zoom: i8) -> CacheResult<HashSet<(i32, i32, i32)>> {
-    let dir = path!(folder / format!("{mapid}/{zoom}"));
+fn get_future_filenames(config: &Config, name: &str, mapid: i32, zoom: i8) -> CacheResult<HashSet<(i32, i32, i32)>> {
+    let dir = path!(config.output / name / format!("{mapid}/{zoom}"));
 
     let new_tiles = fs::read_dir(&dir)
         .map_err(|e| CacheError::io(e, dir.clone()))?

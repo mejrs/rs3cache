@@ -15,7 +15,7 @@ use serde::Serialize;
 
 use crate::{
     cache::{error::CacheResult, index::CacheIndex},
-    definitions::indextype::{ConfigType, IndexType},
+    definitions::indextype::IndexType,
     structures::paramtable::ParamTable,
 };
 

@@ -88,7 +88,7 @@ impl Achievement {
     pub fn dump_all(config: &crate::cli::Config) -> CacheResult<BTreeMap<u32, Self>> {
         let archives = CacheIndex::new(IndexType::ACHIEVEMENT_CONFIG, config.input.clone())?.into_iter();
 
-        let Achievements = archives
+        let achievements = archives
             .map(Result::unwrap)
             .flat_map(|archive| {
                 let archive_id = archive.archive_id();
@@ -99,7 +99,7 @@ impl Achievement {
             })
             .map(|(id, file)| (id, Self::deserialize(id, file)))
             .collect::<BTreeMap<u32, Self>>();
-        Ok(Achievements)
+        Ok(achievements)
     }
 
     fn deserialize(id: u32, mut buffer: Bytes) -> Self {

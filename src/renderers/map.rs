@@ -9,7 +9,7 @@ pub mod mapscenes;
 /// Describes the shape of overlays drawn by the map renderer.
 pub mod tileshape;
 
-use std::{collections::BTreeMap, fs, path::Path};
+use std::{collections::BTreeMap, fs};
 
 use image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
@@ -26,6 +26,7 @@ use crate::definitions::mapscenes::MapScene;
 use crate::definitions::{overlays::Overlay, underlays::Underlay};
 use crate::{
     cache::error::CacheResult,
+    cli::Config,
     definitions::{
         location_configs::LocationConfig,
         mapsquares::{GroupMapSquare, GroupMapSquareIterator},
@@ -81,28 +82,27 @@ pub static CONFIG: RenderConfig = RenderConfig::fast();
 pub static CONFIG: RenderConfig = RenderConfig::detailed();
 
 /// Entry point for the map renderer.
-pub fn render(config: &crate::cli::Config) -> CacheResult<()> {
-    let folder = path!(config.output / "mapsquares");
-    fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder.clone()))?;
-    let map_id = CONFIG.map_id;
+pub fn render(config: &Config) -> CacheResult<()> {
+    const NAME: &str = "mapsquares";
 
+    let map_id = CONFIG.map_id;
     for zoom in 2..=4 {
-        let inner_folder = path!(folder / format!("{map_id}/{zoom}"));
+        let inner_folder = path!(config.output / NAME / format!("{map_id}/{zoom}"));
 
         fs::create_dir_all(&inner_folder).map_err(|e| CacheError::io(e, inner_folder))?;
     }
 
     let iter = GroupMapSquareIterator::new(-1_i32..=1_i32, -1_i32..=1_i32, config)?;
 
-    inner_render(config, iter)?;
+    inner_render(config, NAME, iter)?;
 
-    zoom::render_zoom_levels(&folder, CONFIG.map_id, -4..2, Color::ALPHA)?;
+    zoom::render_zoom_levels(config, NAME, map_id, -4..2, Color::ALPHA)?;
     Ok(())
 }
 
 // Separated for use in tests.
 
-fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> CacheResult<()> {
+fn inner_render(config: &Config, name: &str, iter: GroupMapSquareIterator) -> CacheResult<()> {
     let location_definitions = LocationConfig::dump_all(config)?;
 
     #[cfg(any(feature = "rs3", feature = "osrs"))]
@@ -120,8 +120,6 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
         config,
     )?;
 
-    let folder = path!(config.output / "mapsquares");
-
     #[cfg(all(feature = "osrs", not(feature = "2009_1_shim")))]
     let sprites = sprites::dumps(CONFIG.scale, vec![317], config)?; // 317 is the sprite named "mapscene"
 
@@ -133,7 +131,8 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
 
     iter.progress().par_bridge().for_each(|gsq| {
         render_tile(
-            &folder,
+            config,
+            name,
             gsq,
             &location_definitions,
             #[cfg(any(feature = "rs3", feature = "osrs"))]
@@ -152,7 +151,8 @@ fn inner_render(config: &crate::cli::Config, iter: GroupMapSquareIterator) -> Ca
 
 /// Responsible for rendering a single [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub fn render_tile(
-    folder: impl AsRef<Path>,
+    config: &Config,
+    name: &str,
     squares: GroupMapSquare,
     location_config: &BTreeMap<u32, LocationConfig>,
     #[cfg(any(feature = "rs3", feature = "osrs"))] overlay_definitions: &BTreeMap<u32, Overlay>,
@@ -198,12 +198,12 @@ pub fn render_tile(
         imgs[0].save(filename).unwrap();
     }
 
-    save_smallest(folder, squares.core_i(), squares.core_j(), imgs);
+    save_smallest(config, name, squares.core_i(), squares.core_j(), imgs);
 }
 
 type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
-pub fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
+pub fn save_smallest(config: &Config, name: &str, i: u8, j: u8, imgs: [Img; 4]) {
     #![allow(unused_variables)]
 
     let map_id = CONFIG.map_id;
@@ -255,7 +255,7 @@ pub fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                 {
                     let xx = base_i + x;
                     let yy = base_j + y;
-                    let filename = path!(folder / format!("{map_id}/4/{plane}_{xx}_{yy}.png"));
+                    let filename = path!(config.output / name / format!("{map_id}/4/{plane}_{xx}_{yy}.png"));
                     sub_image.to_image().save(filename).unwrap();
                 }
             }
@@ -282,7 +282,7 @@ pub fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
                     debug_assert_eq!(resized.height(), 256);
                     let xx = base_i + x;
                     let yy = base_j + y;
-                    let filename = path!(folder / format!("{map_id}/3/{plane}_{xx}_{yy}.png"));
+                    let filename = path!(config.output / name / format!("{map_id}/3/{plane}_{xx}_{yy}.png"));
                     resized.save(filename).unwrap();
                 }
             }
@@ -301,7 +301,7 @@ pub fn save_smallest(folder: impl AsRef<Path>, i: u8, j: u8, imgs: [Img; 4]) {
             if resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
-                let filename = path!(folder / format!("{map_id}/2/{plane}_{base_i}_{base_j}.png"));
+                let filename = path!(config.output / name / format!("{map_id}/2/{plane}_{base_i}_{base_j}.png"));
                 resized.save(filename).unwrap();
             }
         }
@@ -317,7 +317,7 @@ pub fn render_bench() -> CacheResult<()> {
     let coordinates: Vec<(u8, u8)> = iproduct!(45..55, 45..55).collect();
 
     let iter = GroupMapSquareIterator::new_only(-1_i32..=1_i32, -1_i32..=1_i32, coordinates, &config)?;
-    inner_render(&config, iter)?;
+    inner_render(&config, path, iter)?;
 
     Ok(())
 }
@@ -329,13 +329,13 @@ mod map_tests {
     #[test]
     #[ignore]
     fn render_some() -> CacheResult<()> {
-        let config = crate::cli::Config::default();
+        let config = Config::default();
 
         let path = "test_data/tiles";
         fs::create_dir_all(path).unwrap();
         let coordinates: Vec<(u8, u8)> = vec![(50, 50), (41, 63), (47, 50), (56, 49), (34, 66), (33, 72), (49, 108), (43, 46)];
 
         let iter = GroupMapSquareIterator::new_only(-1_i32..=1_i32, -1_i32..=1_i32, coordinates, &config)?;
-        inner_render(&config, iter)
+        inner_render(&config, path, iter)
     }
 }

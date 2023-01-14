@@ -12,10 +12,7 @@ use rs3cache_backend::{buf::JString, error::CacheError};
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
-    definitions::indextype::{ConfigType, IndexType},
-};
+use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex};
 /// Describes (part of) ground colour.
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[skip_serializing_none]
@@ -40,7 +37,7 @@ impl Flo {
         let archive = cache.archive(2).unwrap();
         let mut file = archive.file_named("flo.dat").unwrap();
 
-        let count = file.try_get_u16().unwrap();
+        let _count = file.try_get_u16().unwrap();
         let mut offset_data = archive.file_named("flo.idx").unwrap();
 
         let len = offset_data.try_get_u16().unwrap();
@@ -100,7 +97,6 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 
 #[cfg(all(test, feature = "legacy"))]
 mod legacy {
-    use std::path::PathBuf;
 
     use rs3cache_backend::index::CacheIndex;
 

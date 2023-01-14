@@ -1,6 +1,6 @@
-use std::{ffi::OsStr, path::PathBuf, str::FromStr, sync::Arc};
+use std::{ffi::OsStr, fmt, path::PathBuf, sync::Arc};
 
-use clap::{ArgEnum, Args, Parser, Subcommand};
+use clap::{ArgEnum, Parser};
 use rs3cache_backend::{error::CacheResult, index::CachePath};
 
 use crate::definitions;
@@ -27,10 +27,11 @@ impl Render {
     }
 }
 
-#[derive(ArgEnum, Clone, Debug)]
+#[derive(ArgEnum, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[clap(rename_all = "snake_case")]
 pub enum Dump {
     All,
+    Configs,
     #[cfg(feature = "rs3")]
     Music,
     #[cfg(feature = "rs3")]
@@ -58,73 +59,96 @@ pub enum Dump {
 }
 
 impl Dump {
-    pub fn call(&self, config: &Config) -> CacheResult<()> {
+    pub fn call(&self) -> fn(&Config) -> CacheResult<()> {
         match self {
-            Dump::All => {
-                #[cfg(feature = "rs3")]
-                definitions::achievements::export(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::npc_configs::export(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::item_configs::export(config)?;
-                definitions::maplabel_configs::export(config)?;
-                #[cfg(any(feature = "rs3", feature = "osrs"))]
-                definitions::overlays::export(config)?;
-                #[cfg(any(feature = "rs3", feature = "osrs"))]
-                definitions::underlays::export(config)?;
-
-                #[cfg(feature = "rs3")]
-                definitions::worldmaps::dump_big(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::worldmaps::dump_small(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::worldmaps::export_pastes(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::worldmaps::export_zones(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::varbit_configs::export(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::structs::export(config)?;
-                #[cfg(feature = "rs3")]
-                definitions::enums::export(config)?;
-                #[cfg(feature = "osrs")]
-                definitions::textures::export(config)?;
-                definitions::location_configs::export(config)?;
-
-                definitions::sprites::save_all(config)?;
-            }
             #[cfg(feature = "rs3")]
-            Dump::Music => definitions::music::export_each(config)?,
+            Dump::Music => definitions::music::export_each,
             #[cfg(feature = "rs3")]
-            Dump::Achievements => definitions::achievements::export(config)?,
-            Dump::Sprites => definitions::sprites::save_all(config)?,
-            Dump::TilesEach => definitions::mapsquares::export_tiles_by_square(config)?,
-            Dump::Locations => definitions::mapsquares::export_locations_by_id(config)?,
-            Dump::LocationsEach => definitions::mapsquares::export_locations_by_square(config)?,
-            Dump::LocationConfigs => definitions::location_configs::export(config)?,
-            Dump::LocationConfigsEach => definitions::location_configs::export_each(config)?,
-            Dump::NpcConfig => definitions::npc_configs::export(config)?,
-            Dump::ItemConfigs => definitions::item_configs::export(config)?,
-            Dump::Maplabels => definitions::maplabel_configs::export(config)?,
+            Dump::Achievements => definitions::achievements::export,
+            Dump::Sprites => definitions::sprites::save_all,
+            Dump::TilesEach => definitions::mapsquares::export_tiles_by_square,
+            Dump::Locations => definitions::mapsquares::export_locations_by_id,
+            Dump::LocationsEach => definitions::mapsquares::export_locations_by_square,
+            Dump::LocationConfigs => definitions::location_configs::export,
+            Dump::LocationConfigsEach => definitions::location_configs::export_each,
+            Dump::NpcConfig => definitions::npc_configs::export,
+            Dump::ItemConfigs => definitions::item_configs::export,
+            Dump::Maplabels => definitions::maplabel_configs::export,
             #[cfg(feature = "rs3")]
-            Dump::Worldmaps => {
+            Dump::Worldmaps => |config| try {
                 definitions::worldmaps::dump_big(config)?;
                 definitions::worldmaps::dump_small(config)?;
                 definitions::worldmaps::export_pastes(config)?;
                 definitions::worldmaps::export_zones(config)?;
-            }
-            Dump::VarbitConfigs => definitions::varbit_configs::export(config)?,
-            Dump::Structs => definitions::structs::export(config)?,
-            Dump::Enums => definitions::enums::export(config)?,
+            },
+            Dump::VarbitConfigs => definitions::varbit_configs::export,
+            Dump::Structs => definitions::structs::export,
+            Dump::Enums => definitions::enums::export,
             #[cfg(any(feature = "rs3", feature = "osrs"))]
-            Dump::Underlays => definitions::underlays::export(config)?,
+            Dump::Underlays => definitions::underlays::export,
             #[cfg(any(feature = "rs3", feature = "osrs"))]
-            Dump::Overlays => definitions::overlays::export(config)?,
+            Dump::Overlays => definitions::overlays::export,
             #[cfg(feature = "osrs")]
-            Dump::Textures => definitions::textures::export(config)?,
-        };
+            Dump::Textures => definitions::textures::export,
+            Dump::All | Dump::Configs => |_| Ok(()),
+        }
+    }
 
-        Ok(())
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            #[cfg(feature = "rs3")]
+            Dump::Music => "music",
+            #[cfg(feature = "rs3")]
+            Dump::Achievements => "achievements",
+            Dump::Sprites => "sprites",
+            Dump::TilesEach => "tiles_by_square",
+            Dump::Locations => "locations_by_id",
+            Dump::LocationsEach => "locations_by_square",
+            Dump::LocationConfigs => "location_configs",
+            Dump::LocationConfigsEach => "location_configs_each",
+            Dump::NpcConfig => "npc_configs",
+            Dump::ItemConfigs => "item_configs",
+            Dump::Maplabels => "maplabel_configs",
+            #[cfg(feature = "rs3")]
+            Dump::Worldmaps => "world_maps",
+            Dump::VarbitConfigs => "varbit_configs",
+            Dump::Structs => "structs",
+            Dump::Enums => "enums",
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
+            Dump::Underlays => "underlays",
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
+            Dump::Overlays => "overlays",
+            #[cfg(feature = "osrs")]
+            Dump::Textures => "textures",
+            Dump::All => "all",
+            Dump::Configs => "configs",
+        }
+    }
+
+    pub fn configs() -> &'static [Self] {
+        &[
+            #[cfg(feature = "rs3")]
+            Dump::Achievements,
+            Dump::LocationConfigs,
+            Dump::NpcConfig,
+            Dump::ItemConfigs,
+            Dump::Maplabels,
+            Dump::VarbitConfigs,
+            Dump::Structs,
+            Dump::Enums,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
+            Dump::Underlays,
+            #[cfg(any(feature = "rs3", feature = "osrs"))]
+            Dump::Overlays,
+            #[cfg(feature = "osrs")]
+            Dump::Textures,
+        ]
+    }
+}
+
+impl fmt::Display for Dump {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 

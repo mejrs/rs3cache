@@ -27,54 +27,51 @@ where
     S: IndexState,
 {
     /// Loads the [`Metadata`] of `self`.
-    fn get_raw_metadata(connection: &sqlite::Connection) -> CacheResult<Bytes> {
-        let encoded_data = {
-            let query = "SELECT DATA FROM cache_index";
-            let mut statement = connection.prepare(query)?;
-            statement.next()?;
-            statement.read::<Vec<u8>>(0)?
-        };
-        Ok(decoder::decompress(encoded_data)?)
+    fn get_raw_metadata(connection: &rusqlite::Connection) -> CacheResult<Bytes> {
+        let mut stmt = connection.prepare("SELECT DATA FROM cache_index")?;
+        let mut rows = stmt.query([])?;
+        let data = rows.next()?.unwrap().get(0).unwrap();
+
+        Ok(decoder::decompress(data)?)
     }
 
     /// Executes a sql command to retrieve an archive from the cache.
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
-        let encoded_data = {
-            let query = format!("SELECT DATA, CRC, VERSION FROM cache WHERE KEY={}", metadata.archive_id());
+        let mut stmt = self.connection.prepare("SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?")?;
+        let mut rows = stmt.query([metadata.archive_id()])?;
+        let row = rows
+            .next()?
+            .ok_or_else(|| CacheError::archive_missing(self.index_id, metadata.archive_id()))?;
+        let data = row.get(0).unwrap();
+        let crc = row.get(1).unwrap();
+        let version = row.get(2).unwrap();
 
-            let mut statement = self.connection.prepare(query)?;
-            statement.next()?;
-            let crc = statement.read::<i64>(1)?;
-            let version = statement.read::<i64>(2)?;
+        // wut
+        let crc_offset = match self.index_id() {
+            8 => 2_i64,
+            47 => 2_i64,
+            _ => 1_i64,
+        };
 
-            // wut
-            let crc_offset = match self.index_id() {
-                8 => 2_i64,
-                47 => 2_i64,
-                _ => 1_i64,
-            };
-
-            if crc == 0 && version == 0 {
-                Err(CacheError::archive_missing(metadata.index_id(), metadata.archive_id()))
-            } else if metadata.crc() as i64 + crc_offset != crc {
-                Err(CacheError::crc(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.crc() as i64 + crc_offset,
-                    crc,
-                ))
-            } else if metadata.version() as i64 != version {
-                Err(CacheError::version(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.version() as i64,
-                    version,
-                ))
-            } else {
-                Ok(statement.read::<Vec<u8>>(0)?)
-            }
-        }?;
-        Ok(decoder::decompress(encoded_data)?)
+        if crc == 0 && version == 0 {
+            Err(CacheError::archive_missing(metadata.index_id(), metadata.archive_id()))
+        } else if metadata.crc() as i64 + crc_offset != crc {
+            Err(CacheError::crc(
+                metadata.index_id(),
+                metadata.archive_id(),
+                metadata.crc() as i64 + crc_offset,
+                crc,
+            ))
+        } else if metadata.version() as i64 != version {
+            Err(CacheError::version(
+                metadata.index_id(),
+                metadata.archive_id(),
+                metadata.version() as i64,
+                version,
+            ))
+        } else {
+            Ok(decoder::decompress(data)?)
+        }
     }
 
     /// Assert whether the cache held by `self` is in a coherent state.
@@ -89,12 +86,11 @@ where
     /// For these, simply ignore [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError).
     pub fn assert_coherence(&self) -> CacheResult<()> {
         for (archive_id, metadata) in self.metadatas().iter() {
-            let query = format!("SELECT CRC, VERSION FROM cache WHERE KEY={archive_id}");
-
-            let mut statement = self.connection.prepare(&query)?;
-            statement.next()?;
-            let crc = statement.read::<i64>(0)?;
-            let version = statement.read::<i64>(1)?;
+            let mut stmt = self.connection.prepare("SELECT CRC, VERSION FROM cache WHERE KEY=?")?;
+            let mut rows = stmt.query([archive_id])?;
+            let row = rows.next()?.unwrap();
+            let crc = row.get(0).unwrap();
+            let version = row.get(1).unwrap();
 
             // wut
             let crc_offset = match self.index_id() {
@@ -136,7 +132,7 @@ impl CacheIndex<Initial> {
         // check if database exists (without creating blank sqlite databases)
         match fs::metadata(&file) {
             Ok(_) => {
-                let connection = sqlite::open(file)?;
+                let connection = rusqlite::Connection::open(file)?;
                 let raw_metadata: Bytes = Self::get_raw_metadata(&connection)?;
                 let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
 

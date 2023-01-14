@@ -8,15 +8,16 @@ use bytes::{Buf, Bytes};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
-use rayon::iter::{ParallelBridge, ParallelIterator};
 use rs3cache_backend::{
     buf::{BufExtra, ReadError},
     error::CacheError,
 };
+#[cfg(any(feature = "rs3", feature = "osrs"))]
+use {rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
 
 use crate::{
     cache::{error::CacheResult, index::CacheIndex},
-    definitions::indextype::{ConfigType, IndexType},
+    definitions::indextype::IndexType,
 };
 
 /// Type alias for a rgba image.
@@ -37,7 +38,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
         .map(|(_, meta)| (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() as i64, 0)))
         .collect();
 
-    index.into_iter().par_bridge().for_each(|archive| {
+    index.into_iter().render("sprites").for_each(|(archive, _)| {
         let archive = archive.unwrap();
         debug_assert_eq!(archive.file_count(), 1);
 
@@ -65,15 +66,15 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 }
 
 #[derive(Debug)]
-struct IndexEntry {
-    max_width: u16,
-    max_height: u16,
-    colour_count: u8,
-    palette: Vec<[u8; 3]>,
+pub struct IndexEntry {
+    pub max_width: u16,
+    pub max_height: u16,
+    pub colour_count: u8,
+    pub palette: Vec<[u8; 3]>,
 }
 
 impl IndexEntry {
-    fn deserialize(buffer: &mut Bytes) -> Self {
+    pub fn deserialize(buffer: &mut Bytes) -> Self {
         let max_width = buffer.get_u16();
         let max_height = buffer.get_u16();
         let colour_count = buffer.get_u8().checked_sub(1).unwrap();
@@ -88,16 +89,16 @@ impl IndexEntry {
 }
 
 #[derive(Debug)]
-struct Entry {
-    offset_x: u8,
-    offset_y: u8,
-    width: u16,
-    height: u16,
-    transposed: u8,
+pub struct Entry {
+    pub offset_x: u8,
+    pub offset_y: u8,
+    pub width: u16,
+    pub height: u16,
+    pub transposed: u8,
 }
 
 impl Entry {
-    fn deserialize(buffer: &mut Bytes) -> Self {
+    pub fn deserialize(buffer: &mut Bytes) -> Self {
         Self {
             offset_x: buffer.get_u8(),
             offset_y: buffer.get_u8(),

@@ -1,7 +1,7 @@
 use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 use pyo3::{
-    exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
+    exceptions::{PyIndexError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::*,
     types::{PyInt, PyList},
 };
@@ -10,7 +10,6 @@ use rs3cache_backend::index::CachePath;
 use crate::{
     cli::Config,
     definitions::{
-        locations::Location,
         mapsquares::{MapSquare, MapSquareIterator, MapSquares},
         tiles::Tile,
     },
@@ -111,7 +110,7 @@ impl PyMapSquaresIter {
         match self.inner.next() {
             Some(Ok(sq)) => Some(PyMapSquare { inner: sq }),
             Some(Err(e)) => {
-                PyRuntimeError::new_err("Error").restore(py);
+                PyRuntimeError::new_err(format!("Error: {e}")).restore(py);
                 None
             }
             None => None,

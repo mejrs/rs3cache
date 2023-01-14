@@ -61,7 +61,7 @@ pub struct CacheIndex<S: IndexState> {
     path: Arc<CachePath>,
 
     #[cfg(feature = "sqlite")]
-    connection: sqlite::Connection,
+    connection: rusqlite::Connection,
 
     #[cfg(any(feature = "dat2", feature = "dat"))]
     file: File,
@@ -277,3 +277,5 @@ impl Iterator for IntoIter {
         self.feed.size_hint()
     }
 }
+
+impl ExactSizeIterator for IntoIter {}

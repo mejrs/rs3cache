@@ -36,17 +36,11 @@ impl Xtea {
 
         let mut sum = GOLDEN_RATIO.wrapping_mul(ROUNDS);
         for _ in 0..ROUNDS {
-            /*let a = v0.wrapping_shl(4);
-            let b = v0.wrapping_shr(5);
-            let s = sum.wrapping_shr(11);*/
             v1 = v1.wrapping_sub(
                 (v0.wrapping_shl(4) ^ v0.wrapping_shr(5)).wrapping_add(v0) ^ (sum.wrapping_add(xtea.key[(sum.wrapping_shr(11) & 3) as usize] as u32)),
             );
 
             sum = sum.wrapping_sub(GOLDEN_RATIO);
-            /*
-            let c = v1.wrapping_shl(4);
-            let d = v1.wrapping_shr(5);*/
             v0 =
                 v0.wrapping_sub((v1.wrapping_shl(4) ^ v1.wrapping_shr(5)).wrapping_add(v1) ^ (sum.wrapping_add(xtea.key[(sum & 3) as usize] as u32)));
         }

@@ -131,20 +131,19 @@ impl CacheIndex<Initial> {
             Err(e) => return Err(CacheError::cache_not_found(e, file, path)),
         };
         let xteas = if index_id == 5 {
-            let path = path!(&*path / "xteas.json");
+            let path1 = path!(&*path / "xteas.json");
 
             // Try to load either xteas.json or keys.json
-            match Xtea::load(&path) {
+            match Xtea::load(path1) {
                 Ok(file) => Some(file),
                 // Let's try looking somewhere else
-                Err(e1) if let CacheErrorKind::IoError(cause, _) = e1.kind() && cause.kind() == io::ErrorKind::NotFound => {
+                Err(_) => {
                     let alt_path = path!(&*path / "keys.json");
-                    match Xtea::load(alt_path){
+                    match Xtea::load(alt_path) {
                         Ok(file) => Some(file),
-                        Err(_) => return Err(e1)
+                        Err(e) => return Err(e),
                     }
                 }
-                Err(other) => return Err(other),
             }
         } else {
             None

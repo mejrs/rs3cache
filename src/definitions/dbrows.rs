@@ -1,21 +1,13 @@
-use std::{
-    collections::BTreeMap,
-    fs::{self, File},
-    io::Write,
-};
+#![allow(unused_variables)]
+
+use std::collections::BTreeMap;
 
 use bytes::{Buf, Bytes};
-use path_macro::path;
 use rs3cache_backend::buf::ReadError;
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 
 use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{CacheError, CacheResult},
-        index::CacheIndex,
-    },
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
     definitions::indextype::{ConfigType, IndexType},
 };
 

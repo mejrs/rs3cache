@@ -2,3 +2,8 @@
 name = "rs3cache_utils"
 version = "0.1.0"
 edition = "2021"
+
+[dependencies]
+indicatif = "0.17.2"
+console = "0.15.4"
+rayon = "1.5.1"

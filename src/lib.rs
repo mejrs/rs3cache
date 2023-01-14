@@ -8,7 +8,7 @@
     once_cell,
     try_blocks
 )]
-#![allow(clippy::borrow_deref_ref, non_snake_case, unused_imports, unreachable_code, unused_variables, dead_code)]
+#![allow(clippy::too_many_arguments)]
 #![warn(
     unused_qualifications,
     unused_import_braces,
@@ -129,3 +129,5 @@ pub mod structures {
 pub mod ffi {
     pub mod python;
 }
+
+pub mod impl_;

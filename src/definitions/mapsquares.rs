@@ -14,7 +14,7 @@
 mod iterator;
 
 use std::{
-    collections::{hash_map, BTreeMap, HashMap},
+    collections::{hash_map, HashMap},
     fs::{self, File},
     io::Write,
     iter::Zip,
@@ -25,9 +25,8 @@ use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-use rs3cache_utils::lazy::Lazy;
 #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-use {crate::cache::arc::Archive, bytes::Buf};
+use {crate::cache::arc::Archive, crate::definitions::indextype::MapFileType, bytes::Buf, rs3cache_utils::lazy::Lazy};
 
 pub use self::iterator::*;
 #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
@@ -38,7 +37,6 @@ use crate::{
         index::{CacheIndex, Initial},
     },
     definitions::{
-        indextype::{ConfigType, IndexType, MapFileType},
         locations::Location,
         tiles::{Tile, TileArray},
     },
@@ -99,7 +97,7 @@ impl MapSquare {
     pub fn new(i: u8, j: u8, config: &crate::cli::Config) -> CacheResult<MapSquare> {
         assert!(i < 0x7F, "Index out of range.");
         let archive_id = (i as u32) | (j as u32) << 7;
-        let archive = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?.archive(archive_id)?;
+        let archive = CacheIndex::new(crate::definitions::indextype::IndexType::MAPSV2, config.input.clone())?.archive(archive_id)?;
         Ok(Self::from_archive(archive))
     }
 
@@ -113,7 +111,7 @@ impl MapSquare {
         let locations = match land {
             Ok(land) => Ok(Location::dump(i, j, &tiles, land)),
             // most likely, anyway...
-            Err(e) => Err(CacheError::xtea_absent(i, j)),
+            Err(_) => Err(CacheError::xtea_absent(i, j)),
         };
 
         Ok(MapSquare {
@@ -210,9 +208,9 @@ impl MapSquare {
 pub struct MapSquares {
     index: CacheIndex<Initial>,
     #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
-    mapping: BTreeMap<(&'static str, u8, u8), u32>,
+    mapping: std::collections::BTreeMap<(&'static str, u8, u8), u32>,
     #[cfg(feature = "legacy")]
-    meta: BTreeMap<(u8, u8), rs3cache_backend::index::MapsquareMeta>,
+    meta: std::collections::BTreeMap<(u8, u8), rs3cache_backend::index::MapsquareMeta>,
 }
 
 impl IntoIterator for MapSquares {
@@ -450,8 +448,8 @@ mod legacy {
         let index = cache.get_index();
         let meta = index[&(50, 50)];
         dbg!(meta);
-        let locs = cache.archive(meta.locfile as u32).unwrap(); //.file(&0).unwrap();
-        let map = cache.archive(meta.mapfile as u32).unwrap(); //.file(&0).unwrap();
+        let _locs = cache.archive(meta.locfile as u32).unwrap(); //.file(&0).unwrap();
+        let _map = cache.archive(meta.mapfile as u32).unwrap(); //.file(&0).unwrap();
     }
 }
 

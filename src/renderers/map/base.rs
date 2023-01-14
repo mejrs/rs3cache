@@ -253,7 +253,7 @@ fn get_underlay_colour(
             )
         });
 
-        let (weight, (reds, greens, blues)) = colours
+        let (_weight, (reds, greens, blues)) = colours
             .map(|(w, [r, g, b])| (w, (r as usize * w, g as usize * w, b as usize * w)))
             .fold((0, (0, 0, 0)), |(acc_w, (acc_r, acc_g, acc_b)), (w, (r, g, b))| {
                 (acc_w + w, (acc_r + r, acc_g + g, acc_b + b))
