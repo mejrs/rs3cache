@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["adapters","Adapters for iterators."],["color","Various colour constants."],["lazy","Lazy primitives."],["rangeclamp","Clamps a `Range` to a certain interval."],["slice",""]]};
+window.SIDEBAR_ITEMS = {"mod":[["adapters","Adapters for iterators."],["bar","Progress bars"],["color","Various colour constants."],["lazy","Lazy primitives."],["rangeclamp","Clamps a `Range` to a certain interval."],["slice",""]]};

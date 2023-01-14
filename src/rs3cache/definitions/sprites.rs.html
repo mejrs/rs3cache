@@ -384,6 +384,7 @@
 <a href="#384" id="384">384</a>
 <a href="#385" id="385">385</a>
 <a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
     io::{Cursor, Seek, SeekFrom},
@@ -394,15 +395,16 @@
 <span class="kw">use </span>image::{imageops, ImageBuffer, Rgba, RgbaImage};
 <span class="kw">use </span>itertools::izip;
 <span class="kw">use </span>path_macro::path;
-<span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
 <span class="kw">use </span>rs3cache_backend::{
     buf::{BufExtra, ReadError},
     error::CacheError,
 };
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
+</span><span class="kw">use </span>{rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
 
 <span class="kw">use crate</span>::{
     cache::{error::CacheResult, index::CacheIndex},
-    definitions::indextype::{ConfigType, IndexType},
+    definitions::indextype::IndexType,
 };
 
 <span class="doccomment">/// Type alias for a rgba image.
@@ -423,7 +425,7 @@
         .map(|(<span class="kw">_</span>, meta)| (meta.archive_id(), ::filetime::FileTime::from_unix_time(meta.version() <span class="kw">as </span>i64, <span class="number">0</span>)))
         .collect();
 
-    index.into_iter().par_bridge().for_each(|archive| {
+    index.into_iter().render(<span class="string">&quot;sprites&quot;</span>).for_each(|(archive, <span class="kw">_</span>)| {
         <span class="kw">let </span>archive = archive.unwrap();
         <span class="macro">debug_assert_eq!</span>(archive.file_count(), <span class="number">1</span>);
 
@@ -451,15 +453,15 @@
 }
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">struct </span>IndexEntry {
-    max_width: u16,
-    max_height: u16,
-    colour_count: u8,
-    palette: Vec&lt;[u8; <span class="number">3</span>]&gt;,
+</span><span class="kw">pub struct </span>IndexEntry {
+    <span class="kw">pub </span>max_width: u16,
+    <span class="kw">pub </span>max_height: u16,
+    <span class="kw">pub </span>colour_count: u8,
+    <span class="kw">pub </span>palette: Vec&lt;[u8; <span class="number">3</span>]&gt;,
 }
 
 <span class="kw">impl </span>IndexEntry {
-    <span class="kw">fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>max_width = buffer.get_u16();
         <span class="kw">let </span>max_height = buffer.get_u16();
         <span class="kw">let </span>colour_count = buffer.get_u8().checked_sub(<span class="number">1</span>).unwrap();
@@ -474,16 +476,16 @@
 }
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">struct </span>Entry {
-    offset_x: u8,
-    offset_y: u8,
-    width: u16,
-    height: u16,
-    transposed: u8,
+</span><span class="kw">pub struct </span>Entry {
+    <span class="kw">pub </span>offset_x: u8,
+    <span class="kw">pub </span>offset_y: u8,
+    <span class="kw">pub </span>width: u16,
+    <span class="kw">pub </span>height: u16,
+    <span class="kw">pub </span>transposed: u8,
 }
 
 <span class="kw">impl </span>Entry {
-    <span class="kw">fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>deserialize(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             offset_x: buffer.get_u8(),
             offset_y: buffer.get_u8(),

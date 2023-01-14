@@ -350,7 +350,7 @@
 <span class="doccomment">/// Describes the shape of overlays drawn by the map renderer.
 </span><span class="kw">pub mod </span>tileshape;
 
-<span class="kw">use </span>std::{collections::BTreeMap, fs, path::Path};
+<span class="kw">use </span>std::{collections::BTreeMap, fs};
 
 <span class="kw">use </span>image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 <span class="kw">use </span>indicatif::ProgressIterator;
@@ -367,6 +367,7 @@
 </span><span class="kw">use </span><span class="kw">crate</span>::definitions::{overlays::Overlay, underlays::Underlay};
 <span class="kw">use crate</span>::{
     cache::error::CacheResult,
+    cli::Config,
     definitions::{
         location_configs::LocationConfig,
         mapsquares::{GroupMapSquare, GroupMapSquareIterator},
@@ -422,28 +423,27 @@
 </span><span class="kw">pub static </span>CONFIG: RenderConfig = RenderConfig::detailed();
 
 <span class="doccomment">/// Entry point for the map renderer.
-</span><span class="kw">pub fn </span>render(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
-    <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;mapsquares&quot;</span>);
-    fs::create_dir_all(<span class="kw-2">&amp;</span>folder).map_err(|e| CacheError::io(e, folder.clone()))<span class="question-mark">?</span>;
-    <span class="kw">let </span>map_id = CONFIG.map_id;
+</span><span class="kw">pub fn </span>render(config: <span class="kw-2">&amp;</span>Config) -&gt; CacheResult&lt;()&gt; {
+    <span class="kw">const </span>NAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;mapsquares&quot;</span>;
 
+    <span class="kw">let </span>map_id = CONFIG.map_id;
     <span class="kw">for </span>zoom <span class="kw">in </span><span class="number">2</span>..=<span class="number">4 </span>{
-        <span class="kw">let </span>inner_folder = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/{zoom}&quot;</span>));
+        <span class="kw">let </span>inner_folder = <span class="macro">path!</span>(config.output / NAME / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/{zoom}&quot;</span>));
 
         fs::create_dir_all(<span class="kw-2">&amp;</span>inner_folder).map_err(|e| CacheError::io(e, inner_folder))<span class="question-mark">?</span>;
     }
 
     <span class="kw">let </span>iter = GroupMapSquareIterator::new(-<span class="number">1_i32</span>..=<span class="number">1_i32</span>, -<span class="number">1_i32</span>..=<span class="number">1_i32</span>, config)<span class="question-mark">?</span>;
 
-    inner_render(config, iter)<span class="question-mark">?</span>;
+    inner_render(config, NAME, iter)<span class="question-mark">?</span>;
 
-    zoom::render_zoom_levels(<span class="kw-2">&amp;</span>folder, CONFIG.map_id, -<span class="number">4</span>..<span class="number">2</span>, Color::ALPHA)<span class="question-mark">?</span>;
+    zoom::render_zoom_levels(config, NAME, map_id, -<span class="number">4</span>..<span class="number">2</span>, Color::ALPHA)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 
 <span class="comment">// Separated for use in tests.
 
-</span><span class="kw">fn </span>inner_render(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config, iter: GroupMapSquareIterator) -&gt; CacheResult&lt;()&gt; {
+</span><span class="kw">fn </span>inner_render(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, iter: GroupMapSquareIterator) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>location_definitions = LocationConfig::dump_all(config)<span class="question-mark">?</span>;
 
     <span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
@@ -461,8 +461,6 @@
         config,
     )<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;mapsquares&quot;</span>);
-
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2009_1_shim&quot;</span>)))]
     </span><span class="kw">let </span>sprites = sprites::dumps(CONFIG.scale, <span class="macro">vec!</span>[<span class="number">317</span>], config)<span class="question-mark">?</span>; <span class="comment">// 317 is the sprite named &quot;mapscene&quot;
 
@@ -474,7 +472,8 @@
 
     iter.progress().par_bridge().for_each(|gsq| {
         render_tile(
-            <span class="kw-2">&amp;</span>folder,
+            config,
+            name,
             gsq,
             <span class="kw-2">&amp;</span>location_definitions,
             <span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
@@ -493,7 +492,8 @@
 
 <span class="doccomment">/// Responsible for rendering a single [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 </span><span class="kw">pub fn </span>render_tile(
-    folder: <span class="kw">impl </span>AsRef&lt;Path&gt;,
+    config: <span class="kw-2">&amp;</span>Config,
+    name: <span class="kw-2">&amp;</span>str,
     squares: GroupMapSquare,
     location_config: <span class="kw-2">&amp;</span>BTreeMap&lt;u32, LocationConfig&gt;,
     <span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))] </span>overlay_definitions: <span class="kw-2">&amp;</span>BTreeMap&lt;u32, Overlay&gt;,
@@ -539,12 +539,12 @@
         imgs[<span class="number">0</span>].save(filename).unwrap();
     }
 
-    save_smallest(folder, squares.core_i(), squares.core_j(), imgs);
+    save_smallest(config, name, squares.core_i(), squares.core_j(), imgs);
 }
 
 <span class="kw">type </span>Img = ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;;
 
-<span class="kw">pub fn </span>save_smallest(folder: <span class="kw">impl </span>AsRef&lt;Path&gt;, i: u8, j: u8, imgs: [Img; <span class="number">4</span>]) {
+<span class="kw">pub fn </span>save_smallest(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, i: u8, j: u8, imgs: [Img; <span class="number">4</span>]) {
     <span class="attr">#![allow(unused_variables)]
 
     </span><span class="kw">let </span>map_id = CONFIG.map_id;
@@ -596,7 +596,7 @@
                 </span>{
                     <span class="kw">let </span>xx = base_i + x;
                     <span class="kw">let </span>yy = base_j + y;
-                    <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/4/{plane}_{xx}_{yy}.png&quot;</span>));
+                    <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/4/{plane}_{xx}_{yy}.png&quot;</span>));
                     sub_image.to_image().save(filename).unwrap();
                 }
             }
@@ -623,7 +623,7 @@
                     <span class="macro">debug_assert_eq!</span>(resized.height(), <span class="number">256</span>);
                     <span class="kw">let </span>xx = base_i + x;
                     <span class="kw">let </span>yy = base_j + y;
-                    <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/3/{plane}_{xx}_{yy}.png&quot;</span>));
+                    <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/3/{plane}_{xx}_{yy}.png&quot;</span>));
                     resized.save(filename).unwrap();
                 }
             }
@@ -642,7 +642,7 @@
             </span><span class="kw">if </span>resized.pixels().any(|<span class="kw-2">&amp;</span>pixel| pixel[<span class="number">3</span>] != <span class="number">0</span>)
             <span class="comment">/* don&#39;t save useless tiles */
             </span>{
-                <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/2/{plane}_{base_i}_{base_j}.png&quot;</span>));
+                <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/2/{plane}_{base_i}_{base_j}.png&quot;</span>));
                 resized.save(filename).unwrap();
             }
         }
@@ -658,7 +658,7 @@
     <span class="kw">let </span>coordinates: Vec&lt;(u8, u8)&gt; = <span class="macro">iproduct!</span>(<span class="number">45</span>..<span class="number">55</span>, <span class="number">45</span>..<span class="number">55</span>).collect();
 
     <span class="kw">let </span>iter = GroupMapSquareIterator::new_only(-<span class="number">1_i32</span>..=<span class="number">1_i32</span>, -<span class="number">1_i32</span>..=<span class="number">1_i32</span>, coordinates, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
-    inner_render(<span class="kw-2">&amp;</span>config, iter)<span class="question-mark">?</span>;
+    inner_render(<span class="kw-2">&amp;</span>config, path, iter)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
@@ -670,14 +670,14 @@
     <span class="attr">#[test]
     #[ignore]
     </span><span class="kw">fn </span>render_some() -&gt; CacheResult&lt;()&gt; {
-        <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::default();
+        <span class="kw">let </span>config = Config::default();
 
         <span class="kw">let </span>path = <span class="string">&quot;test_data/tiles&quot;</span>;
         fs::create_dir_all(path).unwrap();
         <span class="kw">let </span>coordinates: Vec&lt;(u8, u8)&gt; = <span class="macro">vec!</span>[(<span class="number">50</span>, <span class="number">50</span>), (<span class="number">41</span>, <span class="number">63</span>), (<span class="number">47</span>, <span class="number">50</span>), (<span class="number">56</span>, <span class="number">49</span>), (<span class="number">34</span>, <span class="number">66</span>), (<span class="number">33</span>, <span class="number">72</span>), (<span class="number">49</span>, <span class="number">108</span>), (<span class="number">43</span>, <span class="number">46</span>)];
 
         <span class="kw">let </span>iter = GroupMapSquareIterator::new_only(-<span class="number">1_i32</span>..=<span class="number">1_i32</span>, -<span class="number">1_i32</span>..=<span class="number">1_i32</span>, coordinates, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
-        inner_render(<span class="kw-2">&amp;</span>config, iter)
+        inner_render(<span class="kw-2">&amp;</span>config, path, iter)
     }
 }
 </code></pre></div>

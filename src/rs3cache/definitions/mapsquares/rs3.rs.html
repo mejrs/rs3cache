@@ -120,6 +120,8 @@
 <a href="#120" id="120">120</a>
 <a href="#121" id="121">121</a>
 <a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
 </pre><pre class="rust"><code><span class="kw">use </span>core::ops::RangeInclusive;
 <span class="kw">use </span>std::collections::HashMap;
 
@@ -131,8 +133,8 @@
         index::{<span class="self">self</span>, CacheIndex},
     },
     definitions::{
-        indextype::{ConfigType, IndexType},
-        mapsquares::{GroupMapSquare, MapFileType, MapSquare, MapSquares},
+        indextype::IndexType,
+        mapsquares::{GroupMapSquare, MapSquare, MapSquares},
     },
 };
 <span class="kw">impl </span>MapSquares {
@@ -166,6 +168,8 @@
         <span class="self">self</span>.state.size_hint()
     }
 }
+
+<span class="kw">impl </span>ExactSizeIterator <span class="kw">for </span>MapSquareIterator {}
 
 <span class="doccomment">/// Iterates over [`GroupMapSquare`] in arbitrary order.
 

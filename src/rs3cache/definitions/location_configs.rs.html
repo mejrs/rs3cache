@@ -994,6 +994,10 @@
 <a href="#994" id="994">994</a>
 <a href="#995" id="995">995</a>
 <a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
     fs::{<span class="self">self</span>, File},
@@ -1012,9 +1016,10 @@
 };
 <span class="kw">use </span>serde::Serialize;
 
-<span class="attr">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
-</span><span class="kw">use </span><span class="kw">crate</span>::definitions::indextype::ConfigType;
-<span class="kw">use crate</span>::{definitions::indextype::IndexType, structures::paramtable::ParamTable};
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::definitions::indextype::IndexType;
+<span class="kw">use </span><span class="kw">crate</span>::structures::paramtable::ParamTable;
+
 <span class="doccomment">/// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 </span><span class="attr">#[cfg_eval]
 #[allow(missing_docs)]
@@ -1030,7 +1035,8 @@
     </span><span class="kw">pub </span>models: <span class="prelude-ty">Option</span>&lt;Models&gt;,
     <span class="doccomment">/// Its name, if present.
     </span><span class="kw">pub </span>name: <span class="prelude-ty">Option</span>&lt;JString&lt;Bytes&gt;&gt;,
-    <span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+    <span class="doccomment">/// Actually, this field is still in use for a little while after thw switch to dat2.
+    </span><span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
     </span><span class="kw">pub </span>description: <span class="prelude-ty">Option</span>&lt;JString&lt;Bytes&gt;&gt;,
     <span class="attr">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
     #[serde(flatten)]
@@ -1179,6 +1185,8 @@
 
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2008_3_shim&quot;</span>), not(feature = <span class="string">&quot;legacy&quot;</span>)))]
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
+        <span class="kw">use </span><span class="kw">crate</span>::definitions::indextype::ConfigType;
+
         <span class="kw">let </span>locations = CacheIndex::new(IndexType::CONFIG, config.input.clone())<span class="question-mark">?
             </span>.archive(ConfigType::LOC_CONFIG)<span class="question-mark">?
             </span>.take_files()
@@ -1194,7 +1202,7 @@
         <span class="kw">let </span>archive = cache.archive(<span class="number">2</span>).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>file = archive.file_named(<span class="string">&quot;loc.dat&quot;</span>).unwrap();
 
-        <span class="kw">let </span>count = file.try_get_u16().unwrap();
+        <span class="kw">let </span>_count = file.try_get_u16().unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>offset_data = archive.file_named(<span class="string">&quot;loc.idx&quot;</span>).unwrap();
 
         <span class="kw">let </span><span class="kw-2">mut </span>locations = BTreeMap::new();
@@ -1236,7 +1244,8 @@
                     }
                     <span class="number">1 </span>=&gt; loc.models = <span class="prelude-val">Some</span>(Models::deserialize(<span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>),
                     <span class="number">2 </span>=&gt; loc.name = <span class="prelude-val">Some</span>(buffer.try_get_string()<span class="question-mark">?</span>),
-                    <span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
+                    <span class="comment">// Actually, this field is still in use for a little while after thw switch to dat2.
+                    </span><span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
                     </span><span class="number">3 </span>=&gt; loc.description = <span class="prelude-val">Some</span>(buffer.try_get_string()<span class="question-mark">?</span>),
                     <span class="attr">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
                     </span><span class="number">5 </span>=&gt; {
@@ -1412,7 +1421,7 @@
     <span class="attr">#![allow(missing_docs)]
     </span><span class="kw">use </span>std::{collections::BTreeMap, iter};
 
-    <span class="kw">use </span>bytes::{Buf, Bytes};
+    <span class="kw">use </span>bytes::Bytes;
     <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
     </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
     <span class="kw">use </span>serde::Serialize;
@@ -1917,7 +1926,6 @@
 
 <span class="attr">#[cfg(all(test, feature = <span class="string">&quot;legacy&quot;</span>))]
 </span><span class="kw">mod </span>legacy {
-    <span class="kw">use </span>std::path::PathBuf;
 
     <span class="kw">use </span>rs3cache_backend::index::CacheIndex;
 
@@ -1948,7 +1956,7 @@
         <span class="kw">for </span>id <span class="kw">in </span><span class="number">0</span>..len {
             <span class="kw">let </span>piece_len = offset_data.try_get_u16().unwrap();
             <span class="kw">let </span>data = file.split_to(piece_len <span class="kw">as </span>usize);
-            <span class="kw">let </span>loc = LocationConfig::deserialize(id <span class="kw">as </span>u32, data).unwrap();
+            <span class="kw">let </span>_loc = LocationConfig::deserialize(id <span class="kw">as </span>u32, data).unwrap();
             <span class="comment">//println!(&quot;{}&quot;, loc);
         </span>}
         <span class="macro">assert_eq!</span>(offset_data, <span class="kw-2">&amp;</span>[].as_slice());

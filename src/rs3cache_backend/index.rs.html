@@ -277,6 +277,8 @@
 <a href="#277" id="277">277</a>
 <a href="#278" id="278">278</a>
 <a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
 </pre><pre class="rust"><code><span class="doccomment">//! The interface between [rs3cache](crate) and the cache database.
 
 </span><span class="attr">#![allow(unused_imports)] </span><span class="comment">// varies based on mock config flags
@@ -340,7 +342,7 @@
     path: Arc&lt;CachePath&gt;,
 
     <span class="attr">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
-    </span>connection: sqlite::Connection,
+    </span>connection: rusqlite::Connection,
 
     <span class="attr">#[cfg(any(feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
     </span>file: File,
@@ -556,5 +558,7 @@
         <span class="self">self</span>.feed.size_hint()
     }
 }
+
+<span class="kw">impl </span>ExactSizeIterator <span class="kw">for </span>IntoIter {}
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rs3cache_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (574b64a97 2022-12-31)" data-search-js="search-181581080540673f.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-58836c674e2f7bd2.css" ></div></body></html>

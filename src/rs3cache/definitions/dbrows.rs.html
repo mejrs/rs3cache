@@ -138,32 +138,16 @@
 <a href="#138" id="138">138</a>
 <a href="#139" id="139">139</a>
 <a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{
-    collections::BTreeMap,
-    fs::{<span class="self">self</span>, File},
-    io::Write,
-};
+</pre><pre class="rust"><code><span class="attr">#![allow(unused_variables)]
+
+</span><span class="kw">use </span>std::collections::BTreeMap;
 
 <span class="kw">use </span>bytes::{Buf, Bytes};
-<span class="kw">use </span>path_macro::path;
 <span class="kw">use </span>rs3cache_backend::buf::ReadError;
 <span class="kw">use </span>serde::Serialize;
-<span class="kw">use </span>serde_with::skip_serializing_none;
 
 <span class="kw">use crate</span>::{
-    cache::{
-        buf::BufExtra,
-        error::{CacheError, CacheResult},
-        index::CacheIndex,
-    },
+    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
     definitions::indextype::{ConfigType, IndexType},
 };
 

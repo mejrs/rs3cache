@@ -106,32 +106,32 @@
 <a href="#106" id="106">106</a>
 <a href="#107" id="107">107</a>
 <a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, path::Path, sync::LazyLock};
 
-<span class="kw">use </span>image::{imageops, io::Reader <span class="kw">as </span>ImageReader, ImageBuffer, ImageError, ImageFormat, Rgba, RgbaImage};
-<span class="kw">use </span>indicatif::ProgressIterator;
-<span class="kw">use </span>itertools::{iproduct, izip};
+<span class="kw">use </span>image::{imageops, ImageBuffer, ImageError, Rgba, RgbaImage};
 <span class="kw">use </span>path_macro::path;
-<span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
+<span class="kw">use </span>rayon::iter::ParallelIterator;
 <span class="kw">use </span>regex::Regex;
 <span class="kw">use </span>rs3cache_backend::error::CacheError;
+<span class="kw">use </span>rs3cache_utils::bar::Render;
 
-<span class="kw">use crate</span>::{cache::error::CacheResult, renderers::scale};
+<span class="kw">use crate</span>::{cache::error::CacheResult, cli::Config, renderers::scale};
 
 <span class="kw">static </span>RE: LazyLock&lt;Regex&gt; = LazyLock::new(|| Regex::new(<span class="string">r&quot;(?P&lt;p&gt;\d+)(?:_)(?P&lt;i&gt;\d+)(?:_)(?P&lt;j&gt;\d+)(?:\.png)&quot;</span>).expect(<span class="string">&quot;Regex is cursed.&quot;</span>));
 
 <span class="doccomment">/// Given a folder and a range of zoom levels, recursively creates tiles for all zoom levels.
-</span><span class="kw">pub fn </span>render_zoom_levels(folder: <span class="kw">impl </span>AsRef&lt;Path&gt; + Send + Sync, mapid: i32, range: Range&lt;i8&gt;, backfill: [u8; <span class="number">4</span>]) -&gt; CacheResult&lt;()&gt; {
+</span><span class="kw">pub fn </span>render_zoom_levels(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, mapid: i32, range: Range&lt;i8&gt;, backfill: [u8; <span class="number">4</span>]) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>zoom_levels = range.rev();
     <span class="kw">for </span>zoom <span class="kw">in </span>zoom_levels {
-        <span class="kw">let </span>path = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
+        <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
         fs::create_dir_all(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>new_tile_coordinates = get_future_filenames(<span class="kw-2">&amp;</span>folder, mapid, zoom + <span class="number">1</span>)<span class="question-mark">?</span>.into_iter();
+        <span class="kw">let </span>new_tile_coordinates = get_future_filenames(config, name, mapid, zoom + <span class="number">1</span>)<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">let </span>func = |(p, i, j)| {
-            <span class="kw">let </span>img = make_tile(<span class="kw-2">&amp;</span>folder, mapid, zoom, p, i, j, backfill)<span class="question-mark">?</span>;
-            <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}/{p}_{i}_{j}.png&quot;</span>));
+        <span class="kw">let </span>func = |((p, i, j), <span class="kw">_</span>)| {
+            <span class="kw">let </span>img = make_tile(<span class="kw-2">&amp;</span>config.output, name, mapid, zoom, p, i, j, backfill)<span class="question-mark">?</span>;
+            <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / <span class="kw-2">&amp;</span>name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}/{p}_{i}_{j}.png&quot;</span>));
 
             <span class="kw">match </span>img.save(<span class="kw-2">&amp;</span>filename) {
                 <span class="prelude-val">Ok</span>(()) =&gt; {}
@@ -141,7 +141,7 @@
             <span class="prelude-val">Ok</span>(())
         };
 
-        new_tile_coordinates.progress().par_bridge().try_for_each(func)<span class="question-mark">?</span>;
+        new_tile_coordinates.render(<span class="macro">format!</span>(<span class="string">&quot;{name} zoom level {zoom}&quot;</span>)).try_for_each(func)<span class="question-mark">?</span>;
     }
     <span class="prelude-val">Ok</span>(())
 }
@@ -156,6 +156,7 @@
 
 <span class="kw">fn </span>make_tile(
     folder: <span class="kw">impl </span>AsRef&lt;Path&gt;,
+    name: <span class="kw-2">&amp;</span>str,
     mapid: i32,
     target_zoom: i8,
     target_plane: i32,
@@ -165,7 +166,7 @@
 ) -&gt; CacheResult&lt;ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>base = RgbaImage::from_fn(<span class="number">512</span>, <span class="number">512</span>, |<span class="kw">_</span>, <span class="kw">_</span>| Rgba(backfill));
 
-    <span class="kw">let </span>files = get_files(folder, mapid, target_zoom, target_plane, target_i, target_j);
+    <span class="kw">let </span>files = get_files(folder, name, mapid, target_zoom, target_plane, target_i, target_j);
 
     <span class="kw">for </span>((di, dj), img) <span class="kw">in </span>files {
         <span class="kw">match </span>img {
@@ -184,6 +185,7 @@
 
 <span class="kw">fn </span>get_files(
     folder: <span class="kw">impl </span>AsRef&lt;Path&gt;,
+    name: <span class="kw-2">&amp;</span>str,
     mapid: i32,
     target_zoom: i8,
     target_plane: i32,
@@ -194,13 +196,13 @@
         <span class="kw">let </span>i = (target_i &lt;&lt; <span class="number">1</span>) + di;
         <span class="kw">let </span>j = (target_j &lt;&lt; <span class="number">1</span>) + dj;
         <span class="kw">let </span>zoom = target_zoom + <span class="number">1</span>;
-        <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}/{target_plane}_{i}_{j}.png&quot;</span>));
+        <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}/{target_plane}_{i}_{j}.png&quot;</span>));
         ((di, dj), image::open(filename))
     })
 }
 
-<span class="kw">fn </span>get_future_filenames(folder: <span class="kw">impl </span>AsRef&lt;Path&gt;, mapid: i32, zoom: i8) -&gt; CacheResult&lt;HashSet&lt;(i32, i32, i32)&gt;&gt; {
-    <span class="kw">let </span>dir = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
+<span class="kw">fn </span>get_future_filenames(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, mapid: i32, zoom: i8) -&gt; CacheResult&lt;HashSet&lt;(i32, i32, i32)&gt;&gt; {
+    <span class="kw">let </span>dir = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
 
     <span class="kw">let </span>new_tiles = fs::read_dir(<span class="kw-2">&amp;</span>dir)
         .map_err(|e| CacheError::io(e, dir.clone()))<span class="question-mark">?

@@ -590,7 +590,7 @@
     </span><span class="kw">pub fn </span>dump_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt; {
         <span class="kw">let </span>archives = CacheIndex::new(IndexType::ACHIEVEMENT_CONFIG, config.input.clone())<span class="question-mark">?</span>.into_iter();
 
-        <span class="kw">let </span>Achievements = archives
+        <span class="kw">let </span>achievements = archives
             .map(Result::unwrap)
             .flat_map(|archive| {
                 <span class="kw">let </span>archive_id = archive.archive_id();
@@ -601,7 +601,7 @@
             })
             .map(|(id, file)| (id, <span class="self">Self</span>::deserialize(id, file)))
             .collect::&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;&gt;();
-        <span class="prelude-val">Ok</span>(Achievements)
+        <span class="prelude-val">Ok</span>(achievements)
     }
 
     <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="self">Self </span>{

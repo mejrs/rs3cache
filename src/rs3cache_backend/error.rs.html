@@ -488,9 +488,9 @@
 }
 
 <span class="kw">pub enum </span>CacheErrorKind {
-    <span class="doccomment">/// Wraps [`sqlite::Error`].
+    <span class="doccomment">/// Wraps [`rusqlite::Error`].
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
-    </span>SqliteError(sqlite::Error),
+    </span>SqliteError(rusqlite::Error),
     DecodeError(DecodeError),
     <span class="doccomment">/// Wraps [`io.error`](std::io::Error).
     </span>IoError(std::io::Error, PathBuf),
@@ -524,8 +524,8 @@
 }
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
-</span><span class="kw">impl </span>From&lt;sqlite::Error&gt; <span class="kw">for </span>CacheError {
-    <span class="kw">fn </span>from(cause: sqlite::Error) -&gt; <span class="self">Self </span>{
+</span><span class="kw">impl </span>From&lt;rusqlite::Error&gt; <span class="kw">for </span>CacheError {
+    <span class="kw">fn </span>from(cause: rusqlite::Error) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             inner: Arc::new(Inner {
                 kind: CacheErrorKind::SqliteError(cause),

@@ -168,11 +168,10 @@
 <a href="#168" id="168">168</a>
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 <span class="kw">use </span>pyo3::{
-    exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
+    exceptions::{PyIndexError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::<span class="kw-2">*</span>,
     types::{PyInt, PyList},
 };
@@ -181,7 +180,6 @@
 <span class="kw">use crate</span>::{
     cli::Config,
     definitions::{
-        locations::Location,
         mapsquares::{MapSquare, MapSquareIterator, MapSquares},
         tiles::Tile,
     },
@@ -282,7 +280,7 @@
         <span class="kw">match </span><span class="self">self</span>.inner.next() {
             <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(sq)) =&gt; <span class="prelude-val">Some</span>(PyMapSquare { inner: sq }),
             <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(e)) =&gt; {
-                PyRuntimeError::new_err(<span class="string">&quot;Error&quot;</span>).restore(py);
+                PyRuntimeError::new_err(<span class="macro">format!</span>(<span class="string">&quot;Error: {e}&quot;</span>)).restore(py);
                 <span class="prelude-val">None
             </span>}
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,

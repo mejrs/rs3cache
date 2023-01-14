@@ -125,6 +125,29 @@
 <a href="#125" id="125">125</a>
 <a href="#126" id="126">126</a>
 <a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     fs::{<span class="self">self</span>, File},
     io::Write,
@@ -132,6 +155,8 @@
 };
 
 <span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>console::style;
+<span class="kw">use </span>indicatif::{ProgressBar, ProgressStyle};
 <span class="kw">use </span>path_macro::path;
 
 <span class="kw">use crate</span>::{
@@ -149,6 +174,12 @@
     <span class="kw">let </span>music_indices = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">71</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">71</span>)<span class="question-mark">?</span>);
     <span class="kw">let </span>audio_archives = CacheIndex::new(IndexType::AUDIOSTREAMS, config.input.clone())<span class="question-mark">?</span>;
 
+    <span class="kw">let </span>progress = ProgressBar::new(music_names.variants.len() <span class="kw">as </span>u64).with_style(
+        ProgressStyle::with_template(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;   {} [{{bar:30}}] {{pos}}/{{len}}: music&quot;</span>, style(<span class="string">&quot;Dumping&quot;</span>).cyan().bright()))
+            .unwrap()
+            .progress_chars(<span class="string">&quot;=&gt; &quot;</span>),
+    );
+
     <span class="kw">for </span>(archive_id, name) <span class="kw">in </span>music_names.variants.into_iter() {
         <span class="kw">let </span>name = <span class="kw">match </span>name {
             Value::String(s) <span class="kw">if </span>s.chars().all(|c| c == <span class="string">&#39; &#39;</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;Unnamed track {archive_id}&quot;</span>),
@@ -163,22 +194,23 @@
             <span class="prelude-val">Some</span>(Value::Integer(i)) =&gt; <span class="kw-2">*</span>i <span class="kw">as </span>u32,
             <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             <span class="prelude-val">None </span>=&gt; {
-                <span class="macro">println!</span>(<span class="string">&quot;Unable to create \&quot;{name}\&quot;.&quot;</span>);
+                progress.println(<span class="macro">format!</span>(<span class="string">&quot;    {} unable to create `{name}` is not present&quot;</span>, style(<span class="string">&quot;Warning&quot;</span>).yellow()));
+                progress.inc(<span class="number">1</span>);
                 <span class="kw">continue</span>;
             }
         };
 
-        <span class="kw">let </span>first = <span class="kw">match </span>audio_archives.archive(music_archive_id) {
+        <span class="kw">let </span><span class="kw-2">mut </span>data = <span class="kw">match </span>audio_archives.archive(music_archive_id) {
             <span class="prelude-val">Ok</span>(file) =&gt; file.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap(),
             <span class="kw">_ </span>=&gt; {
                 <span class="comment">// Seems like things are lazily loaded.
-                </span><span class="macro">println!</span>(<span class="string">&quot;Unable to create \&quot;{name}\&quot;.&quot;</span>);
+                </span>progress.println(<span class="macro">format!</span>(<span class="string">&quot;    {} `{name}` is not present&quot;</span>, style(<span class="string">&quot;Warning&quot;</span>).yellow()));
+                progress.inc(<span class="number">1</span>);
                 <span class="kw">continue</span>;
             }
         };
 
-        <span class="kw">let </span>(jaga, data) = decode_first(first);
-
+        <span class="kw">let </span>jaga = decode_first(<span class="kw-2">&amp;mut </span>data);
         <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;music&quot; </span>/ name);
         fs::create_dir_all(<span class="kw-2">&amp;</span>out).unwrap();
 
@@ -189,6 +221,7 @@
         <span class="comment">// Prepare a process that invokes `Sox` to concatenate all these files.
         // This is really scuffed, but SoX seems to be only program capable of handling it
         // Simply concatenating the files should normally work for .ogg files, but not for these...
+        // See also https://github.com/villermen/runescape-cache-tools/issues/8
         </span><span class="kw">let </span><span class="kw-2">mut </span>command = Command::new(<span class="string">&quot;sox&quot;</span>);
         command.arg(file_name);
 
@@ -196,6 +229,7 @@
         </span><span class="kw">for </span>chunk <span class="kw">in </span>jaga.chunks.iter().skip(<span class="number">1</span>) {
             <span class="kw">let </span>archive_id = chunk.archive_id;
             <span class="kw">let </span>more_data = audio_archives.archive(archive_id).unwrap().file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap();
+            <span class="macro">assert_eq!</span>(more_data.len(), chunk.length <span class="kw">as </span>usize);
             <span class="kw">let </span>file_name = <span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{archive_id}.ogg&quot;</span>));
             <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>file_name).unwrap();
             file.write_all(<span class="kw-2">&amp;</span>more_data).unwrap();
@@ -203,54 +237,66 @@
         }
 
         command.arg(<span class="macro">path!</span>(config.output / <span class="string">&quot;music&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;{name}.ogg&quot;</span>)));
-        command.output().unwrap();
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = command.output() {
+            <span class="kw">if </span>e.kind() == std::io::ErrorKind::NotFound {
+                progress.println(<span class="macro">format!</span>(
+                    <span class="string">&quot;    {} The `sox` program is required to concatenate audio files. Please ensure it is installed{}.&quot;</span>,
+                    style(<span class="string">&quot;Error&quot;</span>).red(),
+                    <span class="kw">if </span><span class="macro">cfg!</span>(windows) { <span class="string">&quot;and visible in PATH&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;&quot; </span>}
+                ));
+                progress.finish_and_clear();
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+            }
+            <span class="macro">panic!</span>(<span class="string">&quot;{e}&quot;</span>);
+        }
+        progress.inc(<span class="number">1</span>);
     }
+    progress.println(<span class="macro">format!</span>(<span class="string">&quot;    {} music&quot;</span>, style(<span class="string">&quot;Dumped&quot;</span>).green().bright()));
+    progress.finish_and_clear();
 
     <span class="prelude-val">Ok</span>(())
 }
 
 <span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>Jaga {
-    _int_1: u32,
-    _int_2: u32,
-    _sample_frequency: u32,
-    _int_3: u32,
+    <span class="kw">pub </span>int_1: u32,
+    <span class="kw">pub </span>int_2: u32,
+    <span class="kw">pub </span>sample_frequency: u32,
+    <span class="kw">pub </span>int_3: u32,
     chunks: Vec&lt;ChunkDescriptor&gt;,
 }
 
 <span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>ChunkDescriptor {
-    _position: u32,
-    _length: u32,
-    archive_id: u32,
+    <span class="kw">pub </span>position: u32,
+    <span class="kw">pub </span>length: u32,
+    <span class="kw">pub </span>archive_id: u32,
 }
 
-<span class="kw">fn </span>decode_first(<span class="kw-2">mut </span>buffer: Bytes) -&gt; (Jaga, Bytes) {
+<span class="kw">fn </span>decode_first(buffer: <span class="kw-2">&amp;mut </span>Bytes) -&gt; Jaga {
     <span class="kw">let </span>signature = buffer.get_array::&lt;<span class="number">4</span>&gt;();
     <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>signature, <span class="string">b&quot;JAGA&quot;</span>);
 
-    <span class="kw">let </span>_int_1 = buffer.get_u32();
-    <span class="kw">let </span>_int_2 = buffer.get_u32();
-    <span class="kw">let </span>_sample_frequency = buffer.get_u32();
-    <span class="kw">let </span>_int_3 = buffer.get_u32();
+    <span class="kw">let </span>int_1 = buffer.get_u32();
+    <span class="kw">let </span>int_2 = buffer.get_u32();
+    <span class="kw">let </span>sample_frequency = buffer.get_u32();
+    <span class="kw">let </span>int_3 = buffer.get_u32();
     <span class="kw">let </span>chunk_count = buffer.get_u32();
     <span class="kw">let </span>chunks = (<span class="number">0</span>..chunk_count)
-        .map(|_position| ChunkDescriptor {
-            _position,
-            _length: buffer.get_u32(),
+        .map(|position| ChunkDescriptor {
+            position,
+            length: buffer.get_u32(),
             archive_id: buffer.get_u32(),
         })
         .collect();
-    (
-        Jaga {
-            _int_1,
-            _int_2,
-            _sample_frequency,
-            _int_3,
-            chunks,
-        },
-        buffer,
-    )
+
+    Jaga {
+        int_1,
+        int_2,
+        sample_frequency,
+        int_3,
+        chunks,
+    }
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rs3cache" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (574b64a97 2022-12-31)" data-search-js="search-181581080540673f.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-58836c674e2f7bd2.css" ></div></body></html>

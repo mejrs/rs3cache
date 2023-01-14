@@ -519,8 +519,6 @@
 <a href="#519" id="519">519</a>
 <a href="#520" id="520">520</a>
 <a href="#521" id="521">521</a>
-<a href="#522" id="522">522</a>
-<a href="#523" id="523">523</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Data comprising the game surface.
 //!
 //! The game map is divided in (potentially) 128 by 256 [`MapSquare`]s,
@@ -537,7 +535,7 @@
 </span><span class="kw">mod </span>iterator;
 
 <span class="kw">use </span>std::{
-    collections::{hash_map, BTreeMap, HashMap},
+    collections::{hash_map, HashMap},
     fs::{<span class="self">self</span>, File},
     io::Write,
     iter::Zip,
@@ -548,9 +546,8 @@
 <span class="kw">use </span>ndarray::{iter::LanesIter, s, Axis, Dim};
 <span class="kw">use </span>path_macro::path;
 <span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
-<span class="kw">use </span>rs3cache_utils::lazy::Lazy;
 <span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
-</span><span class="kw">use </span>{<span class="kw">crate</span>::cache::arc::Archive, bytes::Buf};
+</span><span class="kw">use </span>{<span class="kw">crate</span>::cache::arc::Archive, <span class="kw">crate</span>::definitions::indextype::MapFileType, bytes::Buf, rs3cache_utils::lazy::Lazy};
 
 <span class="kw">pub use </span><span class="self">self</span>::iterator::<span class="kw-2">*</span>;
 <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
@@ -561,7 +558,6 @@
         index::{CacheIndex, Initial},
     },
     definitions::{
-        indextype::{ConfigType, IndexType, MapFileType},
         locations::Location,
         tiles::{Tile, TileArray},
     },
@@ -622,7 +618,7 @@
     </span><span class="kw">pub fn </span>new(i: u8, j: u8, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;MapSquare&gt; {
         <span class="macro">assert!</span>(i &lt; <span class="number">0x7F</span>, <span class="string">&quot;Index out of range.&quot;</span>);
         <span class="kw">let </span>archive_id = (i <span class="kw">as </span>u32) | (j <span class="kw">as </span>u32) &lt;&lt; <span class="number">7</span>;
-        <span class="kw">let </span>archive = CacheIndex::new(IndexType::MAPSV2, config.input.clone())<span class="question-mark">?</span>.archive(archive_id)<span class="question-mark">?</span>;
+        <span class="kw">let </span>archive = CacheIndex::new(<span class="kw">crate</span>::definitions::indextype::IndexType::MAPSV2, config.input.clone())<span class="question-mark">?</span>.archive(archive_id)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from_archive(archive))
     }
 
@@ -636,7 +632,7 @@
         <span class="kw">let </span>locations = <span class="kw">match </span>land {
             <span class="prelude-val">Ok</span>(land) =&gt; <span class="prelude-val">Ok</span>(Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, land)),
             <span class="comment">// most likely, anyway...
-            </span><span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(CacheError::xtea_absent(i, j)),
+            </span><span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(CacheError::xtea_absent(i, j)),
         };
 
         <span class="prelude-val">Ok</span>(MapSquare {
@@ -733,9 +729,9 @@
 <span class="kw">pub struct </span>MapSquares {
     index: CacheIndex&lt;Initial&gt;,
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
-    </span>mapping: BTreeMap&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, u8, u8), u32&gt;,
+    </span>mapping: std::collections::BTreeMap&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, u8, u8), u32&gt;,
     <span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
-    </span>meta: BTreeMap&lt;(u8, u8), rs3cache_backend::index::MapsquareMeta&gt;,
+    </span>meta: std::collections::BTreeMap&lt;(u8, u8), rs3cache_backend::index::MapsquareMeta&gt;,
 }
 
 <span class="kw">impl </span>IntoIterator <span class="kw">for </span>MapSquares {
@@ -973,8 +969,8 @@
         <span class="kw">let </span>index = cache.get_index();
         <span class="kw">let </span>meta = index[<span class="kw-2">&amp;</span>(<span class="number">50</span>, <span class="number">50</span>)];
         <span class="macro">dbg!</span>(meta);
-        <span class="kw">let </span>locs = cache.archive(meta.locfile <span class="kw">as </span>u32).unwrap(); <span class="comment">//.file(&amp;0).unwrap();
-        </span><span class="kw">let </span>map = cache.archive(meta.mapfile <span class="kw">as </span>u32).unwrap(); <span class="comment">//.file(&amp;0).unwrap();
+        <span class="kw">let </span>_locs = cache.archive(meta.locfile <span class="kw">as </span>u32).unwrap(); <span class="comment">//.file(&amp;0).unwrap();
+        </span><span class="kw">let </span>_map = cache.archive(meta.mapfile <span class="kw">as </span>u32).unwrap(); <span class="comment">//.file(&amp;0).unwrap();
     </span>}
 }
 
