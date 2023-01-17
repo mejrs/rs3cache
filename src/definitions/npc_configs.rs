@@ -37,6 +37,10 @@ pub struct NpcConfig {
     #[cfg(feature = "osrs")]
     pub standing_animation: Option<u16>,
     #[cfg(feature = "osrs")]
+    pub idle_90_left_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub idle_90_right_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
     pub walking_animation: Option<u16>,
     #[cfg(feature = "osrs")]
     pub rotate_180_animation: Option<u16>,
@@ -44,7 +48,22 @@ pub struct NpcConfig {
     pub rotate_90_right_animation: Option<u16>,
     #[cfg(feature = "osrs")]
     pub rotate_90_left_animation: Option<u16>,
-
+    #[cfg(feature = "osrs")]
+    pub run_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub run_90_right_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub run_90_left_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub run_180_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub crawl_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub crawl_90_right_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub crawl_90_left_animation: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub crawl_180_animation: Option<u16>,
     #[cfg(feature = "osrs")]
     pub category: Option<u16>,
 
@@ -168,6 +187,10 @@ impl NpcConfig {
                 #[cfg(feature = "osrs")]
                 14 => npc.walking_animation = Some(buffer.get_u16()),
                 #[cfg(feature = "osrs")]
+                15 => npc.idle_90_left_animation = Some(buffer.get_u16()),
+                #[cfg(feature = "osrs")]
+                16 => npc.idle_90_right_animation = Some(buffer.get_u16()),
+                #[cfg(feature = "osrs")]
                 17 => {
                     npc.walking_animation = Some(buffer.get_u16());
                     npc.rotate_180_animation = Some(buffer.get_u16());
@@ -203,7 +226,25 @@ impl NpcConfig {
                 109 => npc.slow_walk = Some(false),
                 111 => npc.animate_idle = Some(false),
                 113 => npc.shadow = Some(Shadow::deserialize(&mut buffer)),
+                #[cfg(not(feature = "osrs"))]
                 114 => npc.shadow_alpha_intensity = Some(ShadowIntensity::deserialize(&mut buffer)),
+                114 => npc.run_animation = Some(buffer.get_u16()),
+                #[cfg(feature = "osrs")]
+                115 => {
+                    npc.run_animation = Some(buffer.get_u16());
+                    npc.run_180_animation = Some(buffer.get_u16());
+                    npc.run_90_left_animation = Some(buffer.get_u16());
+                    npc.run_90_right_animation = Some(buffer.get_u16());
+                }
+                #[cfg(feature = "osrs")]
+                116 => npc.crawl_animation = Some(buffer.get_u16()),
+                #[cfg(feature = "osrs")]
+                117 => {
+                    npc.crawl_animation = Some(buffer.get_u16());
+                    npc.crawl_180_animation = Some(buffer.get_u16());
+                    npc.crawl_90_left_animation = Some(buffer.get_u16());
+                    npc.crawl_90_right_animation = Some(buffer.get_u16());
+                }
                 118 => npc.morphs_2 = Some(ExtendedNpcMorphTable::deserialize(&mut buffer)),
                 119 => npc.movement_capabilities = Some(buffer.get_i8()),
                 121 => npc.translations = Some(Translations::deserialize(&mut buffer)),
