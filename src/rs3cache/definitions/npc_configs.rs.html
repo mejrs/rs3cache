@@ -681,6 +681,48 @@
 <a href="#681" id="681">681</a>
 <a href="#682" id="682">682</a>
 <a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
     fs::{<span class="self">self</span>, File},
@@ -720,6 +762,10 @@
     <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
     </span><span class="kw">pub </span>standing_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
     <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>idle_90_left_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>idle_90_right_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
     </span><span class="kw">pub </span>walking_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
     <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
     </span><span class="kw">pub </span>rotate_180_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
@@ -727,7 +773,22 @@
     </span><span class="kw">pub </span>rotate_90_right_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
     <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
     </span><span class="kw">pub </span>rotate_90_left_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
-
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>run_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>run_90_right_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>run_90_left_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>run_180_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>crawl_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>crawl_90_right_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>crawl_90_left_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>crawl_180_animation: <span class="prelude-ty">Option</span>&lt;u16&gt;,
     <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
     </span><span class="kw">pub </span>category: <span class="prelude-ty">Option</span>&lt;u16&gt;,
 
@@ -851,6 +912,10 @@
                 <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
                 </span><span class="number">14 </span>=&gt; npc.walking_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
                 <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">15 </span>=&gt; npc.idle_90_left_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">16 </span>=&gt; npc.idle_90_right_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
                 </span><span class="number">17 </span>=&gt; {
                     npc.walking_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
                     npc.rotate_180_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
@@ -886,7 +951,26 @@
                 <span class="number">109 </span>=&gt; npc.slow_walk = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
                 <span class="number">111 </span>=&gt; npc.animate_idle = <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
                 <span class="number">113 </span>=&gt; npc.shadow = <span class="prelude-val">Some</span>(Shadow::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
-                <span class="number">114 </span>=&gt; npc.shadow_alpha_intensity = <span class="prelude-val">Some</span>(ShadowIntensity::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="attr">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
+                </span><span class="number">114 </span>=&gt; npc.shadow_alpha_intensity = <span class="prelude-val">Some</span>(ShadowIntensity::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
+                <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">114 </span>=&gt; npc.run_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">115 </span>=&gt; {
+                    npc.run_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.run_180_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.run_90_left_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.run_90_right_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                }
+                <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">116 </span>=&gt; npc.crawl_animation = <span class="prelude-val">Some</span>(buffer.get_u16()),
+                <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+                </span><span class="number">117 </span>=&gt; {
+                    npc.crawl_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.crawl_180_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.crawl_90_left_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                    npc.crawl_90_right_animation = <span class="prelude-val">Some</span>(buffer.get_u16());
+                }
                 <span class="number">118 </span>=&gt; npc.morphs_2 = <span class="prelude-val">Some</span>(ExtendedNpcMorphTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
                 <span class="number">119 </span>=&gt; npc.movement_capabilities = <span class="prelude-val">Some</span>(buffer.get_i8()),
                 <span class="number">121 </span>=&gt; npc.translations = <span class="prelude-val">Some</span>(Translations::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
