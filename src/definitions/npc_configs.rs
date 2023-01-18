@@ -226,7 +226,7 @@ impl NpcConfig {
                 109 => npc.slow_walk = Some(false),
                 111 => npc.animate_idle = Some(false),
                 113 => npc.shadow = Some(Shadow::deserialize(&mut buffer)),
-                #[cfg(not(feature = "osrs"))]
+                #[cfg(feature = "rs3")]
                 114 => npc.shadow_alpha_intensity = Some(ShadowIntensity::deserialize(&mut buffer)),
                 #[cfg(feature = "osrs")]
                 114 => npc.run_animation = Some(buffer.get_u16()),
