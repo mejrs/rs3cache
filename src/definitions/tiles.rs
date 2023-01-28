@@ -1,9 +1,11 @@
+#[allow(unused_imports)]
 use bytes::{Buf, Bytes};
 use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+#[allow(unused_imports)]
+use rs3cache_backend::buf::{BufExtra, ReadError};
 use serde::Serialize;
-
 /// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 
@@ -33,8 +35,6 @@ impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
     #[cfg(any(feature = "rs3", feature = "2013_shim"))]
     pub fn dump(buffer: &mut Bytes) -> TileArray {
-        use rs3cache_backend::buf::BufExtra;
-
         Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();
 
@@ -61,26 +61,66 @@ impl Tile {
         })
     }
 
-    #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2013_shim")))]
+    #[cfg(feature = "legacy")]
     pub fn dump(buffer: &mut Bytes) -> TileArray {
-        Array::from_shape_simple_fn((4, 64, 64), || {
+        let shape = Self::try_dump(buffer.clone(), false).unwrap();
+
+        Array::from_shape_vec((4, 64, 64), shape).unwrap()
+    }
+
+    #[cfg(all(feature = "osrs", not(feature = "2013_shim")))]
+    pub fn dump(buffer: &mut Bytes) -> TileArray {
+        // This is a hack to deal with the changing of the tile format
+        //
+        // Rather than introducing a new feature for it,
+        // try to figure out the correct format at runtime
+        let shape = match Self::try_dump(buffer.clone(), true) {
+            Ok(shape) => shape,
+            Err(_) => Self::try_dump(buffer.clone(), false).unwrap(),
+        };
+
+        Array::from_shape_vec((4, 64, 64), shape).unwrap()
+    }
+
+    #[cfg(any(feature = "osrs", feature = "legacy"))]
+    fn try_dump(mut buffer: Bytes, use_post_oct_2022: bool) -> Result<Vec<Tile>, ReadError> {
+        let producer = || try {
             let mut tile = Tile::default();
 
             loop {
-                match buffer.get_u8() {
+                let opcode = if use_post_oct_2022 {
+                    buffer.try_get_u16()?
+                } else {
+                    buffer.try_get_u8()? as u16
+                };
+
+                match opcode {
                     0 => break tile,
                     1 => {
-                        tile.height = Some(buffer.get_u8());
+                        tile.height = Some(buffer.try_get_u8()?);
                         break tile;
                     }
-                    opcode if opcode <= 49 => {
-                        tile.shape = Some(opcode - 2);
-                        tile.overlay_id = Some(buffer.get_u8() as u16);
+                    opcode @ 2..=49 => {
+                        tile.shape = Some(opcode as u8 - 2);
+
+                        let id = if use_post_oct_2022 {
+                            buffer.try_get_u16()?
+                        } else {
+                            buffer.try_get_u8()? as u16
+                        };
+                        tile.overlay_id = Some(id);
                     }
-                    opcode if opcode <= 81 => tile.settings = Some(opcode - 49),
-                    opcode => tile.underlay_id = Some((opcode - 81) as u16),
+                    opcode @ 50..=81 => tile.settings = Some(opcode as u8 - 49),
+                    opcode @ 82.. => tile.underlay_id = Some(opcode - 81),
                 }
             }
-        })
+        };
+
+        let ret = std::iter::repeat_with(producer).take(4 * 64 * 64).collect();
+        if buffer.is_empty() {
+            ret
+        } else {
+            Err(ReadError::not_exhausted())
+        }
     }
 }
