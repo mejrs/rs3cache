@@ -337,10 +337,6 @@
 <a href="#337" id="337">337</a>
 <a href="#338" id="338">338</a>
 <a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of enums.
 </span><span class="attr">#![allow(non_camel_case_types, missing_docs)]
 
@@ -560,10 +556,9 @@
 }
 
 <span class="doccomment">/// Describes the properties of a given enum.
-</span><span class="attr">#[cfg_eval]
-#[allow(missing_docs)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+
+</span><span class="attr">#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>Enum {
@@ -571,13 +566,10 @@
     </span><span class="kw">pub </span>id: u32,
     <span class="kw">pub </span>unknown_131: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="attr">#[serde(skip_serializing_if = <span class="string">&quot;KeyType::is_init&quot;</span>)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
     </span>key_type: KeyType,
     <span class="attr">#[serde(skip_serializing_if = <span class="string">&quot;ValueType::is_init&quot;</span>)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
     </span>value_type: ValueType,
     <span class="attr">#[serde(skip_serializing_if = <span class="string">&quot;BTreeMap::is_empty&quot;</span>)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3(get))]
     </span><span class="kw">pub </span>variants: BTreeMap&lt;i32, Value&gt;,
     <span class="kw">pub </span>default: <span class="prelude-ty">Option</span>&lt;Value&gt;,
 }

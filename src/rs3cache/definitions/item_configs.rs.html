@@ -371,7 +371,6 @@
 <a href="#371" id="371">371</a>
 <a href="#372" id="372">372</a>
 <a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of items.
 
 </span><span class="kw">use </span>std::{
@@ -398,10 +397,9 @@
 };
 
 <span class="doccomment">/// Describes the properties of a given item.
-</span><span class="attr">#[cfg_eval]
-#[allow(missing_docs)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+
+</span><span class="attr">#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>ItemConfig {

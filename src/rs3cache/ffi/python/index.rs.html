@@ -247,7 +247,7 @@
 </span><span class="kw">impl </span>PyCacheIndex {
     <span class="doccomment">/// Constructor of [`PyCacheIndex`].
     </span><span class="attr">#[new]
-    #[args(index_id, path = <span class="string">&quot;None&quot;</span>)]
+    #[pyo3(signature=(index_id, path=<span class="prelude-val">None</span>))]
     </span><span class="kw">fn </span>new(index_id: u32, path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {

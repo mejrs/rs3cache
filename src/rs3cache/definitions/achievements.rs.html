@@ -486,20 +486,6 @@
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
 <a href="#488" id="488">488</a>
-<a href="#489" id="489">489</a>
-<a href="#490" id="490">490</a>
-<a href="#491" id="491">491</a>
-<a href="#492" id="492">492</a>
-<a href="#493" id="493">493</a>
-<a href="#494" id="494">494</a>
-<a href="#495" id="495">495</a>
-<a href="#496" id="496">496</a>
-<a href="#497" id="497">497</a>
-<a href="#498" id="498">498</a>
-<a href="#499" id="499">499</a>
-<a href="#500" id="500">500</a>
-<a href="#501" id="501">501</a>
-<a href="#502" id="502">502</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.
 </span><span class="kw">use </span>std::{
     collections::BTreeMap,
@@ -520,10 +506,9 @@
     definitions::indextype::IndexType,
 };
 <span class="doccomment">/// Describes the properties of a given Achievement.
-</span><span class="attr">#[cfg_eval]
-#[allow(missing_docs)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+
+</span><span class="attr">#[allow(missing_docs)]
+#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>Achievement {
@@ -767,9 +752,7 @@
 
     <span class="kw">use crate</span>::{cache::buf::BufExtra, types::variables::Varbit};
 
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>VarbitRequirement {
         <span class="kw">pub </span>description: JString&lt;Bytes&gt;,
@@ -794,9 +777,7 @@
         }
     }
 
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>VarbitRequirement10 {
         <span class="kw">pub </span>description: JString&lt;Bytes&gt;,
@@ -821,9 +802,7 @@
         }
     }
 
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>SkillRequirement {
         <span class="kw">pub </span>description: JString&lt;Bytes&gt;,
@@ -845,9 +824,7 @@
         }
     }
 
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>MaybeIronmanSkillRequirement {
         <span class="kw">pub </span>is_ironman: bool,
@@ -875,9 +852,8 @@
             }
         }
     }
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>MultipleVarbitsRequirement {
         value: u32,
@@ -896,9 +872,7 @@
         }
     }
 
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>PartialVarbitRequirement {
         value: u32,
@@ -924,9 +898,7 @@
         }
     }
 
-    <span class="attr">#[cfg_eval]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>PackedVarbitRequirement {
         value: u8,
