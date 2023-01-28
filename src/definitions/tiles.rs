@@ -10,9 +10,8 @@ use serde::Serialize;
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 
 /// Describes the properties of a tile in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
-#[cfg_eval]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[derive(Default, Debug, Copy, Clone, Serialize)]
 pub struct Tile {
     /// Reference to a [shape](crate::renderers::map::tileshape).

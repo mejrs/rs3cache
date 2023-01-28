@@ -217,10 +217,9 @@ impl IntoPy<Py<PyAny>> for Value {
 }
 
 /// Describes the properties of a given enum.
-#[cfg_eval]
+
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Enum {
@@ -228,13 +227,10 @@ pub struct Enum {
     pub id: u32,
     pub unknown_131: Option<bool>,
     #[serde(skip_serializing_if = "KeyType::is_init")]
-    #[cfg_attr(feature = "pyo3", pyo3(get))]
     key_type: KeyType,
     #[serde(skip_serializing_if = "ValueType::is_init")]
-    #[cfg_attr(feature = "pyo3", pyo3(get))]
     value_type: ValueType,
     #[serde(skip_serializing_if = "BTreeMap::is_empty")]
-    #[cfg_attr(feature = "pyo3", pyo3(get))]
     pub variants: BTreeMap<i32, Value>,
     pub default: Option<Value>,
 }

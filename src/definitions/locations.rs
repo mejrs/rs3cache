@@ -65,10 +65,9 @@ impl IntoPy<PyObject> for Watery {
 }
 
 /// A location, also referred to as an "object".
-#[cfg_eval]
+
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Location {

@@ -21,10 +21,9 @@ use crate::definitions::indextype::IndexType;
 use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
-#[cfg_eval]
+
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct LocationConfig {
@@ -438,9 +437,8 @@ pub mod location_config_fields {
     type IdType = u16;
 
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
         #[serde(flatten)]
@@ -491,9 +489,8 @@ pub mod location_config_fields {
     }
 
     /// Like [`LocationMorphTable`], but with a default value.
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ExtendedLocationMorphTable {
@@ -560,7 +557,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
@@ -577,7 +573,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
@@ -628,7 +623,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models2 {
@@ -673,7 +667,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
@@ -690,7 +683,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown79 {
@@ -722,7 +714,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown173 {
@@ -740,7 +731,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown163 {
@@ -769,7 +759,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown78 {
@@ -787,7 +776,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown160 {
@@ -802,7 +790,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown201 {
@@ -839,7 +826,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
@@ -856,7 +842,6 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_eval]
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown204 {

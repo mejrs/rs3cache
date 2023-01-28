@@ -7,9 +7,6 @@ use serde_json;
 
 use crate::error::{CacheError, CacheResult};
 
-#[cfg_eval]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyo3::pyclass)]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Xtea {
     pub mapsquare: u32,

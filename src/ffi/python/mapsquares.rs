@@ -31,7 +31,7 @@ pub struct PyMapSquares {
 #[pymethods]
 impl PyMapSquares {
     #[new]
-    #[args(path = "None")]
+    #[pyo3(signature=(path=None))]
     fn new(path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {

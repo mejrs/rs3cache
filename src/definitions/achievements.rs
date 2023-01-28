@@ -18,10 +18,9 @@ use crate::{
     definitions::indextype::IndexType,
 };
 /// Describes the properties of a given Achievement.
-#[cfg_eval]
+
 #[allow(missing_docs)]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Achievement {
@@ -265,9 +264,7 @@ pub mod achievement_fields_impl {
 
     use crate::{cache::buf::BufExtra, types::variables::Varbit};
 
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct VarbitRequirement {
         pub description: JString<Bytes>,
@@ -292,9 +289,7 @@ pub mod achievement_fields_impl {
         }
     }
 
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct VarbitRequirement10 {
         pub description: JString<Bytes>,
@@ -319,9 +314,7 @@ pub mod achievement_fields_impl {
         }
     }
 
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct SkillRequirement {
         pub description: JString<Bytes>,
@@ -343,9 +336,7 @@ pub mod achievement_fields_impl {
         }
     }
 
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MaybeIronmanSkillRequirement {
         pub is_ironman: bool,
@@ -373,9 +364,8 @@ pub mod achievement_fields_impl {
             }
         }
     }
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultipleVarbitsRequirement {
         value: u32,
@@ -394,9 +384,7 @@ pub mod achievement_fields_impl {
         }
     }
 
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct PartialVarbitRequirement {
         value: u32,
@@ -422,9 +410,7 @@ pub mod achievement_fields_impl {
         }
     }
 
-    #[cfg_eval]
-    #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]
     pub struct PackedVarbitRequirement {
         value: u8,

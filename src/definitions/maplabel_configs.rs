@@ -20,9 +20,8 @@ use crate::{
 /// Map element on the ingame world map.
 ///
 /// This can be a text label, sprite, polygon or interactive.
-#[cfg_eval]
-#[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct MapLabelConfig {

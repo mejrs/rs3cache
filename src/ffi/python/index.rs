@@ -40,7 +40,7 @@ pub struct PyCacheIndex {
 impl PyCacheIndex {
     /// Constructor of [`PyCacheIndex`].
     #[new]
-    #[args(index_id, path = "None")]
+    #[pyo3(signature=(index_id, path=None))]
     fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {

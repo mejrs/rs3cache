@@ -72,7 +72,7 @@ pub struct PySprites {
 impl PySprites {
     /// Constructor of [`Sprites`].
     #[new]
-    #[args(path = "None")]
+    #[pyo3(signature=(path=None))]
     fn __new__(py: Python, path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {

@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 rs3cache = { path = "..", version = "0.1.0", features=["rs3", "pyo3"] }
-pyo3 = { version = "0.17.3", features = ["extension-module"]}
+pyo3 = { version = "0.18", features = ["extension-module"]}

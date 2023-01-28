@@ -50,6 +50,8 @@ pub struct Metadata {
     pub compressed_size: Option<u32>,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
     pub size: Option<u32>,
+
+    // Getter in pymethods block below
     #[serde(serialize_with = "bytes_to_vec")]
     pub digest: Option<Bytes>,
     #[cfg_attr(feature = "pyo3", pyo3(get))]
@@ -176,7 +178,7 @@ impl Metadata {
 }
 
 /// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.
-#[cfg_eval]
+
 #[allow(missing_docs)]
 #[derive(Serialize, Clone, Debug, Default, Hash, Eq, Ord, PartialOrd, PartialEq)]
 pub struct IndexMetadata {

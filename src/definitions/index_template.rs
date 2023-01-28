@@ -18,7 +18,7 @@ use crate::{
 };
 
 /// Describes the properties of a given <Name>.
-#[cfg_eval]
+
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
  #[cfg_attr(feature = "pyo3", pyclass(frozen))]

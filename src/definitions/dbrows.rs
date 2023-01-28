@@ -11,7 +11,6 @@ use crate::{
     definitions::indextype::{ConfigType, IndexType},
 };
 
-#[cfg_eval]
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyo3::pyclass)]
 #[serde_with::skip_serializing_none]
