@@ -8,7 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::{buf::JString, error::CacheError};
+use rs3cache_backend::{buf::JString, error::Context};
 use serde::Serialize;
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use {crate::definitions::indextype::IndexType, rs3cache_backend::index::CacheIndex};
@@ -693,15 +693,15 @@ use npc_config_fields::*;
 
 /// Save the npc configs as `npc_configs.json`. Exposed as `--dump npc_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
+    fs::create_dir_all(&config.output).context(&config.output)?;
     let mut npc_configs = NpcConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     npc_configs.sort_unstable_by_key(|loc| loc.id);
     let path = path!(config.output / "npc_configs.json");
 
-    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let mut file = File::create(&path).context(path.clone())?;
 
     let data = serde_json::to_string_pretty(&npc_configs).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+    file.write_all(data.as_bytes()).context(path)?;
 
     Ok(())
 }

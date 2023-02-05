@@ -25,6 +25,7 @@ use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+use rs3cache_backend::error::Context;
 #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
 use {crate::cache::arc::Archive, crate::definitions::indextype::MapFileType, bytes::Buf, rs3cache_utils::lazy::Lazy};
 
@@ -42,7 +43,6 @@ use crate::{
     },
     utils::rangeclamp::RangeClamp,
 };
-
 /// Represents a section of the game map
 #[derive(Debug)]
 pub struct MapSquare {
@@ -330,7 +330,7 @@ impl GroupMapSquare {
 pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
     let out = path_macro::path!(config.output / "locations");
 
-    fs::create_dir_all(&out).map_err(|e| CacheError::io(e, out.clone()))?;
+    fs::create_dir_all(&out).context(&out)?;
 
     let last_id = {
         let squares = MapSquares::new(config)?.into_iter();
@@ -375,7 +375,7 @@ pub fn export_locations_by_id(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()> {
     let out = path_macro::path!(config.output / "locations");
 
-    fs::create_dir_all(&out).map_err(|e| CacheError::io(e, out.clone()))?;
+    fs::create_dir_all(&out).context(&out)?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
         let sq = sq.expect("error deserializing mapsquare");
         let i = sq.i;
@@ -396,7 +396,7 @@ pub fn export_locations_by_square(config: &crate::cli::Config) -> CacheResult<()
 pub fn export_tiles_by_square(config: &crate::cli::Config) -> CacheResult<()> {
     let out = path_macro::path!(config.output / "tiles");
 
-    fs::create_dir_all(&out).map_err(|e| CacheError::io(e, out.clone()))?;
+    fs::create_dir_all(&out).context(&out)?;
     MapSquares::new(config)?.into_iter().par_bridge().for_each(|sq| {
         let sq = sq.expect("error deserializing mapsquare");
         let i = sq.i;

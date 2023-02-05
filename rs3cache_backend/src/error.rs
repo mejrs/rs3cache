@@ -6,8 +6,10 @@ use std::{
     sync::Arc,
 };
 
+use console::style;
+
 use crate::{buf::ReadError, decoder::DecodeError, index::CachePath};
-/// Result wrapper for [`CacheError`].
+
 pub type CacheResult<T> = Result<T, CacheError>;
 
 /// An error type for things that can go wrong when reading from the cache.
@@ -20,6 +22,67 @@ struct Inner {
     kind: CacheErrorKind,
     backtrace: Backtrace,
     location: &'static Location<'static>,
+}
+
+pub trait Context<T, E>: Sized {
+    fn context<P: With<E>>(self, ctx: P) -> CacheResult<T>;
+}
+
+pub trait With<E> {
+    fn bind(self, e: E) -> CacheErrorKind;
+}
+
+impl<T, E> Context<T, E> for Result<T, E> {
+    #[track_caller]
+    fn context<P: With<E>>(self, ctx: P) -> CacheResult<T> {
+        match self {
+            Ok(v) => Ok(v),
+            Err(cause) => Err(CacheError {
+                inner: Arc::new(Inner {
+                    kind: ctx.bind(cause),
+                    backtrace: Backtrace::capture(),
+                    location: Location::caller(),
+                }),
+            }),
+        }
+    }
+}
+
+impl With<io::Error> for PathBuf {
+    fn bind(self, e: io::Error) -> CacheErrorKind {
+        CacheErrorKind::IoError(e, self)
+    }
+}
+
+impl With<io::Error> for &PathBuf {
+    fn bind(self, e: io::Error) -> CacheErrorKind {
+        self.to_path_buf().bind(e)
+    }
+}
+
+impl With<io::Error> for &Path {
+    fn bind(self, e: io::Error) -> CacheErrorKind {
+        self.to_path_buf().bind(e)
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl With<rusqlite::Error> for (PathBuf, &Arc<CachePath>) {
+    fn bind(self, e: rusqlite::Error) -> CacheErrorKind {
+        use rusqlite::Error::*;
+
+        let (file, path) = self;
+        match e {
+            SqliteFailure(
+                libsqlite3_sys::Error {
+                    code: libsqlite3_sys::ErrorCode::CannotOpen,
+                    ..
+                },
+                Some(reason),
+            ) => CacheErrorKind::CacheNotFoundError(io::Error::new(io::ErrorKind::Other, reason), file, path.clone()),
+            other => CacheErrorKind::SqliteError(other),
+        }
+    }
 }
 
 impl CacheError {
@@ -77,17 +140,6 @@ impl CacheError {
             inner: Arc::new(Inner {
                 kind: CacheErrorKind::VersionError(index, archive, v1, v2),
                 backtrace: Backtrace::capture(),
-                location: Location::caller(),
-            }),
-        }
-    }
-
-    #[track_caller]
-    pub fn io(cause: io::Error, path: PathBuf) -> Self {
-        Self {
-            inner: Arc::new(Inner {
-                kind: CacheErrorKind::IoError(cause, path),
-                backtrace: Backtrace::force_capture(),
                 location: Location::caller(),
             }),
         }
@@ -209,30 +261,36 @@ impl Display for CacheError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         use std::error::Error;
 
-        writeln!(f, "An error occurred while interpreting the cache.")?;
+        writeln!(
+            f,
+            "An error occurred while interpreting the cache, at {}",
+            style(self.inner.location).yellow()
+        )?;
         writeln!(f)?;
 
         // Do some special formatting for the first source error
         match self.kind() {
             #[cfg(feature = "dat2")]
-            CacheErrorKind::XteaLoadError(source, file) => writeln!(
-                f,
-                "Caused by `serde_json::Error`: {} while deserializing {}",
-                source,
-                file.to_string_lossy()
-            )?,
+            CacheErrorKind::XteaLoadError(source, file) => writeln!(f, "Caused by `serde_json::Error`: {source} while deserializing {file:?}")?,
             #[cfg(not(target_arch = "wasm32"))]
             CacheErrorKind::CacheNotFoundError(e, file, input) => {
                 let path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
-                write!(
+                writeln!(
                     f,
-                    "Encountered Error: \x1B[91m{e:?}\x1B[0m \n while looking for file \x1B[93m{path:?}\x1B[0m.\n",
+                    "Encountered {} while looking for file {}",
+                    style(e).yellow(),
+                    style(path.display()).yellow()
                 )?;
                 match &**input {
-                    CachePath::Given(path) => writeln!(f, "note: looking in this location because the path {path:?} was given as an argument")?,
+                    CachePath::Given(path) => writeln!(
+                        f,
+                        "note: looking in this location because the path {} was given as an argument",
+                        style(path.display()).yellow()
+                    )?,
                     CachePath::Env(path) => writeln!(
                         f,
-                        "note: looking in this location because the path {path:?} was retrieved from an environment variable"
+                        "note: looking in this location because the path {} was retrieved from an environment variable",
+                        style(path.display()).yellow()
                     )?,
                     CachePath::Omitted => writeln!(f, "note: looking in the current directory because no path was given")?,
                 }
@@ -240,8 +298,8 @@ impl Display for CacheError {
                 let path = path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
                 let path = path.to_string_lossy();
 
-                write!(f, "note: expecting the following folder structure:")?;
-                write!(f, "    {path}{STRUCTURE}")?;
+                writeln!(f, "note: expecting the following folder structure:")?;
+                writeln!(f, "    {path}{STRUCTURE}")?;
             }
             CacheErrorKind::CrcError(index_id, archive_id, crc1, crc2) => {
                 write!(f, "Index {index_id} Archive {archive_id}: Crc does not match: {crc1} !=  {crc2}")?
@@ -253,16 +311,14 @@ impl Display for CacheError {
                 write!(f, "Index 5 does not contain mapsquare ({}, {})", archive & 0x7F, archive >> 7)?
             }
             CacheErrorKind::ArchiveNotFoundError(index, archive) => writeln!(f, "Index {index} does not contain archive {archive}")?,
-            CacheErrorKind::FileMissingError(index, archive, file) => write!(f, "\nIndex {index}, Archive {archive} does not contain file {file}")?,
-            CacheErrorKind::IoError(io, path) => write!(f, "encountered {io} while handling path {path:?}")?,
+            CacheErrorKind::FileMissingError(index, archive, file) => writeln!(f, "Index {index}, Archive {archive} does not contain file {file}")?,
+            CacheErrorKind::IoError(io, path) => writeln!(f, "encountered {io} while handling path {path:?}")?,
             _ => {
                 if let Some(source) = self.source() {
                     write!(f, "Caused by: {source}")?;
                 }
             }
         }
-
-        writeln!(f, ", at {}", self.inner.location)?;
 
         // Display deeper source errors, if any.
         for s in <dyn Error>::sources(self).skip(2) {
@@ -275,7 +331,7 @@ impl Display for CacheError {
             match trace.status() {
                 BacktraceStatus::Disabled => writeln!(
                     f,
-                    "No backtrace was captured. set `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` to capture a backtrace."
+                    "No backtrace was captured. Set `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` to capture a backtrace."
                 )?,
                 BacktraceStatus::Captured => writeln!(f, "The following backtrace was captured:\n {trace}")?,
                 _ => {}

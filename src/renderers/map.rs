@@ -16,7 +16,7 @@ use indicatif::ProgressIterator;
 use itertools::iproduct;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-use rs3cache_backend::error::CacheError;
+use rs3cache_backend::error::Context;
 
 #[cfg(feature = "legacy")]
 use crate::definitions::flo::Flo;
@@ -89,7 +89,7 @@ pub fn render(config: &Config) -> CacheResult<()> {
     for zoom in 2..=4 {
         let inner_folder = path!(config.output / NAME / format!("{map_id}/{zoom}"));
 
-        fs::create_dir_all(&inner_folder).map_err(|e| CacheError::io(e, inner_folder))?;
+        fs::create_dir_all(&inner_folder).context(inner_folder)?;
     }
 
     let iter = GroupMapSquareIterator::new(-1_i32..=1_i32, -1_i32..=1_i32, config)?;

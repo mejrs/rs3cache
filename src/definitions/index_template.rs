@@ -5,7 +5,7 @@ use std::{
     fs::{self, File},
     io::Write,
 };
-use rs3cache_backend::error::CacheError;
+use rs3cache_backend::error::{CacheError, Context};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::{prelude::*};
@@ -90,15 +90,15 @@ impl <Name> {
 
 /// Save the <Name> configs as `<Name>>.json`. Exposed as `--dump <Name>`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
+    fs::create_dir_all(&config.output).context(&config.output)?;
     let mut <Name>_configs = <Name>::dump_all(config)?.into_values().collect::<Vec<_>>();
     <Name>_configs.sort_unstable_by_key(|loc| loc.id);
 
     let path = path!(config.output / "<Name>_configs.json");
 
-    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let mut file = File::create(&path).context(path.clone())?;
     let data = serde_json::to_string_pretty(&<Name>_configs).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+    file.write_all(data.as_bytes()).context(path)?;
 
     Ok(())
 }

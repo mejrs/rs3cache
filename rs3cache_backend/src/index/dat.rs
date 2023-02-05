@@ -17,7 +17,7 @@ use crate::{
     arc::Archive,
     buf::{BufExtra, ReadError},
     decoder,
-    error::{CacheError, CacheResult},
+    error::{CacheError, CacheResult, Context},
     index::{CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
 };

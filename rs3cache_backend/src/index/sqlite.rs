@@ -12,12 +12,13 @@ use std::{
 use bytes::{Buf, Bytes};
 use itertools::iproduct;
 use path_macro::path;
+use rusqlite::{Connection, OpenFlags};
 
 use crate::{
     arc::Archive,
     buf::BufExtra,
     decoder,
-    error::{CacheError, CacheResult},
+    error::{CacheError, CacheResult, Context},
     index::{CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
 };
@@ -26,15 +27,6 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    /// Loads the [`Metadata`] of `self`.
-    fn get_raw_metadata(connection: &rusqlite::Connection) -> CacheResult<Bytes> {
-        let mut stmt = connection.prepare("SELECT DATA FROM cache_index")?;
-        let mut rows = stmt.query([])?;
-        let data = rows.next()?.unwrap().get(0).unwrap();
-
-        Ok(decoder::decompress(data)?)
-    }
-
     /// Executes a sql command to retrieve an archive from the cache.
     pub fn get_file(&self, metadata: &Metadata) -> CacheResult<Bytes> {
         let mut stmt = self.connection.prepare("SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?")?;
@@ -129,23 +121,18 @@ impl CacheIndex<Initial> {
     pub fn new(index_id: u32, path: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(path.as_ref() / format!("js5-{index_id}.jcache"));
 
-        // check if database exists (without creating blank sqlite databases)
-        match fs::metadata(&file) {
-            Ok(_) => {
-                let connection = rusqlite::Connection::open(file)?;
-                let raw_metadata: Bytes = Self::get_raw_metadata(&connection)?;
-                let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
+        let connection = Connection::open_with_flags(&file, OpenFlags::SQLITE_OPEN_READ_ONLY).context((file, &path))?;
+        let data = connection.query_row("SELECT DATA FROM cache_index", [], |row| row.get(0))?;
+        let raw_metadata = decoder::decompress(data)?;
+        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
 
-                Ok(Self {
-                    index_id,
-                    metadatas,
-                    connection,
-                    path,
-                    state: Initial {},
-                })
-            }
-            Err(e) => Err(CacheError::cache_not_found(e, file, path)),
-        }
+        Ok(Self {
+            index_id,
+            metadatas,
+            connection,
+            path,
+            state: Initial {},
+        })
     }
 }
 

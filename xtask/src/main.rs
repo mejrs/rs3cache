@@ -60,7 +60,7 @@ fn run_pytests() ->  Result<(), DynError>  {
             .arg("--non-interactive")
             .arg("-f")
             .arg("rs3_py/noxfile.py");
-        println!("Running {command:?}");
+        println!("Running `nox --non-interactive -f rs3_py/noxfile.py`");
         command
         .status()
         .map_err(|e| format!("failed to execute {:?}", e))?.exit_ok()?;
@@ -70,7 +70,7 @@ fn run_pytests() ->  Result<(), DynError>  {
             .arg("--non-interactive")
             .arg("-f")
             .arg("osrs_py/noxfile.py");
-        println!("Running {command:?}");
+        println!("Running `nox --non-interactive -f osrs_py/noxfile.py`");
         command
         .status()
         .map_err(|e| format!("failed to execute {:?}", e))?.exit_ok()?;
@@ -98,7 +98,12 @@ fn test_with(cargo: &str, args: &[&str]) -> Result<ExitStatus, String> {
     command.current_dir(project_root());
     command.args(args);
 
-    println!("Running {command:?}");
+    let mut command_str = String::from("cargo");
+    for arg in args{
+        command_str.push_str(" ");
+        command_str.push_str(arg);
+    }
+    println!("Running `{command_str}`");
     command
         .status()
         .map_err(|_| format!("failed to execute {:?}", args))

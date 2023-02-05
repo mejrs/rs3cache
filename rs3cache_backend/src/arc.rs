@@ -17,7 +17,7 @@ use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes};
 
 use crate::{
     buf::BufExtra,
-    error::{CacheError, CacheResult},
+    error::{CacheError, CacheResult, Context},
     meta::Metadata,
 };
 

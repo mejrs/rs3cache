@@ -16,7 +16,7 @@ use serde::Serialize;
 use crate::{
     cache::{
         buf::BufExtra,
-        error::{CacheError, CacheResult},
+        error::{CacheResult, Context},
         index::CacheIndex,
     },
     definitions::indextype::IndexType,
@@ -360,14 +360,14 @@ use item_config_fields::*;
 
 /// Save the item configs as `item_configs.json`. Exposed as `--dump item_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
+    fs::create_dir_all(&config.output).context(&config.output)?;
     let mut item_configs = ItemConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     item_configs.sort_unstable_by_key(|loc| loc.id);
 
     let path = path!(config.output / "item_configs.json");
-    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let mut file = File::create(&path).context(path.clone())?;
     let data = serde_json::to_string_pretty(&item_configs).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+    file.write_all(data.as_bytes()).context(path)?;
 
     Ok(())
 }

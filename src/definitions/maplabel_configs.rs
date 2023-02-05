@@ -8,7 +8,7 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::{buf::JString, error::CacheError};
+use rs3cache_backend::{buf::JString, error::Context};
 use serde::Serialize;
 
 use crate::{
@@ -127,14 +127,14 @@ impl MapLabelConfig {
 
 ///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
+    fs::create_dir_all(&config.output).context(&config.output)?;
     let mut labels = MapLabelConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     labels.sort_unstable_by_key(|loc| loc.id);
     let path = path!(config.output / "map_labels.json");
 
-    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let mut file = File::create(&path).context(path.clone())?;
     let data = serde_json::to_string_pretty(&labels).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+    file.write_all(data.as_bytes()).context(path)?;
     Ok(())
 }
 

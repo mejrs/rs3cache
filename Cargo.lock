@@ -1038,8 +1038,10 @@ version = "0.1.0"
 dependencies = [
  "bytes",
  "bzip2-rs",
+ "console",
  "itertools",
  "libflate",
+ "libsqlite3-sys",
  "memchr",
  "path-absolutize",
  "path_macro",

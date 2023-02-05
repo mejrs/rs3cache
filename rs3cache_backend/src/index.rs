@@ -22,7 +22,7 @@ use crate::{
     arc::Archive,
     buf::BufExtra,
     decoder,
-    error::{CacheError, CacheResult},
+    error::{CacheError, CacheResult, Context},
     meta::{IndexMetadata, Metadata},
 };
 

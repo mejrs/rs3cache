@@ -10,7 +10,7 @@ use itertools::izip;
 use path_macro::path;
 use rs3cache_backend::{
     buf::{BufExtra, ReadError},
-    error::CacheError,
+    error::Context,
 };
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use {rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
@@ -27,7 +27,7 @@ pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(config.output / "sprites");
-    std::fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder))?;
+    std::fs::create_dir_all(&folder).context(folder)?;
 
     let index = CacheIndex::new(IndexType::SPRITES, config.input.clone())?;
 
@@ -135,7 +135,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     use rs3cache_backend::hash::hash_archive;
 
     let folder = path!(config.output / "sprites");
-    std::fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder))?;
+    std::fs::create_dir_all(&folder).context(folder)?;
 
     let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
@@ -165,7 +165,7 @@ pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTr
     use rs3cache_backend::hash::hash_archive;
 
     let folder = path!(config.output / "sprites");
-    std::fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder))?;
+    std::fs::create_dir_all(&folder).context(folder)?;
 
     let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
@@ -196,7 +196,7 @@ pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTr
 ///
 /// # Errors
 ///
-/// Raises [`CacheError`](rs3cache_backend::error::CacheError) if any of `ids` does not correspond to a sprite.
+/// Raises [`CacheError`](rs3cache_backend::error::{CacheError, Context}) if any of `ids` does not correspond to a sprite.
 ///
 /// # Panics
 ///

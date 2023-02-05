@@ -12,7 +12,7 @@ use std::{
 use bytes::{Buf, Bytes};
 use serde::{Serialize, Serializer};
 
-use crate::error::CacheError;
+use crate::error::{CacheError, Context};
 
 #[derive(Debug, Clone)]
 pub struct ReadError {

@@ -1,10 +1,11 @@
 use std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, path::Path, sync::LazyLock};
 
 use image::{imageops, ImageBuffer, ImageError, Rgba, RgbaImage};
+use itertools::Itertools;
 use path_macro::path;
 use rayon::iter::ParallelIterator;
 use regex::Regex;
-use rs3cache_backend::error::CacheError;
+use rs3cache_backend::error::Context;
 use rs3cache_utils::bar::Render;
 
 use crate::{cache::error::CacheResult, cli::Config, renderers::scale};
@@ -16,7 +17,7 @@ pub fn render_zoom_levels(config: &Config, name: &str, mapid: i32, range: Range<
     let zoom_levels = range.rev();
     for zoom in zoom_levels {
         let path = path!(config.output / name / format!("{mapid}/{zoom}"));
-        fs::create_dir_all(&path).map_err(|e| CacheError::io(e, path))?;
+        fs::create_dir_all(&path).context(path)?;
 
         let new_tile_coordinates = get_future_filenames(config, name, mapid, zoom + 1)?.into_iter();
 
@@ -26,7 +27,7 @@ pub fn render_zoom_levels(config: &Config, name: &str, mapid: i32, range: Range<
 
             match img.save(&filename) {
                 Ok(()) => {}
-                Err(ImageError::IoError(e)) => return Err(CacheError::io(e, filename)),
+                Err(ImageError::IoError(e)) => return Err(e).context(filename),
                 Err(other) => panic!("{other}"),
             };
             Ok(())
@@ -95,15 +96,13 @@ fn get_files(
 fn get_future_filenames(config: &Config, name: &str, mapid: i32, zoom: i8) -> CacheResult<HashSet<(i32, i32, i32)>> {
     let dir = path!(config.output / name / format!("{mapid}/{zoom}"));
 
-    let new_tiles = fs::read_dir(&dir)
-        .map_err(|e| CacheError::io(e, dir.clone()))?
-        .collect::<io::Result<Vec<_>>>()
-        .map_err(|e| CacheError::io(e, dir))?
-        .into_iter()
-        .map(|entry| entry.file_name())
-        .map(to_coordinates)
-        .map(|(p, i, j)| (p, i >> 1, j >> 1))
-        .collect();
-
-    Ok(new_tiles)
+    fs::read_dir(&dir)
+        .context(&dir)?
+        .map_ok(|entry| {
+            let name = entry.file_name();
+            let (p, i, j) = to_coordinates(name);
+            (p, i >> 1, j >> 1)
+        })
+        .collect::<Result<_, _>>()
+        .context(dir)
 }

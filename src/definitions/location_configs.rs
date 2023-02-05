@@ -11,7 +11,7 @@ use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use rs3cache_backend::{
     buf::{BufExtra, JString, ReadError},
-    error::{CacheError, CacheResult},
+    error::{CacheResult, Context},
     index::CacheIndex,
 };
 use serde::Serialize;
@@ -867,12 +867,12 @@ use location_config_fields::*;
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))?;
+    fs::create_dir_all(&config.output).context(&config.output)?;
     let loc_configs = LocationConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     let path = path!(config.output / "location_configs.json");
-    let mut file = File::create(&path).map_err(|e| CacheError::io(e, path.clone()))?;
+    let mut file = File::create(&path).context(path.clone())?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+    file.write_all(data.as_bytes()).context(path)?;
 
     Ok(())
 }
@@ -880,21 +880,16 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 ///Save the location configs as individual `json` files.
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(&config.output / "location_configs");
-    fs::create_dir_all(&folder).map_err(|e| CacheError::io(e, folder.clone()))?;
+    fs::create_dir_all(&folder).context(&folder)?;
 
     let configs = LocationConfig::dump_all(config)?;
     configs.into_iter().par_bridge().try_for_each(|(id, location_config)| {
         let path = path!(&folder / format!("{id}.json"));
-        let mut file = match File::create(&path) {
-            Ok(f) => f,
-            Err(e) => return Err(CacheError::io(e, path)),
-        };
+        let mut file = File::create(&path).context(&path)?;
         let data = serde_json::to_string_pretty(&location_config).unwrap();
-        file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))?;
+        file.write_all(data.as_bytes()).context(path)?;
         Ok(())
-    })?;
-
-    Ok(())
+    })
 }
 
 #[cfg(feature = "pyo3")]
