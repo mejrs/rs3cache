@@ -121,10 +121,7 @@ where
     /// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.
     #[cfg(any(feature = "sqlite", feature = "dat2"))]
     pub fn archive(&self, archive_id: u32) -> CacheResult<Archive> {
-        let metadata = self
-            .metadatas()
-            .get(&archive_id)
-            .ok_or_else(|| CacheError::archive_missing(self.index_id(), archive_id))?;
+        let metadata = self.metadatas().get(&archive_id).unwrap();
         let data = self.get_file(metadata)?;
 
         Ok(Archive::deserialize(metadata, data))

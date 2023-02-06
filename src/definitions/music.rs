@@ -20,8 +20,8 @@ use crate::{
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
     let enum_archives = CacheIndex::new(IndexType::ENUM_CONFIG, config.input.clone())?;
     let archive = enum_archives.archive(5)?;
-    let music_names = Enum::deserialize(5 << 8 | 65, archive.file(&65)?);
-    let music_indices = Enum::deserialize(5 << 8 | 71, archive.file(&71)?);
+    let music_names = Enum::deserialize(5 << 8 | 65, archive.file(&65).unwrap());
+    let music_indices = Enum::deserialize(5 << 8 | 71, archive.file(&71).unwrap());
     let audio_archives = CacheIndex::new(IndexType::AUDIOSTREAMS, config.input.clone())?;
 
     let progress = ProgressBar::new(music_names.variants.len() as u64).with_style(

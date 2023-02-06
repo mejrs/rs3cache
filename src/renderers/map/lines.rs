@@ -11,7 +11,7 @@ use crate::{
 /// Applies lines of doors, fences, walls and so on to the base image.
 pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location_config: &BTreeMap<u32, LocationConfig>) {
     if let Some(core) = squares.core() {
-        if let Ok(locations) = core.locations() {
+        if let Some(locations) = core.locations() {
             let tiles = core.tiles().expect("always some if it has locations");
             locations
                 .iter()

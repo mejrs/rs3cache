@@ -8,7 +8,7 @@
     once_cell,
     try_blocks
 )]
-#![allow(clippy::too_many_arguments)]
+#![allow(clippy::too_many_arguments, clippy::type_complexity)]
 #![warn(
     unused_qualifications,
     unused_import_braces,

@@ -20,7 +20,7 @@ pub fn put(
     #[cfg(feature = "legacy")] flos: &BTreeMap<u32, Flo>,
 ) {
     if let Some(core) = squares.core() {
-        if let Ok(columns) = core.indexed_columns() {
+        if let Some(columns) = core.indexed_columns() {
             columns.for_each(|(column, (x, y))| {
                 for p in plane..=3_usize {
                     let condition: bool = unsafe {

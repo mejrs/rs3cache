@@ -106,23 +106,12 @@ impl Archive {
         Archive { index_id, archive_id, files }
     }
 
-    /// Removes and returns a File.
-    ///
-    /// # Panics
-    ///
-    /// This function will panic if file `file_id` has already been removed.
-    pub fn file(&self, file_id: &u32) -> CacheResult<Bytes> {
-        self.files
-            .get(file_id)
-            .ok_or_else(|| CacheError::file_missing(self.index_id(), self.archive_id(), *file_id))
-            .cloned()
+    /// Gets a File.
+    pub fn file(&self, file_id: &u32) -> Option<Bytes> {
+        self.files.get(file_id).cloned()
     }
 
     /// Take the files. Consumes the [`Archive`].
-    ///
-    /// # Panics
-    ///
-    /// This function will panic if [`take_file`](Archive::take_file) has been called prior.
     pub fn take_files(self) -> BTreeMap<u32, Bytes> {
         self.files
     }
@@ -237,7 +226,8 @@ impl Archive {
         }
     }
 
-    fn files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
+    #[pyo3(name = "files")]
+    fn py_files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
         Ok(self.files.iter().map(|(&id, file)| (id, PyBytes::new(py, file))).collect())
     }
 

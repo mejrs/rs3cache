@@ -88,7 +88,7 @@ impl PySprites {
 
     fn get(&self, py: Python, id: u32) -> PyResult<PySprite> {
         let archive = self.archive(id)?;
-        let sprite = archive.file(&0).and_then(sprites::deserialize);
+        let sprite = sprites::deserialize(archive.file(&0).unwrap());
         let sprite = sprite.map(|frames| PySprite {
             archive_id: archive.archive_id(),
             frames: frames
@@ -166,27 +166,23 @@ impl PySpritesIter {
 
     fn __next__(&mut self, py: Python) -> Option<PySprite> {
         // no archive currently expose can fail here once fully loaded
-        self.inner.next().map(Result::unwrap).map(|archive| {
-            archive
-                .file(&0)
-                .and_then(sprites::deserialize)
-                .map(|frames| PySprite {
-                    archive_id: archive.archive_id(),
-                    frames: frames
-                        .into_iter()
-                        .map(|(id, im)| {
-                            (
-                                id,
-                                PyFrame {
-                                    constructor: self.constructor.clone_ref(py),
-                                    id,
-                                    im,
-                                },
-                            )
-                        })
-                        .collect(),
+        let archive = self.inner.next()?.unwrap();
+        let frames = sprites::deserialize(archive.file(&0).unwrap()).unwrap();
+        Some(PySprite {
+            archive_id: archive.archive_id(),
+            frames: frames
+                .into_iter()
+                .map(|(id, im)| {
+                    (
+                        id,
+                        PyFrame {
+                            constructor: self.constructor.clone_ref(py),
+                            id,
+                            im,
+                        },
+                    )
                 })
-                .unwrap()
+                .collect(),
         })
     }
 }

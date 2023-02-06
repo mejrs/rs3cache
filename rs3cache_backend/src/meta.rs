@@ -5,7 +5,7 @@ use std::{
         btree_map::{IntoIter, Iter, Keys},
         BTreeMap,
     },
-    iter,
+    fmt, iter,
     ops::Add,
 };
 
@@ -60,6 +60,11 @@ pub struct Metadata {
     pub child_indices: Vec<u32>,
 }
 
+impl fmt::Display for Metadata {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Metadata({})", serde_json::to_string(self).unwrap())
+    }
+}
 #[cfg(feature = "pyo3")]
 #[pyo3::pymethods]
 impl Metadata {

@@ -1,7 +1,7 @@
 use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 use pyo3::{
-    exceptions::{PyIndexError, PyReferenceError, PyRuntimeError, PyTypeError},
+    exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::*,
     types::{PyInt, PyList},
 };
@@ -144,18 +144,24 @@ impl PyMapSquare {
 
     /// The [`Location`]s in a mapsquare.
     pub fn locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
-        Ok(PyList::new(py, self.inner.locations()?.iter().copied()))
+        let locations = self.inner.locations().ok_or_else(|| PyKeyError::new_err("not present"))?;
+        Ok(PyList::new(py, locations.iter().copied()))
     }
 
     /// The water [`Location`]s in a mapsquare.
     #[cfg(feature = "rs3")]
     pub fn water_locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
-        Ok(PyList::new(py, self.inner.water_locations()?.iter().copied()))
+        let water_locations = self.inner.water_locations().ok_or_else(|| PyKeyError::new_err("not present"))?;
+        let water_locations = match water_locations {
+            Ok(v) => v,
+            Err(e) => return Err(e.clone().into()),
+        };
+        Ok(PyList::new(py, water_locations.iter().copied()))
     }
 
     /// The [`Tile`]s in a mapsquare.   
     pub fn tiles(&self) -> PyResult<BTreeMap<(u8, u8, u8), Tile>> {
-        let tiles = self.inner.tiles()?;
+        let tiles = self.inner.tiles().ok_or_else(|| PyKeyError::new_err("not present"))?;
         let map: BTreeMap<(u8, u8, u8), Tile> = tiles.indexed_iter().map(|((p, x, y), &t)| ((p as u8, x as u8, y as u8), t)).collect();
         Ok(map)
     }

@@ -44,7 +44,7 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 
         let file = archive
             .file(&0)
-            .unwrap_or_else(|error| panic!("Unable to get file for sprite {}: {} ", archive.archive_id(), error));
+            .unwrap_or_else(|| panic!("File for sprite {} is missing", archive.archive_id()));
         let images = deserialize(file).unwrap_or_else(|error| panic!("Error decoding sprite {}: {}", archive.archive_id(), error));
         images.into_iter().for_each(|(frame, img)| {
             let id = archive.archive_id();
@@ -216,7 +216,11 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
         .retain(ids)
         .into_iter()
         .map(Result::unwrap)
-        .map(|archive| archive.file(&0).and_then(deserialize).map(|frames| (archive.archive_id(), frames)))
+        .map(|archive| try {
+            let file = archive.file(&0).unwrap();
+            let frames = deserialize(file)?;
+            (archive.archive_id(), frames)
+        })
         .collect::<CacheResult<Vec<(u32, _)>>>()?
         .into_iter()
         .flat_map(resizer)
