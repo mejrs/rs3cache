@@ -369,6 +369,10 @@
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
 <a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
 </pre><pre class="rust"><code><span class="doccomment">//!
 
 </span><span class="kw">use </span>std::{
@@ -378,13 +382,18 @@
     iter,
 };
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>path_macro::path;
-<span class="kw">use </span>rs3cache_backend::{buf::JString, error::CacheError};
+<span class="kw">use </span>rs3cache_backend::buf::JString;
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">use crate</span>::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{<span class="self">self</span>, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
     types::coordinate::Coordinate,
 };
@@ -679,42 +688,42 @@
 
 <span class="doccomment">/// Exports all world map pastes to `out/map_pastes.json`.
 </span><span class="kw">pub fn </span>export_pastes(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
-    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).with_context(|| error::Io { path: config.output.clone() })<span class="question-mark">?</span>;
     <span class="comment">// btreemap has deterministic order
     </span><span class="kw">let </span>map_pastes: BTreeMap&lt;u32, MapPastes&gt; = MapPastes::dump_all(config)<span class="question-mark">?</span>.into_iter().collect();
 
     <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;map_pastes.json&quot;</span>);
-    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path.clone()))<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).with_context(|| error::Io { path: path.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>map_pastes).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes()).context(error::Io { path })<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Exports all world map zones to `out/map_zones.json`.
 </span><span class="kw">pub fn </span>export_zones(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
-    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).with_context(|| error::Io { path: config.output.clone() })<span class="question-mark">?</span>;
 
     <span class="kw">let </span><span class="kw-2">mut </span>map_zones = MapZone::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
     map_zones.sort_unstable_by_key(|loc| loc.id);
     <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;map_zones.json&quot;</span>);
-    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path.clone()))<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).with_context(|| error::Io { path: path.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>map_zones).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes()).context(error::Io { path })<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Exports small images of world maps to `out/world_map_small`.
 </span><span class="kw">pub fn </span>dump_small(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_small&quot;</span>);
-    fs::create_dir_all(<span class="kw-2">&amp;</span>folder).map_err(|e| CacheError::io(e, folder.clone()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>folder).with_context(|| error::Io { path: folder.clone() })<span class="question-mark">?</span>;
 
     <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())<span class="question-mark">?
         </span>.archive(WorldMapType::SMALL)<span class="question-mark">?
         </span>.take_files();
     <span class="kw">for </span>(id, data) <span class="kw">in </span>files {
         <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_small&quot; </span>/ <span class="macro">format!</span>(<span class="string">&quot;{id}.png&quot;</span>));
-        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path.clone()))<span class="question-mark">?</span>;
-        file.write_all(<span class="kw-2">&amp;</span>data).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).with_context(|| error::Io { path: path.clone() })<span class="question-mark">?</span>;
+        file.write_all(<span class="kw-2">&amp;</span>data).context(error::Io { path })<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
@@ -723,8 +732,7 @@
 <span class="doccomment">/// Exports big images of world maps to `out/world_map_big`.
 </span><span class="kw">pub fn </span>dump_big(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;world_map_big&quot;</span>);
-    fs::create_dir_all(<span class="kw-2">&amp;</span>folder).map_err(|e| CacheError::io(e, folder.clone()))<span class="question-mark">?</span>;
-
+    fs::create_dir_all(<span class="kw-2">&amp;</span>folder).with_context(|| error::Io { path: folder.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span>files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())<span class="question-mark">?
         </span>.archive(WorldMapType::BIG)<span class="question-mark">?
         </span>.take_files();
@@ -734,8 +742,8 @@
         <span class="kw">let </span>img = buffer.copy_to_bytes(size);
 
         <span class="kw">let </span>filename = <span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;{id}.png&quot;</span>));
-        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>filename).map_err(|e| CacheError::io(e, filename.clone()))<span class="question-mark">?</span>;
-        file.write_all(<span class="kw-2">&amp;</span>img).map_err(|e| CacheError::io(e, filename))<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>filename).with_context(|| error::Io { path: filename.clone() })<span class="question-mark">?</span>;
+        file.write_all(<span class="kw-2">&amp;</span>img).context(error::Io { path: filename })<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())

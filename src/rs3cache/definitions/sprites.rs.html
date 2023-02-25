@@ -385,25 +385,34 @@
 <a href="#385" id="385">385</a>
 <a href="#386" id="386">386</a>
 <a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
     io::{Cursor, Seek, SeekFrom},
     iter,
 };
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>image::{imageops, ImageBuffer, Rgba, RgbaImage};
 <span class="kw">use </span>itertools::izip;
 <span class="kw">use </span>path_macro::path;
-<span class="kw">use </span>rs3cache_backend::{
-    buf::{BufExtra, ReadError},
-    error::CacheError,
-};
+<span class="kw">use </span>rs3cache_backend::buf::{BufExtra, ReadError};
 <span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
 </span><span class="kw">use </span>{rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
 
 <span class="kw">use crate</span>::{
-    cache::{error::CacheResult, index::CacheIndex},
+    cache::{
+        error::{<span class="self">self</span>, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
 };
 
@@ -413,8 +422,8 @@
 <span class="doccomment">/// Saves an image of every sprite to disk.
 </span><span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
 </span><span class="kw">pub fn </span>save_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
-    <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>);
-    std::fs::create_dir_all(<span class="kw-2">&amp;</span>folder).map_err(|e| CacheError::io(e, folder))<span class="question-mark">?</span>;
+    <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>);
+    std::fs::create_dir_all(<span class="kw-2">&amp;</span>path).context(error::Io { path })<span class="question-mark">?</span>;
 
     <span class="kw">let </span>index = CacheIndex::new(IndexType::SPRITES, config.input.clone())<span class="question-mark">?</span>;
 
@@ -431,7 +440,7 @@
 
         <span class="kw">let </span>file = archive
             .file(<span class="kw-2">&amp;</span><span class="number">0</span>)
-            .unwrap_or_else(|error| <span class="macro">panic!</span>(<span class="string">&quot;Unable to get file for sprite {}: {} &quot;</span>, archive.archive_id(), error));
+            .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;File for sprite {} is missing&quot;</span>, archive.archive_id()));
         <span class="kw">let </span>images = deserialize(file).unwrap_or_else(|error| <span class="macro">panic!</span>(<span class="string">&quot;Error decoding sprite {}: {}&quot;</span>, archive.archive_id(), error));
         images.into_iter().for_each(|(frame, img)| {
             <span class="kw">let </span>id = archive.archive_id();
@@ -521,8 +530,8 @@
 </span><span class="kw">pub fn </span>save_all(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">use </span>rs3cache_backend::hash::hash_archive;
 
-    <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>);
-    std::fs::create_dir_all(<span class="kw-2">&amp;</span>folder).map_err(|e| CacheError::io(e, folder))<span class="question-mark">?</span>;
+    <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>);
+    std::fs::create_dir_all(<span class="kw-2">&amp;</span>path).context(error::Io { path })<span class="question-mark">?</span>;
 
     <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, config.input.clone())<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>files = index.archive(<span class="number">4</span>)<span class="question-mark">?</span>.take_files_named();
@@ -551,8 +560,8 @@
 </span><span class="kw">pub fn </span>get_mapscenes(scale: u32, config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;BTreeMap&lt;(u32, u32), Sprite&gt;&gt; {
     <span class="kw">use </span>rs3cache_backend::hash::hash_archive;
 
-    <span class="kw">let </span>folder = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>);
-    std::fs::create_dir_all(<span class="kw-2">&amp;</span>folder).map_err(|e| CacheError::io(e, folder))<span class="question-mark">?</span>;
+    <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;sprites&quot;</span>);
+    std::fs::create_dir_all(<span class="kw-2">&amp;</span>path).context(error::Io { path })<span class="question-mark">?</span>;
 
     <span class="kw">let </span>index = CacheIndex::new(<span class="number">0</span>, config.input.clone())<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>files = index.archive(<span class="number">4</span>)<span class="question-mark">?</span>.take_files_named();
@@ -583,7 +592,7 @@
 ///
 /// # Errors
 ///
-/// Raises [`CacheError`](rs3cache_backend::error::CacheError) if any of `ids` does not correspond to a sprite.
+/// Raises [`CacheError`](rs3cache_backend::error::{CacheError, Context}) if any of `ids` does not correspond to a sprite.
 ///
 /// # Panics
 ///
@@ -603,7 +612,11 @@
         </span>.retain(ids)
         .into_iter()
         .map(Result::unwrap)
-        .map(|archive| archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).and_then(deserialize).map(|frames| (archive.archive_id(), frames)))
+        .map(|archive| <span class="kw">try </span>{
+            <span class="kw">let </span>file = archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap();
+            <span class="kw">let </span>frames = deserialize(file)<span class="question-mark">?</span>;
+            (archive.archive_id(), frames)
+        })
         .collect::&lt;CacheResult&lt;Vec&lt;(u32, <span class="kw">_</span>)&gt;&gt;&gt;()<span class="question-mark">?
         </span>.into_iter()
         .flat_map(resizer)
@@ -614,7 +627,7 @@
 <span class="kw">pub fn </span>deserialize(buffer: Bytes) -&gt; CacheResult&lt;BTreeMap&lt;usize, Sprite&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>buffer = Cursor::new(buffer);
 
-    buffer.seek(SeekFrom::End(-<span class="number">2</span>)).map_err(|<span class="kw">_</span>| ReadError::eof())<span class="question-mark">?</span>;
+    buffer.seek(SeekFrom::End(-<span class="number">2</span>)).map_err(|<span class="kw">_</span>| ReadError::eof()).context(error::Read)<span class="question-mark">?</span>;
 
     <span class="kw">let </span>data = buffer.get_u16();
     <span class="kw">let </span>format = data &gt;&gt; <span class="number">15</span>;
@@ -622,7 +635,10 @@
 
     <span class="kw">let </span>imgs = <span class="kw">match </span>format {
         <span class="number">0 </span>=&gt; {
-            buffer.seek(SeekFrom::End(-<span class="number">7 </span>- (count <span class="kw">as </span>i64) * <span class="number">8</span>)).map_err(|<span class="kw">_</span>| ReadError::eof())<span class="question-mark">?</span>;
+            buffer
+                .seek(SeekFrom::End(-<span class="number">7 </span>- (count <span class="kw">as </span>i64) * <span class="number">8</span>))
+                .map_err(|<span class="kw">_</span>| ReadError::eof())
+                .context(error::Read)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>_big_width = buffer.get_u16();
             <span class="kw">let </span>_big_height = buffer.get_u16();
@@ -635,11 +651,11 @@
 
             <span class="kw">let </span>pos = -<span class="number">7 </span>- (count <span class="kw">as </span>i64) * <span class="number">8 </span>- (palette_count <span class="kw">as </span>i64) * <span class="number">3</span>;
 
-            buffer.seek(SeekFrom::End(pos)).map_err(|<span class="kw">_</span>| ReadError::eof())<span class="question-mark">?</span>;
+            buffer.seek(SeekFrom::End(pos)).map_err(|<span class="kw">_</span>| ReadError::eof()).context(error::Read)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>palette = iter::repeat_with(|| buffer.get_rgb()).take(palette_count).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-            buffer.seek(SeekFrom::Start(<span class="number">0</span>)).map_err(|<span class="kw">_</span>| ReadError::eof())<span class="question-mark">?</span>;
+            buffer.seek(SeekFrom::Start(<span class="number">0</span>)).map_err(|<span class="kw">_</span>| ReadError::eof()).context(error::Read)<span class="question-mark">?</span>;
 
             <span class="macro">izip!</span>(<span class="number">0</span>..count, widths, heights)
                 .filter_map(|(index, width, height)| {
@@ -684,7 +700,7 @@
                 .collect::&lt;BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()
         }
         <span class="number">1 </span>=&gt; {
-            buffer.seek(SeekFrom::Start(<span class="number">0</span>)).map_err(|<span class="kw">_</span>| ReadError::eof())<span class="question-mark">?</span>;
+            buffer.seek(SeekFrom::Start(<span class="number">0</span>)).map_err(|<span class="kw">_</span>| ReadError::eof()).context(error::Read)<span class="question-mark">?</span>;
             <span class="kw">let </span>ty = buffer.get_u8();
             <span class="macro">assert_eq!</span>(ty, <span class="number">0</span>, <span class="string">&quot;Unknown image type.&quot;</span>);
 
@@ -732,7 +748,7 @@
             <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
             <span class="kw">let </span>archive = CacheIndex::new(IndexType::SPRITES, config.input)<span class="question-mark">?</span>.archive(id)<span class="question-mark">?</span>;
-            <span class="kw">let </span>file = archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>file = archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap();
             <span class="macro">assert!</span>(!file.is_empty(), <span class="string">&quot;{file:?}&quot;</span>);
             <span class="kw">let </span><span class="kw-2">mut </span>images = deserialize(file).unwrap();
             <span class="prelude-val">Ok</span>(images.remove(<span class="kw-2">&amp;</span>(frame <span class="kw">as </span>usize)).unwrap())

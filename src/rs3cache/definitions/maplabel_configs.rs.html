@@ -286,21 +286,31 @@
 <a href="#286" id="286">286</a>
 <a href="#287" id="287">287</a>
 <a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
     fs::{<span class="self">self</span>, File},
     io::Write,
 };
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>path_macro::path;
 <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
 </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
-<span class="kw">use </span>rs3cache_backend::{buf::JString, error::CacheError};
+<span class="kw">use </span>rs3cache_backend::buf::JString;
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">use crate</span>::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{<span class="self">self</span>, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::{ConfigType, IndexType},
     structures::paramtable::ParamTable,
 };
@@ -415,14 +425,14 @@
 
 <span class="doccomment">///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
 </span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
-    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).with_context(|| error::Io { path: config.output.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>labels = MapLabelConfig::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
     labels.sort_unstable_by_key(|loc| loc.id);
     <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;map_labels.json&quot;</span>);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path.clone()))<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).with_context(|| error::Io { path: path.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>labels).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes()).context(error::Io { path })<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }
 

@@ -107,16 +107,24 @@
 <a href="#107" id="107">107</a>
 <a href="#108" id="108">108</a>
 <a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, path::Path, sync::LazyLock};
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>image::{imageops, ImageBuffer, ImageError, Rgba, RgbaImage};
+<span class="kw">use </span>itertools::Itertools;
 <span class="kw">use </span>path_macro::path;
 <span class="kw">use </span>rayon::iter::ParallelIterator;
 <span class="kw">use </span>regex::Regex;
-<span class="kw">use </span>rs3cache_backend::error::CacheError;
 <span class="kw">use </span>rs3cache_utils::bar::Render;
 
-<span class="kw">use crate</span>::{cache::error::CacheResult, cli::Config, renderers::scale};
+<span class="kw">use crate</span>::{
+    cache::error::{<span class="self">self</span>, CacheResult},
+    cli::Config,
+    renderers::scale,
+};
 
 <span class="kw">static </span>RE: LazyLock&lt;Regex&gt; = LazyLock::new(|| Regex::new(<span class="string">r&quot;(?P&lt;p&gt;\d+)(?:_)(?P&lt;i&gt;\d+)(?:_)(?P&lt;j&gt;\d+)(?:\.png)&quot;</span>).expect(<span class="string">&quot;Regex is cursed.&quot;</span>));
 
@@ -125,17 +133,17 @@
     <span class="kw">let </span>zoom_levels = range.rev();
     <span class="kw">for </span>zoom <span class="kw">in </span>zoom_levels {
         <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
-        fs::create_dir_all(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
+        fs::create_dir_all(<span class="kw-2">&amp;</span>path).context(error::Io { path })<span class="question-mark">?</span>;
 
         <span class="kw">let </span>new_tile_coordinates = get_future_filenames(config, name, mapid, zoom + <span class="number">1</span>)<span class="question-mark">?</span>.into_iter();
 
         <span class="kw">let </span>func = |((p, i, j), <span class="kw">_</span>)| {
             <span class="kw">let </span>img = make_tile(<span class="kw-2">&amp;</span>config.output, name, mapid, zoom, p, i, j, backfill)<span class="question-mark">?</span>;
-            <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / <span class="kw-2">&amp;</span>name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}/{p}_{i}_{j}.png&quot;</span>));
+            <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="kw-2">&amp;</span>name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}/{p}_{i}_{j}.png&quot;</span>));
 
-            <span class="kw">match </span>img.save(<span class="kw-2">&amp;</span>filename) {
+            <span class="kw">match </span>img.save(<span class="kw-2">&amp;</span>path) {
                 <span class="prelude-val">Ok</span>(()) =&gt; {}
-                <span class="prelude-val">Err</span>(ImageError::IoError(e)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(CacheError::io(e, filename)),
+                <span class="prelude-val">Err</span>(ImageError::IoError(e)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e).context(error::Io { path }),
                 <span class="prelude-val">Err</span>(other) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;{other}&quot;</span>),
             };
             <span class="prelude-val">Ok</span>(())
@@ -202,19 +210,17 @@
 }
 
 <span class="kw">fn </span>get_future_filenames(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, mapid: i32, zoom: i8) -&gt; CacheResult&lt;HashSet&lt;(i32, i32, i32)&gt;&gt; {
-    <span class="kw">let </span>dir = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
+    <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{mapid}/{zoom}&quot;</span>));
 
-    <span class="kw">let </span>new_tiles = fs::read_dir(<span class="kw-2">&amp;</span>dir)
-        .map_err(|e| CacheError::io(e, dir.clone()))<span class="question-mark">?
-        </span>.collect::&lt;io::Result&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;&gt;()
-        .map_err(|e| CacheError::io(e, dir))<span class="question-mark">?
-        </span>.into_iter()
-        .map(|entry| entry.file_name())
-        .map(to_coordinates)
-        .map(|(p, i, j)| (p, i &gt;&gt; <span class="number">1</span>, j &gt;&gt; <span class="number">1</span>))
-        .collect();
-
-    <span class="prelude-val">Ok</span>(new_tiles)
+    fs::read_dir(<span class="kw-2">&amp;</span>path)
+        .with_context(|| error::Io { path: path.clone() })<span class="question-mark">?
+        </span>.map_ok(|entry| {
+            <span class="kw">let </span>name = entry.file_name();
+            <span class="kw">let </span>(p, i, j) = to_coordinates(name);
+            (p, i &gt;&gt; <span class="number">1</span>, j &gt;&gt; <span class="number">1</span>)
+        })
+        .collect::&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()
+        .context(error::Io { path })
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rs3cache" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (574b64a97 2022-12-31)" data-search-js="search-181581080540673f.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-58836c674e2f7bd2.css" ></div></body></html>

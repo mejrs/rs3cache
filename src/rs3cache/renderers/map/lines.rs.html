@@ -68,7 +68,7 @@
 <span class="doccomment">/// Applies lines of doors, fences, walls and so on to the base image.
 </span><span class="kw">pub fn </span>put(plane: usize, img: <span class="kw-2">&amp;mut </span>RgbaImage, squares: <span class="kw-2">&amp;</span>GroupMapSquare, location_config: <span class="kw-2">&amp;</span>BTreeMap&lt;u32, LocationConfig&gt;) {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(core) = squares.core() {
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(locations) = core.locations() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(locations) = core.locations() {
             <span class="kw">let </span>tiles = core.tiles().expect(<span class="string">&quot;always some if it has locations&quot;</span>);
             locations
                 .iter()

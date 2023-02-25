@@ -244,11 +244,6 @@
 <a href="#244" id="244">244</a>
 <a href="#245" id="245">245</a>
 <a href="#246" id="246">246</a>
-<a href="#247" id="247">247</a>
-<a href="#248" id="248">248</a>
-<a href="#249" id="249">249</a>
-<a href="#250" id="250">250</a>
-<a href="#251" id="251">251</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Units of data in a [`CacheIndex`](crate::index::CacheIndex).
 //!
 //! Each [`Archive`] conatins files, which contain the actual data that can be parsed with
@@ -261,6 +256,7 @@
 
 </span><span class="kw">use </span>std::collections::{BTreeMap, HashSet};
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>itertools::izip;
 <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
@@ -268,12 +264,11 @@
 
 <span class="kw">use crate</span>::{
     buf::BufExtra,
-    error::{CacheError, CacheResult},
+    error::{<span class="self">self</span>, CacheError, CacheResult},
     meta::Metadata,
 };
 
 <span class="doccomment">/// A collection of files.
-
 </span><span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[derive(Clone, Default)]
 </span><span class="kw">pub struct </span>Archive {
@@ -357,23 +352,12 @@
         Archive { index_id, archive_id, files }
     }
 
-    <span class="doccomment">/// Removes and returns a File.
-    ///
-    /// # Panics
-    ///
-    /// This function will panic if file `file_id` has already been removed.
-    </span><span class="kw">pub fn </span>file(<span class="kw-2">&amp;</span><span class="self">self</span>, file_id: <span class="kw-2">&amp;</span>u32) -&gt; CacheResult&lt;Bytes&gt; {
-        <span class="self">self</span>.files
-            .get(file_id)
-            .ok_or_else(|| CacheError::file_missing(<span class="self">self</span>.index_id(), <span class="self">self</span>.archive_id(), <span class="kw-2">*</span>file_id))
-            .cloned()
+    <span class="doccomment">/// Gets a File.
+    </span><span class="kw">pub fn </span>file(<span class="kw-2">&amp;</span><span class="self">self</span>, file_id: <span class="kw-2">&amp;</span>u32) -&gt; <span class="prelude-ty">Option</span>&lt;Bytes&gt; {
+        <span class="self">self</span>.files.get(file_id).cloned()
     }
 
     <span class="doccomment">/// Take the files. Consumes the [`Archive`].
-    ///
-    /// # Panics
-    ///
-    /// This function will panic if [`take_file`](Archive::take_file) has been called prior.
     </span><span class="kw">pub fn </span>take_files(<span class="self">self</span>) -&gt; BTreeMap&lt;u32, Bytes&gt; {
         <span class="self">self</span>.files
     }
@@ -396,8 +380,8 @@
 
         <span class="macro">assert_eq!</span>(metadata.index_id(), <span class="number">0</span>, <span class="string">&quot;called deserialize_jag on data not from index 0&quot;</span>);
 
-        <span class="kw">let </span>decompressed_len = buffer.try_get_uint(<span class="number">3</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span>compressed_len = buffer.try_get_uint(<span class="number">3</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>decompressed_len = buffer.try_get_uint(<span class="number">3</span>).context(error::Read)<span class="question-mark">?</span>;
+        <span class="kw">let </span>compressed_len = buffer.try_get_uint(<span class="number">3</span>).context(error::Read)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>extracted = <span class="kw">if </span>decompressed_len != compressed_len {
             <span class="kw">let </span><span class="kw-2">mut </span>compressed = bytes::BytesMut::from(<span class="string">b&quot;BZh1&quot;</span>.as_slice());
@@ -425,9 +409,9 @@
 
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..files_length {
             <span class="kw">let </span>header = JagHeader {
-                filename: headers.try_get_i32()<span class="question-mark">?</span>,
-                decompressed_len: headers.try_get_uint(<span class="number">3</span>)<span class="question-mark">? </span><span class="kw">as </span>u32,
-                compressed_len: headers.try_get_uint(<span class="number">3</span>)<span class="question-mark">? </span><span class="kw">as </span>u32,
+                filename: headers.try_get_i32().context(error::Read)<span class="question-mark">?</span>,
+                decompressed_len: headers.try_get_uint(<span class="number">3</span>).context(error::Read)<span class="question-mark">? </span><span class="kw">as </span>u32,
+                compressed_len: headers.try_get_uint(<span class="number">3</span>).context(error::Read)<span class="question-mark">? </span><span class="kw">as </span>u32,
             };
 
             <span class="kw">let </span>decompressed = <span class="kw">if </span>extracted {
@@ -465,7 +449,12 @@
 
         <span class="self">self</span>.files_named
             .get(<span class="kw-2">&amp;</span>hash)
-            .ok_or_else(|| CacheError::file_missing(<span class="self">self</span>.index_id(), <span class="self">self</span>.archive_id(), hash <span class="kw">as </span>u32))
+            .with_context(|| <span class="kw">crate</span>::index::FileMissingNamed {
+                index_id: <span class="self">self</span>.index_id,
+                archive_id: <span class="self">self</span>.archive_id,
+                name: name.into(),
+            })
+            .context(error::Integrity)
             .cloned()
     }
 
@@ -488,7 +477,8 @@
         }
     }
 
-    <span class="kw">fn </span>files&lt;<span class="lifetime">&#39;p</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, py: Python&lt;<span class="lifetime">&#39;p</span>&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, <span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span>PyBytes&gt;&gt; {
+    <span class="attr">#[pyo3(name = <span class="string">&quot;files&quot;</span>)]
+    </span><span class="kw">fn </span>py_files&lt;<span class="lifetime">&#39;p</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, py: Python&lt;<span class="lifetime">&#39;p</span>&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, <span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span>PyBytes&gt;&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">self</span>.files.iter().map(|(<span class="kw-2">&amp;</span>id, file)| (id, PyBytes::new(py, file))).collect())
     }
 

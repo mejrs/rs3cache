@@ -287,7 +287,7 @@
     <span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)] </span>flos: <span class="kw-2">&amp;</span>BTreeMap&lt;u32, Flo&gt;,
 ) {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(core) = squares.core() {
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(columns) = core.indexed_columns() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(columns) = core.indexed_columns() {
             columns.for_each(|(column, (x, y))| {
                 <span class="kw">for </span>p <span class="kw">in </span>plane..=<span class="number">3_usize </span>{
                     <span class="kw">let </span>condition: bool = <span class="kw">unsafe </span>{

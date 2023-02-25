@@ -137,19 +137,27 @@
 <a href="#137" id="137">137</a>
 <a href="#138" id="138">138</a>
 <a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
 </pre><pre class="rust"><code><span class="attr">#![allow(unused_variables)]
 
 </span><span class="kw">use </span>std::collections::BTreeMap;
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>rs3cache_backend::buf::ReadError;
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">use crate</span>::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{<span class="self">self</span>, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::{ConfigType, IndexType},
 };
-
 <span class="attr">#[allow(missing_docs)]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3::pyclass)]
 #[serde_with::skip_serializing_none]
@@ -170,10 +178,10 @@
             </span>.take_files()
             .into_iter();
 
-        <span class="kw">let </span>dbrows = files
+        files
             .map(|(file_id, file)| <span class="kw">try </span>{ (file_id, DbRow::deserialize(file_id, file)<span class="question-mark">?</span>) })
-            .collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeMap&lt;u32, DbRow&gt;, ReadError&gt;&gt;()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(dbrows)
+            .collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeMap&lt;u32, DbRow&gt;, ReadError&gt;&gt;()
+            .context(error::Read)
     }
     <span class="kw">fn </span>deserialize(id: u32, <span class="kw-2">mut </span>buffer: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ReadError&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>obj = <span class="self">Self </span>{ id, ..Default::default() };

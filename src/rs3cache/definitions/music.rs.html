@@ -170,8 +170,8 @@
 <span class="kw">pub fn </span>export_each(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>enum_archives = CacheIndex::new(IndexType::ENUM_CONFIG, config.input.clone())<span class="question-mark">?</span>;
     <span class="kw">let </span>archive = enum_archives.archive(<span class="number">5</span>)<span class="question-mark">?</span>;
-    <span class="kw">let </span>music_names = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">65</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">65</span>)<span class="question-mark">?</span>);
-    <span class="kw">let </span>music_indices = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">71</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">71</span>)<span class="question-mark">?</span>);
+    <span class="kw">let </span>music_names = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">65</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">65</span>).unwrap());
+    <span class="kw">let </span>music_indices = Enum::deserialize(<span class="number">5 </span>&lt;&lt; <span class="number">8 </span>| <span class="number">71</span>, archive.file(<span class="kw-2">&amp;</span><span class="number">71</span>).unwrap());
     <span class="kw">let </span>audio_archives = CacheIndex::new(IndexType::AUDIOSTREAMS, config.input.clone())<span class="question-mark">?</span>;
 
     <span class="kw">let </span>progress = ProgressBar::new(music_names.variants.len() <span class="kw">as </span>u64).with_style(

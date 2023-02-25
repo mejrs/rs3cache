@@ -486,6 +486,11 @@
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
 <a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of Achievements.
 </span><span class="kw">use </span>std::{
     collections::BTreeMap,
@@ -494,15 +499,20 @@
     iter,
 };
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>path_macro::path;
 <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
 </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
-<span class="kw">use </span>rs3cache_backend::{buf::JString, error::CacheError};
+<span class="kw">use </span>rs3cache_backend::buf::JString;
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">use crate</span>::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{<span class="self">self</span>, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
 };
 <span class="doccomment">/// Describes the properties of a given Achievement.
@@ -949,14 +959,14 @@
 
 <span class="doccomment">/// Save the Achievement configs as `Achievement&gt;.json`. Exposed as `--dump Achievement`.
 </span><span class="kw">pub fn </span>export(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
-    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).map_err(|e| CacheError::io(e, config.output.to_path_buf()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>config.output).with_context(|| error::Io { path: config.output.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>achievement_configs = Achievement::dump_all(config)<span class="question-mark">?</span>.into_values().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
     achievement_configs.sort_unstable_by_key(|loc| loc.id);
 
     <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / <span class="string">&quot;achievements.json&quot;</span>);
-    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).map_err(|e| CacheError::io(e, path.clone()))<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path).with_context(|| error::Io { path: path.clone() })<span class="question-mark">?</span>;
     <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>achievement_configs).unwrap();
-    file.write_all(data.as_bytes()).map_err(|e| CacheError::io(e, path))<span class="question-mark">?</span>;
+    file.write_all(data.as_bytes()).context(error::Io { path })<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }

@@ -167,11 +167,10 @@
 <a href="#167" id="167">167</a>
 <a href="#168" id="168">168</a>
 <a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{<span class="self">self</span>, VarError},
+    fmt::{Display, Formatter},
     fs::{<span class="self">self</span>, File},
     io::{<span class="self">self</span>, Cursor, Read, Seek, SeekFrom, Write},
     marker::PhantomData,
@@ -180,42 +179,70 @@
     sync::Arc,
 };
 
+<span class="kw">use </span>::error::{Context, With};
 <span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>console::style;
 <span class="kw">use </span>itertools::iproduct;
 <span class="kw">use </span>path_macro::path;
+<span class="kw">use </span>rusqlite::{Connection, OpenFlags};
 
 <span class="kw">use crate</span>::{
     arc::Archive,
     buf::BufExtra,
     decoder,
-    error::{CacheError, CacheResult},
-    index::{CacheIndex, CachePath, IndexState, Initial},
+    error::{<span class="self">self</span>, CacheError, CacheResult},
+    index::<span class="kw-2">*</span>,
     meta::{IndexMetadata, Metadata},
 };
+
+<span class="kw">impl </span>CacheIndex&lt;Initial&gt; {
+    <span class="doccomment">/// Constructor for [`CacheIndex`].
+    ///
+    /// # Errors
+    ///
+    /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
+    </span><span class="kw">pub fn </span>new(index_id: u32, input: Arc&lt;CachePath&gt;) -&gt; CacheResult&lt;CacheIndex&lt;Initial&gt;&gt; {
+        <span class="kw">let </span>file = <span class="macro">path!</span>(<span class="kw-2">*</span>input / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>));
+
+        <span class="kw">let </span>connection = Connection::open_with_flags(<span class="kw-2">&amp;</span>file, OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .with_context(|| CannotOpen {
+                file: file.clone(),
+                input: input.clone(),
+            })
+            .context(error::Integrity)<span class="question-mark">?</span>;
+        <span class="kw">let </span>data = connection
+            .query_row(<span class="string">&quot;SELECT DATA FROM cache_index&quot;</span>, [], |row| row.get(<span class="number">0</span>))
+            .context(Other)
+            .context(error::Integrity)<span class="question-mark">?</span>;
+        <span class="kw">let </span>raw_metadata = decoder::decompress(data).context(error::Decode)<span class="question-mark">?</span>;
+        <span class="kw">let </span>metadatas = IndexMetadata::deserialize(index_id, raw_metadata).context(error::Read)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            index_id,
+            metadatas,
+            connection,
+            input,
+            state: Initial {},
+        })
+    }
+}
 
 <span class="kw">impl</span>&lt;S&gt; CacheIndex&lt;S&gt;
 <span class="kw">where
     </span>S: IndexState,
 {
-    <span class="doccomment">/// Loads the [`Metadata`] of `self`.
-    </span><span class="kw">fn </span>get_raw_metadata(connection: <span class="kw-2">&amp;</span>rusqlite::Connection) -&gt; CacheResult&lt;Bytes&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>stmt = connection.prepare(<span class="string">&quot;SELECT DATA FROM cache_index&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>rows = stmt.query([])<span class="question-mark">?</span>;
-        <span class="kw">let </span>data = rows.next()<span class="question-mark">?</span>.unwrap().get(<span class="number">0</span>).unwrap();
-
-        <span class="prelude-val">Ok</span>(decoder::decompress(data)<span class="question-mark">?</span>)
-    }
-
     <span class="doccomment">/// Executes a sql command to retrieve an archive from the cache.
     </span><span class="kw">pub fn </span>get_file(<span class="kw-2">&amp;</span><span class="self">self</span>, metadata: <span class="kw-2">&amp;</span>Metadata) -&gt; CacheResult&lt;Bytes&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>stmt = <span class="self">self</span>.connection.prepare(<span class="string">&quot;SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>rows = stmt.query([metadata.archive_id()])<span class="question-mark">?</span>;
-        <span class="kw">let </span>row = rows
-            .next()<span class="question-mark">?
-            </span>.ok_or_else(|| CacheError::archive_missing(<span class="self">self</span>.index_id, metadata.archive_id()))<span class="question-mark">?</span>;
-        <span class="kw">let </span>data = row.get(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>crc = row.get(<span class="number">1</span>).unwrap();
-        <span class="kw">let </span>version = row.get(<span class="number">2</span>).unwrap();
+        <span class="kw">let </span>(data, crc, version) = <span class="self">self
+            </span>.connection
+            .query_row(<span class="string">&quot;SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?&quot;</span>, [metadata.archive_id()], |row| <span class="kw">try </span>{
+                (row.get(<span class="string">&quot;DATA&quot;</span>)<span class="question-mark">?</span>, row.get(<span class="string">&quot;CRC&quot;</span>)<span class="question-mark">?</span>, row.get(<span class="string">&quot;VERSION&quot;</span>)<span class="question-mark">?</span>)
+            })
+            .context(ArchiveMissing {
+                index_id: metadata.index_id(),
+                archive_id: metadata.archive_id(),
+            })
+            .context(error::Integrity)<span class="question-mark">?</span>;
 
         <span class="comment">// wut
         </span><span class="kw">let </span>crc_offset = <span class="kw">match </span><span class="self">self</span>.index_id() {
@@ -225,23 +252,21 @@
         };
 
         <span class="kw">if </span>crc == <span class="number">0 </span>&amp;&amp; version == <span class="number">0 </span>{
-            <span class="prelude-val">Err</span>(CacheError::archive_missing(metadata.index_id(), metadata.archive_id()))
+            <span class="prelude-val">Err</span>(IntegrityError::Blank { metadata: metadata.clone() }).context(error::Integrity)
         } <span class="kw">else if </span>metadata.crc() <span class="kw">as </span>i64 + crc_offset != crc {
-            <span class="prelude-val">Err</span>(CacheError::crc(
-                metadata.index_id(),
-                metadata.archive_id(),
-                metadata.crc() <span class="kw">as </span>i64 + crc_offset,
+            <span class="prelude-val">Err</span>(IntegrityError::Crc {
                 crc,
-            ))
+                metadata: metadata.clone(),
+            })
+            .context(error::Integrity)
         } <span class="kw">else if </span>metadata.version() <span class="kw">as </span>i64 != version {
-            <span class="prelude-val">Err</span>(CacheError::version(
-                metadata.index_id(),
-                metadata.archive_id(),
-                metadata.version() <span class="kw">as </span>i64,
+            <span class="prelude-val">Err</span>(IntegrityError::Version {
                 version,
-            ))
+                metadata: metadata.clone(),
+            })
+            .context(error::Integrity)
         } <span class="kw">else </span>{
-            <span class="prelude-val">Ok</span>(decoder::decompress(data)<span class="question-mark">?</span>)
+            decoder::decompress(data).context(error::Decode)
         }
     }
 
@@ -255,13 +280,17 @@
     /// # Notes
     /// Indices `VORBIS`, `AUDIOSTREAMS`, `TEXTURES_PNG_MIPPED` and `TEXTURES_ETC` tend to never complete.
     /// For these, simply ignore [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError).
-    </span><span class="kw">pub fn </span>assert_coherence(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; CacheResult&lt;()&gt; {
-        <span class="kw">for </span>(archive_id, metadata) <span class="kw">in </span><span class="self">self</span>.metadatas().iter() {
-            <span class="kw">let </span><span class="kw-2">mut </span>stmt = <span class="self">self</span>.connection.prepare(<span class="string">&quot;SELECT CRC, VERSION FROM cache WHERE KEY=?&quot;</span>)<span class="question-mark">?</span>;
-            <span class="kw">let </span><span class="kw-2">mut </span>rows = stmt.query([archive_id])<span class="question-mark">?</span>;
-            <span class="kw">let </span>row = rows.next()<span class="question-mark">?</span>.unwrap();
-            <span class="kw">let </span>crc = row.get(<span class="number">0</span>).unwrap();
-            <span class="kw">let </span>version = row.get(<span class="number">1</span>).unwrap();
+    </span><span class="kw">pub fn </span>assert_coherence(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), IntegrityError&gt; {
+        <span class="kw">for </span>(<span class="kw">_</span>, metadata) <span class="kw">in </span><span class="self">self</span>.metadatas().iter() {
+            <span class="kw">let </span>(<span class="kw">_</span>, crc, version) = <span class="self">self
+                </span>.connection
+                .query_row(<span class="string">&quot;SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?&quot;</span>, [metadata.archive_id()], |row| <span class="kw">try </span>{
+                    (row.get::&lt;<span class="kw">_</span>, Vec&lt;u8&gt;&gt;(<span class="string">&quot;DATA&quot;</span>)<span class="question-mark">?</span>, row.get(<span class="string">&quot;CRC&quot;</span>)<span class="question-mark">?</span>, row.get(<span class="string">&quot;VERSION&quot;</span>)<span class="question-mark">?</span>)
+                })
+                .context(ArchiveMissing {
+                    index_id: metadata.index_id(),
+                    archive_id: metadata.archive_id(),
+                })<span class="question-mark">?</span>;
 
             <span class="comment">// wut
             </span><span class="kw">let </span>crc_offset = <span class="kw">match </span><span class="self">self</span>.index_id() {
@@ -270,53 +299,20 @@
                 <span class="kw">_ </span>=&gt; <span class="number">1_i64</span>,
             };
             <span class="kw">if </span>crc == <span class="number">0 </span>&amp;&amp; version == <span class="number">0 </span>{
-                <span class="kw">return </span><span class="prelude-val">Err</span>(CacheError::archive_missing(metadata.index_id(), metadata.archive_id()));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(IntegrityError::Blank { metadata: metadata.clone() });
             } <span class="kw">else if </span>metadata.crc() <span class="kw">as </span>i64 + crc_offset != crc {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(CacheError::crc(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.crc() <span class="kw">as </span>i64 + crc_offset,
+                <span class="kw">return </span><span class="prelude-val">Err</span>(IntegrityError::Crc {
                     crc,
-                ));
+                    metadata: metadata.clone(),
+                });
             } <span class="kw">else if </span>metadata.version() <span class="kw">as </span>i64 != version {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(CacheError::version(
-                    metadata.index_id(),
-                    metadata.archive_id(),
-                    metadata.version() <span class="kw">as </span>i64,
+                <span class="kw">return </span><span class="prelude-val">Err</span>(IntegrityError::Version {
                     version,
-                ));
+                    metadata: metadata.clone(),
+                });
             }
         }
         <span class="prelude-val">Ok</span>(())
-    }
-}
-
-<span class="kw">impl </span>CacheIndex&lt;Initial&gt; {
-    <span class="doccomment">/// Constructor for [`CacheIndex`].
-    ///
-    /// # Errors
-    ///
-    /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    </span><span class="kw">pub fn </span>new(index_id: u32, path: Arc&lt;CachePath&gt;) -&gt; CacheResult&lt;CacheIndex&lt;Initial&gt;&gt; {
-        <span class="kw">let </span>file = <span class="macro">path!</span>(path.as_ref() / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>));
-
-        <span class="comment">// check if database exists (without creating blank sqlite databases)
-        </span><span class="kw">match </span>fs::metadata(<span class="kw-2">&amp;</span>file) {
-            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let </span>connection = rusqlite::Connection::open(file)<span class="question-mark">?</span>;
-                <span class="kw">let </span>raw_metadata: Bytes = <span class="self">Self</span>::get_raw_metadata(<span class="kw-2">&amp;</span>connection)<span class="question-mark">?</span>;
-                <span class="kw">let </span>metadatas = IndexMetadata::deserialize(index_id, raw_metadata)<span class="question-mark">?</span>;
-
-                <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-                    index_id,
-                    metadatas,
-                    connection,
-                    path,
-                    state: Initial {},
-                })
-            }
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(CacheError::cache_not_found(e, file, path)),
-        }
     }
 }
 

@@ -352,12 +352,12 @@
 
 <span class="kw">use </span>std::{collections::BTreeMap, fs};
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 <span class="kw">use </span>indicatif::ProgressIterator;
 <span class="kw">use </span>itertools::iproduct;
 <span class="kw">use </span>path_macro::path;
 <span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
-<span class="kw">use </span>rs3cache_backend::error::CacheError;
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::definitions::flo::Flo;
@@ -366,7 +366,7 @@
 <span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;osrs&quot;</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::definitions::{overlays::Overlay, underlays::Underlay};
 <span class="kw">use crate</span>::{
-    cache::error::CacheResult,
+    cache::error::{<span class="self">self</span>, CacheResult},
     cli::Config,
     definitions::{
         location_configs::LocationConfig,
@@ -428,9 +428,9 @@
 
     <span class="kw">let </span>map_id = CONFIG.map_id;
     <span class="kw">for </span>zoom <span class="kw">in </span><span class="number">2</span>..=<span class="number">4 </span>{
-        <span class="kw">let </span>inner_folder = <span class="macro">path!</span>(config.output / NAME / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/{zoom}&quot;</span>));
+        <span class="kw">let </span>path = <span class="macro">path!</span>(config.output / NAME / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/{zoom}&quot;</span>));
 
-        fs::create_dir_all(<span class="kw-2">&amp;</span>inner_folder).map_err(|e| CacheError::io(e, inner_folder))<span class="question-mark">?</span>;
+        fs::create_dir_all(<span class="kw-2">&amp;</span>path).context(error::Io { path })<span class="question-mark">?</span>;
     }
 
     <span class="kw">let </span>iter = GroupMapSquareIterator::new(-<span class="number">1_i32</span>..=<span class="number">1_i32</span>, -<span class="number">1_i32</span>..=<span class="number">1_i32</span>, config)<span class="question-mark">?</span>;

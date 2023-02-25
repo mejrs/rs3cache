@@ -186,10 +186,6 @@
 <a href="#186" id="186">186</a>
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 <span class="kw">use </span>pyo3::{
@@ -280,7 +276,7 @@
 
     <span class="kw">fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, py: Python, id: u32) -&gt; PyResult&lt;PySprite&gt; {
         <span class="kw">let </span>archive = <span class="self">self</span>.archive(id)<span class="question-mark">?</span>;
-        <span class="kw">let </span>sprite = archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).and_then(sprites::deserialize);
+        <span class="kw">let </span>sprite = sprites::deserialize(archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap());
         <span class="kw">let </span>sprite = sprite.map(|frames| PySprite {
             archive_id: archive.archive_id(),
             frames: frames
@@ -358,27 +354,23 @@
 
     <span class="kw">fn </span>__next__(<span class="kw-2">&amp;mut </span><span class="self">self</span>, py: Python) -&gt; <span class="prelude-ty">Option</span>&lt;PySprite&gt; {
         <span class="comment">// no archive currently expose can fail here once fully loaded
-        </span><span class="self">self</span>.inner.next().map(Result::unwrap).map(|archive| {
-            archive
-                .file(<span class="kw-2">&amp;</span><span class="number">0</span>)
-                .and_then(sprites::deserialize)
-                .map(|frames| PySprite {
-                    archive_id: archive.archive_id(),
-                    frames: frames
-                        .into_iter()
-                        .map(|(id, im)| {
-                            (
-                                id,
-                                PyFrame {
-                                    constructor: <span class="self">self</span>.constructor.clone_ref(py),
-                                    id,
-                                    im,
-                                },
-                            )
-                        })
-                        .collect(),
+        </span><span class="kw">let </span>archive = <span class="self">self</span>.inner.next()<span class="question-mark">?</span>.unwrap();
+        <span class="kw">let </span>frames = sprites::deserialize(archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap()).unwrap();
+        <span class="prelude-val">Some</span>(PySprite {
+            archive_id: archive.archive_id(),
+            frames: frames
+                .into_iter()
+                .map(|(id, im)| {
+                    (
+                        id,
+                        PyFrame {
+                            constructor: <span class="self">self</span>.constructor.clone_ref(py),
+                            id,
+                            im,
+                        },
+                    )
                 })
-                .unwrap()
+                .collect(),
         })
     }
 }

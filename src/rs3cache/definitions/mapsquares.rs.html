@@ -519,6 +519,20 @@
 <a href="#519" id="519">519</a>
 <a href="#520" id="520">520</a>
 <a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Data comprising the game surface.
 //!
 //! The game map is divided in (potentially) 128 by 256 [`MapSquare`]s,
@@ -542,6 +556,7 @@
     ops::Range,
 };
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>itertools::{iproduct, Product};
 <span class="kw">use </span>ndarray::{iter::LanesIter, s, Axis, Dim};
 <span class="kw">use </span>path_macro::path;
@@ -552,9 +567,10 @@
 <span class="kw">pub use </span><span class="self">self</span>::iterator::<span class="kw-2">*</span>;
 <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
 </span><span class="kw">use </span><span class="kw">crate</span>::cache::xtea::Xtea;
-<span class="kw">use crate</span>::{
+<span class="attr">#[allow(unused_imports)]
+</span><span class="kw">use crate</span>::{
     cache::{
-        error::{CacheError, CacheResult},
+        error::{<span class="self">self</span>, CacheError, CacheResult},
         index::{CacheIndex, Initial},
     },
     definitions::{
@@ -563,7 +579,6 @@
     },
     utils::rangeclamp::RangeClamp,
 };
-
 <span class="doccomment">/// Represents a section of the game map
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>MapSquare {
@@ -578,22 +593,25 @@
     </span>j: u8,
 
     <span class="doccomment">/// Data on the tiles it contains.
-    </span>tiles: CacheResult&lt;TileArray&gt;,
+    </span>tiles: <span class="prelude-ty">Option</span>&lt;TileArray&gt;,
 
     <span class="doccomment">/// Member status of chunks in bits.
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
-    </span><span class="kw">pub </span>members: CacheResult&lt;u64&gt;,
+    </span><span class="kw">pub </span>members: <span class="prelude-ty">Option</span>&lt;u64&gt;,
 
     <span class="doccomment">/// All locations in this [`MapSquare`].
     ///
     /// Locations can overlap on surrounding mapsquares.
-    </span>locations: CacheResult&lt;Vec&lt;Location&gt;&gt;,
+    </span>locations: <span class="prelude-ty">Option</span>&lt;Vec&lt;Location&gt;&gt;,
+
+    <span class="attr">#[cfg(feature = <span class="string">&quot;osrs&quot;</span>)]
+    </span><span class="kw">pub </span>xtea: <span class="prelude-ty">Option</span>&lt;Xtea&gt;,
 
     <span class="doccomment">/// All water locations in this [`MapSquare`].
     ///
     /// Locations can overlap on surrounding mapsquares.
     </span><span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
-    </span>water_locations: Lazy&lt;(CacheResult&lt;bytes::Bytes&gt;, u8, u8), Vec&lt;Location&gt;, CacheError&gt;,
+    </span>water_locations: <span class="prelude-ty">Option</span>&lt;Lazy&lt;(bytes::Bytes, u8, u8), Vec&lt;Location&gt;, CacheError&gt;&gt;,
 }
 
 <span class="doccomment">/// Iterator over a columns of planes with their x, y coordinates
@@ -624,29 +642,44 @@
 
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)))]
     </span><span class="kw">fn </span>new(index: <span class="kw-2">&amp;</span>CacheIndex&lt;Initial&gt;, xtea: <span class="prelude-ty">Option</span>&lt;Xtea&gt;, land: u32, tiles: u32, env: <span class="prelude-ty">Option</span>&lt;u32&gt;, i: u8, j: u8) -&gt; CacheResult&lt;MapSquare&gt; {
-        <span class="kw">let </span>land = index.archive_with_xtea(land, xtea).and_then(|arch| arch.file(<span class="kw-2">&amp;</span><span class="number">0</span>));
-        <span class="kw">let </span><span class="kw-2">mut </span>tile_bytes = index.archive(tiles)<span class="question-mark">?</span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>land = index
+            .archive_with_xtea(land, xtea)
+            .and_then(|arch| arch.file(<span class="kw-2">&amp;</span><span class="number">0</span>).context(rs3cache_backend::index::Other).context(error::Integrity));
+        <span class="kw">let </span><span class="kw-2">mut </span>tile_bytes = index
+            .archive(tiles)<span class="question-mark">?
+            </span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)
+            .context(rs3cache_backend::index::Other)
+            .context(error::Integrity)<span class="question-mark">?</span>;
         <span class="kw">let </span>_env = env.map(|k| index.archive(k));
 
         <span class="kw">let </span>tiles = Tile::dump(<span class="kw-2">&amp;mut </span>tile_bytes);
         <span class="kw">let </span>locations = <span class="kw">match </span>land {
-            <span class="prelude-val">Ok</span>(land) =&gt; <span class="prelude-val">Ok</span>(Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, land)),
-            <span class="comment">// most likely, anyway...
-            </span><span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(CacheError::xtea_absent(i, j)),
+            <span class="prelude-val">Ok</span>(land) =&gt; <span class="prelude-val">Some</span>(Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, land)),
+            <span class="comment">// most likely xtea error...
+            </span><span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
         };
 
         <span class="prelude-val">Ok</span>(MapSquare {
             i,
             j,
-            tiles: <span class="prelude-val">Ok</span>(tiles),
+            tiles: <span class="prelude-val">Some</span>(tiles),
             locations,
+            xtea,
         })
     }
 
     <span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
     </span><span class="kw">fn </span>new(index: <span class="kw-2">&amp;</span>CacheIndex&lt;Initial&gt;, loc: u32, map: u32, i: u8, j: u8) -&gt; CacheResult&lt;MapSquare&gt; {
-        <span class="kw">let </span>land = index.archive(loc)<span class="question-mark">?</span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>tile_bytes = index.archive(map)<span class="question-mark">?</span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>land = index
+            .archive(loc)<span class="question-mark">?
+            </span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)
+            .context(rs3cache_backend::index::Other)
+            .context(error::Integrity)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>tile_bytes = index
+            .archive(map)<span class="question-mark">?
+            </span>.file(<span class="kw-2">&amp;</span><span class="number">0</span>)
+            .context(rs3cache_backend::index::Other)
+            .context(error::Integrity)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>tiles = Tile::dump(<span class="kw-2">&amp;mut </span>tile_bytes);
         <span class="kw">let </span>locations = Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, land);
@@ -654,8 +687,8 @@
         <span class="prelude-val">Ok</span>(MapSquare {
             i,
             j,
-            tiles: <span class="prelude-val">Ok</span>(tiles),
-            locations: <span class="prelude-val">Ok</span>(locations),
+            tiles: <span class="prelude-val">Some</span>(tiles),
+            locations: <span class="prelude-val">Some</span>(locations),
         })
     }
 
@@ -666,17 +699,17 @@
         <span class="kw">let </span><span class="kw-2">mut </span>tile_bytes = archive.file(<span class="kw-2">&amp;</span>MapFileType::TILES);
 
         <span class="kw">let </span>(tiles, members, locations) = <span class="kw">match </span>tile_bytes {
-            <span class="prelude-val">Ok</span>(<span class="kw-2">ref mut </span>tile_bytes) =&gt; {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>tile_bytes) =&gt; {
                 <span class="kw">let </span>tiles = Tile::dump(tile_bytes);
                 <span class="kw">let </span>members = tile_bytes.get_u64();
                 <span class="kw">let </span>locations = archive.file(<span class="kw-2">&amp;</span>MapFileType::LOCATIONS).map(|file| Location::dump(i, j, <span class="kw-2">&amp;</span>tiles, file));
-                (<span class="prelude-val">Ok</span>(tiles), <span class="prelude-val">Ok</span>(members), locations)
+                (<span class="prelude-val">Some</span>(tiles), <span class="prelude-val">Some</span>(members), locations)
             }
-            <span class="prelude-val">Err</span>(e) =&gt; (<span class="prelude-val">Err</span>(e.clone()), <span class="prelude-val">Err</span>(e.clone()), <span class="prelude-val">Err</span>(e)),
+            <span class="prelude-val">None </span>=&gt; (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
         };
 
         <span class="kw">let </span>bytes = archive.file(<span class="kw-2">&amp;</span>MapFileType::WATER_LOCATIONS);
-        <span class="kw">let </span>water_locations = Lazy::new((bytes, i, j), |(bytes, i, j)| <span class="prelude-val">Ok</span>(Location::dump_water_locations(i, j, bytes<span class="question-mark">?</span>)));
+        <span class="kw">let </span>water_locations = bytes.map(|bytes| Lazy::new((bytes, i, j), |(bytes, i, j)| <span class="prelude-val">Ok</span>(Location::dump_water_locations(i, j, bytes))));
 
         MapSquare {
             i,
@@ -689,40 +722,34 @@
     }
 
     <span class="doccomment">/// Iterator over a columns of planes with their x, y coordinates
-    </span><span class="kw">pub fn </span>indexed_columns(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ColumnIter, CacheError&gt; {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.tiles()<span class="question-mark">?</span>.lanes(Axis(<span class="number">0</span>)).into_iter().zip(<span class="macro">iproduct!</span>(<span class="number">0</span>..<span class="number">64u32</span>, <span class="number">0</span>..<span class="number">64u32</span>)))
+    </span><span class="kw">pub fn </span>indexed_columns(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ColumnIter&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.tiles()<span class="question-mark">?</span>.lanes(Axis(<span class="number">0</span>)).into_iter().zip(<span class="macro">iproduct!</span>(<span class="number">0</span>..<span class="number">64u32</span>, <span class="number">0</span>..<span class="number">64u32</span>)))
     }
 
     <span class="doccomment">/// Returns a view over the `tiles` field, if present
-    </span><span class="kw">pub fn </span>tiles(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>TileArray, <span class="kw-2">&amp;</span>CacheError&gt; {
+    </span><span class="kw">pub fn </span>tiles(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>TileArray&gt; {
         <span class="self">self</span>.tiles.as_ref()
     }
 
     <span class="doccomment">/// Returns a view over the `tiles` field, if present
-    </span><span class="kw">pub fn </span>take_tiles(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;TileArray, CacheError&gt; {
+    </span><span class="kw">pub fn </span>take_tiles(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;TileArray&gt; {
         <span class="self">self</span>.tiles
     }
 
     <span class="doccomment">/// Returns a view over the `locations` field, if present.
-    </span><span class="kw">pub fn </span>locations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[Location], CacheError&gt; {
-        <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.locations {
-            <span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>v) =&gt; <span class="prelude-val">Ok</span>(v),
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e.into()),
-        }
+    </span><span class="kw">pub fn </span>locations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[Location]&gt; {
+        <span class="self">self</span>.locations.as_deref()
     }
 
     <span class="doccomment">/// Take its locations, consuming `self`.
-    </span><span class="kw">pub fn </span>take_locations(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Location&gt;, CacheError&gt; {
+    </span><span class="kw">pub fn </span>take_locations(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;Location&gt;&gt; {
         <span class="self">self</span>.locations
     }
 
     <span class="doccomment">/// Returns a view over the `locations` field, if present.
     </span><span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
-    </span><span class="kw">pub fn </span>water_locations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[Location], CacheError&gt; {
-        <span class="kw">match </span><span class="kw-2">&amp;*</span><span class="self">self</span>.water_locations {
-            <span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>v) =&gt; <span class="prelude-val">Ok</span>(v),
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e.into()),
-        }
+    </span><span class="kw">pub fn </span>water_locations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="prelude-ty">Result</span>&lt;Vec&lt;Location&gt;, CacheError&gt;&gt; {
+        <span class="self">self</span>.water_locations.as_deref()
     }
 }
 
@@ -819,7 +846,7 @@
         Box::new(
             <span class="self">self</span>.iter()
                 .filter_map(<span class="kw">move </span>|((i, j), sq)| {
-                    sq.tiles().ok().map(|tiles| {
+                    sq.tiles().map(|tiles| {
                         <span class="kw">let </span>di = (<span class="kw-2">*</span>i <span class="kw">as </span>isize) - (<span class="self">self</span>.core_i <span class="kw">as </span>isize);
                         <span class="kw">let </span>dj = (<span class="kw-2">*</span>j <span class="kw">as </span>isize) - (<span class="self">self</span>.core_j <span class="kw">as </span>isize);
                         ((di, dj), tiles)
@@ -841,7 +868,7 @@
     </span><span class="kw">pub fn </span>all_locations_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>Location&gt; + <span class="lifetime">&#39;_</span>&gt; {
         Box::new(
             <span class="self">self</span>.iter()
-                .filter_map(|(_k, square)| square.locations().ok())
+                .filter_map(|(_k, square)| square.locations())
                 .flat_map(IntoIterator::into_iter),
         )
     }
@@ -851,12 +878,12 @@
 </span><span class="kw">pub fn </span>export_locations_by_id(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;locations&quot;</span>);
 
-    fs::create_dir_all(<span class="kw-2">&amp;</span>out).map_err(|e| CacheError::io(e, out.clone()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>out).with_context(|| error::Io { path: out.clone() })<span class="question-mark">?</span>;
 
     <span class="kw">let </span>last_id = {
         <span class="kw">let </span>squares = MapSquares::new(config)<span class="question-mark">?</span>.into_iter();
         squares
-            .filter_map(|sq| sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).take_locations().ok())
+            .filter_map(|sq| sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).take_locations())
             .filter(|locs| !locs.is_empty())
             .map(|locs| locs.last().expect(<span class="string">&quot;locations stopped existing&quot;</span>).id)
             .max()
@@ -865,7 +892,7 @@
 
     <span class="kw">let </span>squares = MapSquares::new(config)<span class="question-mark">?</span>.into_iter();
     <span class="kw">let </span><span class="kw-2">mut </span>locs: Vec&lt;<span class="kw">_</span>&gt; = squares
-        .filter_map(|sq| sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).take_locations().ok())
+        .filter_map(|sq| sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).take_locations())
         .map(|locs| locs.into_iter().peekable())
         .collect();
 
@@ -896,12 +923,12 @@
 </span><span class="kw">pub fn </span>export_locations_by_square(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;locations&quot;</span>);
 
-    fs::create_dir_all(<span class="kw-2">&amp;</span>out).map_err(|e| CacheError::io(e, out.clone()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>out).with_context(|| error::Io { path: out.clone() })<span class="question-mark">?</span>;
     MapSquares::new(config)<span class="question-mark">?</span>.into_iter().par_bridge().for_each(|sq| {
         <span class="kw">let </span>sq = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>);
         <span class="kw">let </span>i = sq.i;
         <span class="kw">let </span>j = sq.j;
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(locations) = sq.take_locations() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(locations) = sq.take_locations() {
             <span class="kw">if </span>!locations.is_empty() {
                 <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{i}_{j}.json&quot;</span>))).unwrap();
                 <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>locations).unwrap();
@@ -917,12 +944,12 @@
 </span><span class="kw">pub fn </span>export_tiles_by_square(config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::cli::Config) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">let </span>out = <span class="macro">path_macro::path!</span>(config.output / <span class="string">&quot;tiles&quot;</span>);
 
-    fs::create_dir_all(<span class="kw-2">&amp;</span>out).map_err(|e| CacheError::io(e, out.clone()))<span class="question-mark">?</span>;
+    fs::create_dir_all(<span class="kw-2">&amp;</span>out).with_context(|| error::Io { path: out.clone() })<span class="question-mark">?</span>;
     MapSquares::new(config)<span class="question-mark">?</span>.into_iter().par_bridge().for_each(|sq| {
         <span class="kw">let </span>sq = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>);
         <span class="kw">let </span>i = sq.i;
         <span class="kw">let </span>j = sq.j;
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(tiles) = sq.take_tiles() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(tiles) = sq.take_tiles() {
             <span class="kw">if </span>!tiles.is_empty() {
                 <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="macro">path!</span>(<span class="kw-2">&amp;</span>out / <span class="macro">format!</span>(<span class="string">&quot;{i}_{j}.json&quot;</span>))).unwrap();
                 <span class="kw">let </span>data = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>tiles).unwrap();
@@ -947,7 +974,7 @@
             <span class="kw">let </span>square = square.unwrap();
             <span class="kw">if </span>square.i() == <span class="number">40 </span>&amp;&amp; square.j() == <span class="number">62 </span>{
                 <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
-                    <span class="kw">let </span>tile = square.tiles()<span class="question-mark">?</span>.get([i, <span class="number">10</span>, <span class="number">10</span>]);
+                    <span class="kw">let </span>tile = square.tiles().unwrap().get([i, <span class="number">10</span>, <span class="number">10</span>]);
                     <span class="macro">dbg!</span>(tile);
                 }
                 <span class="kw">return </span><span class="prelude-val">Ok</span>(());
@@ -984,7 +1011,7 @@
         <span class="kw">let </span>sqs = MapSquares::new(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>.into_iter();
 
         <span class="kw">for </span>sq <span class="kw">in </span>sqs {
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(locations) = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).locations() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(locations) = sq.expect(<span class="string">&quot;error deserializing mapsquare&quot;</span>).locations() {
                 <span class="kw">for </span>loc <span class="kw">in </span>locations {
                     <span class="kw">if </span>loc.id == <span class="number">3263 </span>{
                         <span class="macro">println!</span>(<span class="string">&quot;{} {} {} {}&quot;</span>, loc.i, loc.i, loc.x, loc.y);
@@ -1010,8 +1037,9 @@
         <span class="kw">let </span>id = <span class="number">36687_u32</span>;
         <span class="kw">let </span>square = MapSquare::new(<span class="number">50</span>, <span class="number">50</span>, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
         <span class="macro">assert!</span>(square
-            .locations()<span class="question-mark">?
-            </span>.iter()
+            .locations()
+            .unwrap()
+            .iter()
             .any(|loc| loc.id == id &amp;&amp; loc.plane.matches(<span class="kw-2">&amp;</span><span class="number">0</span>) &amp;&amp; loc.x == <span class="number">9 </span>&amp;&amp; loc.y == <span class="number">16</span>));
         <span class="prelude-val">Ok</span>(())
     }
@@ -1021,7 +1049,7 @@
         <span class="kw">let </span>config = <span class="kw">crate</span>::cli::Config::env();
 
         <span class="kw">let </span>square = MapSquare::new(<span class="number">49</span>, <span class="number">54</span>, <span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
-        <span class="kw">let </span>_tile = square.tiles()<span class="question-mark">?</span>.get([<span class="number">0</span>, <span class="number">24</span>, <span class="number">25</span>]);
+        <span class="kw">let </span>_tile = square.tiles().unwrap().get([<span class="number">0</span>, <span class="number">24</span>, <span class="number">25</span>]);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -1032,7 +1060,7 @@
 
         <span class="kw">for </span>sq <span class="kw">in </span>mapsquares {
             <span class="kw">if let </span><span class="prelude-val">Ok</span>(sq) = sq {
-                <span class="kw">if let </span><span class="prelude-val">Ok</span>(members) = sq.members {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(members) = sq.members {
                     <span class="macro">println!</span>(<span class="string">&quot;({},{}):{:b}&quot;</span>, sq.i, sq.j, members);
                 }
             }
