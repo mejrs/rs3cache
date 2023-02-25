@@ -2,15 +2,19 @@
 
 use std::collections::BTreeMap;
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use rs3cache_backend::buf::ReadError;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{self, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::{ConfigType, IndexType},
 };
-
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyo3::pyclass)]
 #[serde_with::skip_serializing_none]
@@ -31,10 +35,10 @@ impl DbRow {
             .take_files()
             .into_iter();
 
-        let dbrows = files
+        files
             .map(|(file_id, file)| try { (file_id, DbRow::deserialize(file_id, file)?) })
-            .collect::<Result<BTreeMap<u32, DbRow>, ReadError>>()?;
-        Ok(dbrows)
+            .collect::<Result<BTreeMap<u32, DbRow>, ReadError>>()
+            .context(error::Read)
     }
     fn deserialize(id: u32, mut buffer: Bytes) -> Result<Self, ReadError> {
         let mut obj = Self { id, ..Default::default() };

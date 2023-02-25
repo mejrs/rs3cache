@@ -4,7 +4,6 @@ version = "0.1.0"
 authors = ["mejrs"]
 edition = "2021"
 default-run = "rs3"
-rust-version = "1.60"
 
 [workspace]
 members = [
@@ -59,6 +58,7 @@ regex = "1.5.5"
 serde = { version = "1.0.136", features = ["derive"] }
 serde_json = "1.0.79"
 serde_with = "1.12.0"
+error = {git = "https://github.com/mejrs/error", rev = "1be54f8d7ce8e5eda50abe926e76c335dc381ea2" }
 
 [features]
 pyo3 = ["dep:pyo3", "rs3cache_backend/pyo3", "rs3cache_macros"]

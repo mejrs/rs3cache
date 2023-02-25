@@ -6,15 +6,18 @@ use std::{
     io::Write,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::error::Context;
 use serde::Serialize;
 
 use crate::{
-    cache::{error::CacheResult, index::CacheIndex},
+    cache::{
+        error::{self, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
     structures::paramtable::ParamTable,
 };
@@ -90,15 +93,15 @@ impl Struct {
 
 /// Save the item configs as `structs.json`. Exposed as `--dump structs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
     let mut structs = Struct::dump_all(config)?.into_values().collect::<Vec<_>>();
     structs.sort_unstable_by_key(|loc| loc.id);
 
     let path = path!(&config.output / "structs.json");
 
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
     let data = serde_json::to_string_pretty(&structs).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
 
     Ok(())
 }

@@ -350,6 +350,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 
 [[package]]
+name = "error"
+version = "0.0.0"
+source = "git+https://github.com/mejrs/error?rev=1be54f8d7ce8e5eda50abe926e76c335dc381ea2#1be54f8d7ce8e5eda50abe926e76c335dc381ea2"
+dependencies = [
+ "error_derive",
+]
+
+[[package]]
+name = "error_derive"
+version = "0.0.0"
+source = "git+https://github.com/mejrs/error?rev=1be54f8d7ce8e5eda50abe926e76c335dc381ea2#1be54f8d7ce8e5eda50abe926e76c335dc381ea2"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "fallible-iterator"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1014,6 +1032,7 @@ dependencies = [
  "clap 3.2.22",
  "console",
  "criterion",
+ "error",
  "filetime",
  "image",
  "indicatif",
@@ -1039,6 +1058,7 @@ dependencies = [
  "bytes",
  "bzip2-rs",
  "console",
+ "error",
  "itertools",
  "libflate",
  "libsqlite3-sys",
@@ -1191,13 +1211,13 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "syn"
-version = "1.0.76"
+version = "1.0.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6f107db402c2c2055242dbf4d2af0e69197202e9faacbef9571bbe47f5a1b84"
+checksum = "1f4064b5b16e03ae50984a5a8ed5d4f8803e6bc1fd170a3cda91a1be4b18e3f5"
 dependencies = [
  "proc-macro2",
  "quote",
- "unicode-xid",
+ "unicode-ident",
 ]
 
 [[package]]
@@ -1257,12 +1277,6 @@ name = "unicode-width"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c0edd1e5b14653f783770bce4a4dabb4a5108a5370a5f5d8cfe8710c361f6c8b"
-
-[[package]]
-name = "unicode-xid"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
 
 [[package]]
 name = "unindent"

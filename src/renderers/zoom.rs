@@ -1,14 +1,18 @@
 use std::{collections::HashSet, ffi::OsString, fs, io, ops::Range, path::Path, sync::LazyLock};
 
+use ::error::Context;
 use image::{imageops, ImageBuffer, ImageError, Rgba, RgbaImage};
 use itertools::Itertools;
 use path_macro::path;
 use rayon::iter::ParallelIterator;
 use regex::Regex;
-use rs3cache_backend::error::Context;
 use rs3cache_utils::bar::Render;
 
-use crate::{cache::error::CacheResult, cli::Config, renderers::scale};
+use crate::{
+    cache::error::{self, CacheResult},
+    cli::Config,
+    renderers::scale,
+};
 
 static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 
@@ -17,17 +21,17 @@ pub fn render_zoom_levels(config: &Config, name: &str, mapid: i32, range: Range<
     let zoom_levels = range.rev();
     for zoom in zoom_levels {
         let path = path!(config.output / name / format!("{mapid}/{zoom}"));
-        fs::create_dir_all(&path).context(path)?;
+        fs::create_dir_all(&path).context(error::Io { path })?;
 
         let new_tile_coordinates = get_future_filenames(config, name, mapid, zoom + 1)?.into_iter();
 
         let func = |((p, i, j), _)| {
             let img = make_tile(&config.output, name, mapid, zoom, p, i, j, backfill)?;
-            let filename = path!(config.output / &name / format!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
+            let path = path!(config.output / &name / format!("{mapid}/{zoom}/{p}_{i}_{j}.png"));
 
-            match img.save(&filename) {
+            match img.save(&path) {
                 Ok(()) => {}
-                Err(ImageError::IoError(e)) => return Err(e).context(filename),
+                Err(ImageError::IoError(e)) => return Err(e).context(error::Io { path }),
                 Err(other) => panic!("{other}"),
             };
             Ok(())
@@ -94,15 +98,15 @@ fn get_files(
 }
 
 fn get_future_filenames(config: &Config, name: &str, mapid: i32, zoom: i8) -> CacheResult<HashSet<(i32, i32, i32)>> {
-    let dir = path!(config.output / name / format!("{mapid}/{zoom}"));
+    let path = path!(config.output / name / format!("{mapid}/{zoom}"));
 
-    fs::read_dir(&dir)
-        .context(&dir)?
+    fs::read_dir(&path)
+        .with_context(|| error::Io { path: path.clone() })?
         .map_ok(|entry| {
             let name = entry.file_name();
             let (p, i, j) = to_coordinates(name);
             (p, i >> 1, j >> 1)
         })
         .collect::<Result<_, _>>()
-        .context(dir)
+        .context(error::Io { path })
 }

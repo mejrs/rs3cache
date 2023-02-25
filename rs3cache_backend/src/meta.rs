@@ -22,7 +22,7 @@ use {
 
 use crate::{
     buf::{BufExtra, ReadError},
-    error::CacheResult,
+    error::{self, CacheResult},
     utils::adapters::Accumulator,
 };
 
@@ -205,7 +205,7 @@ impl IndexMetadata {
 
     /// Constructor for [`IndexMetadata`]. `index_id` must be one of [`IndexType`](rs3cache_backend::indextype::IndexType).
     #[cfg(any(feature = "sqlite", feature = "dat2"))]
-    pub(crate) fn deserialize(index_id: u32, mut buffer: Bytes) -> CacheResult<Self> {
+    pub(crate) fn deserialize(index_id: u32, mut buffer: Bytes) -> Result<Self, ReadError> {
         let format = buffer.try_get_i8()?;
 
         let _index_utc_stamp = if format > 5 { Some(buffer.try_get_i32()?) } else { None };

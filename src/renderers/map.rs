@@ -11,12 +11,12 @@ pub mod tileshape;
 
 use std::{collections::BTreeMap, fs};
 
+use ::error::Context;
 use image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
 use indicatif::ProgressIterator;
 use itertools::iproduct;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
-use rs3cache_backend::error::Context;
 
 #[cfg(feature = "legacy")]
 use crate::definitions::flo::Flo;
@@ -25,7 +25,7 @@ use crate::definitions::mapscenes::MapScene;
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use crate::definitions::{overlays::Overlay, underlays::Underlay};
 use crate::{
-    cache::error::CacheResult,
+    cache::error::{self, CacheResult},
     cli::Config,
     definitions::{
         location_configs::LocationConfig,
@@ -87,9 +87,9 @@ pub fn render(config: &Config) -> CacheResult<()> {
 
     let map_id = CONFIG.map_id;
     for zoom in 2..=4 {
-        let inner_folder = path!(config.output / NAME / format!("{map_id}/{zoom}"));
+        let path = path!(config.output / NAME / format!("{map_id}/{zoom}"));
 
-        fs::create_dir_all(&inner_folder).context(inner_folder)?;
+        fs::create_dir_all(&path).context(error::Io { path })?;
     }
 
     let iter = GroupMapSquareIterator::new(-1_i32..=1_i32, -1_i32..=1_i32, config)?;

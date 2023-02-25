@@ -15,7 +15,7 @@ use serde_with::skip_serializing_none;
 use bytes::{Buf, Bytes};
 use crate::cache::{
     buf::{BufExtra,Buffer},
-    error::CacheResult,
+    error::{ self, CacheResult},
     index::CacheIndex,
     indextype::{ConfigType, IndexType},
 };
@@ -84,15 +84,15 @@ impl  <Name> {
 
 /// Save the <Name> configs as `location_configs.json`. Exposed as `--dump <Name>`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io {file: config.output.clone()})?;
     let mut <Name> = <Name>::dump_all(config)?.into_values().collect::<Vec<_>>();
     <Name>.sort_unstable_by_key(|loc| loc.id);
 
     let path = path!(config.output / "<Name>s.json");
 
-let mut file = File::create(&path).context(path.clone())?;
+let mut file = File::create(&path).with_context(|| error::Io{ file: path.clone()})?;
     let data = serde_json::to_string_pretty(&<Name>).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io {file: path})?;
 
     Ok(())
 }

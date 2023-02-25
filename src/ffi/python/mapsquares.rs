@@ -1,11 +1,12 @@
 use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
+use ::error::Context;
 use pyo3::{
     exceptions::{PyIndexError, PyKeyError, PyReferenceError, PyRuntimeError, PyTypeError},
     prelude::*,
     types::{PyInt, PyList},
 };
-use rs3cache_backend::index::CachePath;
+use rs3cache_backend::{error, index, index::CachePath};
 
 use crate::{
     cli::Config,
@@ -144,17 +145,55 @@ impl PyMapSquare {
 
     /// The [`Location`]s in a mapsquare.
     pub fn locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
-        let locations = self.inner.locations().ok_or_else(|| PyKeyError::new_err("not present"))?;
+        let locations = self.inner.locations();
+
+        #[cfg(feature = "rs3")]
+        let locations = locations
+            .context(index::FileMissing {
+                index_id: 5,
+                archive_id: (self.i() as u32) | (self.j() as u32) << 7,
+                file: crate::definitions::indextype::MapFileType::LOCATIONS,
+            })
+            .context(error::Integrity)?;
+
+        #[cfg(feature = "osrs")]
+        let locations = if self.inner.xtea.is_some() {
+            locations
+                .context(index::ArchiveMissingNamed {
+                    index_id: 5,
+                    name: format!("{}{}_{}", crate::definitions::indextype::MapFileType::LOCATIONS, self.i(), self.j()),
+                })
+                .context(error::Integrity)?
+        } else {
+            locations.ok_or(rs3cache_backend::error::CacheError::Xtea { i: self.i(), j: self.j() })?
+        };
+
+        #[cfg(feature = "legacy")]
+        let locations = locations
+            .context(index::ArchiveMissingNamed {
+                index_id: 5,
+                name: format!("{}{}_{}", crate::definitions::indextype::MapFileType::LOCATIONS, self.i(), self.j()),
+            })
+            .context(error::Integrity)?;
+
         Ok(PyList::new(py, locations.iter().copied()))
     }
 
     /// The water [`Location`]s in a mapsquare.
     #[cfg(feature = "rs3")]
     pub fn water_locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
-        let water_locations = self.inner.water_locations().ok_or_else(|| PyKeyError::new_err("not present"))?;
+        let water_locations = self
+            .inner
+            .water_locations()
+            .context(index::FileMissing {
+                index_id: 5,
+                archive_id: (self.i() as u32) | (self.j() as u32) << 7,
+                file: crate::definitions::indextype::MapFileType::WATER_LOCATIONS,
+            })
+            .context(error::Integrity)?;
         let water_locations = match water_locations {
             Ok(v) => v,
-            Err(e) => return Err(e.clone().into()),
+            Err(e) => return Err(e.into()),
         };
         Ok(PyList::new(py, water_locations.iter().copied()))
     }

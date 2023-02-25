@@ -4,15 +4,20 @@ use std::{
     io::Write,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::{buf::JString, error::Context};
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-use crate::cache::{buf::BufExtra, error::CacheResult, index::CacheIndex};
+use crate::cache::{
+    buf::BufExtra,
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 /// Describes (part of) ground colour.
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[skip_serializing_none]
@@ -84,14 +89,14 @@ impl Display for Flo {
 
 ///Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
     let mut labels = Flo::dump_all(config)?.into_values().collect::<Vec<_>>();
     labels.sort_unstable_by_key(|loc| loc.id);
     let path = path!(&config.output / "flos.json");
 
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
     let data = serde_json::to_string_pretty(&labels).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
     Ok(())
 }
 

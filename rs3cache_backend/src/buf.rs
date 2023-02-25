@@ -9,11 +9,11 @@ use std::{
     panic::Location,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use serde::{Serialize, Serializer};
 
-use crate::error::{CacheError, Context};
-
+use crate::error::CacheError;
 #[derive(Debug, Clone)]
 pub struct ReadError {
     location: &'static Location<'static>,

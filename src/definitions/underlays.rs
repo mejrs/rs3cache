@@ -4,16 +4,20 @@ use std::{
     io::Write,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::error::Context;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{self, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::{ConfigType, IndexType},
 };
 
@@ -76,14 +80,14 @@ impl Underlay {
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
     let mut underlay = Underlay::dump_all(config)?.into_values().collect::<Vec<_>>();
     underlay.sort_unstable_by_key(|loc| loc.id);
     let path = path!(config.output / "underlays.json");
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
 
     let data = serde_json::to_string_pretty(&underlay).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
 
     Ok(())
 }

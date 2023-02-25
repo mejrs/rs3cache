@@ -9,7 +9,8 @@
     try_blocks,
     array_chunks,
     if_let_guard,
-    let_chains
+    let_chains,
+    error_in_core
 )]
 #![allow(non_snake_case, unused_imports)]
 #![warn(

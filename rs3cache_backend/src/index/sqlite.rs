@@ -10,6 +10,7 @@ use std::{
     sync::Arc,
 };
 
+use ::error::{Context, With};
 use bytes::{Buf, Bytes};
 use console::style;
 use itertools::iproduct;
@@ -20,8 +21,8 @@ use crate::{
     arc::Archive,
     buf::BufExtra,
     decoder,
-    error::{CacheError, CacheResult, Context, With, STRUCTURE},
-    index::{CacheIndex, CachePath, IndexState, Initial},
+    error::{self, CacheError, CacheResult},
+    index::*,
     meta::{IndexMetadata, Metadata},
 };
 
@@ -31,21 +32,27 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, path: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(*path / format!("js5-{index_id}.jcache"));
+    pub fn new(index_id: u32, input: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(*input / format!("js5-{index_id}.jcache"));
 
-        let connection = Connection::open_with_flags(&file, OpenFlags::SQLITE_OPEN_READ_ONLY).context(CannotOpen { file, input: path.clone() })?;
+        let connection = Connection::open_with_flags(&file, OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .with_context(|| CannotOpen {
+                file: file.clone(),
+                input: input.clone(),
+            })
+            .context(error::Integrity)?;
         let data = connection
             .query_row("SELECT DATA FROM cache_index", [], |row| row.get(0))
-            .context(Other)?;
-        let raw_metadata = decoder::decompress(data)?;
-        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata)?;
+            .context(Other)
+            .context(error::Integrity)?;
+        let raw_metadata = decoder::decompress(data).context(error::Decode)?;
+        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata).context(error::Read)?;
 
         Ok(Self {
             index_id,
             metadatas,
             connection,
-            path,
+            input,
             state: Initial {},
         })
     }
@@ -62,7 +69,11 @@ where
             .query_row("SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?", [metadata.archive_id()], |row| try {
                 (row.get("DATA")?, row.get("CRC")?, row.get("VERSION")?)
             })
-            .context(Missing { metadata: metadata.clone() })?;
+            .context(ArchiveMissing {
+                index_id: metadata.index_id(),
+                archive_id: metadata.archive_id(),
+            })
+            .context(error::Integrity)?;
 
         // wut
         let crc_offset = match self.index_id() {
@@ -72,21 +83,21 @@ where
         };
 
         if crc == 0 && version == 0 {
-            Err(IntegrityError::Blank { metadata: metadata.clone() }.into())
+            Err(IntegrityError::Blank { metadata: metadata.clone() }).context(error::Integrity)
         } else if metadata.crc() as i64 + crc_offset != crc {
             Err(IntegrityError::Crc {
                 crc,
                 metadata: metadata.clone(),
-            }
-            .into())
+            })
+            .context(error::Integrity)
         } else if metadata.version() as i64 != version {
             Err(IntegrityError::Version {
                 version,
                 metadata: metadata.clone(),
-            }
-            .into())
+            })
+            .context(error::Integrity)
         } else {
-            Ok(decoder::decompress(data)?)
+            decoder::decompress(data).context(error::Decode)
         }
     }
 
@@ -107,7 +118,10 @@ where
                 .query_row("SELECT DATA, CRC, VERSION FROM cache WHERE KEY=?", [metadata.archive_id()], |row| try {
                     (row.get::<_, Vec<u8>>("DATA")?, row.get("CRC")?, row.get("VERSION")?)
                 })
-                .context(Missing { metadata: metadata.clone() })?;
+                .context(ArchiveMissing {
+                    index_id: metadata.index_id(),
+                    archive_id: metadata.archive_id(),
+                })?;
 
             // wut
             let crc_offset = match self.index_id() {
@@ -130,168 +144,6 @@ where
             }
         }
         Ok(())
-    }
-}
-
-#[derive(Debug)]
-pub enum IntegrityError {
-    CannotOpen {
-        source: rusqlite::Error,
-        file: PathBuf,
-        input: Arc<CachePath>,
-    },
-    Missing {
-        metadata: Metadata,
-    },
-    Crc {
-        crc: i64,
-        metadata: Metadata,
-    },
-    Version {
-        version: i64,
-        metadata: Metadata,
-    },
-    Blank {
-        metadata: Metadata,
-    },
-    Corrupted {
-        source: rusqlite::Error,
-        metadata: Metadata,
-    },
-    Other {
-        source: rusqlite::Error,
-    },
-}
-
-pub struct CannotOpen {
-    pub file: PathBuf,
-    pub input: Arc<CachePath>,
-}
-pub struct Missing {
-    pub metadata: Metadata,
-}
-pub struct Crc {
-    pub crc: i64,
-    pub metadata: Metadata,
-}
-pub struct Version {
-    pub version: i64,
-    pub metadata: Metadata,
-}
-pub struct Blank {
-    pub metadata: Metadata,
-}
-pub struct Corrupted {
-    pub metadata: Metadata,
-}
-
-struct Other;
-
-impl Display for IntegrityError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            #[cfg(not(target_arch = "wasm32"))]
-            IntegrityError::CannotOpen { source, file, input } => {
-                let path = path_absolutize::Absolutize::absolutize(file).unwrap_or(std::borrow::Cow::Borrowed(file));
-                writeln!(
-                    f,
-                    "cannot open cache: encountered {} while looking for file {}",
-                    style(source).yellow(),
-                    style(path.display()).yellow()
-                )?;
-                match &**input {
-                    CachePath::Given(path) => writeln!(
-                        f,
-                        "note: looking in this location because the path {} was given as an argument",
-                        style(path.display()).yellow()
-                    )?,
-                    CachePath::Env(path) => writeln!(
-                        f,
-                        "note: looking in this location because the path {} was retrieved from an environment variable",
-                        style(path.display()).yellow()
-                    )?,
-                    CachePath::Omitted => writeln!(f, "note: looking in the current directory because no path was given")?,
-                }
-                let path = (**input).as_ref();
-                let path = path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
-                let path = path.to_string_lossy();
-
-                writeln!(f, "note: expecting the following folder structure:")?;
-                writeln!(f, "    {path}{STRUCTURE}")?;
-            }
-            IntegrityError::Crc {
-                crc: crc1,
-                metadata:
-                    Metadata {
-                        index_id,
-                        archive_id,
-                        crc: crc2,
-                        ..
-                    },
-            } => write!(f, "Index {index_id} Archive {archive_id}: Crc does not match: {crc1} !=  {crc2}")?,
-            IntegrityError::Version {
-                version: v1,
-                metadata:
-                    Metadata {
-                        index_id,
-                        archive_id,
-                        version: v2,
-                        ..
-                    },
-            } => write!(f, "Index {index_id} Archive {archive_id}: Version does not match: {v1} !=  {v2}")?,
-            IntegrityError::Missing {
-                metadata: Metadata { index_id: 5, archive_id, .. },
-            } => write!(f, "Index 5 does not contain mapsquare ({}, {})", archive_id & 0x7F, archive_id >> 7)?,
-            IntegrityError::Missing {
-                metadata: Metadata { index_id, archive_id, .. },
-            } => writeln!(f, "Index {index_id} does not contain archive {archive_id}")?,
-            IntegrityError::Blank {
-                metadata: Metadata { index_id, archive_id, .. },
-            } => writeln!(f, "Index {index_id}'s archive {archive_id} is blank")?,
-            IntegrityError::Corrupted { source, metadata } => writeln!(f, "Error retrieving {metadata}: {source}")?,
-            IntegrityError::Other { source } => Display::fmt(source, f)?,
-        }
-
-        Ok(())
-    }
-}
-
-impl With<rusqlite::Error, IntegrityError> for Other {
-    fn bind(self, source: rusqlite::Error) -> IntegrityError {
-        let Other {} = self;
-        IntegrityError::Other { source }
-    }
-}
-
-impl With<rusqlite::Error, IntegrityError> for Corrupted {
-    fn bind(self, source: rusqlite::Error) -> IntegrityError {
-        let Corrupted { metadata } = self;
-        IntegrityError::Corrupted { source, metadata }
-    }
-}
-
-impl With<rusqlite::Error, IntegrityError> for Missing {
-    fn bind(self, source: rusqlite::Error) -> IntegrityError {
-        let Missing { metadata } = self;
-        IntegrityError::Corrupted { source, metadata }
-    }
-}
-
-impl With<rusqlite::Error, IntegrityError> for CannotOpen {
-    fn bind(self, source: rusqlite::Error) -> IntegrityError {
-        use rusqlite::Error::*;
-
-        let CannotOpen { file, input } = self;
-        match source {
-            SqliteFailure(
-                libsqlite3_sys::Error {
-                    code: libsqlite3_sys::ErrorCode::CannotOpen,
-                    ..
-                },
-                ..,
-            ) => IntegrityError::CannotOpen { source, file, input },
-            source => IntegrityError::Other { source },
-        }
     }
 }
 

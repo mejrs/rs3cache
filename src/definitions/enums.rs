@@ -8,15 +8,20 @@ use std::{
     iter,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::{buf::JString, error::Context};
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{self, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
 };
 
@@ -326,14 +331,14 @@ impl Enum {
 
 /// Save the item configs as `enums.json`. Exposed as `--dump enums`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
     let mut enums = Enum::dump_all(config)?.into_values().collect::<Vec<_>>();
     enums.sort_unstable_by_key(|loc| loc.id);
     let path = path!(config.output / "enums.json");
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
 
     let data = serde_json::to_string_pretty(&enums).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
 
     Ok(())
 }

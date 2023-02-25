@@ -7,13 +7,18 @@ use std::{
     iter,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
-use rs3cache_backend::{buf::JString, error::Context};
+use rs3cache_backend::buf::JString;
 use serde::Serialize;
 
 use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
+    cache::{
+        buf::BufExtra,
+        error::{self, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
     types::coordinate::Coordinate,
 };
@@ -308,42 +313,42 @@ pub use mappaste_fields_impl::*;
 
 /// Exports all world map pastes to `out/map_pastes.json`.
 pub fn export_pastes(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
     // btreemap has deterministic order
     let map_pastes: BTreeMap<u32, MapPastes> = MapPastes::dump_all(config)?.into_iter().collect();
 
     let path = path!(config.output / "map_pastes.json");
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
     let data = serde_json::to_string_pretty(&map_pastes).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
     Ok(())
 }
 
 /// Exports all world map zones to `out/map_zones.json`.
 pub fn export_zones(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
 
     let mut map_zones = MapZone::dump_all(config)?.into_values().collect::<Vec<_>>();
     map_zones.sort_unstable_by_key(|loc| loc.id);
     let path = path!(config.output / "map_zones.json");
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
     let data = serde_json::to_string_pretty(&map_zones).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
     Ok(())
 }
 
 /// Exports small images of world maps to `out/world_map_small`.
 pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(config.output / "world_map_small");
-    fs::create_dir_all(&folder).context(&folder)?;
+    fs::create_dir_all(&folder).with_context(|| error::Io { path: folder.clone() })?;
 
     let files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
         .archive(WorldMapType::SMALL)?
         .take_files();
     for (id, data) in files {
         let path = path!(config.output / "world_map_small" / format!("{id}.png"));
-        let mut file = File::create(&path).context(path.clone())?;
-        file.write_all(&data).context(path)?;
+        let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
+        file.write_all(&data).context(error::Io { path })?;
     }
 
     Ok(())
@@ -352,8 +357,7 @@ pub fn dump_small(config: &crate::cli::Config) -> CacheResult<()> {
 /// Exports big images of world maps to `out/world_map_big`.
 pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(config.output / "world_map_big");
-    fs::create_dir_all(&folder).context(&folder)?;
-
+    fs::create_dir_all(&folder).with_context(|| error::Io { path: folder.clone() })?;
     let files = CacheIndex::new(IndexType::WORLDMAP, config.input.clone())?
         .archive(WorldMapType::BIG)?
         .take_files();
@@ -363,8 +367,8 @@ pub fn dump_big(config: &crate::cli::Config) -> CacheResult<()> {
         let img = buffer.copy_to_bytes(size);
 
         let filename = path!(folder / format!("{id}.png"));
-        let mut file = File::create(&filename).context(&filename)?;
-        file.write_all(&img).context(filename)?;
+        let mut file = File::create(&filename).with_context(|| error::Io { path: filename.clone() })?;
+        file.write_all(&img).context(error::Io { path: filename })?;
     }
 
     Ok(())

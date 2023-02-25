@@ -4,6 +4,7 @@
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
+    fmt,
     fs::{self, File},
     io::{self, BufReader, Cursor, Read, Seek, SeekFrom, Write},
     marker::PhantomData,
@@ -12,6 +13,7 @@ use std::{
     sync::Arc,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use itertools::iproduct;
 use path_macro::path;
@@ -22,7 +24,7 @@ use crate::{
     arc::Archive,
     buf::BufExtra,
     decoder,
-    error::{CacheError, CacheResult, Context},
+    error::{self, CacheError, CacheResult},
     meta::{IndexMetadata, Metadata},
 };
 
@@ -32,7 +34,6 @@ use crate::{
 #[cfg_attr(feature = "dat", path = "index/dat.rs")]
 mod index_impl;
 
-#[cfg(any(feature = "sqlite", feature = "dat"))]
 pub use index_impl::*;
 
 mod states {
@@ -58,7 +59,7 @@ pub struct CacheIndex<S: IndexState> {
     index_id: u32,
     metadatas: IndexMetadata,
     state: S,
-    path: Arc<CachePath>,
+    input: Arc<CachePath>,
 
     #[cfg(feature = "sqlite")]
     connection: rusqlite::Connection,
@@ -78,6 +79,14 @@ pub enum CachePath {
     Given(PathBuf),
 }
 
+impl fmt::Display for CachePath {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let path = self.as_ref();
+        let path = ::path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
+        fmt::Display::fmt(&path.display(), f)
+    }
+}
+
 impl AsRef<Path> for CachePath {
     fn as_ref(&self) -> &Path {
         match self {
@@ -87,12 +96,20 @@ impl AsRef<Path> for CachePath {
     }
 }
 
-impl CachePath {
-    pub fn to_path_buf(&self) -> PathBuf {
-        match self {
-            CachePath::Omitted => PathBuf::new(),
-            CachePath::Env(p) | CachePath::Given(p) => p.to_path_buf(),
+pub struct LocationHelp<'p>(&'p CachePath);
+
+impl fmt::Display for LocationHelp<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.0 {
+            CachePath::Given(path) => writeln!(f, "looking in this location because the path {path:?} was given as an argument")?,
+            CachePath::Env(path) => writeln!(
+                f,
+                "looking in this location because the path {path:?} was retrieved from an environment variable"
+            )?,
+            CachePath::Omitted => writeln!(f, "looking in the current directory because no path was given")?,
         }
+
+        Ok(())
     }
 }
 
@@ -121,7 +138,14 @@ where
     /// Raises [`ArchiveNotFoundError`](CacheError::ArchiveNotFoundError) if `archive_id` is not in `self`.
     #[cfg(any(feature = "sqlite", feature = "dat2"))]
     pub fn archive(&self, archive_id: u32) -> CacheResult<Archive> {
-        let metadata = self.metadatas().get(&archive_id).unwrap();
+        let metadata = self
+            .metadatas()
+            .get(&archive_id)
+            .context(ArchiveMissing {
+                index_id: self.index_id,
+                archive_id,
+            })
+            .context(error::Integrity)?;
         let data = self.get_file(metadata)?;
 
         Ok(Archive::deserialize(metadata, data))
@@ -171,7 +195,7 @@ impl CacheIndex<Initial> {
             panic!("Attempted to retain missing archive id {missing_id},")
         }
         let Self {
-            path,
+            input,
             #[cfg(feature = "sqlite")]
             connection,
             #[cfg(any(feature = "dat2", feature = "dat"))]
@@ -184,7 +208,7 @@ impl CacheIndex<Initial> {
         } = self;
 
         CacheIndex {
-            path,
+            input,
             #[cfg(feature = "sqlite")]
             connection,
             #[cfg(any(feature = "dat2", feature = "dat"))]
@@ -217,7 +241,7 @@ impl IntoIterator for CacheIndex<Truncated> {
 
     fn into_iter(self) -> Self::IntoIter {
         let Self {
-            path,
+            input,
             #[cfg(feature = "sqlite")]
             connection,
             #[cfg(any(feature = "dat2", feature = "dat"))]
@@ -230,7 +254,7 @@ impl IntoIterator for CacheIndex<Truncated> {
         } = self;
 
         let index = CacheIndex {
-            path,
+            input,
             #[cfg(feature = "sqlite")]
             connection,
             #[cfg(any(feature = "dat2", feature = "dat"))]
@@ -276,3 +300,77 @@ impl Iterator for IntoIter {
 }
 
 impl ExactSizeIterator for IntoIter {}
+
+#[derive(::error::Error)]
+pub enum IntegrityError {
+    #[error = "cannot open cache"]
+    #[help = "expecting the following folder structure: \n   {input}{STRUCTURE}"]
+    #[help = "{LocationHelp(input)}"]
+    CannotOpen {
+        #[cfg(feature = "sqlite")]
+        #[source]
+        source: rusqlite::Error,
+        file: PathBuf,
+        input: Arc<CachePath>,
+    },
+    #[error = "Index {index_id} does not contain archive {archive_id}"]
+    ArchiveMissing { index_id: u32, archive_id: u32 },
+    #[error = "Index {index_id} does not contain archive {name}"]
+    ArchiveMissingNamed { index_id: u32, name: String },
+    #[error = "Index {index_id}, archive {archive_id} does not contain file {file} "]
+    FileMissing { index_id: u32, archive_id: u32, file: u32 },
+    #[error = "Index {index_id}, archive {archive_id} does not contain file {name} "]
+    FileMissingNamed { index_id: u32, archive_id: u32, name: String },
+    #[cfg(feature = "dat2")]
+    #[error = "Mapsquare ({i}, {i}) has no xtea"]
+    XteaMissing { i: u32, j: u32 },
+    #[error = "Index {metadata.index_id} Archive {metadata.archive_id}: Crc does not match: {crc} !=  {metadata.crc}"]
+    Crc { crc: i64, metadata: Metadata },
+    #[error = "Index {metadata.index_id} Archive {metadata.archive_id}: Version does not match: {version} !=  {metadata.version}"]
+    Version { version: i64, metadata: Metadata },
+    #[error = "Index {metadata.index_id}'s archive {metadata.archive_id} is blank"]
+    Blank { metadata: Metadata },
+    #[error = "Error retrieving {metadata}"]
+    Corrupted {
+        #[cfg(feature = "sqlite")]
+        #[source]
+        source: rusqlite::Error,
+        metadata: Metadata,
+    },
+    #[error = "Something went wrong"]
+    Other {
+        #[cfg(feature = "sqlite")]
+        #[source]
+        source: rusqlite::Error,
+    },
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub const STRUCTURE: &str = if cfg!(feature = "sqlite") {
+    "/
+        js5-1.JCACHE
+        js5-2.JCACHE
+        ...
+        js5-61.JCACHE"
+} else if cfg!(feature = "dat2") {
+    "/
+        cache /
+            main_file_cache.dat2
+            main_file_cache.idx0
+            main_file_cache.idx1
+            ...
+            main_file_cache.idx21
+            main_file_cache.idx255
+        xteas.json OR keys.json"
+} else if cfg!(feature = "dat") {
+    "/
+        cache /
+            main_file_cache.dat
+            main_file_cache.idx0
+            main_file_cache.idx1
+            main_file_cache.idx2
+            main_file_cache.idx3
+            main_file_cache.idx4"
+} else {
+    unimplemented!()
+};

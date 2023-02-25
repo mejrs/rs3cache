@@ -4,19 +4,20 @@ use std::{
     iter,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
-use rs3cache_backend::{
-    buf::{BufExtra, ReadError},
-    error::Context,
-};
+use rs3cache_backend::buf::{BufExtra, ReadError};
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use {rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
 
 use crate::{
-    cache::{error::CacheResult, index::CacheIndex},
+    cache::{
+        error::{self, CacheResult},
+        index::CacheIndex,
+    },
     definitions::indextype::IndexType,
 };
 
@@ -26,8 +27,8 @@ pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
 /// Saves an image of every sprite to disk.
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
-    let folder = path!(config.output / "sprites");
-    std::fs::create_dir_all(&folder).context(folder)?;
+    let path = path!(config.output / "sprites");
+    std::fs::create_dir_all(&path).context(error::Io { path })?;
 
     let index = CacheIndex::new(IndexType::SPRITES, config.input.clone())?;
 
@@ -134,8 +135,8 @@ fn make_image(index_entry: &IndexEntry, entry: &Entry, data: Bytes) -> Sprite {
 pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
     use rs3cache_backend::hash::hash_archive;
 
-    let folder = path!(config.output / "sprites");
-    std::fs::create_dir_all(&folder).context(folder)?;
+    let path = path!(config.output / "sprites");
+    std::fs::create_dir_all(&path).context(error::Io { path })?;
 
     let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
@@ -164,8 +165,8 @@ pub fn save_all(config: &crate::cli::Config) -> CacheResult<()> {
 pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTreeMap<(u32, u32), Sprite>> {
     use rs3cache_backend::hash::hash_archive;
 
-    let folder = path!(config.output / "sprites");
-    std::fs::create_dir_all(&folder).context(folder)?;
+    let path = path!(config.output / "sprites");
+    std::fs::create_dir_all(&path).context(error::Io { path })?;
 
     let index = CacheIndex::new(0, config.input.clone())?;
     let mut files = index.archive(4)?.take_files_named();
@@ -231,7 +232,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
 pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
     let mut buffer = Cursor::new(buffer);
 
-    buffer.seek(SeekFrom::End(-2)).map_err(|_| ReadError::eof())?;
+    buffer.seek(SeekFrom::End(-2)).map_err(|_| ReadError::eof()).context(error::Read)?;
 
     let data = buffer.get_u16();
     let format = data >> 15;
@@ -239,7 +240,10 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
 
     let imgs = match format {
         0 => {
-            buffer.seek(SeekFrom::End(-7 - (count as i64) * 8)).map_err(|_| ReadError::eof())?;
+            buffer
+                .seek(SeekFrom::End(-7 - (count as i64) * 8))
+                .map_err(|_| ReadError::eof())
+                .context(error::Read)?;
 
             let _big_width = buffer.get_u16();
             let _big_height = buffer.get_u16();
@@ -252,11 +256,11 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
 
             let pos = -7 - (count as i64) * 8 - (palette_count as i64) * 3;
 
-            buffer.seek(SeekFrom::End(pos)).map_err(|_| ReadError::eof())?;
+            buffer.seek(SeekFrom::End(pos)).map_err(|_| ReadError::eof()).context(error::Read)?;
 
             let palette = iter::repeat_with(|| buffer.get_rgb()).take(palette_count).collect::<Vec<_>>();
 
-            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof())?;
+            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof()).context(error::Read)?;
 
             izip!(0..count, widths, heights)
                 .filter_map(|(index, width, height)| {
@@ -301,7 +305,7 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
                 .collect::<BTreeMap<_, _>>()
         }
         1 => {
-            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof())?;
+            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof()).context(error::Read)?;
             let ty = buffer.get_u8();
             assert_eq!(ty, 0, "Unknown image type.");
 
@@ -349,7 +353,7 @@ mod sprite_tests {
             let config = crate::cli::Config::env();
 
             let archive = CacheIndex::new(IndexType::SPRITES, config.input)?.archive(id)?;
-            let file = archive.file(&0)?;
+            let file = archive.file(&0).unwrap();
             assert!(!file.is_empty(), "{file:?}");
             let mut images = deserialize(file).unwrap();
             Ok(images.remove(&(frame as usize)).unwrap())

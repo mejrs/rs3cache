@@ -10,6 +10,7 @@
 
 use std::collections::{BTreeMap, HashSet};
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use itertools::izip;
 #[cfg(feature = "pyo3")]
@@ -17,12 +18,11 @@ use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes};
 
 use crate::{
     buf::BufExtra,
-    error::{CacheError, CacheResult, Context},
+    error::{self, CacheError, CacheResult},
     meta::Metadata,
 };
 
 /// A collection of files.
-
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[derive(Clone, Default)]
 pub struct Archive {
@@ -134,8 +134,8 @@ impl Archive {
 
         assert_eq!(metadata.index_id(), 0, "called deserialize_jag on data not from index 0");
 
-        let decompressed_len = buffer.try_get_uint(3)?;
-        let compressed_len = buffer.try_get_uint(3)?;
+        let decompressed_len = buffer.try_get_uint(3).context(error::Read)?;
+        let compressed_len = buffer.try_get_uint(3).context(error::Read)?;
 
         let extracted = if decompressed_len != compressed_len {
             let mut compressed = bytes::BytesMut::from(b"BZh1".as_slice());
@@ -163,9 +163,9 @@ impl Archive {
 
         for i in 0..files_length {
             let header = JagHeader {
-                filename: headers.try_get_i32()?,
-                decompressed_len: headers.try_get_uint(3)? as u32,
-                compressed_len: headers.try_get_uint(3)? as u32,
+                filename: headers.try_get_i32().context(error::Read)?,
+                decompressed_len: headers.try_get_uint(3).context(error::Read)? as u32,
+                compressed_len: headers.try_get_uint(3).context(error::Read)? as u32,
             };
 
             let decompressed = if extracted {
@@ -203,7 +203,12 @@ impl Archive {
 
         self.files_named
             .get(&hash)
-            .ok_or_else(|| CacheError::file_missing(self.index_id(), self.archive_id(), hash as u32))
+            .with_context(|| crate::index::FileMissingNamed {
+                index_id: self.index_id,
+                archive_id: self.archive_id,
+                name: name.into(),
+            })
+            .context(error::Integrity)
             .cloned()
     }
 

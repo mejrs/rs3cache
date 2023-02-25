@@ -1,12 +1,12 @@
 use core::ops::RangeInclusive;
 use std::collections::{BTreeMap, HashMap};
 
+use ::error::Context;
 use itertools::iproduct;
-use rs3cache_backend::error::CacheError;
 
 use crate::{
     cache::{
-        error::CacheResult,
+        error::{self, CacheResult},
         index::{self, CacheIndex},
     },
     definitions::{
@@ -52,7 +52,11 @@ impl MapSquares {
         let land = self
             .mapping
             .get(&("l", i, j))
-            .ok_or_else(|| CacheError::archive_missing(i as u32, j as u32))?;
+            .with_context(|| index::ArchiveMissingNamed {
+                index_id: 5,
+                name: format!("l{i}_{j}"),
+            })
+            .context(error::Integrity)?;
         let map = self.mapping.get(&("m", i, j)).unwrap();
         let env = self.mapping.get(&("e", i, j)).copied();
         let xtea = self.index.xteas().as_ref().unwrap().get(&(((i as u32) << 8) | j as u32));

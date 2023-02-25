@@ -2,10 +2,11 @@
 
 use std::{array, backtrace::Backtrace, collections::HashMap, fs::File, io::BufReader, path::Path};
 
+use ::error::Context;
 use serde::{Deserialize, Serialize};
 use serde_json;
 
-use crate::error::{CacheError, CacheResult, Context};
+use crate::error::{self, CacheError, CacheResult};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Xtea {
@@ -16,10 +17,10 @@ pub struct Xtea {
 impl Xtea {
     pub fn load(path: impl AsRef<Path>) -> CacheResult<HashMap<u32, Self>> {
         let path = path.as_ref();
-        let file = File::open(path).context(path)?;
+        let file = File::open(path).with_context(|| error::Io { path: path.into() })?;
         let reader = BufReader::new(file);
 
-        let xteas: Vec<Self> = serde_json::from_reader(reader).map_err(|cause| CacheError::xtea_load_error(cause, path.into()))?;
+        let xteas: Vec<Self> = serde_json::from_reader(reader).with_context(|| error::XteaLoad { path: path.into() })?;
         let map = xteas.into_iter().map(|xtea| (xtea.mapsquare, xtea)).collect();
         Ok(map)
     }

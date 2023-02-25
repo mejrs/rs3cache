@@ -4,6 +4,7 @@ use std::{
     io::Write,
 };
 
+use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
@@ -11,7 +12,7 @@ use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use rs3cache_backend::{
     buf::{BufExtra, JString, ReadError},
-    error::{CacheResult, Context},
+    error::{self, CacheResult},
     index::CacheIndex,
 };
 use serde::Serialize;
@@ -178,7 +179,8 @@ impl LocationConfig {
                     .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
             })
             .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
-            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()?;
+            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
+            .context(error::Read)?;
         Ok(locations)
     }
 
@@ -191,7 +193,8 @@ impl LocationConfig {
             .take_files()
             .into_iter()
             .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
-            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()?;
+            .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
+            .context(error::Read)?;
         Ok(locations)
     }
 
@@ -208,9 +211,9 @@ impl LocationConfig {
 
         let len = offset_data.try_get_u16().unwrap();
         for id in 0..len {
-            let piece_len = offset_data.try_get_u16()?;
+            let piece_len = offset_data.try_get_u16().context(error::Read)?;
             let data = file.split_to(piece_len as usize);
-            let loc = LocationConfig::deserialize(id as u32, data)?;
+            let loc = LocationConfig::deserialize(id as u32, data).context(error::Read)?;
             locations.insert(id as u32, loc);
         }
 
@@ -867,12 +870,12 @@ use location_config_fields::*;
 
 /// Save the location configs as `location_configs.json`. Exposed as `--dump location_configs`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io { path: config.output.clone() })?;
     let loc_configs = LocationConfig::dump_all(config)?.into_values().collect::<Vec<_>>();
     let path = path!(config.output / "location_configs.json");
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
     let data = serde_json::to_string_pretty(&loc_configs).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io { path })?;
 
     Ok(())
 }
@@ -880,14 +883,14 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 ///Save the location configs as individual `json` files.
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {
     let folder = path!(&config.output / "location_configs");
-    fs::create_dir_all(&folder).context(&folder)?;
+    fs::create_dir_all(&folder).with_context(|| error::Io { path: folder.clone() })?;
 
     let configs = LocationConfig::dump_all(config)?;
     configs.into_iter().par_bridge().try_for_each(|(id, location_config)| {
         let path = path!(&folder / format!("{id}.json"));
-        let mut file = File::create(&path).context(&path)?;
+        let mut file = File::create(&path).with_context(|| error::Io { path: path.clone() })?;
         let data = serde_json::to_string_pretty(&location_config).unwrap();
-        file.write_all(data.as_bytes()).context(path)?;
+        file.write_all(data.as_bytes()).context(error::Io { path })?;
         Ok(())
     })
 }

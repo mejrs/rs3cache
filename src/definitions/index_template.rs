@@ -13,7 +13,7 @@ use serde::Serialize;
 
 use bytes::{Buf, Bytes};
 use crate::{
-    cache::{buf::{BufExtra,Buffer}, error::CacheResult, index::CacheIndex, indextype::IndexType},
+    cache::{buf::{BufExtra,Buffer}, error::{ self, CacheResult}, index::CacheIndex, indextype::IndexType},
     structures::paramtable::ParamTable,
 };
 
@@ -90,15 +90,15 @@ impl <Name> {
 
 /// Save the <Name> configs as `<Name>>.json`. Exposed as `--dump <Name>`.
 pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
-    fs::create_dir_all(&config.output).context(&config.output)?;
+    fs::create_dir_all(&config.output).with_context(|| error::Io {file: config.output.clone()})?;
     let mut <Name>_configs = <Name>::dump_all(config)?.into_values().collect::<Vec<_>>();
     <Name>_configs.sort_unstable_by_key(|loc| loc.id);
 
     let path = path!(config.output / "<Name>_configs.json");
 
-    let mut file = File::create(&path).context(path.clone())?;
+    let mut file = File::create(&path).with_context(|| error::Io{ file: path.clone()})?;
     let data = serde_json::to_string_pretty(&<Name>_configs).unwrap();
-    file.write_all(data.as_bytes()).context(path)?;
+    file.write_all(data.as_bytes()).context(error::Io {file: path})?;
 
     Ok(())
 }
