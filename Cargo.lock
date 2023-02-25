@@ -352,7 +352,6 @@ checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 [[package]]
 name = "error"
 version = "0.0.0"
-source = "git+https://github.com/mejrs/error?rev=1be54f8d7ce8e5eda50abe926e76c335dc381ea2#1be54f8d7ce8e5eda50abe926e76c335dc381ea2"
 dependencies = [
  "error_derive",
 ]
@@ -360,7 +359,6 @@ dependencies = [
 [[package]]
 name = "error_derive"
 version = "0.0.0"
-source = "git+https://github.com/mejrs/error?rev=1be54f8d7ce8e5eda50abe926e76c335dc381ea2#1be54f8d7ce8e5eda50abe926e76c335dc381ea2"
 dependencies = [
  "proc-macro2",
  "quote",

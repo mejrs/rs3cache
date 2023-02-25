@@ -82,7 +82,10 @@ pub enum CachePath {
 impl fmt::Display for CachePath {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let path = self.as_ref();
+
+        #[cfg(not(target_arch = "wasm32"))]
         let path = ::path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
+
         fmt::Display::fmt(&path.display(), f)
     }
 }
@@ -345,7 +348,6 @@ pub enum IntegrityError {
     },
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 pub const STRUCTURE: &str = if cfg!(feature = "sqlite") {
     "/
         js5-1.JCACHE
