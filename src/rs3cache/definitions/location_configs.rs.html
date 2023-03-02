@@ -983,6 +983,7 @@
 <a href="#983" id="983">983</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
+    fmt::{<span class="self">self</span>, Display, Formatter},
     fs::{<span class="self">self</span>, File},
     io::Write,
 };
@@ -994,7 +995,7 @@
 </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>rayon::iter::{ParallelBridge, ParallelIterator};
 <span class="kw">use </span>rs3cache_backend::{
-    buf::{BufExtra, JString, ReadError},
+    buf::{BufExtra, JString, NotExhausted, OpcodeNotImplemented, ReadError, WithInfo},
     error::{<span class="self">self</span>, CacheResult},
     index::CacheIndex,
 };
@@ -1161,7 +1162,7 @@
                     .into_iter()
                     .map(<span class="kw">move </span>|(file_id, file)| (archive_id &lt;&lt; <span class="number">8 </span>| file_id, file))
             })
-            .map(|(id, file)| <span class="self">Self</span>::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
+            .map(|(id, file)| <span class="self">Self</span>::deserialize(id, file).map(|item| (id, item)))
             .collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;, ReadError&gt;&gt;()
             .context(error::Read)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(locations)
@@ -1175,7 +1176,7 @@
             </span>.archive(ConfigType::LOC_CONFIG)<span class="question-mark">?
             </span>.take_files()
             .into_iter()
-            .map(|(id, file)| <span class="self">Self</span>::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
+            .map(|(id, file)| <span class="self">Self</span>::deserialize(id, file).map(|item| (id, item)))
             .collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeMap&lt;u32, <span class="self">Self</span>&gt;, ReadError&gt;&gt;()
             .context(error::Read)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(locations)
@@ -1212,24 +1213,18 @@
         <span class="kw">loop </span>{
             <span class="kw">let </span>opcode = buffer.try_get_u8()<span class="question-mark">?</span>;
 
-            <span class="attr">#[cfg(debug_assertions)]
-            </span>opcodes.push(opcode);
-
-            <span class="comment">// FIXME: figure out whether I even want this
-            // return Err(ReadError::duplicate_opcode(opcodes, opcode));
-
-            </span><span class="kw">let </span>read: <span class="prelude-ty">Result</span>&lt;(), ReadError&gt; = <span class="kw">try </span>{
+            <span class="kw">let </span>read: <span class="prelude-ty">Result</span>&lt;(), ReadError&gt; = <span class="kw">try </span>{
                 <span class="kw">match </span>opcode {
                     <span class="number">0 </span>=&gt; {
                         <span class="kw">if </span>buffer.has_remaining() {
-                            <span class="prelude-val">Err</span>(ReadError::not_exhausted())<span class="question-mark">?</span>;
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(NotExhausted::new(buffer.remaining()));
                         } <span class="kw">else </span>{
                             <span class="kw">break </span><span class="prelude-val">Ok</span>(loc);
                         }
                     }
                     <span class="number">1 </span>=&gt; loc.models = <span class="prelude-val">Some</span>(Models::deserialize(<span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>),
                     <span class="number">2 </span>=&gt; loc.name = <span class="prelude-val">Some</span>(buffer.try_get_string()<span class="question-mark">?</span>),
-                    <span class="comment">// Actually, this field is still in use for a little while after thw switch to dat2.
+                    <span class="comment">// Actually, this field is still in use for a little while after the switch to dat2.
                     </span><span class="attr">#[cfg(feature = <span class="string">&quot;legacy&quot;</span>)]
                     </span><span class="number">3 </span>=&gt; loc.description = <span class="prelude-val">Some</span>(buffer.try_get_string()<span class="question-mark">?</span>),
                     <span class="attr">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
@@ -1373,27 +1368,32 @@
                         <span class="kw">let </span>count = buffer.try_get_unsigned_smart()<span class="question-mark">? </span><span class="kw">as </span>usize;
                         <span class="kw">let </span>out = std::iter::repeat_with(|| Unknown204::deserialize(<span class="kw-2">&amp;mut </span>buffer))
                             .take(count)
-                            .collect::&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, ReadError&gt;&gt;()<span class="question-mark">?</span>;
+                            .collect::&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>;
 
                         loc.unknown_204 = <span class="prelude-val">Some</span>(out)
                     }
                     <span class="number">249 </span>=&gt; loc.params = <span class="prelude-val">Some</span>(ParamTable::deserialize(<span class="kw-2">&amp;mut </span>buffer)),
-                    missing =&gt; <span class="prelude-val">Err</span>(ReadError::opcode_not_implemented(missing))<span class="question-mark">?</span>,
+                    opcode =&gt; <span class="kw">do </span>yeet OpcodeNotImplemented::new(opcode),
                 }
             };
-            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = read {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(e.add_decode_context(
+            <span class="kw">match </span>read {
+                <span class="prelude-val">Ok</span>(()) =&gt; {
                     <span class="attr">#[cfg(debug_assertions)]
-                    </span>opcodes,
-                    buffer,
-                    loc.to_string(),
-                ));
-            };
+                    </span>opcodes.push(opcode);
+                }
+                <span class="prelude-val">Err</span>(e) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(e).map_err(Box::new).context(WithInfo {
+                        <span class="attr">#[cfg(debug_assertions)]
+                        </span>opcodes,
+                        buffer,
+                        <span class="attr">#[cfg(debug_assertions)]
+                        </span>thing: loc.to_string(),
+                    })
+                }
+            }
         }
     }
 }
-
-<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display, Formatter};
 
 <span class="kw">impl </span>Display <span class="kw">for </span>LocationConfig {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {

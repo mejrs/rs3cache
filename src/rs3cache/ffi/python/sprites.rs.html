@@ -186,14 +186,18 @@
 <a href="#186" id="186">186</a>
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
+<span class="kw">use </span>::error::Context;
 <span class="kw">use </span>pyo3::{
     exceptions::{PyKeyError, PyReferenceError},
     prelude::<span class="kw-2">*</span>,
     types::PyBytes,
 };
-<span class="kw">use </span>rs3cache_backend::index::CachePath;
+<span class="kw">use </span>rs3cache_backend::{error::Read, index::CachePath};
 
 <span class="kw">use crate</span>::{
     cache::{
@@ -277,23 +281,25 @@
     <span class="kw">fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, py: Python, id: u32) -&gt; PyResult&lt;PySprite&gt; {
         <span class="kw">let </span>archive = <span class="self">self</span>.archive(id)<span class="question-mark">?</span>;
         <span class="kw">let </span>sprite = sprites::deserialize(archive.file(<span class="kw-2">&amp;</span><span class="number">0</span>).unwrap());
-        <span class="kw">let </span>sprite = sprite.map(|frames| PySprite {
-            archive_id: archive.archive_id(),
-            frames: frames
-                .into_iter()
-                .map(|(id, im)| {
-                    (
-                        id,
-                        PyFrame {
-                            constructor: <span class="self">self</span>.constructor.clone_ref(py),
+        <span class="kw">let </span>ret = sprite
+            .map(|frames| PySprite {
+                archive_id: archive.archive_id(),
+                frames: frames
+                    .into_iter()
+                    .map(|(id, im)| {
+                        (
                             id,
-                            im,
-                        },
-                    )
-                })
-                .collect(),
-        })<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(sprite)
+                            PyFrame {
+                                constructor: <span class="self">self</span>.constructor.clone_ref(py),
+                                id,
+                                im,
+                            },
+                        )
+                    })
+                    .collect(),
+            })
+            .context(Read)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(ret)
     }
 
     <span class="kw">fn </span>__getitem__(<span class="kw-2">&amp;</span><span class="self">self</span>, py: Python, id: u32) -&gt; PyResult&lt;PySprite&gt; {

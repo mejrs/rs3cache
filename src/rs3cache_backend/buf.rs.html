@@ -376,110 +376,6 @@
 <a href="#376" id="376">376</a>
 <a href="#377" id="377">377</a>
 <a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
-<a href="#380" id="380">380</a>
-<a href="#381" id="381">381</a>
-<a href="#382" id="382">382</a>
-<a href="#383" id="383">383</a>
-<a href="#384" id="384">384</a>
-<a href="#385" id="385">385</a>
-<a href="#386" id="386">386</a>
-<a href="#387" id="387">387</a>
-<a href="#388" id="388">388</a>
-<a href="#389" id="389">389</a>
-<a href="#390" id="390">390</a>
-<a href="#391" id="391">391</a>
-<a href="#392" id="392">392</a>
-<a href="#393" id="393">393</a>
-<a href="#394" id="394">394</a>
-<a href="#395" id="395">395</a>
-<a href="#396" id="396">396</a>
-<a href="#397" id="397">397</a>
-<a href="#398" id="398">398</a>
-<a href="#399" id="399">399</a>
-<a href="#400" id="400">400</a>
-<a href="#401" id="401">401</a>
-<a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a>
-<a href="#404" id="404">404</a>
-<a href="#405" id="405">405</a>
-<a href="#406" id="406">406</a>
-<a href="#407" id="407">407</a>
-<a href="#408" id="408">408</a>
-<a href="#409" id="409">409</a>
-<a href="#410" id="410">410</a>
-<a href="#411" id="411">411</a>
-<a href="#412" id="412">412</a>
-<a href="#413" id="413">413</a>
-<a href="#414" id="414">414</a>
-<a href="#415" id="415">415</a>
-<a href="#416" id="416">416</a>
-<a href="#417" id="417">417</a>
-<a href="#418" id="418">418</a>
-<a href="#419" id="419">419</a>
-<a href="#420" id="420">420</a>
-<a href="#421" id="421">421</a>
-<a href="#422" id="422">422</a>
-<a href="#423" id="423">423</a>
-<a href="#424" id="424">424</a>
-<a href="#425" id="425">425</a>
-<a href="#426" id="426">426</a>
-<a href="#427" id="427">427</a>
-<a href="#428" id="428">428</a>
-<a href="#429" id="429">429</a>
-<a href="#430" id="430">430</a>
-<a href="#431" id="431">431</a>
-<a href="#432" id="432">432</a>
-<a href="#433" id="433">433</a>
-<a href="#434" id="434">434</a>
-<a href="#435" id="435">435</a>
-<a href="#436" id="436">436</a>
-<a href="#437" id="437">437</a>
-<a href="#438" id="438">438</a>
-<a href="#439" id="439">439</a>
-<a href="#440" id="440">440</a>
-<a href="#441" id="441">441</a>
-<a href="#442" id="442">442</a>
-<a href="#443" id="443">443</a>
-<a href="#444" id="444">444</a>
-<a href="#445" id="445">445</a>
-<a href="#446" id="446">446</a>
-<a href="#447" id="447">447</a>
-<a href="#448" id="448">448</a>
-<a href="#449" id="449">449</a>
-<a href="#450" id="450">450</a>
-<a href="#451" id="451">451</a>
-<a href="#452" id="452">452</a>
-<a href="#453" id="453">453</a>
-<a href="#454" id="454">454</a>
-<a href="#455" id="455">455</a>
-<a href="#456" id="456">456</a>
-<a href="#457" id="457">457</a>
-<a href="#458" id="458">458</a>
-<a href="#459" id="459">459</a>
-<a href="#460" id="460">460</a>
-<a href="#461" id="461">461</a>
-<a href="#462" id="462">462</a>
-<a href="#463" id="463">463</a>
-<a href="#464" id="464">464</a>
-<a href="#465" id="465">465</a>
-<a href="#466" id="466">466</a>
-<a href="#467" id="467">467</a>
-<a href="#468" id="468">468</a>
-<a href="#469" id="469">469</a>
-<a href="#470" id="470">470</a>
-<a href="#471" id="471">471</a>
-<a href="#472" id="472">472</a>
-<a href="#473" id="473">473</a>
-<a href="#474" id="474">474</a>
-<a href="#475" id="475">475</a>
-<a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
-<a href="#479" id="479">479</a>
-<a href="#480" id="480">480</a>
-<a href="#481" id="481">481</a>
-<a href="#482" id="482">482</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrapper around [`Cursor`](std::io::Cursor).
 //!
 //! This module provides various reads used to decode the cache data
@@ -496,149 +392,54 @@
 <span class="kw">use </span>serde::{Serialize, Serializer};
 
 <span class="kw">use </span><span class="kw">crate</span>::error::CacheError;
-<span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>ReadError {
-    location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
-    kind: Kind,
-}
-<span class="kw">impl </span>ReadError {
-    <span class="attr">#[track_caller]
-    </span><span class="kw">pub fn </span>eof() -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::Eof),
-        }
-    }
-    <span class="attr">#[track_caller]
-    </span><span class="kw">pub fn </span>not_nul_terminated() -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::NotNulTerminated),
-        }
-    }
-    <span class="attr">#[track_caller]
-    </span><span class="kw">pub fn </span>opcode_not_implemented(opcode: u8) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::OpcodeNotImplemented(opcode)),
-        }
-    }
 
-    <span class="attr">#[track_caller]
-    </span><span class="kw">pub fn </span>not_exhausted() -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::NotExhausted),
-        }
-    }
-
-    <span class="attr">#[cfg(debug_assertions)]
-    #[track_caller]
-    </span><span class="kw">pub fn </span>duplicate_opcode(opcodes: Vec&lt;u8&gt;, opcode: u8) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::DuplicateOpcode(opcodes, opcode)),
-        }
-    }
-
-    <span class="attr">#[track_caller]
-    </span><span class="kw">pub fn </span>add_context(<span class="self">self</span>, ctx: String) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::Bubbled(ctx, Box::new(<span class="self">self</span>)),
-        }
-    }
-
-    <span class="attr">#[track_caller]
-    </span><span class="kw">pub fn </span>add_context_id(<span class="self">self</span>, ctx: u32) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: Location::caller(),
-            kind: Kind::ContextId(ctx, Box::new(<span class="self">self</span>)),
-        }
-    }
-
-    <span class="kw">pub fn </span>add_decode_context(<span class="self">self</span>, <span class="attr">#[cfg(debug_assertions)] </span>opcodes: Vec&lt;u8&gt;, remainder: Bytes, parsed: String) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            location: <span class="self">self</span>.location,
-            kind: Kind::DecodeContext(
-                <span class="attr">#[cfg(debug_assertions)]
-                </span>opcodes,
-                remainder,
-                parsed,
-                Box::new(<span class="self">self</span>),
-            ),
-        }
-    }
-}
-
-<span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">enum </span>Kind {
-    Error(ReadErrorKind),
-    ContextId(u32, Box&lt;ReadError&gt;),
-    Bubbled(String, Box&lt;ReadError&gt;),
-    DecodeContext(<span class="attr">#[cfg(debug_assertions)] </span>Vec&lt;u8&gt;, Bytes, String, Box&lt;ReadError&gt;),
-}
-
-<span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub enum </span>ReadErrorKind {
-    Eof,
-    NotNulTerminated,
-    NotExhausted,
-    OpcodeNotImplemented(u8),
-    <span class="attr">#[cfg(debug_assertions)]
-    </span>DuplicateOpcode(Vec&lt;u8&gt;, u8),
-}
-
-<span class="kw">impl </span>Display <span class="kw">for </span>ReadError {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="kw">use </span>Kind::<span class="kw-2">*</span>;
-        <span class="kw">use </span>ReadErrorKind::<span class="kw-2">*</span>;
-
-        <span class="kw">let </span>location = <span class="self">self</span>.location;
-
-        <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.kind {
-            Error(Eof) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Unexpected end of file ({location})&quot;</span>)<span class="question-mark">?</span>,
-            Error(NotNulTerminated) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Buffer did not contain nul terminator&quot;</span>)<span class="question-mark">?</span>,
-            Error(OpcodeNotImplemented(opcode)) =&gt; {
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;Read opcode {opcode}, but decoding opcode {opcode} is not implemented. ({location})&quot;</span>)<span class="question-mark">?
-            </span>}
-            Error(NotExhausted) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Reached terminating opcode but the buffer was not exhausted ({location})&quot;</span>)<span class="question-mark">?</span>,
-            <span class="attr">#[cfg(debug_assertions)]
-            </span>Error(DuplicateOpcode(<span class="kw">_</span>, opcode)) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Read opcode {opcode}, but opcode {opcode} was already decoded. ({location})&quot;</span>)<span class="question-mark">?</span>,
-            ContextId(id, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Could not decode id {id} ({location})&quot;</span>)<span class="question-mark">?</span>,
-            Bubbled(<span class="kw-2">ref </span>ctx, <span class="kw">_</span>) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;Could not decode {ctx}&quot;</span>)<span class="question-mark">?</span>,
-            <span class="attr">#[cfg(debug_assertions)]
-            </span>DecodeContext(opcodes, remainder, parsed, src) =&gt; {
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: The unread remainder of the buffer consists of {remainder:?}&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: The opcodes read were {opcodes:?}&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
-            }
-            <span class="attr">#[cfg(not(debug_assertions))]
-            </span>DecodeContext(remainder, parsed, src) =&gt; {
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;{src}&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: The unread remainder of the buffer consists of {:?}&quot;</span>, remainder)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;Note: Managed to read up to:&quot;</span>)<span class="question-mark">?</span>;
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;{parsed}&quot;</span>)<span class="question-mark">?</span>;
-            }
-        };
-
-        <span class="prelude-val">Ok</span>(())
-    }
-}
-
-<span class="kw">impl </span>std::error::Error <span class="kw">for </span>ReadError {
-    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">&#39;static</span>)&gt; {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            Kind::ContextId(<span class="kw">_</span>, <span class="kw-2">ref </span>src) =&gt; <span class="prelude-val">Some</span>(src),
-            Kind::Bubbled(<span class="kw">_</span>, <span class="kw-2">ref </span>src) =&gt; <span class="prelude-val">Some</span>(src),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }
-    }
+<span class="attr">#[derive(::error::Error)]
+</span><span class="kw">pub enum </span>ReadError {
+    <span class="attr">#[error = <span class="string">&quot;reached the end of the buffer unexpectedly; expected at least {expected} more bytes but only {found} were available&quot;</span>]
+    </span>Eof {
+        <span class="attr">#[location]
+        </span>location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
+        expected: usize,
+        found: usize,
+    },
+    <span class="attr">#[error = <span class="string">&quot;the buffer did not contain a {terminator} terminator&quot;</span>]
+    </span>NotNulTerminated {
+        <span class="attr">#[location]
+        </span>location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
+        terminator: u8,
+    },
+    <span class="attr">#[error = <span class="string">&quot;reached the end of the buffer unexpectedly&quot;</span>]
+    </span>NotExhausted {
+        <span class="attr">#[location]
+        </span>location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
+        remainder: usize,
+    },
+    <span class="attr">#[error = <span class="string">&quot;opcode {opcode} is not implemented&quot;</span>]
+    </span>OpcodeNotImplemented {
+        opcode: u8,
+        <span class="attr">#[location]
+        </span>location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
+    },
+    <span class="attr">#[error = <span class="string">&quot;could not parse buffer&quot;</span>]
+    #[cfg_attr(debug_assertions, help = <span class="string">&quot;managed to read up to {thing}&quot;</span>)]
+    #[cfg_attr(debug_assertions, help = <span class="string">&quot;managed to decode opcodes {opcodes:?}&quot;</span>)]
+    #[help = <span class="string">&quot;the remainder of the buffer is {buffer:?}&quot;</span>]
+    </span>WithInfo {
+        <span class="attr">#[source]
+        </span>source: Box&lt;ReadError&gt;,
+        <span class="attr">#[cfg(debug_assertions)]
+        </span>opcodes: Vec&lt;u8&gt;,
+        buffer: Bytes,
+        <span class="attr">#[cfg(debug_assertions)]
+        </span>thing: String,
+    },
+    <span class="attr">#[error = <span class="string">&quot;reached the end of the file unexpectedly&quot;</span>]
+    </span>FileSeek {
+        <span class="attr">#[source]
+        </span>source: std::io::Error,
+        <span class="attr">#[location]
+        </span>location: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Location&lt;<span class="lifetime">&#39;static</span>&gt;,
+    },
 }
 
 <span class="kw">pub trait </span>BufExtra: Buf + Sized + Clone {
@@ -648,7 +449,7 @@
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">1 </span>{
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_u8())
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::eof())
+            <span class="prelude-val">Err</span>(Eof::new(<span class="number">1</span>, <span class="self">self</span>.remaining()))
         }
     }
     <span class="attr">#[track_caller]
@@ -657,7 +458,7 @@
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">1 </span>{
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_i8())
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::eof())
+            <span class="prelude-val">Err</span>(Eof::new(<span class="number">1</span>, <span class="self">self</span>.remaining()))
         }
     }
     <span class="attr">#[track_caller]
@@ -666,7 +467,7 @@
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">2 </span>{
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_u16())
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::eof())
+            <span class="prelude-val">Err</span>(Eof::new(<span class="number">2</span>, <span class="self">self</span>.remaining()))
         }
     }
 
@@ -676,7 +477,7 @@
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">4 </span>{
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_i32())
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::eof())
+            <span class="prelude-val">Err</span>(Eof::new(<span class="number">4</span>, <span class="self">self</span>.remaining()))
         }
     }
     <span class="attr">#[track_caller]
@@ -685,7 +486,7 @@
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= <span class="number">4 </span>{
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_u32())
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::eof())
+            <span class="prelude-val">Err</span>(Eof::new(<span class="number">4</span>, <span class="self">self</span>.remaining()))
         }
     }
 
@@ -695,23 +496,21 @@
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= nbytes {
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_uint(nbytes))
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::eof())
+            <span class="prelude-val">Err</span>(Eof::new(nbytes, <span class="self">self</span>.remaining()))
         }
     }
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>get_array&lt;<span class="kw">const </span>LENGTH: usize&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; [u8; LENGTH] {
-        <span class="kw">let </span><span class="kw-2">mut </span>dst = [<span class="number">0</span>; LENGTH];
-        <span class="self">self</span>.copy_to_slice(<span class="kw-2">&amp;mut </span>dst);
-        dst
+        <span class="self">self</span>.try_get_array().unwrap()
     }
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>try_get_array&lt;<span class="kw">const </span>LENGTH: usize&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;[u8; LENGTH], ReadError&gt; {
         <span class="kw">if </span><span class="self">self</span>.remaining() &gt;= LENGTH {
-            <span class="prelude-val">Err</span>(ReadError::eof())
-        } <span class="kw">else </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>dst = [<span class="number">0</span>; LENGTH];
             <span class="self">self</span>.copy_to_slice(<span class="kw-2">&amp;mut </span>dst);
             <span class="prelude-val">Ok</span>(dst)
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(Eof::new(LENGTH, <span class="self">self</span>.remaining()))
         }
     }
 
@@ -719,7 +518,11 @@
     </span><span class="attr">#[track_caller]
     #[inline]
     </span><span class="kw">fn </span>try_get_smart32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;, ReadError&gt; {
-        <span class="kw">let </span>condition = <span class="self">self</span>.chunk().first().ok_or_else(ReadError::eof)<span class="question-mark">? </span>&amp; <span class="number">0x80 </span>== <span class="number">0x80</span>;
+        <span class="kw">let </span>condition = <span class="self">self</span>.chunk().first().context(Eof {
+            expected: <span class="number">1</span>,
+            found: <span class="self">self</span>.remaining(),
+        })<span class="question-mark">? </span>&amp; <span class="number">0x80
+            </span>== <span class="number">0x80</span>;
 
         <span class="kw">let </span>ret = <span class="kw">if </span>condition {
             <span class="prelude-val">Some</span>(<span class="self">self</span>.try_get_u32()<span class="question-mark">? </span>&amp; <span class="number">0x7FFFFFFF</span>)
@@ -737,18 +540,7 @@
     <span class="doccomment">/// Reads two or four unsigned bytes as an 32-bit unsigned integer.
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>get_smart32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
-        <span class="kw">let </span>condition = <span class="self">self</span>.chunk()[<span class="number">0</span>] &amp; <span class="number">0x80 </span>== <span class="number">0x80</span>;
-
-        <span class="kw">if </span>condition {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.get_u32() &amp; <span class="number">0x7FFFFFFF</span>)
-        } <span class="kw">else </span>{
-            <span class="kw">let </span>value = <span class="self">self</span>.get_u16() <span class="kw">as </span>u32;
-            <span class="kw">if </span>value == <span class="number">0x7FFF </span>{
-                <span class="prelude-val">None
-            </span>} <span class="kw">else </span>{
-                <span class="prelude-val">Some</span>(value)
-            }
-        }
+        <span class="self">self</span>.try_get_smart32().unwrap()
     }
 
     <span class="doccomment">/// Reads one or two unsigned bytes as an 16-bit unsigned integer.
@@ -832,10 +624,10 @@
     <span class="doccomment">/// Reads a 0-terminated String from the buffer
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>try_get_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;JString&lt;<span class="self">Self</span>&gt;, ReadError&gt; {
-        <span class="kw">const </span>TERMINATOR: u8 = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39; </span>} <span class="kw">else </span>{ <span class="string">b&#39;\0&#39; </span>};
+        <span class="kw">let </span>terminator: u8 = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;dat&quot;</span>) { <span class="string">b&#39;\n&#39; </span>} <span class="kw">else </span>{ <span class="string">b&#39;\0&#39; </span>};
 
         <span class="kw">let </span>chunk = <span class="self">self</span>.chunk();
-        <span class="kw">let </span>nul_pos = memchr::memchr(TERMINATOR, chunk).ok_or_else(ReadError::not_nul_terminated)<span class="question-mark">?</span>;
+        <span class="kw">let </span>nul_pos = memchr::memchr(terminator, chunk).context(NotNulTerminated { terminator })<span class="question-mark">?</span>;
         <span class="kw">let </span>chunk = <span class="kw">unsafe </span>{ chunk.get_unchecked(<span class="number">0</span>..nul_pos) };
 
         <span class="kw">let </span>s = <span class="kw">if </span>std::str::from_utf8(chunk).is_ok() {

@@ -141,13 +141,22 @@
 <a href="#141" id="141">141</a>
 <a href="#142" id="142">142</a>
 <a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
 </pre><pre class="rust"><code><span class="attr">#![allow(unused_variables)]
 
-</span><span class="kw">use </span>std::collections::BTreeMap;
+</span><span class="kw">use </span>core::panic::Location;
+<span class="kw">use </span>std::collections::BTreeMap;
 
 <span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
-<span class="kw">use </span>rs3cache_backend::buf::ReadError;
+<span class="kw">use </span>rs3cache_backend::buf::{NotExhausted, ReadError, WithInfo};
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">use crate</span>::{
@@ -195,14 +204,11 @@
             <span class="attr">#[cfg(debug_assertions)]
             </span>opcodes.push(opcode);
 
-            <span class="comment">// FIXME: figure out whether I even want this
-            // return Err(ReadError::duplicate_opcode(opcodes, opcode));
-
-            </span><span class="kw">let </span>read: <span class="prelude-ty">Result</span>&lt;(), ReadError&gt; = <span class="kw">try </span>{
+            <span class="kw">let </span>read: <span class="prelude-ty">Result</span>&lt;(), ReadError&gt; = <span class="kw">try </span>{
                 <span class="kw">match </span>opcode {
                     <span class="number">0 </span>=&gt; {
                         <span class="kw">if </span>buffer.has_remaining() {
-                            <span class="prelude-val">Err</span>(ReadError::not_exhausted())<span class="question-mark">?</span>;
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(NotExhausted::new(buffer.remaining()));
                         } <span class="kw">else </span>{
                             <span class="kw">break </span><span class="prelude-val">Ok</span>(obj);
                         }
@@ -240,17 +246,27 @@
                         }
                     }
                     <span class="number">4 </span>=&gt; obj.content_type = <span class="prelude-val">Some</span>(buffer.try_get_u8()<span class="question-mark">?</span>),
-                    missing =&gt; <span class="prelude-val">Err</span>(ReadError::opcode_not_implemented(missing))<span class="question-mark">?</span>,
+                    opcode =&gt; <span class="prelude-val">Err</span>(ReadError::OpcodeNotImplemented {
+                        location: Location::caller(),
+                        opcode,
+                    })<span class="question-mark">?</span>,
                 }
             };
-            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = read {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(e.add_decode_context(
+            <span class="kw">match </span>read {
+                <span class="prelude-val">Ok</span>(()) =&gt; {
                     <span class="attr">#[cfg(debug_assertions)]
-                    </span>opcodes,
-                    buffer,
-                    obj.to_string(),
-                ));
-            };
+                    </span>opcodes.push(opcode);
+                }
+                <span class="prelude-val">Err</span>(e) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(e).map_err(Box::new).context(WithInfo {
+                        <span class="attr">#[cfg(debug_assertions)]
+                        </span>opcodes,
+                        buffer,
+                        <span class="attr">#[cfg(debug_assertions)]
+                        </span>thing: obj.to_string(),
+                    })
+                }
+            }
         }
     }
 }

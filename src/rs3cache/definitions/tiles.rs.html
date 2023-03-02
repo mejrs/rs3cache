@@ -244,7 +244,7 @@
         <span class="kw">if </span>buffer.is_empty() {
             ret
         } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(ReadError::not_exhausted())
+            <span class="prelude-val">Err</span>(rs3cache_backend::buf::NotExhausted::new(buffer.remaining()))
         }
     }
 }

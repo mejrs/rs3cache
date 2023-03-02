@@ -457,7 +457,7 @@
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Given(PathBuf::from(<span class="string">&quot;test_data/osrs_cache&quot;</span>))),
+            input: Arc::new(CachePath::Env(PathBuf::from(<span class="string">&quot;test_data/osrs_cache&quot;</span>))),
             ..Default::default()
         }
     }
@@ -465,7 +465,7 @@
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Given(PathBuf::from(<span class="string">&quot;test_data/rs3_cache&quot;</span>))),
+            input: Arc::new(CachePath::Env(PathBuf::from(<span class="string">&quot;test_data/rs3_cache&quot;</span>))),
             ..Default::default()
         }
     }
@@ -473,7 +473,7 @@
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;legacy&quot;</span>, feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Given(PathBuf::from(<span class="string">&quot;test_data/2005_cache&quot;</span>))),
+            input: Arc::new(CachePath::Env(PathBuf::from(<span class="string">&quot;test_data/2005_cache&quot;</span>))),
             ..Default::default()
         }
     }
