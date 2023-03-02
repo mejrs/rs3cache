@@ -9,7 +9,10 @@ use bytes::{Buf, Bytes};
 use image::{imageops, ImageBuffer, Rgba, RgbaImage};
 use itertools::izip;
 use path_macro::path;
-use rs3cache_backend::buf::{BufExtra, ReadError};
+use rs3cache_backend::{
+    buf::{BufExtra, FileSeek, ReadError},
+    error::Read,
+};
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use {rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
 
@@ -219,7 +222,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
         .map(Result::unwrap)
         .map(|archive| try {
             let file = archive.file(&0).unwrap();
-            let frames = deserialize(file)?;
+            let frames = deserialize(file).context(Read)?;
             (archive.archive_id(), frames)
         })
         .collect::<CacheResult<Vec<(u32, _)>>>()?
@@ -229,10 +232,10 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
     Ok(sprites)
 }
 
-pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
+pub fn deserialize(buffer: Bytes) -> Result<BTreeMap<usize, Sprite>, ReadError> {
     let mut buffer = Cursor::new(buffer);
 
-    buffer.seek(SeekFrom::End(-2)).map_err(|_| ReadError::eof()).context(error::Read)?;
+    buffer.seek(SeekFrom::End(-2)).context(FileSeek)?;
 
     let data = buffer.get_u16();
     let format = data >> 15;
@@ -240,10 +243,7 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
 
     let imgs = match format {
         0 => {
-            buffer
-                .seek(SeekFrom::End(-7 - (count as i64) * 8))
-                .map_err(|_| ReadError::eof())
-                .context(error::Read)?;
+            buffer.seek(SeekFrom::End(-7 - (count as i64) * 8)).context(FileSeek)?;
 
             let _big_width = buffer.get_u16();
             let _big_height = buffer.get_u16();
@@ -256,11 +256,11 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
 
             let pos = -7 - (count as i64) * 8 - (palette_count as i64) * 3;
 
-            buffer.seek(SeekFrom::End(pos)).map_err(|_| ReadError::eof()).context(error::Read)?;
+            buffer.seek(SeekFrom::End(pos)).context(FileSeek)?;
 
             let palette = iter::repeat_with(|| buffer.get_rgb()).take(palette_count).collect::<Vec<_>>();
 
-            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof()).context(error::Read)?;
+            buffer.seek(SeekFrom::Start(0)).context(FileSeek)?;
 
             izip!(0..count, widths, heights)
                 .filter_map(|(index, width, height)| {
@@ -305,7 +305,7 @@ pub fn deserialize(buffer: Bytes) -> CacheResult<BTreeMap<usize, Sprite>> {
                 .collect::<BTreeMap<_, _>>()
         }
         1 => {
-            buffer.seek(SeekFrom::Start(0)).map_err(|_| ReadError::eof()).context(error::Read)?;
+            buffer.seek(SeekFrom::Start(0)).context(FileSeek)?;
             let ty = buffer.get_u8();
             assert_eq!(ty, 0, "Unknown image type.");
 

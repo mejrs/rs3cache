@@ -1,6 +1,6 @@
 use std::{
     backtrace::{Backtrace, BacktraceStatus},
-    io,
+    fmt, io,
     panic::{Location, PanicInfo},
     path::{Path, PathBuf},
     sync::Arc,
@@ -20,34 +20,60 @@ pub type CacheResult<T> = Result<T, CacheError>;
 #[derive(error::Error)]
 #[top_level]
 pub enum CacheError {
-    #[error = "Something went wrong when parsing the cache"]
+    #[error = "cannot open cache"]
+    #[help = "expecting the following folder structure:\n   {input}{STRUCTURE}"]
+    #[help = "{LocationHelp(input)}"]
+    CannotOpen {
+        #[cfg(feature = "sqlite")]
+        #[source]
+        source: rusqlite::Error,
+        file: PathBuf,
+        input: Arc<CachePath>,
+        #[location]
+        location: &'static Location<'static>,
+    },
+    #[error = "something went wrong when parsing the cache"]
     Decode {
         #[source]
         source: DecodeError,
+        #[location]
+        location: &'static Location<'static>,
     },
-    #[error = "{source}"]
+    #[error = "something went wrong when handling {path:?}"]
     Io {
         #[source]
         source: std::io::Error,
         path: PathBuf,
+        #[location]
+        location: &'static Location<'static>,
     },
-    #[error = "{source}"]
+    #[error = "something went wrong when handling {file:?}"]
     JsonEncode {
         #[source]
         source: serde_json::Error,
-        file: Option<PathBuf>,
+        file: PathBuf,
+        #[location]
+        location: &'static Location<'static>,
     },
     #[error = "{msg}"]
-    Decompression { msg: String },
-    #[error = "Something went wrong when parsing the cache"]
+    Decompression {
+        msg: String,
+        #[location]
+        location: &'static Location<'static>,
+    },
+    #[error = "something went wrong when parsing the cache"]
     Read {
         #[source]
         source: ReadError,
+        #[location]
+        location: &'static Location<'static>,
     },
-    #[error = "Something went wrong when accessing the cache"]
+    #[error = "something went wrong when accessing the cache"]
     Integrity {
         #[source]
         source: IntegrityError,
+        #[location]
+        location: &'static Location<'static>,
     },
     #[error = "xtea for mapsquare({i}, {j}) is not available"]
     Xtea { i: u8, j: u8 },
@@ -56,8 +82,56 @@ pub enum CacheError {
         #[source]
         source: serde_json::Error,
         path: PathBuf,
+        #[location]
+        location: &'static Location<'static>,
     },
 }
+
+pub struct LocationHelp<'p>(&'p CachePath);
+
+impl fmt::Display for LocationHelp<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.0 {
+            CachePath::Given(path) => writeln!(f, "looking in this location because the path {path:?} was given as an argument")?,
+            CachePath::Env(path) => writeln!(
+                f,
+                "looking in this location because the path {path:?} was retrieved from an environment variable"
+            )?,
+            CachePath::Omitted => writeln!(f, "looking in the current directory because no path was given")?,
+        }
+
+        Ok(())
+    }
+}
+
+pub const STRUCTURE: &str = if cfg!(feature = "sqlite") {
+    "/
+        js5-1.JCACHE
+        js5-2.JCACHE
+        ...
+        js5-61.JCACHE"
+} else if cfg!(feature = "dat2") {
+    "/
+        cache /
+            main_file_cache.dat2
+            main_file_cache.idx0
+            main_file_cache.idx1
+            ...
+            main_file_cache.idx21
+            main_file_cache.idx255
+        xteas.json OR keys.json"
+} else if cfg!(feature = "dat") {
+    "/
+        cache /
+            main_file_cache.dat
+            main_file_cache.idx0
+            main_file_cache.idx1
+            main_file_cache.idx2
+            main_file_cache.idx3
+            main_file_cache.idx4"
+} else {
+    unimplemented!()
+};
 
 #[cfg(feature = "pyo3")]
 pub mod py_error_impl {
@@ -83,18 +157,19 @@ pub mod py_error_impl {
     impl From<&CacheError> for PyErr {
         fn from(err: &CacheError) -> PyErr {
             match err {
-                CacheError::Integrity {
-                    source: IntegrityError::CannotOpen { .. },
-                } => CacheNotFoundError::new_err(err.to_string()),
+                CacheError::CannotOpen { .. } => CacheNotFoundError::new_err(err.to_string()),
                 CacheError::Integrity {
                     source: IntegrityError::ArchiveMissing { .. },
+                    ..
                 } => ArchiveNotFoundError::new_err(err.to_string()),
                 #[cfg(feature = "dat2")]
                 CacheError::Integrity {
                     source: IntegrityError::ArchiveMissingNamed { .. },
+                    ..
                 } => ArchiveNotFoundError::new_err(err.to_string()),
                 CacheError::Integrity {
                     source: IntegrityError::FileMissing { .. },
+                    ..
                 } => FileMissingError::new_err(err.to_string()),
                 #[cfg(feature = "dat2")]
                 CacheError::Xtea { .. } | CacheError::XteaLoad { .. } => XteaError::new_err(err.to_string()),
@@ -112,6 +187,6 @@ mod tests {
     fn error_display() {
         let e = CacheError::Xtea { i: 42, j: 73 };
         let s = e.to_string();
-        assert_eq!(s, "xtea for mapsquare(42, 73) is not available\n");
+        assert_eq!(s, "xtea for mapsquare(42, 73) is not available\n\n");
     }
 }

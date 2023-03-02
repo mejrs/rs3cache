@@ -16,9 +16,9 @@ use path_macro::path;
 
 use crate::{
     arc::Archive,
-    buf::{BufExtra, ReadError},
+    buf::{BufExtra, FileSeek, ReadError},
     decoder,
-    error::{self, CacheError, CacheResult},
+    error::{self, CacheError, CacheResult, CannotOpen},
     index::*,
     meta::{IndexMetadata, Metadata},
 };
@@ -28,14 +28,10 @@ where
 {
     fn get_entry(a: u32, b: u32, input: &Arc<CachePath>) -> CacheResult<(u32, u32)> {
         let file = path!(**input / "cache" / format!("main_file_cache.idx{a}"));
-        let entry_data = fs::read(&file)
-            .context(CannotOpen { file, input: input.clone() })
-            .context(error::Integrity)?;
+        let entry_data = fs::read(&file).context(CannotOpen { file, input: input.clone() })?;
 
         let mut buf = Cursor::new(entry_data);
-        buf.seek(SeekFrom::Start((b * 6) as _))
-            .map_err(|_| ReadError::eof())
-            .context(error::Read)?;
+        buf.seek(SeekFrom::Start((b * 6) as _)).context(FileSeek).context(error::Read)?;
         Ok((
             buf.try_get_uint(3).context(error::Read)? as u32,
             buf.try_get_uint(3).context(error::Read)? as u32,
@@ -52,33 +48,30 @@ where
         let mut data = Vec::with_capacity(length as _);
 
         while sector != 0 {
-            buffer
-                .seek(SeekFrom::Start((sector * 520) as _))
-                .map_err(|_| ReadError::eof())
-                .context(error::Read)?;
+            buffer.seek(SeekFrom::Start((sector * 520) as _)).context(FileSeek).context(error::Read)?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof()).context(error::Read)?;
+                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
                 (10, i32::from_be_bytes(buf), 510.min(length - read_count))
             } else {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof()).context(error::Read)?;
+                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
                 (8, u16::from_be_bytes(buf) as _, 512.min(length - read_count))
             };
 
             let current_part = {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof()).context(error::Read)?;
+                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
                 u16::from_be_bytes(buf)
             };
             let new_sector = {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf[1..4]).map_err(|_| ReadError::eof()).context(error::Read)?;
+                buffer.read_exact(&mut buf[1..4]).context(FileSeek).context(error::Read)?;
                 u32::from_be_bytes(buf)
             };
             let _current_index = {
                 let mut buf = [0; 1];
-                buffer.read_exact(&mut buf).map_err(|_| ReadError::eof()).context(error::Read)?;
+                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
                 u8::from_be_bytes(buf)
             };
 
@@ -92,7 +85,7 @@ where
             let mut buf = [0u8; 512];
             buffer
                 .read_exact(&mut buf[..(block_size as usize)])
-                .map_err(|_| ReadError::eof())
+                .context(FileSeek)
                 .context(error::Read)?;
 
             data.extend_from_slice(&buf[..(block_size as usize)]);
@@ -116,11 +109,7 @@ where
                 return self.get_file(m);
             }
         }
-        Err(IntegrityError::ArchiveMissingNamed {
-            index_id: self.index_id,
-            name,
-        })
-        .context(error::Integrity)
+        Err(ArchiveMissingNamed::new(self.index_id, name)).context(error::Integrity)
     }
 
     pub fn get_index(&mut self) -> BTreeMap<(u8, u8), MapsquareMeta> {
@@ -174,9 +163,7 @@ impl CacheIndex<Initial> {
     pub fn new(index_id: u32, input: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(&*input / "cache/main_file_cache.dat");
 
-        let file = File::open(&file)
-            .context(CannotOpen { file, input: input.clone() })
-            .context(error::Integrity)?;
+        let file = File::open(&file).context(CannotOpen { file, input: input.clone() })?;
 
         Ok(Self {
             input,
@@ -195,33 +182,3 @@ pub struct MapsquareMeta {
     pub locfile: u16,
     pub f2p: bool,
 }
-/*
-#[derive(::error::Error, Debug)]
-pub enum IntegrityError {
-    #[error = "cannot open cache"]
-    CannotOpen {
-        #[source]
-        source: std::io::Error,
-        path: PathBuf,
-        input: Arc<CachePath>,
-    },
-    #[error = "Index {index_id}, archive {archive_id} does not contain file {name}"]
-    FileMissingName { index_id: u32, archive_id: u32, name: String },
-    #[error = "Index {index_id} does not contain archive {archive_id}"]
-    ArchiveMissing { index_id: u32, archive_id: u32 },
-    #[error = "Index {index_id}, archive {archive_id} does not contain file {file} "]
-    FileMissing { index_id: u32, archive_id: u32, file: u32 },
-    #[error = "Index {index_id} does not contain archive {name}"]
-    MissingName { index_id: u32, name: String },
-    #[error = "Index {metadata.index_id} Archive {metadata.archive_id}: Crc does not match: {crc} !=  {metadata.crc}"]
-    Crc { crc: i64, metadata: Metadata },
-    #[error = "Index {metadata.index_id} Archive {metadata.archive_id}: Version does not match: {version} !=  {{v2}}"]
-    Version { version: i64, metadata: Metadata },
-    #[error = "Index {metadata.index_id}'s archive {metadata.archive_id} is blank"]
-    Blank { metadata: Metadata },
-    #[error = "Error retrieving {metadata}"]
-    Corrupted { metadata: Metadata },
-    #[error = "todo"]
-    Other {},
-}
-*/

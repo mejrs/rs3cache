@@ -119,7 +119,7 @@ impl Tile {
         if buffer.is_empty() {
             ret
         } else {
-            Err(ReadError::not_exhausted())
+            Err(rs3cache_backend::buf::NotExhausted::new(buffer.remaining()))
         }
     }
 }

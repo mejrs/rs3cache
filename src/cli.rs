@@ -217,7 +217,7 @@ impl Config {
     #[cfg(all(feature = "osrs", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Given(PathBuf::from("test_data/osrs_cache"))),
+            input: Arc::new(CachePath::Env(PathBuf::from("test_data/osrs_cache"))),
             ..Default::default()
         }
     }
@@ -225,7 +225,7 @@ impl Config {
     #[cfg(all(feature = "rs3", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Given(PathBuf::from("test_data/rs3_cache"))),
+            input: Arc::new(CachePath::Env(PathBuf::from("test_data/rs3_cache"))),
             ..Default::default()
         }
     }
@@ -233,7 +233,7 @@ impl Config {
     #[cfg(all(feature = "legacy", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Given(PathBuf::from("test_data/2005_cache"))),
+            input: Arc::new(CachePath::Env(PathBuf::from("test_data/2005_cache"))),
             ..Default::default()
         }
     }

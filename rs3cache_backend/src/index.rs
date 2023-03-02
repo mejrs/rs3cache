@@ -1,6 +1,7 @@
 //! The interface between [rs3cache](crate) and the cache database.
 
 #![allow(unused_imports)] // varies based on mock config flags
+use core::panic::Location;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
     env::{self, VarError},
@@ -96,23 +97,6 @@ impl AsRef<Path> for CachePath {
             CachePath::Omitted => Path::new(""),
             CachePath::Env(p) | CachePath::Given(p) => p,
         }
-    }
-}
-
-pub struct LocationHelp<'p>(&'p CachePath);
-
-impl fmt::Display for LocationHelp<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.0 {
-            CachePath::Given(path) => writeln!(f, "looking in this location because the path {path:?} was given as an argument")?,
-            CachePath::Env(path) => writeln!(
-                f,
-                "looking in this location because the path {path:?} was retrieved from an environment variable"
-            )?,
-            CachePath::Omitted => writeln!(f, "looking in the current directory because no path was given")?,
-        }
-
-        Ok(())
     }
 }
 
@@ -306,20 +290,20 @@ impl ExactSizeIterator for IntoIter {}
 
 #[derive(::error::Error)]
 pub enum IntegrityError {
-    #[error = "cannot open cache"]
-    #[help = "expecting the following folder structure: \n   {input}{STRUCTURE}"]
-    #[help = "{LocationHelp(input)}"]
-    CannotOpen {
-        #[cfg(feature = "sqlite")]
-        #[source]
-        source: rusqlite::Error,
-        file: PathBuf,
-        input: Arc<CachePath>,
-    },
     #[error = "Index {index_id} does not contain archive {archive_id}"]
-    ArchiveMissing { index_id: u32, archive_id: u32 },
+    ArchiveMissing {
+        index_id: u32,
+        archive_id: u32,
+        #[location]
+        location: &'static Location<'static>,
+    },
     #[error = "Index {index_id} does not contain archive {name}"]
-    ArchiveMissingNamed { index_id: u32, name: String },
+    ArchiveMissingNamed {
+        index_id: u32,
+        name: String,
+        #[location]
+        location: &'static Location<'static>,
+    },
     #[error = "Index {index_id}, archive {archive_id} does not contain file {file} "]
     FileMissing { index_id: u32, archive_id: u32, file: u32 },
     #[error = "Index {index_id}, archive {archive_id} does not contain file {name} "]
@@ -339,40 +323,15 @@ pub enum IntegrityError {
         #[source]
         source: rusqlite::Error,
         metadata: Metadata,
+        #[location]
+        location: &'static Location<'static>,
     },
     #[error = "Something went wrong"]
     Other {
         #[cfg(feature = "sqlite")]
         #[source]
         source: rusqlite::Error,
+        #[location]
+        location: &'static Location<'static>,
     },
 }
-
-pub const STRUCTURE: &str = if cfg!(feature = "sqlite") {
-    "/
-        js5-1.JCACHE
-        js5-2.JCACHE
-        ...
-        js5-61.JCACHE"
-} else if cfg!(feature = "dat2") {
-    "/
-        cache /
-            main_file_cache.dat2
-            main_file_cache.idx0
-            main_file_cache.idx1
-            ...
-            main_file_cache.idx21
-            main_file_cache.idx255
-        xteas.json OR keys.json"
-} else if cfg!(feature = "dat") {
-    "/
-        cache /
-            main_file_cache.dat
-            main_file_cache.idx0
-            main_file_cache.idx1
-            main_file_cache.idx2
-            main_file_cache.idx3
-            main_file_cache.idx4"
-} else {
-    unimplemented!()
-};

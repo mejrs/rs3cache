@@ -1,5 +1,6 @@
 use std::{
     collections::BTreeMap,
+    fmt::{self, Display, Formatter},
     fs::{self, File},
     io::Write,
 };
@@ -11,7 +12,7 @@ use path_macro::path;
 use pyo3::prelude::*;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use rs3cache_backend::{
-    buf::{BufExtra, JString, ReadError},
+    buf::{BufExtra, JString, NotExhausted, OpcodeNotImplemented, ReadError, WithInfo},
     error::{self, CacheResult},
     index::CacheIndex,
 };
@@ -178,7 +179,7 @@ impl LocationConfig {
                     .into_iter()
                     .map(move |(file_id, file)| (archive_id << 8 | file_id, file))
             })
-            .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
+            .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)))
             .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
             .context(error::Read)?;
         Ok(locations)
@@ -192,7 +193,7 @@ impl LocationConfig {
             .archive(ConfigType::LOC_CONFIG)?
             .take_files()
             .into_iter()
-            .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)).map_err(|e| e.add_context_id(id)))
+            .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)))
             .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
             .context(error::Read)?;
         Ok(locations)
@@ -229,24 +230,18 @@ impl LocationConfig {
         loop {
             let opcode = buffer.try_get_u8()?;
 
-            #[cfg(debug_assertions)]
-            opcodes.push(opcode);
-
-            // FIXME: figure out whether I even want this
-            // return Err(ReadError::duplicate_opcode(opcodes, opcode));
-
             let read: Result<(), ReadError> = try {
                 match opcode {
                     0 => {
                         if buffer.has_remaining() {
-                            Err(ReadError::not_exhausted())?;
+                            return Err(NotExhausted::new(buffer.remaining()));
                         } else {
                             break Ok(loc);
                         }
                     }
                     1 => loc.models = Some(Models::deserialize(&mut buffer)?),
                     2 => loc.name = Some(buffer.try_get_string()?),
-                    // Actually, this field is still in use for a little while after thw switch to dat2.
+                    // Actually, this field is still in use for a little while after the switch to dat2.
                     #[cfg(feature = "legacy")]
                     3 => loc.description = Some(buffer.try_get_string()?),
                     #[cfg(any(feature = "osrs", feature = "legacy"))]
@@ -390,27 +385,32 @@ impl LocationConfig {
                         let count = buffer.try_get_unsigned_smart()? as usize;
                         let out = std::iter::repeat_with(|| Unknown204::deserialize(&mut buffer))
                             .take(count)
-                            .collect::<Result<_, ReadError>>()?;
+                            .collect::<Result<_, _>>()?;
 
                         loc.unknown_204 = Some(out)
                     }
                     249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
-                    missing => Err(ReadError::opcode_not_implemented(missing))?,
+                    opcode => do yeet OpcodeNotImplemented::new(opcode),
                 }
             };
-            if let Err(e) = read {
-                return Err(e.add_decode_context(
+            match read {
+                Ok(()) => {
                     #[cfg(debug_assertions)]
-                    opcodes,
-                    buffer,
-                    loc.to_string(),
-                ));
-            };
+                    opcodes.push(opcode);
+                }
+                Err(e) => {
+                    return Err(e).map_err(Box::new).context(WithInfo {
+                        #[cfg(debug_assertions)]
+                        opcodes,
+                        buffer,
+                        #[cfg(debug_assertions)]
+                        thing: loc.to_string(),
+                    })
+                }
+            }
         }
     }
 }
-
-use std::fmt::{self, Display, Formatter};
 
 impl Display for LocationConfig {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {

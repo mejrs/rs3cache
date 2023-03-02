@@ -21,7 +21,7 @@ use crate::{
     arc::Archive,
     buf::BufExtra,
     decoder,
-    error::{self, CacheError, CacheResult},
+    error::{self, CacheError, CacheResult, CannotOpen},
     index::*,
     meta::{IndexMetadata, Metadata},
 };
@@ -35,12 +35,10 @@ impl CacheIndex<Initial> {
     pub fn new(index_id: u32, input: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(*input / format!("js5-{index_id}.jcache"));
 
-        let connection = Connection::open_with_flags(&file, OpenFlags::SQLITE_OPEN_READ_ONLY)
-            .with_context(|| CannotOpen {
-                file: file.clone(),
-                input: input.clone(),
-            })
-            .context(error::Integrity)?;
+        let connection = Connection::open_with_flags(&file, OpenFlags::SQLITE_OPEN_READ_ONLY).with_context(|| CannotOpen {
+            file: file.clone(),
+            input: input.clone(),
+        })?;
         let data = connection
             .query_row("SELECT DATA FROM cache_index", [], |row| row.get(0))
             .context(Other)

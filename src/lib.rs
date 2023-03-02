@@ -6,7 +6,8 @@
     option_result_contains,
     option_get_or_insert_default,
     once_cell,
-    try_blocks
+    try_blocks,
+    yeet_expr
 )]
 #![allow(clippy::too_many_arguments, clippy::type_complexity)]
 #![warn(

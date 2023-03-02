@@ -22,7 +22,7 @@ rusqlite = { version = "0.28.0", features = ["bundled"], optional = true }
 libsqlite3-sys = {version = "0.25.0", optional = true }
 console = "0.15.4"
 
-error = {git = "https://github.com/mejrs/error", rev = "1be54f8d7ce8e5eda50abe926e76c335dc381ea2" }
+error = {git = "https://github.com/mejrs/error", rev = "e4dad7fdd12aa46b100ded22d787bb7651ae0946" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 path-absolutize = "3.0.11"

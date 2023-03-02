@@ -1,10 +1,11 @@
 #![allow(unused_variables)]
 
+use core::panic::Location;
 use std::collections::BTreeMap;
 
 use ::error::Context;
 use bytes::{Buf, Bytes};
-use rs3cache_backend::buf::ReadError;
+use rs3cache_backend::buf::{NotExhausted, ReadError, WithInfo};
 use serde::Serialize;
 
 use crate::{
@@ -52,14 +53,11 @@ impl DbRow {
             #[cfg(debug_assertions)]
             opcodes.push(opcode);
 
-            // FIXME: figure out whether I even want this
-            // return Err(ReadError::duplicate_opcode(opcodes, opcode));
-
             let read: Result<(), ReadError> = try {
                 match opcode {
                     0 => {
                         if buffer.has_remaining() {
-                            Err(ReadError::not_exhausted())?;
+                            return Err(NotExhausted::new(buffer.remaining()));
                         } else {
                             break Ok(obj);
                         }
@@ -97,17 +95,27 @@ impl DbRow {
                         }
                     }
                     4 => obj.content_type = Some(buffer.try_get_u8()?),
-                    missing => Err(ReadError::opcode_not_implemented(missing))?,
+                    opcode => Err(ReadError::OpcodeNotImplemented {
+                        location: Location::caller(),
+                        opcode,
+                    })?,
                 }
             };
-            if let Err(e) = read {
-                return Err(e.add_decode_context(
+            match read {
+                Ok(()) => {
                     #[cfg(debug_assertions)]
-                    opcodes,
-                    buffer,
-                    obj.to_string(),
-                ));
-            };
+                    opcodes.push(opcode);
+                }
+                Err(e) => {
+                    return Err(e).map_err(Box::new).context(WithInfo {
+                        #[cfg(debug_assertions)]
+                        opcodes,
+                        buffer,
+                        #[cfg(debug_assertions)]
+                        thing: obj.to_string(),
+                    })
+                }
+            }
         }
     }
 }

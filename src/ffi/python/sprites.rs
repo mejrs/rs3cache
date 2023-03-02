@@ -1,11 +1,12 @@
 use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
+use ::error::Context;
 use pyo3::{
     exceptions::{PyKeyError, PyReferenceError},
     prelude::*,
     types::PyBytes,
 };
-use rs3cache_backend::index::CachePath;
+use rs3cache_backend::{error::Read, index::CachePath};
 
 use crate::{
     cache::{
@@ -89,23 +90,25 @@ impl PySprites {
     fn get(&self, py: Python, id: u32) -> PyResult<PySprite> {
         let archive = self.archive(id)?;
         let sprite = sprites::deserialize(archive.file(&0).unwrap());
-        let sprite = sprite.map(|frames| PySprite {
-            archive_id: archive.archive_id(),
-            frames: frames
-                .into_iter()
-                .map(|(id, im)| {
-                    (
-                        id,
-                        PyFrame {
-                            constructor: self.constructor.clone_ref(py),
+        let ret = sprite
+            .map(|frames| PySprite {
+                archive_id: archive.archive_id(),
+                frames: frames
+                    .into_iter()
+                    .map(|(id, im)| {
+                        (
                             id,
-                            im,
-                        },
-                    )
-                })
-                .collect(),
-        })?;
-        Ok(sprite)
+                            PyFrame {
+                                constructor: self.constructor.clone_ref(py),
+                                id,
+                                im,
+                            },
+                        )
+                    })
+                    .collect(),
+            })
+            .context(Read)?;
+        Ok(ret)
     }
 
     fn __getitem__(&self, py: Python, id: u32) -> PyResult<PySprite> {

@@ -14,149 +14,54 @@ use bytes::{Buf, Bytes};
 use serde::{Serialize, Serializer};
 
 use crate::error::CacheError;
-#[derive(Debug, Clone)]
-pub struct ReadError {
-    location: &'static Location<'static>,
-    kind: Kind,
-}
-impl ReadError {
-    #[track_caller]
-    pub fn eof() -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::Eof),
-        }
-    }
-    #[track_caller]
-    pub fn not_nul_terminated() -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::NotNulTerminated),
-        }
-    }
-    #[track_caller]
-    pub fn opcode_not_implemented(opcode: u8) -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::OpcodeNotImplemented(opcode)),
-        }
-    }
 
-    #[track_caller]
-    pub fn not_exhausted() -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::NotExhausted),
-        }
-    }
-
-    #[cfg(debug_assertions)]
-    #[track_caller]
-    pub fn duplicate_opcode(opcodes: Vec<u8>, opcode: u8) -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::Error(ReadErrorKind::DuplicateOpcode(opcodes, opcode)),
-        }
-    }
-
-    #[track_caller]
-    pub fn add_context(self, ctx: String) -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::Bubbled(ctx, Box::new(self)),
-        }
-    }
-
-    #[track_caller]
-    pub fn add_context_id(self, ctx: u32) -> Self {
-        Self {
-            location: Location::caller(),
-            kind: Kind::ContextId(ctx, Box::new(self)),
-        }
-    }
-
-    pub fn add_decode_context(self, #[cfg(debug_assertions)] opcodes: Vec<u8>, remainder: Bytes, parsed: String) -> Self {
-        Self {
-            location: self.location,
-            kind: Kind::DecodeContext(
-                #[cfg(debug_assertions)]
-                opcodes,
-                remainder,
-                parsed,
-                Box::new(self),
-            ),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-enum Kind {
-    Error(ReadErrorKind),
-    ContextId(u32, Box<ReadError>),
-    Bubbled(String, Box<ReadError>),
-    DecodeContext(#[cfg(debug_assertions)] Vec<u8>, Bytes, String, Box<ReadError>),
-}
-
-#[derive(Debug, Clone)]
-pub enum ReadErrorKind {
-    Eof,
-    NotNulTerminated,
-    NotExhausted,
-    OpcodeNotImplemented(u8),
-    #[cfg(debug_assertions)]
-    DuplicateOpcode(Vec<u8>, u8),
-}
-
-impl Display for ReadError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        use Kind::*;
-        use ReadErrorKind::*;
-
-        let location = self.location;
-
-        match &self.kind {
-            Error(Eof) => writeln!(f, "Unexpected end of file ({location})")?,
-            Error(NotNulTerminated) => writeln!(f, "Buffer did not contain nul terminator")?,
-            Error(OpcodeNotImplemented(opcode)) => {
-                writeln!(f, "Read opcode {opcode}, but decoding opcode {opcode} is not implemented. ({location})")?
-            }
-            Error(NotExhausted) => writeln!(f, "Reached terminating opcode but the buffer was not exhausted ({location})")?,
-            #[cfg(debug_assertions)]
-            Error(DuplicateOpcode(_, opcode)) => writeln!(f, "Read opcode {opcode}, but opcode {opcode} was already decoded. ({location})")?,
-            ContextId(id, _) => writeln!(f, "Could not decode id {id} ({location})")?,
-            Bubbled(ref ctx, _) => writeln!(f, "Could not decode {ctx}")?,
-            #[cfg(debug_assertions)]
-            DecodeContext(opcodes, remainder, parsed, src) => {
-                writeln!(f, "{src}")?;
-                writeln!(f, "Note: The unread remainder of the buffer consists of {remainder:?}")?;
-                writeln!(f)?;
-                writeln!(f, "Note: The opcodes read were {opcodes:?}")?;
-                writeln!(f)?;
-                writeln!(f, "Note: Managed to read up to:")?;
-                writeln!(f, "{parsed}")?;
-            }
-            #[cfg(not(debug_assertions))]
-            DecodeContext(remainder, parsed, src) => {
-                writeln!(f, "{src}")?;
-                writeln!(f, "Note: The unread remainder of the buffer consists of {:?}", remainder)?;
-                writeln!(f)?;
-                writeln!(f, "Note: Managed to read up to:")?;
-                writeln!(f, "{parsed}")?;
-            }
-        };
-
-        Ok(())
-    }
-}
-
-impl std::error::Error for ReadError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self.kind {
-            Kind::ContextId(_, ref src) => Some(src),
-            Kind::Bubbled(_, ref src) => Some(src),
-            _ => None,
-        }
-    }
+#[derive(::error::Error)]
+pub enum ReadError {
+    #[error = "reached the end of the buffer unexpectedly; expected at least {expected} more bytes but only {found} were available"]
+    Eof {
+        #[location]
+        location: &'static Location<'static>,
+        expected: usize,
+        found: usize,
+    },
+    #[error = "the buffer did not contain a {terminator} terminator"]
+    NotNulTerminated {
+        #[location]
+        location: &'static Location<'static>,
+        terminator: u8,
+    },
+    #[error = "reached the end of the buffer unexpectedly"]
+    NotExhausted {
+        #[location]
+        location: &'static Location<'static>,
+        remainder: usize,
+    },
+    #[error = "opcode {opcode} is not implemented"]
+    OpcodeNotImplemented {
+        opcode: u8,
+        #[location]
+        location: &'static Location<'static>,
+    },
+    #[error = "could not parse buffer"]
+    #[cfg_attr(debug_assertions, help = "managed to read up to {thing}")]
+    #[cfg_attr(debug_assertions, help = "managed to decode opcodes {opcodes:?}")]
+    #[help = "the remainder of the buffer is {buffer:?}"]
+    WithInfo {
+        #[source]
+        source: Box<ReadError>,
+        #[cfg(debug_assertions)]
+        opcodes: Vec<u8>,
+        buffer: Bytes,
+        #[cfg(debug_assertions)]
+        thing: String,
+    },
+    #[error = "reached the end of the file unexpectedly"]
+    FileSeek {
+        #[source]
+        source: std::io::Error,
+        #[location]
+        location: &'static Location<'static>,
+    },
 }
 
 pub trait BufExtra: Buf + Sized + Clone {
@@ -166,7 +71,7 @@ pub trait BufExtra: Buf + Sized + Clone {
         if self.remaining() >= 1 {
             Ok(self.get_u8())
         } else {
-            Err(ReadError::eof())
+            Err(Eof::new(1, self.remaining()))
         }
     }
     #[track_caller]
@@ -175,7 +80,7 @@ pub trait BufExtra: Buf + Sized + Clone {
         if self.remaining() >= 1 {
             Ok(self.get_i8())
         } else {
-            Err(ReadError::eof())
+            Err(Eof::new(1, self.remaining()))
         }
     }
     #[track_caller]
@@ -184,7 +89,7 @@ pub trait BufExtra: Buf + Sized + Clone {
         if self.remaining() >= 2 {
             Ok(self.get_u16())
         } else {
-            Err(ReadError::eof())
+            Err(Eof::new(2, self.remaining()))
         }
     }
 
@@ -194,7 +99,7 @@ pub trait BufExtra: Buf + Sized + Clone {
         if self.remaining() >= 4 {
             Ok(self.get_i32())
         } else {
-            Err(ReadError::eof())
+            Err(Eof::new(4, self.remaining()))
         }
     }
     #[track_caller]
@@ -203,7 +108,7 @@ pub trait BufExtra: Buf + Sized + Clone {
         if self.remaining() >= 4 {
             Ok(self.get_u32())
         } else {
-            Err(ReadError::eof())
+            Err(Eof::new(4, self.remaining()))
         }
     }
 
@@ -213,23 +118,21 @@ pub trait BufExtra: Buf + Sized + Clone {
         if self.remaining() >= nbytes {
             Ok(self.get_uint(nbytes))
         } else {
-            Err(ReadError::eof())
+            Err(Eof::new(nbytes, self.remaining()))
         }
     }
     #[inline]
     fn get_array<const LENGTH: usize>(&mut self) -> [u8; LENGTH] {
-        let mut dst = [0; LENGTH];
-        self.copy_to_slice(&mut dst);
-        dst
+        self.try_get_array().unwrap()
     }
     #[inline]
     fn try_get_array<const LENGTH: usize>(&mut self) -> Result<[u8; LENGTH], ReadError> {
         if self.remaining() >= LENGTH {
-            Err(ReadError::eof())
-        } else {
             let mut dst = [0; LENGTH];
             self.copy_to_slice(&mut dst);
             Ok(dst)
+        } else {
+            Err(Eof::new(LENGTH, self.remaining()))
         }
     }
 
@@ -237,7 +140,11 @@ pub trait BufExtra: Buf + Sized + Clone {
     #[track_caller]
     #[inline]
     fn try_get_smart32(&mut self) -> Result<Option<u32>, ReadError> {
-        let condition = self.chunk().first().ok_or_else(ReadError::eof)? & 0x80 == 0x80;
+        let condition = self.chunk().first().context(Eof {
+            expected: 1,
+            found: self.remaining(),
+        })? & 0x80
+            == 0x80;
 
         let ret = if condition {
             Some(self.try_get_u32()? & 0x7FFFFFFF)
@@ -255,18 +162,7 @@ pub trait BufExtra: Buf + Sized + Clone {
     /// Reads two or four unsigned bytes as an 32-bit unsigned integer.
     #[inline]
     fn get_smart32(&mut self) -> Option<u32> {
-        let condition = self.chunk()[0] & 0x80 == 0x80;
-
-        if condition {
-            Some(self.get_u32() & 0x7FFFFFFF)
-        } else {
-            let value = self.get_u16() as u32;
-            if value == 0x7FFF {
-                None
-            } else {
-                Some(value)
-            }
-        }
+        self.try_get_smart32().unwrap()
     }
 
     /// Reads one or two unsigned bytes as an 16-bit unsigned integer.
@@ -350,10 +246,10 @@ pub trait BufExtra: Buf + Sized + Clone {
     /// Reads a 0-terminated String from the buffer
     #[inline]
     fn try_get_string(&mut self) -> Result<JString<Self>, ReadError> {
-        const TERMINATOR: u8 = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
+        let terminator: u8 = if cfg!(feature = "dat") { b'\n' } else { b'\0' };
 
         let chunk = self.chunk();
-        let nul_pos = memchr::memchr(TERMINATOR, chunk).ok_or_else(ReadError::not_nul_terminated)?;
+        let nul_pos = memchr::memchr(terminator, chunk).context(NotNulTerminated { terminator })?;
         let chunk = unsafe { chunk.get_unchecked(0..nul_pos) };
 
         let s = if std::str::from_utf8(chunk).is_ok() {

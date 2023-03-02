@@ -6,6 +6,7 @@ use std::{
     mem::MaybeUninit,
 };
 
+use ::error::Context;
 use bytes::{Buf, BufMut, Bytes, BytesMut};
 use libflate::{gzip, zlib};
 
@@ -19,7 +20,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         // The zlib format
         [b'Z', b'L', b'B', b'\x01', x0, x1, x2, x3, data @ ..] => {
             let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
-            let decoder = zlib::Decoder::new(&*data).map_err(DecodeError::ZlibError)?;
+            let decoder = zlib::Decoder::new(&*data).context(Zlib)?;
             let ret = do_read(decoder, length)?;
 
             Ok(ret)
@@ -45,11 +46,12 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
 
         // A xtea-encrypted gzip
         #[cfg(feature = "dat2")]
+        // TODO: see if a missing xtea can be handled more gently
         [2, _, _, _, _, data @ .., _, _] if let Some(xtea) = xtea => {
             let decrypted = crate::xtea::Xtea::decrypt(data, xtea);
 
             if let [x0, x1, x2, x3, decrypted @ ..] = &*decrypted {
-                let decoder = gzip::Decoder::new(decrypted).map_err(|_| DecodeError::XteaError)?;
+                let decoder = gzip::Decoder::new(decrypted).context(Gzip)?;
                 let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
                 let ret = do_read(decoder, length)?;
                 Ok(ret)
@@ -61,9 +63,16 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         // The gzip format
         [2, _y0, _y1, _y2, _y3, x0, x1, x2, x3, data @ ..] => {
             let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
-            let decoder = gzip::Decoder::new(&*data).map_err(DecodeError::GzipError)?;
-            let ret = do_read(decoder, length)?;
-            Ok(ret)
+            let ret = try {
+                let decoder = gzip::Decoder::new(&*data).context(Gzip)?;
+                let ret = do_read(decoder, length)?;
+                ret
+            };
+            match ret {
+                #[cfg(feature = "dat2")]
+                Err(_) => Err(Xtea::new()),
+                e => e,
+            }
         }
 
         // An older variant of the gzip format
@@ -71,7 +80,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         [b'\x1f', b'\x8b', b'\x08', data @ ..] => {
             if let [data @ .., _version, _version_part2] = data {
                 let ret: Result<Bytes, DecodeError> = try {
-                    let mut decoder = gzip::Decoder::new(&*data).map_err(DecodeError::GzipError)?;
+                    let mut decoder = gzip::Decoder::new(&*data).context(Gzip)?;
                     let mut buf = Vec::new();
                     decoder.read_to_end(&mut buf).unwrap();
                     buf.into()
@@ -80,7 +89,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
                     // Sometimes tools generate caches where trailing versions are missing,
                     // and the below code includes the last two bytes.
                     let data = encoded_data.as_slice();
-                    let mut decoder = gzip::Decoder::new(data).map_err(DecodeError::GzipError)?;
+                    let mut decoder = gzip::Decoder::new(data).context(Gzip)?;
                     let mut buf = Vec::new();
                     decoder.read_to_end(&mut buf).unwrap();
                     Ok(buf.into())
@@ -93,7 +102,7 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         }
 
         // Some tools pack empty files
-        [] | [_] | [_, _] | [_, _, _] => Err(DecodeError::Other("File was empty")),
+        [] | [_] | [_, _] | [_, _, _] => Err(Empty::new(encoded_data)),
 
         // Oh no
         _ => unimplemented!("unknown format {:?}", &encoded_data[0..30]),
@@ -109,36 +118,30 @@ fn do_read(mut decoder: impl Read, len: u32) -> Result<Bytes, DecodeError> {
     Ok(decoded_data.into())
 }
 
-#[derive(Debug)]
+#[derive(::error::Error)]
 pub enum DecodeError {
-    ZlibError(std::io::Error),
-    GzipError(std::io::Error),
-    /// Wraps [`bzip2_rs::decoder::DecoderError`].
-    BZip2Error(bzip2_rs::decoder::DecoderError),
+    #[error = "could not decompress zlib-compressed buffer"]
+    Zlib {
+        #[source]
+        source: std::io::Error,
+    },
+    #[error = "could not decompress gzib-compressed buffer"]
+    Gzip {
+        #[source]
+        source: std::io::Error,
+    },
+    #[error = "could not decompress bzip2-compressed buffer"]
+    BZip2 {
+        #[source]
+        source: bzip2_rs::decoder::DecoderError,
+    },
+    #[error = "passed empty buffer: {buf:?}"]
+    Empty { buf: Vec<u8> },
+    #[error = "decoding format not implemented"]
+    Unimplemented { buf: Vec<u8> },
     #[cfg(feature = "dat2")]
-    XteaError,
-    Other(&'static str),
-}
-
-impl Display for DecodeError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::ZlibError(io) | Self::GzipError(io) => Display::fmt(&io, f),
-            Self::BZip2Error(e) => Display::fmt(&e, f),
-            Self::Other(e) => Display::fmt(&e, f),
-            #[cfg(feature = "dat2")]
-            Self::XteaError => Display::fmt("XteaError", f),
-        }
-    }
-}
-
-impl std::error::Error for DecodeError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::BZip2Error(e) => Some(e),
-            _ => None,
-        }
-    }
+    #[error = "xtea was not found"]
+    Xtea,
 }
 
 #[cfg(all(test, feature = "sqlite"))]
