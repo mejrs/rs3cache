@@ -44,7 +44,7 @@ impl CacheIndex<Initial> {
             .context(Other)
             .context(error::Integrity)?;
         let raw_metadata = decoder::decompress(data).context(error::Decode)?;
-        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata).context(error::Read)?;
+        let metadatas = IndexMetadata::deserialize(index_id, raw_metadata).context(error::Read { what: "index metadata" })?;
 
         Ok(Self {
             index_id,

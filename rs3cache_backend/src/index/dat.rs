@@ -31,10 +31,12 @@ where
         let entry_data = fs::read(&file).context(CannotOpen { file, input: input.clone() })?;
 
         let mut buf = Cursor::new(entry_data);
-        buf.seek(SeekFrom::Start((b * 6) as _)).context(FileSeek).context(error::Read)?;
+        buf.seek(SeekFrom::Start((b * 6) as _))
+            .context(FileSeek)
+            .context(error::Read { what: "entry metadata" })?;
         Ok((
-            buf.try_get_uint(3).context(error::Read)? as u32,
-            buf.try_get_uint(3).context(error::Read)? as u32,
+            buf.try_get_uint(3).context(error::Read { what: "entry metadata" })? as u32,
+            buf.try_get_uint(3).context(error::Read { what: "entry metadata" })? as u32,
         ))
     }
 
@@ -48,30 +50,48 @@ where
         let mut data = Vec::with_capacity(length as _);
 
         while sector != 0 {
-            buffer.seek(SeekFrom::Start((sector * 520) as _)).context(FileSeek).context(error::Read)?;
+            buffer
+                .seek(SeekFrom::Start((sector * 520) as _))
+                .context(FileSeek)
+                .context(error::Read { what: "index metadata" })?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "index metadata" })?;
                 (10, i32::from_be_bytes(buf), 510.min(length - read_count))
             } else {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "index metadata" })?;
                 (8, u16::from_be_bytes(buf) as _, 512.min(length - read_count))
             };
 
             let current_part = {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "index metadata" })?;
                 u16::from_be_bytes(buf)
             };
             let new_sector = {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf[1..4]).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf[1..4])
+                    .context(FileSeek)
+                    .context(error::Read { what: "index metadata" })?;
                 u32::from_be_bytes(buf)
             };
             let _current_index = {
                 let mut buf = [0; 1];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "index metadata" })?;
                 u8::from_be_bytes(buf)
             };
 
@@ -86,7 +106,7 @@ where
             buffer
                 .read_exact(&mut buf[..(block_size as usize)])
                 .context(FileSeek)
-                .context(error::Read)?;
+                .context(error::Read { what: "index metadata" })?;
 
             data.extend_from_slice(&buf[..(block_size as usize)]);
         }

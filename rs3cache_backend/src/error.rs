@@ -61,12 +61,13 @@ pub enum CacheError {
         #[location]
         location: &'static Location<'static>,
     },
-    #[error = "something went wrong when parsing the cache"]
+    #[error = "something went wrong when parsing {what}"]
     Read {
         #[source]
         source: ReadError,
         #[location]
         location: &'static Location<'static>,
+        what: &'static str,
     },
     #[error = "something went wrong when accessing the cache"]
     Integrity {

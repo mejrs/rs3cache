@@ -222,7 +222,7 @@ pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheRes
         .map(Result::unwrap)
         .map(|archive| try {
             let file = archive.file(&0).unwrap();
-            let frames = deserialize(file).context(Read)?;
+            let frames = deserialize(file).context(Read { what: "sprite frames" })?;
             (archive.archive_id(), frames)
         })
         .collect::<CacheResult<Vec<(u32, _)>>>()?

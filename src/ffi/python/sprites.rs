@@ -107,7 +107,7 @@ impl PySprites {
                     })
                     .collect(),
             })
-            .context(Read)?;
+            .context(Read { what: "sprites" })?;
         Ok(ret)
     }
 

@@ -181,7 +181,7 @@ impl LocationConfig {
             })
             .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)))
             .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
-            .context(error::Read)?;
+            .context(error::Read { what: "location configs" })?;
         Ok(locations)
     }
 
@@ -195,7 +195,7 @@ impl LocationConfig {
             .into_iter()
             .map(|(id, file)| Self::deserialize(id, file).map(|item| (id, item)))
             .collect::<Result<BTreeMap<u32, Self>, ReadError>>()
-            .context(error::Read)?;
+            .context(error::Read { what: "location configs" })?;
         Ok(locations)
     }
 
@@ -212,9 +212,11 @@ impl LocationConfig {
 
         let len = offset_data.try_get_u16().unwrap();
         for id in 0..len {
-            let piece_len = offset_data.try_get_u16().context(error::Read)?;
+            let piece_len = offset_data.try_get_u16().context(error::Read {
+                what: "location config offsets",
+            })?;
             let data = file.split_to(piece_len as usize);
-            let loc = LocationConfig::deserialize(id as u32, data).context(error::Read)?;
+            let loc = LocationConfig::deserialize(id as u32, data).context(error::Read { what: "location configs" })?;
             locations.insert(id as u32, loc);
         }
 

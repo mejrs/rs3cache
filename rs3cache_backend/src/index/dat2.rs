@@ -33,8 +33,8 @@ where
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
         Ok((
-            buf.try_get_uint(3).context(error::Read)? as u32,
-            buf.try_get_uint(3).context(error::Read)? as u32,
+            buf.try_get_uint(3).context(error::Read { what: "cache entries" })? as u32,
+            buf.try_get_uint(3).context(error::Read { what: "cache entries" })? as u32,
         ))
     }
 
@@ -48,30 +48,45 @@ where
         let mut data = Vec::with_capacity(length as _);
 
         while sector != 0 {
-            buffer.seek(SeekFrom::Start((sector * 520) as _)).context(FileSeek).context(error::Read)?;
+            buffer.seek(SeekFrom::Start((sector * 520) as _)).context(FileSeek).context(error::Read {
+                what: "buffer start position",
+            })?;
             let (_header_size, current_archive, block_size) = if b >= 0xFFFF {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "archive checksum" })?;
                 (10, i32::from_be_bytes(buf), 510.min(length - read_count))
             } else {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "archive checksum" })?;
                 (8, u16::from_be_bytes(buf) as _, 512.min(length - read_count))
             };
 
             let current_part = {
                 let mut buf = [0; 2];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer
+                    .read_exact(&mut buf)
+                    .context(FileSeek)
+                    .context(error::Read { what: "part checksum" })?;
                 u16::from_be_bytes(buf)
             };
             let new_sector = {
                 let mut buf = [0; 4];
-                buffer.read_exact(&mut buf[1..4]).context(FileSeek).context(error::Read)?;
+                buffer.read_exact(&mut buf[1..4]).context(FileSeek).context(error::Read {
+                    what: "next sector position",
+                })?;
                 u32::from_be_bytes(buf)
             };
             let current_index = {
                 let mut buf = [0; 1];
-                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read)?;
+                buffer.read_exact(&mut buf).context(FileSeek).context(error::Read {
+                    what: "current position checksum",
+                })?;
                 u8::from_be_bytes(buf)
             };
 
@@ -87,7 +102,7 @@ where
             buffer
                 .read_exact(&mut buf[..(block_size as usize)])
                 .context(FileSeek)
-                .context(error::Read)?;
+                .context(error::Read { what: "archive data" })?;
 
             data.extend_from_slice(&buf[..(block_size as usize)]);
         }
@@ -173,7 +188,7 @@ impl CacheIndex<Initial> {
         let metadatas = {
             let data = s.read_index(255, index_id)?;
             let data = decoder::decompress(data, None).context(error::Decode)?;
-            IndexMetadata::deserialize(index_id, data).context(error::Read)?
+            IndexMetadata::deserialize(index_id, data).context(error::Read { what: "index metadata" })?
         };
 
         s.metadatas = metadatas;

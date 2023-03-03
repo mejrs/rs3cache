@@ -39,7 +39,7 @@ impl DbRow {
         files
             .map(|(file_id, file)| try { (file_id, DbRow::deserialize(file_id, file)?) })
             .collect::<Result<BTreeMap<u32, DbRow>, ReadError>>()
-            .context(error::Read)
+            .context(error::Read { what: "dbrows" })
     }
     fn deserialize(id: u32, mut buffer: Bytes) -> Result<Self, ReadError> {
         let mut obj = Self { id, ..Default::default() };
