@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["hash_djb2",""]]};
+window.SIDEBAR_ITEMS = {"fn":["hash_djb2"]};

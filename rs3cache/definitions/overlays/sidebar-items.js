@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["export","Save the maplabels as `maplabels.json`. Exposed as `--dump maplabels`."]],"struct":[["Overlay","Describes (part of) ground colour."]]};
+window.SIDEBAR_ITEMS = {"fn":["export"],"struct":["Overlay"]};

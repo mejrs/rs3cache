@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ArchiveNotFoundError","Raised if an archive is missing"],["CacheNotFoundError","Raised if the cache cannot be found"],["FileMissingError","Raised if a file in an archive is missing"]]};
+window.SIDEBAR_ITEMS = {"struct":["ArchiveNotFoundError","CacheNotFoundError","FileMissingError"]};

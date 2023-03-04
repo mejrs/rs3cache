@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["put","Applies lines of doors, fences, walls and so on to the base image."]]};
+window.SIDEBAR_ITEMS = {"fn":["put"]};

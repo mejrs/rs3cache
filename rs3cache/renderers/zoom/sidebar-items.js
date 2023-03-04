@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["render_zoom_levels","Given a folder and a range of zoom levels, recursively creates tiles for all zoom levels."]]};
+window.SIDEBAR_ITEMS = {"fn":["render_zoom_levels"]};

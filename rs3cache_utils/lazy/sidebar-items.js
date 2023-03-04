@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Lazy",""]]};
+window.SIDEBAR_ITEMS = {"struct":["Lazy"]};

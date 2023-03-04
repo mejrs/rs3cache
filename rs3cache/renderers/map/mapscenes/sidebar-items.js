@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["put","Applies [`MapScene`]s to the base image."]]};
+window.SIDEBAR_ITEMS = {"fn":["put"]};

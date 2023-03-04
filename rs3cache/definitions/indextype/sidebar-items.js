@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ConfigType","Enumeration of all archives in the Config (2) index."],["IndexType","Enumeration of all index types."],["MapFileType","Enumeration of the files in the MAPSV2 archives."]]};
+window.SIDEBAR_ITEMS = {"struct":["ConfigType","IndexType","MapFileType"]};

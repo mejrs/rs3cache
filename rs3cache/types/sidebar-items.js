@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["coordinate","The [`Coordinate`] type."],["variables","Player variables"]]};
+window.SIDEBAR_ITEMS = {"mod":["coordinate","variables"]};

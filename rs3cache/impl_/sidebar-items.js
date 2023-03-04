@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["main","Entry point for the program. Run the executable with `--help` for a list of commands."]]};
+window.SIDEBAR_ITEMS = {"fn":["main"]};

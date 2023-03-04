@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["map","Exports map tiles."],["scale",""],["zoom","Creates successive tiles for different zoom levels, for use with a leaflet.js based map."]]};
+window.SIDEBAR_ITEMS = {"mod":["map","scale","zoom"]};

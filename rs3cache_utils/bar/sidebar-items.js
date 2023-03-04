@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["RenderBar",""]],"trait":[["Render",""]]};
+window.SIDEBAR_ITEMS = {"struct":["RenderBar"],"trait":["Render"]};

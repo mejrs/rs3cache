@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["DecodeError",""]],"fn":[["decompress","Decompresses index files."]],"struct":[["BZip2",""],["Empty",""],["Gzip",""],["Unimplemented",""],["Zlib",""]]};
+window.SIDEBAR_ITEMS = {"enum":["DecodeError"],"fn":["decompress"],"struct":["BZip2","Empty","Gzip","Unimplemented","Zlib"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["LegacySwitch","Whether to show “new” or “legacy” map icon."],["Polygon","A polygon"],["PolygonPoint","Points that span a [`Polygon`]."],["Toggle","Controls whether the `MapLabelConfig` is shown."]]};
+window.SIDEBAR_ITEMS = {"struct":["LegacySwitch","Polygon","PolygonPoint","Toggle"]};

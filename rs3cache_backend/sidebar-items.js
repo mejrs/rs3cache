@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["arc","Units of data in a `CacheIndex`."],["buf","Wrapper around `Cursor`."],["decoder","Functions to decompress cache data."],["error",""],["hash",""],["index","The interface between rs3cache and the cache database."],["meta","Metadata about the cache itself."]]};
+window.SIDEBAR_ITEMS = {"mod":["arc","buf","decoder","error","hash","index","meta"]};
