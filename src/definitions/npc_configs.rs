@@ -9,20 +9,17 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{
+    buf::{BufExtra, JString},
+    error::{self, CacheResult},
+};
 use serde::Serialize;
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use {crate::definitions::indextype::IndexType, rs3cache_backend::index::CacheIndex};
 
 #[cfg(feature = "osrs")]
 use crate::definitions::indextype::ConfigType;
-use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{self, CacheResult},
-    },
-    structures::paramtable::ParamTable,
-};
+use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
 
@@ -327,13 +324,10 @@ pub mod npc_config_fields {
     use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
+    use rs3cache_backend::buf::BufExtra;
     use serde::Serialize;
 
-    use crate::{
-        cache::buf::BufExtra,
-        types::variables::{Varbit, Varp, VarpOrVarbit},
-    };
-
+    use crate::types::variables::{Varbit, Varp, VarpOrVarbit};
     /// Contains an array of possible ids this npc can morph into, controlled by either a varbit or varp.
     #[cfg_attr(feature = "pyo3", pyclass(frozen))]
     #[derive(Serialize, Debug, Clone)]

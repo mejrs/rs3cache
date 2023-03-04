@@ -19,7 +19,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(all(feature = "rs3", not(feature = "mockdata"), not(feature = "save_mockdata")))]
     if config.assert_coherence {
-        crate::cache::index::assert_coherence(config.input.clone())?;
+        rs3cache_backend::index::assert_coherence(config.input.clone())?;
     }
 
     {

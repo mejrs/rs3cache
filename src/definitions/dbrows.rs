@@ -5,17 +5,14 @@ use std::collections::BTreeMap;
 
 use ::error::Context;
 use bytes::{Buf, Bytes};
-use rs3cache_backend::buf::{NotExhausted, ReadError, WithInfo};
+use rs3cache_backend::{
+    buf::{BufExtra, NotExhausted, ReadError, WithInfo},
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 
-use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::{ConfigType, IndexType},
-};
+use crate::definitions::indextype::{ConfigType, IndexType};
 #[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyo3::pyclass)]
 #[serde_with::skip_serializing_none]

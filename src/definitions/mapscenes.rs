@@ -1,11 +1,9 @@
 use std::collections::BTreeMap;
 
 use bytes::{Buf, Bytes};
+use rs3cache_backend::{buf::BufExtra, error::CacheResult, index::CacheIndex};
 
-use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
-    definitions::indextype::{ConfigType, IndexType},
-};
+use crate::definitions::indextype::{ConfigType, IndexType};
 /// A configuration of a sprite that can be drawn on the world map.
 #[derive(Debug, Default, Copy, Clone)]
 pub struct MapScene {

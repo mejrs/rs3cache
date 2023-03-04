@@ -10,16 +10,13 @@ use pyo3::{
     exceptions::{PyIndexError, PyReferenceError},
     prelude::*,
 };
-use rs3cache_backend::index::CachePath;
-
-use crate::{
-    cache::{
-        arc::Archive,
-        index::{self, CacheIndex, Initial},
-        meta::{IndexMetadata, Metadata},
-    },
-    cli::Config,
+use rs3cache_backend::{
+    arc::Archive,
+    index::{self, CacheIndex, CachePath, Initial},
+    meta::{IndexMetadata, Metadata},
 };
+
+use crate::cli::Config;
 
 /// Wrapper over [`CacheIndex`]. The Python alias for this is `Index`
 ///

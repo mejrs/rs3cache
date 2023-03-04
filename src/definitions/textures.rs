@@ -11,15 +11,13 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::{
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 
-use crate::{
-    cache::{
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::IndexType,
-};
+use crate::definitions::indextype::IndexType;
 
 /// Describes the properties of a given item.
 

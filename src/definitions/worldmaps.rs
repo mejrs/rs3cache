@@ -10,18 +10,14 @@ use std::{
 use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{
+    buf::{BufExtra, JString},
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 
-use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::IndexType,
-    types::coordinate::Coordinate,
-};
+use crate::{definitions::indextype::IndexType, types::coordinate::Coordinate};
 
 /// Enumeration of the archives in the [WORLDMAP](IndexType::WORLDMAP) index.
 pub struct WorldMapType;

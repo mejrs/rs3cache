@@ -26,24 +26,27 @@ use itertools::{iproduct, Product};
 use ndarray::{iter::LanesIter, s, Axis, Dim};
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+#[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
+use rs3cache_backend::xtea::Xtea;
+use rs3cache_backend::{
+    error::{self, CacheResult},
+    index::{CacheIndex, Initial},
+};
+use rs3cache_utils::rangeclamp::RangeClamp;
 #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-use {crate::cache::arc::Archive, crate::definitions::indextype::MapFileType, bytes::Buf, rs3cache_utils::lazy::Lazy};
+use {
+    crate::definitions::indextype::MapFileType,
+    bytes::Buf,
+    rs3cache_backend::{arc::Archive, error::CacheError},
+    rs3cache_utils::lazy::Lazy,
+};
 
 pub use self::iterator::*;
-#[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
-use crate::cache::xtea::Xtea;
-#[allow(unused_imports)]
-use crate::{
-    cache::{
-        error::{self, CacheError, CacheResult},
-        index::{CacheIndex, Initial},
-    },
-    definitions::{
-        locations::Location,
-        tiles::{Tile, TileArray},
-    },
-    utils::rangeclamp::RangeClamp,
+use crate::definitions::{
+    locations::Location,
+    tiles::{Tile, TileArray},
 };
+
 /// Represents a section of the game map
 #[derive(Debug)]
 pub struct MapSquare {

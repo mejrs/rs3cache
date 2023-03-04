@@ -9,17 +9,15 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::{
+    buf::BufExtra,
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::{ConfigType, IndexType},
-};
+use crate::definitions::indextype::{ConfigType, IndexType};
 /// Describes (part of) ground colour.
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[skip_serializing_none]

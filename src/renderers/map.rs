@@ -17,6 +17,8 @@ use indicatif::ProgressIterator;
 use itertools::iproduct;
 use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
+use rs3cache_backend::error::{self, CacheResult};
+use rs3cache_utils::color::Color;
 
 #[cfg(feature = "legacy")]
 use crate::definitions::flo::Flo;
@@ -25,7 +27,6 @@ use crate::definitions::mapscenes::MapScene;
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use crate::definitions::{overlays::Overlay, underlays::Underlay};
 use crate::{
-    cache::error::{self, CacheResult},
     cli::Config,
     definitions::{
         location_configs::LocationConfig,
@@ -33,7 +34,6 @@ use crate::{
         sprites::{self, Sprite},
     },
     renderers::{scale, zoom},
-    utils::color::Color,
 };
 ///
 pub struct RenderConfig {

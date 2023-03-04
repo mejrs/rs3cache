@@ -29,11 +29,6 @@ compile_error!("You must use one and only one of the rs3 or osrs or legacy featu
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
 pub mod cli;
 
-/// Tools for decoding the cache itself.
-#[cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
-pub use rs3cache_backend as cache;
-use rs3cache_utils as utils;
-
 /// Various data types
 #[cfg(any(feature = "rs3", feature = "osrs", feature = "legacy"))]
 pub mod types {

@@ -2,15 +2,14 @@ use std::collections::BTreeMap;
 
 use image::{GenericImage, GenericImageView, RgbaImage};
 use itertools::iproduct;
+use rs3cache_utils::rangeclamp::RangeClamp;
 
 #[cfg(any(feature = "rs3", feature = "2009_1_shim"))]
 use crate::definitions::mapscenes::MapScene;
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare, sprites::Sprite},
     renderers::map::CONFIG,
-    utils::rangeclamp::RangeClamp,
 };
-
 /// Applies [`MapScene`]s to the base image.
 pub fn put(
     plane: usize,

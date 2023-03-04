@@ -8,13 +8,11 @@ use bytes::{Buf, Bytes};
 use console::style;
 use indicatif::{ProgressBar, ProgressStyle};
 use path_macro::path;
+use rs3cache_backend::{buf::BufExtra, error::CacheResult, index::CacheIndex};
 
-use crate::{
-    cache::{buf::BufExtra, error::CacheResult, index::CacheIndex},
-    definitions::{
-        enums::{Enum, Value},
-        indextype::IndexType,
-    },
+use crate::definitions::{
+    enums::{Enum, Value},
+    indextype::IndexType,
 };
 
 pub fn export_each(config: &crate::cli::Config) -> CacheResult<()> {

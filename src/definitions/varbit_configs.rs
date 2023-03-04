@@ -14,15 +14,13 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
+use rs3cache_backend::{
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 
-use crate::{
-    cache::{
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::{ConfigType, IndexType},
-};
+use crate::definitions::indextype::{ConfigType, IndexType};
 /// A varbit configuration.
 ///
 /// The varbit is the bits of Varp `index` from `least_significant_bit` to `most_significant_bit` inclusive.

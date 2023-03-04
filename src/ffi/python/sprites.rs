@@ -6,14 +6,14 @@ use pyo3::{
     prelude::*,
     types::PyBytes,
 };
-use rs3cache_backend::{error::Read, index::CachePath};
+use rs3cache_backend::{
+    arc::Archive,
+    error::Read,
+    index::{self, CacheIndex, CachePath, Initial},
+    meta::IndexMetadata,
+};
 
 use crate::{
-    cache::{
-        arc::Archive,
-        index::{self, CacheIndex, Initial},
-        meta::IndexMetadata,
-    },
     cli::Config,
     definitions::{indextype::IndexType, sprites},
     ffi::python::PyIndexMetadata,

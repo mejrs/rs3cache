@@ -3,28 +3,36 @@ use std::collections::{BTreeMap, HashMap};
 
 use ::error::Context;
 use itertools::iproduct;
+use rs3cache_backend::{
+    error::{self, CacheResult},
+    index::{self, CacheIndex},
+};
 
-use crate::{
-    cache::{
-        error::{self, CacheResult},
-        index::{self, CacheIndex},
-    },
-    definitions::{
-        indextype::{IndexType, MapFileType},
-        mapsquares::{GroupMapSquare, MapSquare, MapSquares},
-    },
+use crate::definitions::{
+    indextype::{IndexType, MapFileType},
+    mapsquares::{GroupMapSquare, MapSquare, MapSquares},
 };
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {
         let index = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?;
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)), (i, j)))
+            .map(|(i, j)| {
+                (
+                    rs3cache_backend::hash::hash_djb2(format!("{}{}_{}", MapFileType::LOCATIONS, i, j)),
+                    (i, j),
+                )
+            })
             .collect();
         let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::TILES, i, j)), (i, j)))
+            .map(|(i, j)| (rs3cache_backend::hash::hash_djb2(format!("{}{}_{}", MapFileType::TILES, i, j)), (i, j)))
             .collect();
         let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("{}{}_{}", MapFileType::ENVIRONMENT, i, j)), (i, j)))
+            .map(|(i, j)| {
+                (
+                    rs3cache_backend::hash::hash_djb2(format!("{}{}_{}", MapFileType::ENVIRONMENT, i, j)),
+                    (i, j),
+                )
+            })
             .collect();
 
         let mapping = index
@@ -102,13 +110,13 @@ impl GroupMapSquareIterator {
         let inner = CacheIndex::new(IndexType::MAPSV2, config.input.clone())?;
 
         let land_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("l{i}_{j}")), (i, j)))
+            .map(|(i, j)| (rs3cache_backend::hash::hash_djb2(format!("l{i}_{j}")), (i, j)))
             .collect();
         let map_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("m{i}_{j}")), (i, j)))
+            .map(|(i, j)| (rs3cache_backend::hash::hash_djb2(format!("m{i}_{j}")), (i, j)))
             .collect();
         let env_hashes: HashMap<i32, (u8, u8)> = iproduct!(0..100, 0..200)
-            .map(|(i, j)| (crate::cache::hash::hash_djb2(format!("ul{i}_{j}")), (i, j)))
+            .map(|(i, j)| (rs3cache_backend::hash::hash_djb2(format!("ul{i}_{j}")), (i, j)))
             .collect();
 
         let mapping: BTreeMap<(&'static str, u8, u8), u32> = inner

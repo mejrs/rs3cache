@@ -2,15 +2,12 @@ use core::ops::RangeInclusive;
 use std::collections::{BTreeMap, HashMap};
 
 use itertools::iproduct;
-use rs3cache_backend::index::MapsquareMeta;
-
-use crate::{
-    cache::{
-        error::CacheResult,
-        index::{self, CacheIndex},
-    },
-    definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares},
+use rs3cache_backend::{
+    error::CacheResult,
+    index::{self, CacheIndex, MapsquareMeta},
 };
+
+use crate::definitions::mapsquares::{GroupMapSquare, MapSquare, MapSquares};
 
 impl MapSquares {
     pub fn new(config: &crate::cli::Config) -> CacheResult<MapSquares> {

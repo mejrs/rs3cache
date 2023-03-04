@@ -11,17 +11,14 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{
+    buf::{BufExtra, JString},
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 
-use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::IndexType,
-};
+use crate::definitions::indextype::IndexType;
 /// Describes the properties of a given Achievement.
 
 #[allow(missing_docs)]
@@ -264,10 +261,10 @@ pub mod achievement_fields_impl {
     use bytes::{Buf, Bytes};
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
-    use rs3cache_backend::buf::JString;
+    use rs3cache_backend::buf::{BufExtra, JString};
     use serde::Serialize;
 
-    use crate::{cache::buf::BufExtra, types::variables::Varbit};
+    use crate::types::variables::Varbit;
 
     #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
     #[derive(Serialize, Debug, Clone)]

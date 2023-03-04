@@ -3,10 +3,8 @@ use std::{collections::BTreeMap, iter};
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
 use pyo3::{exceptions::PyKeyError, prelude::*};
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::buf::{BufExtra, JString};
 use serde::Serialize;
-
-use crate::cache::buf::BufExtra;
 
 /// [`LocationConfig`](crate::definitions::location_configs::LocationConfig)s,
 /// items and

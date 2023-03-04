@@ -9,15 +9,14 @@ use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-use rs3cache_backend::buf::JString;
+use rs3cache_backend::{
+    buf::{BufExtra, JString},
+    error::{self, CacheResult},
+    index::CacheIndex,
+};
 use serde::Serialize;
 
 use crate::{
-    cache::{
-        buf::BufExtra,
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
     definitions::indextype::{ConfigType, IndexType},
     structures::paramtable::ParamTable,
 };

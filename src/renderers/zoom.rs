@@ -6,13 +6,10 @@ use itertools::Itertools;
 use path_macro::path;
 use rayon::iter::ParallelIterator;
 use regex::Regex;
+use rs3cache_backend::error::{self, CacheResult};
 use rs3cache_utils::bar::Render;
 
-use crate::{
-    cache::error::{self, CacheResult},
-    cli::Config,
-    renderers::scale,
-};
+use crate::{cli::Config, renderers::scale};
 
 static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?P<p>\d+)(?:_)(?P<i>\d+)(?:_)(?P<j>\d+)(?:\.png)").expect("Regex is cursed."));
 

@@ -428,12 +428,10 @@ pub mod location_config_fields {
     use bytes::Bytes;
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
+    use rs3cache_backend::buf::{BufExtra, ReadError};
     use serde::Serialize;
 
-    use crate::{
-        cache::buf::{BufExtra, ReadError},
-        types::variables::{Varbit, Varp, VarpOrVarbit},
-    };
+    use crate::types::variables::{Varbit, Varp, VarpOrVarbit};
 
     #[cfg(any(feature = "rs3", feature = "2011_11_shim"))]
     type IdType = u32;

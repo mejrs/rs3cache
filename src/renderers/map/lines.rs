@@ -1,11 +1,11 @@
 use std::collections::BTreeMap;
 
 use image::{GenericImage, Rgba, RgbaImage};
+use rs3cache_utils::color::Color;
 
 use crate::{
     definitions::{location_configs::LocationConfig, mapsquares::GroupMapSquare},
     renderers::map::{lineshape, CONFIG},
-    utils::color::Color,
 };
 
 /// Applies lines of doors, fences, walls and so on to the base image.

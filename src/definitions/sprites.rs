@@ -11,18 +11,13 @@ use itertools::izip;
 use path_macro::path;
 use rs3cache_backend::{
     buf::{BufExtra, FileSeek, ReadError},
-    error::Read,
+    error::{self, CacheResult, Read},
+    index::CacheIndex,
 };
 #[cfg(any(feature = "rs3", feature = "osrs"))]
 use {rayon::iter::ParallelIterator, rs3cache_utils::bar::Render};
 
-use crate::{
-    cache::{
-        error::{self, CacheResult},
-        index::CacheIndex,
-    },
-    definitions::indextype::IndexType,
-};
+use crate::definitions::indextype::IndexType;
 
 /// Type alias for a rgba image.
 pub type Sprite = ImageBuffer<Rgba<u8>, Vec<u8>>;
