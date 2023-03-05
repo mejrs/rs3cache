@@ -1,24 +1,18 @@
 use std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
-    env::{self, VarError},
+    collections::HashMap,
     fs::{self, File},
-    io::{self, BufReader, Cursor, Read, Seek, SeekFrom, Write},
-    marker::PhantomData,
-    ops::RangeInclusive,
-    path::{Path, PathBuf},
-    sync::Arc,
+    io::{BufReader, Cursor, Read, Seek, SeekFrom},
 };
 
 use ::error::Context;
-use bytes::{Buf, Bytes};
-use itertools::iproduct;
+use bytes::Bytes;
 use path_macro::path;
 
 use crate::{
     arc::Archive,
-    buf::{BufExtra, FileSeek, ReadError},
+    buf::{BufExtra, FileSeek},
     decoder,
-    error::{self, CacheError, CacheResult, CannotOpen},
+    error::{self, CacheResult, CannotOpen},
     index::*,
     meta::{IndexMetadata, Metadata},
     xtea::Xtea,

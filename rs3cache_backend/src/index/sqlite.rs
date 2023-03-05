@@ -1,27 +1,11 @@
-use std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
-    env::{self, VarError},
-    fmt::{Display, Formatter},
-    fs::{self, File},
-    io::{self, Cursor, Read, Seek, SeekFrom, Write},
-    marker::PhantomData,
-    ops::RangeInclusive,
-    path::{Path, PathBuf},
-    sync::Arc,
-};
-
-use ::error::{Context, With};
-use bytes::{Buf, Bytes};
-use console::style;
-use itertools::iproduct;
+use ::error::Context;
+use bytes::Bytes;
 use path_macro::path;
 use rusqlite::{Connection, OpenFlags};
 
 use crate::{
-    arc::Archive,
-    buf::BufExtra,
     decoder,
-    error::{self, CacheError, CacheResult, CannotOpen},
+    error::{self, CacheResult, CannotOpen},
     index::*,
     meta::{IndexMetadata, Metadata},
 };
@@ -156,7 +140,7 @@ where
 #[cfg(not(feature = "mockdata"))]
 pub fn assert_coherence(folder: CachePath) -> CacheResult<()> {
     for index_id in 0..70 {
-        if fs::metadata(path!(folder / format!("js5-{index_id}.jcache"))).is_ok() {
+        if std::fs::metadata(path!(folder / format!("js5-{index_id}.jcache"))).is_ok() {
             match CacheIndex::new(index_id, folder.clone())?.assert_coherence() {
                 Ok(_) => println!("Index {index_id} is coherent!"),
                 Err(e) => println!("Index {index_id} is not coherent: {e} and possibly others."),

@@ -1,11 +1,12 @@
-#[allow(unused_imports)]
 use bytes::{Buf, Bytes};
 use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
-#[allow(unused_imports)]
-use rs3cache_backend::buf::{BufExtra, ReadError};
+use rs3cache_backend::buf::BufExtra;
+#[cfg(any(feature = "osrs", feature = "legacy"))]
+use rs3cache_backend::buf::ReadError;
 use serde::Serialize;
+
 /// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 pub type TileArray = ArrayBase<OwnedRepr<Tile>, Dim<[usize; 3]>>;
 

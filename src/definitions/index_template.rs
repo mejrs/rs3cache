@@ -19,7 +19,7 @@ use crate::{
 
 /// Describes the properties of a given <Name>.
 
-#[allow(missing_docs)]
+
 #[cfg_attr(feature = "pyo3", rs3cache_macros::pyo3_get_all)]
  #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]

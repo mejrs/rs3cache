@@ -23,7 +23,6 @@ use crate::{definitions::indextype::IndexType, types::coordinate::Coordinate};
 pub struct WorldMapType;
 
 impl WorldMapType {
-    #![allow(missing_docs)]
     pub const ZONES: u32 = 0;
     pub const PASTES: u32 = 1;
 
@@ -130,7 +129,7 @@ impl MapZone {
 }
 
 mod mapzone_fields_impl {
-    #![allow(missing_docs)]
+
     use bytes::{Buf, Bytes};
     use serde::Serialize;
 
@@ -218,7 +217,7 @@ impl MapPastes {
 }
 
 mod mappaste_fields_impl {
-    #![allow(missing_docs)]
+
     use bytes::{Buf, Bytes};
     use serde::Serialize;
 

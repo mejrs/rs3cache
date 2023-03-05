@@ -1,31 +1,18 @@
 //! The interface between [rs3cache](crate) and the cache database.
 
-#![allow(unused_imports)] // varies based on mock config flags
 use core::panic::Location;
-use std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
-    env::{self, VarError},
-    fmt,
-    fs::{self, File},
-    io::{self, BufReader, Cursor, Read, Seek, SeekFrom, Write},
-    marker::PhantomData,
-    ops::RangeInclusive,
-    path::{Path, PathBuf},
-    sync::Arc,
-};
-
-use ::error::Context;
-use bytes::{Buf, Bytes};
-use itertools::iproduct;
-use path_macro::path;
+use std::collections::BTreeSet;
 
 #[cfg(feature = "dat2")]
-use crate::xtea::Xtea;
+use {crate::error, crate::xtea::Xtea, ::error::Context, std::collections::HashMap, std::fs::File};
+#[cfg(feature = "sqlite")]
+use {crate::error, ::error::Context};
+#[cfg(feature = "dat")]
+use {std::collections::BTreeMap, std::fs::File};
+
 use crate::{
     arc::Archive,
-    buf::BufExtra,
-    decoder,
-    error::{self, CacheError, CacheResult},
+    error::CacheResult,
     meta::{IndexMetadata, Metadata},
     path::CachePath,
 };
@@ -39,8 +26,6 @@ mod index_impl;
 pub use index_impl::*;
 
 mod states {
-    use std::ops::RangeInclusive;
-
     /// Initial state of [`CacheIndex`](super::CacheIndex).
     pub struct Initial {}
 

@@ -12,22 +12,19 @@
     let_chains,
     error_in_core
 )]
-#![allow(non_snake_case, unused_imports, clippy::result_large_err)]
+#![allow(clippy::result_large_err)]
 #![warn(
-     unused_qualifications,
+    unused_qualifications,
     unused_import_braces,
     unused_extern_crates,
     rustdoc::broken_intra_doc_links,
-    //missing_docs,
     rustdoc::missing_crate_level_docs,
     trivial_casts,
     trivial_numeric_casts,
-    clippy::uninlined_format_args,
+    clippy::uninlined_format_args
 )]
 #![deny(keyword_idents, macro_use_extern_crate)]
 #![cfg(any(feature = "sqlite", feature = "dat2", feature = "dat"))]
-
-use rs3cache_utils as utils;
 
 pub mod arc;
 pub mod buf;

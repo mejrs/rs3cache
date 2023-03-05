@@ -1,12 +1,12 @@
 #![cfg(feature = "dat2")]
 
-use std::{array, backtrace::Backtrace, collections::HashMap, fs::File, io::BufReader, path::Path};
+use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 
 use ::error::Context;
 use serde::{Deserialize, Serialize};
 use serde_json;
 
-use crate::error::{self, CacheError, CacheResult};
+use crate::error::{self, CacheResult};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Xtea {

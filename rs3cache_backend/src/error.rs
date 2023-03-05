@@ -1,13 +1,4 @@
-use std::{
-    backtrace::{Backtrace, BacktraceStatus},
-    fmt, io,
-    panic::{Location, PanicInfo},
-    path::{Path, PathBuf},
-    sync::Arc,
-};
-
-use console::style;
-use error::With;
+use std::{panic::Location, path::PathBuf};
 
 use crate::{
     buf::ReadError,

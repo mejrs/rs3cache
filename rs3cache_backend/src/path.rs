@@ -1,11 +1,7 @@
 use core::fmt;
-use std::{
-    ffi::OsStr,
-    path::{Path, PathBuf},
-    sync::Arc,
-};
+use std::{ffi::OsStr, path::Path, sync::Arc};
 
-use clap::{parser::ValueSource, Arg, ArgMatches, Command, FromArgMatches, Subcommand};
+use clap::{parser::ValueSource, ArgMatches, Command, FromArgMatches};
 
 pub const INPUT: &str = if cfg!(feature = "sqlite") {
     "RS3_CACHE_INPUT_FOLDER"

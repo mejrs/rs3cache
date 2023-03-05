@@ -25,7 +25,6 @@ use crate::definitions::indextype::{ConfigType, IndexType};
 ///
 /// The varbit is the bits of Varp `index` from `least_significant_bit` to `most_significant_bit` inclusive.
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]

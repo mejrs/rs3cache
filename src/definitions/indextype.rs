@@ -3,7 +3,6 @@
 /// Enumeration of all index types.
 pub struct IndexType;
 
-#[allow(dead_code)]
 impl IndexType {
     /// Unimplemented.
     pub const BASES: u32 = 1;
@@ -14,7 +13,7 @@ impl IndexType {
     /// Contains [`MapSquare`](../../sqlitecache/definitions/mapsquares/struct.MapSquares.html) definitions.
     pub const MAPSV2: u32 = 5;
     /// Discontinued.
-    const MODELS: u32 = 7;
+    pub const MODELS: u32 = 7;
     /// Contains [`sprite`](../../sqlitecache/definitions/sprites/index.html) definitions.
     pub const SPRITES: u32 = 8;
     /// Unimplemented.
@@ -61,17 +60,17 @@ impl IndexType {
     /// Unimplemented.
     pub const BILLBOARDS: u32 = 29;
     /// Discontinued.
-    const DLLS: u32 = 30;
+    pub const DLLS: u32 = 30;
     /// Discontinued.
-    const SHADERS: u32 = 31;
+    pub const SHADERS: u32 = 31;
     /// Discontinued.
-    const LOADINGSPRITES: u32 = 32;
+    pub const LOADINGSPRITES: u32 = 32;
     /// Discontinued.
-    const LOADINGSCREEN: u32 = 33;
+    pub const LOADINGSCREEN: u32 = 33;
     /// Discontinued.
-    const LOADINGSPRITESRAW: u32 = 34;
+    pub const LOADINGSPRITESRAW: u32 = 34;
     /// Discontinued.
-    const CUTSCENES: u32 = 35;
+    pub const CUTSCENES: u32 = 35;
     /// Unimplemented.
     pub const AUDIOSTREAMS: u32 = 40;
     /// Unimplemented.
@@ -208,7 +207,6 @@ impl ConfigType {
 /// Enumeration of the files in the [MAPSV2](IndexType::MAPSV2) archives.
 pub struct MapFileType;
 
-#[allow(missing_docs)]
 #[cfg(any(all(feature = "osrs", not(feature = "2013_4_shim")), feature = "legacy"))]
 impl MapFileType {
     /// Deserializes to the sequence of [`Location`]s in `self`.
@@ -218,7 +216,6 @@ impl MapFileType {
     pub const ENVIRONMENT: &'static str = "e";
 }
 
-#[allow(missing_docs)]
 #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
 impl MapFileType {
     /// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.

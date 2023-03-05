@@ -23,7 +23,6 @@ use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -317,7 +316,6 @@ impl Display for NpcConfig {
 
 /// Defines the structs used as fields of [`NpcConfig`],
 pub mod npc_config_fields {
-    #![allow(missing_docs)]
 
     use std::{collections::BTreeMap, iter};
 

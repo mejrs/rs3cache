@@ -1,5 +1,3 @@
-#![allow(unused_variables)]
-
 use core::panic::Location;
 use std::collections::BTreeMap;
 
@@ -13,7 +11,7 @@ use rs3cache_backend::{
 use serde::Serialize;
 
 use crate::definitions::indextype::{ConfigType, IndexType};
-#[allow(missing_docs)]
+
 #[cfg_attr(feature = "pyo3", pyo3::pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -62,18 +60,18 @@ impl DbRow {
                     1 => obj.unknown_1 = Some(true),
                     3 => {
                         let size = buffer.try_get_u8()?;
-                        let objects = vec![Value::Null; size as usize];
+                        let _objects = vec![Value::Null; size as usize];
                         loop {
                             match buffer.try_get_u8()? {
                                 255 => break,
-                                index => {
+                                _index => {
                                     let amount = buffer.try_get_u8()? as usize;
                                     let types: Vec<_> = std::iter::repeat_with(|| buffer.get_smarts()).take(amount).collect();
                                     let count = buffer.get_smarts() as usize;
 
-                                    let subobjects = vec![Value::Null; count * amount];
-                                    for c in 0..count {
-                                        for (pos, ty) in types.iter().enumerate() {
+                                    let _subobjects = vec![Value::Null; count * amount];
+                                    for _c in 0..count {
+                                        for (_pos, ty) in types.iter().enumerate() {
                                             match ty {
                                                 35 => {
                                                     buffer.try_get_array::<8>()?;
@@ -141,7 +139,7 @@ mod tests {
     fn t() -> CacheResult<()> {
         let config = Config::env();
 
-        let dbrows = DbRow::dump_all(&config)?;
+        let _dbrows = DbRow::dump_all(&config)?;
 
         Ok(())
     }

@@ -1,7 +1,6 @@
 /// Various colour constants
 pub struct Color {}
 
-#[allow(missing_docs)]
 impl Color {
     pub const MAGENTA: [u8; 4] = [255, 0, 255, 230];
     pub const ALPHA: [u8; 4] = [255, 255, 255, 0];

@@ -21,7 +21,6 @@ use serde::Serialize;
 use crate::definitions::indextype::IndexType;
 /// Describes the properties of a given Achievement.
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -255,7 +254,7 @@ impl Achievement {
 }
 
 pub mod achievement_fields_impl {
-    #![allow(missing_docs)]
+
     use std::iter;
 
     use bytes::{Buf, Bytes};

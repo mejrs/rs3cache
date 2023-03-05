@@ -21,7 +21,6 @@ use crate::{definitions::indextype::IndexType, structures::paramtable::ParamTabl
 
 /// Describes the properties of a given item.
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]

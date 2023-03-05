@@ -1,16 +1,10 @@
 //! Functions to decompress cache data.
-#![allow(deprecated)]
-use std::{
-    fmt::{Debug, Display, Formatter},
-    io::Read,
-    mem::MaybeUninit,
-};
+
+use std::io::Read;
 
 use ::error::Context;
-use bytes::{Buf, BufMut, Bytes, BytesMut};
+use bytes::Bytes;
 use libflate::{gzip, zlib};
-
-use crate::buf::BufExtra;
 
 /// Decompresses index files.
 ///

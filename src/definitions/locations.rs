@@ -66,7 +66,6 @@ impl IntoPy<PyObject> for Watery {
 
 /// A location, also referred to as an "object".
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Copy, Clone, Debug, Hash, Eq, PartialEq)]

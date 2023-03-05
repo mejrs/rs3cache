@@ -204,8 +204,6 @@ pub fn render_tile(
 type Img = ImageBuffer<Rgba<u8>, Vec<u8>>;
 
 pub fn save_smallest(config: &Config, name: &str, i: u8, j: u8, imgs: [Img; 4]) {
-    #![allow(unused_variables)]
-
     let map_id = CONFIG.map_id;
 
     // SAFETY (2) these checks assure that...
@@ -249,8 +247,7 @@ pub fn save_smallest(config: &Config, name: &str, i: u8, j: u8, imgs: [Img; 4]) 
                 debug_assert_eq!(sub_image.width(), 256);
                 debug_assert_eq!(sub_image.height(), 256);
 
-                #[cfg(not(test))]
-                if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
+                if cfg!(not(test)) && sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
                     let xx = base_i + x;
@@ -272,8 +269,7 @@ pub fn save_smallest(config: &Config, name: &str, i: u8, j: u8, imgs: [Img; 4]) 
                     CONFIG.dim / 2,
                 );
 
-                #[cfg(not(test))]
-                if sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
+                if cfg!(not(test)) && sub_image.pixels().any(|(_, _, pixel)| pixel[3] != 0)
                 /* don't save useless tiles */
                 {
                     let resized = scale::resize_half(*sub_image);
@@ -297,8 +293,7 @@ pub fn save_smallest(config: &Config, name: &str, i: u8, j: u8, imgs: [Img; 4]) 
             debug_assert_eq!(resized.width(), 256);
             debug_assert_eq!(resized.height(), 256);
 
-            #[cfg(not(test))]
-            if resized.pixels().any(|&pixel| pixel[3] != 0)
+            if cfg!(not(test)) && resized.pixels().any(|&pixel| pixel[3] != 0)
             /* don't save useless tiles */
             {
                 let filename = path!(config.output / name / format!("{map_id}/2/{plane}_{base_i}_{base_j}.png"));

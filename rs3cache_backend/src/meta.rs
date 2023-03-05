@@ -5,31 +5,25 @@ use std::{
         btree_map::{IntoIter, Iter, Keys},
         BTreeMap,
     },
-    fmt, iter,
-    ops::Add,
+    fmt,
 };
 
-use bytes::{Buf, Bytes};
-use itertools::izip;
+use bytes::Bytes;
 use serde::{Serialize, Serializer};
+#[cfg(feature = "dat2")]
+use {crate::buf::BufExtra, crate::buf::ReadError, bytes::Buf, rs3cache_utils::adapters::Accumulator, std::iter::repeat_with, std::ops::Add};
+#[cfg(feature = "sqlite")]
+use {crate::buf::BufExtra, crate::buf::ReadError, bytes::Buf, rs3cache_utils::adapters::Accumulator, std::iter::repeat_with, std::ops::Add};
 #[cfg(feature = "pyo3")]
 use {
     pyo3::class::basic::CompareOp,
     pyo3::prelude::*,
-    std::collections::{btree_map, hash_map::DefaultHasher},
+    std::collections::hash_map::DefaultHasher,
     std::hash::{Hash, Hasher},
 };
 
-use crate::{
-    buf::{BufExtra, ReadError},
-    error::{self, CacheResult},
-    utils::adapters::Accumulator,
-};
-
 /// Metadata about [`Archive`](crate::arc::Archive)s.
-
 #[cfg_eval]
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default, Hash, Eq, PartialOrd, Ord, PartialEq)]
@@ -145,7 +139,6 @@ impl Metadata {
         self.version
     }
 
-    #[allow(missing_docs)]
     #[inline(always)]
     pub const fn unknown(&self) -> Option<i32> {
         self.unknown
@@ -184,7 +177,6 @@ impl Metadata {
 
 /// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.
 
-#[allow(missing_docs)]
 #[derive(Serialize, Clone, Debug, Default, Hash, Eq, Ord, PartialOrd, PartialEq)]
 pub struct IndexMetadata {
     metadatas: BTreeMap<u32, Metadata>,
@@ -218,7 +210,7 @@ impl IndexMetadata {
             buffer.try_get_u16()? as usize
         };
 
-        let archive_ids = iter::repeat_with(|| try {
+        let archive_ids = repeat_with(|| try {
             if format >= 7 {
                 buffer.try_get_smart32()?.unwrap()
             } else {
@@ -232,19 +224,19 @@ impl IndexMetadata {
         .collect::<Vec<u32>>();
 
         let names = if named {
-            iter::repeat_with(|| try { Some(buffer.try_get_i32()?) })
+            repeat_with(|| try { Some(buffer.try_get_i32()?) })
                 .take(entry_count)
                 .collect::<Result<Vec<Option<i32>>, ReadError>>()?
         } else {
             vec![None; entry_count]
         };
 
-        let crcs = iter::repeat_with(|| buffer.try_get_i32())
+        let crcs = repeat_with(|| buffer.try_get_i32())
             .take(entry_count)
             .collect::<Result<Vec<i32>, ReadError>>()?;
 
         let unknowns = if unk4 {
-            iter::repeat_with(|| try { Some(buffer.try_get_i32()?) })
+            repeat_with(|| try { Some(buffer.try_get_i32()?) })
                 .take(entry_count)
                 .collect::<Result<Vec<Option<i32>>, ReadError>>()?
         } else {
@@ -252,22 +244,20 @@ impl IndexMetadata {
         };
 
         let digests = if hashed {
-            iter::repeat_with(|| Some(buffer.copy_to_bytes(64))).take(entry_count).collect()
+            repeat_with(|| Some(buffer.copy_to_bytes(64))).take(entry_count).collect()
         } else {
             vec![None; entry_count]
         };
 
         let (compressed_sizes, sizes): (Vec<_>, Vec<_>) = if unk4 {
-            iter::repeat_with(|| (Some(buffer.get_u32()), Some(buffer.get_u32())))
-                .take(entry_count)
-                .unzip()
+            repeat_with(|| (Some(buffer.get_u32()), Some(buffer.get_u32()))).take(entry_count).unzip()
         } else {
             (vec![None; entry_count], vec![None; entry_count])
         };
 
-        let versions = iter::repeat_with(|| buffer.get_i32()).take(entry_count).collect::<Vec<i32>>();
+        let versions = repeat_with(|| buffer.get_i32()).take(entry_count).collect::<Vec<i32>>();
 
-        let child_counts = iter::repeat_with(|| {
+        let child_counts = repeat_with(|| {
             if format >= 7 {
                 buffer.get_smart32().unwrap()
             } else {
@@ -280,7 +270,7 @@ impl IndexMetadata {
         let child_indices = child_counts
             .iter()
             .map(|count| {
-                iter::repeat_with(|| {
+                repeat_with(|| {
                     if format >= 7 {
                         buffer.get_smart32().unwrap()
                     } else {
@@ -293,7 +283,7 @@ impl IndexMetadata {
             })
             .collect::<Vec<Vec<u32>>>();
 
-        let metadatas = izip!(
+        let metadatas = itertools::izip!(
             archive_ids,
             names,
             crcs,

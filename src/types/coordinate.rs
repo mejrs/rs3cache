@@ -3,7 +3,7 @@
 use serde::Serialize;
 
 /// A coordinate.
-#[allow(missing_docs)]
+
 #[derive(Copy, Clone, Debug, Serialize, PartialOrd, Ord, PartialEq, Eq)]
 pub struct Coordinate {
     pub plane: u8,

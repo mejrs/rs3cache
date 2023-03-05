@@ -21,7 +21,6 @@ use serde::Serialize;
 use crate::{definitions::indextype::IndexType, structures::paramtable::ParamTable};
 /// Describes the properties of a given item.
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -214,7 +213,7 @@ impl ItemConfig {
 
 /// Defines the structs used as fields of [`ItemConfig`],
 pub mod item_config_fields {
-    #![allow(missing_docs)]
+
     use std::{collections::BTreeMap, iter};
 
     use bytes::{Buf, Bytes};

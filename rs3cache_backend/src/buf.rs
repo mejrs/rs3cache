@@ -2,18 +2,11 @@
 //!
 //! This module provides various reads used to decode the cache data
 use core::ops::Deref;
-use std::{
-    fmt::{self, Debug, Display, Formatter},
-    io::{prelude::*, Cursor, SeekFrom},
-    iter,
-    panic::Location,
-};
+use std::{fmt::Debug, panic::Location};
 
 use ::error::Context;
 use bytes::{Buf, Bytes};
 use serde::{Serialize, Serializer};
-
-use crate::error::CacheError;
 
 #[derive(::error::Error)]
 pub enum ReadError {

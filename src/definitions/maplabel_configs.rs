@@ -144,7 +144,7 @@ pub fn export(config: &crate::cli::Config) -> CacheResult<()> {
 
 /// Defines the structs used as fields of [`MapLabelConfig`],
 pub mod maplabel_config_fields {
-    #![allow(missing_docs)]
+
     use std::iter;
 
     use bytes::{Buf, Bytes};

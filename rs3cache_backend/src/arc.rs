@@ -8,20 +8,19 @@
 //! and use its [`IntoIterator`] implementation or its [`archive`](crate::index::CacheIndex::archive())
 //! method instead.
 
-use std::collections::{BTreeMap, HashSet};
+use std::collections::BTreeMap;
 
-use ::error::Context;
 use bytes::{Buf, Bytes};
-use itertools::izip;
 #[cfg(feature = "pyo3")]
 use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes};
-
-use crate::{
-    buf::BufExtra,
-    error::{self, CacheError, CacheResult},
-    meta::Metadata,
+#[cfg(feature = "dat")]
+use {
+    crate::buf::BufExtra,
+    crate::error::{self, CacheResult},
+    ::error::Context,
 };
 
+use crate::meta::Metadata;
 /// A collection of files.
 #[cfg_attr(feature = "pyo3", pyclass(frozen))]
 #[derive(Clone, Default)]
@@ -68,7 +67,7 @@ impl Archive {
 
             #[cfg(feature = "sqlite")]
             child_count => {
-                use crate::utils::adapters::Pairwisor;
+                use rs3cache_utils::adapters::Pairwisor;
 
                 assert_eq!(data[0], 1);
 
@@ -78,14 +77,14 @@ impl Archive {
                     .take(child_count as usize + 1)
                     .pairwise();
 
-                izip!(metadata.child_indices(), offsets)
+                itertools::izip!(metadata.child_indices(), offsets)
                     .map(|(i, (start, end))| (*i, data.slice(start..end)))
                     .collect::<BTreeMap<_, _>>()
             }
 
             #[cfg(feature = "dat2")]
             child_count => {
-                use crate::utils::adapters::Accumulator;
+                use rs3cache_utils::adapters::Accumulator;
                 let mut data = data;
 
                 let n_chunks = *data.last().unwrap() as usize;
@@ -97,7 +96,7 @@ impl Archive {
                     .take(child_count as usize)
                     .accumulate(|x, y| x + y);
 
-                izip!(metadata.child_indices(), offsets)
+                itertools::izip!(metadata.child_indices(), offsets)
                     .map(|(i, n)| (*i, data.split_to(n.try_into().unwrap())))
                     .collect::<BTreeMap<_, _>>()
             }
@@ -174,7 +173,7 @@ impl Archive {
                 let mut compressed = bytes::BytesMut::from(b"BZh1".as_slice());
                 compressed.extend(buffer.split_to(header.compressed_len as usize));
 
-                use pyo3::{prelude::*, types::PyBytes};
+                use pyo3::prelude::*;
                 pyo3::prepare_freethreaded_python();
 
                 let res = Python::with_gil(|py| {

@@ -24,7 +24,6 @@ use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 
-#[allow(missing_docs)]
 #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
@@ -422,7 +421,7 @@ impl Display for LocationConfig {
 
 /// Defines the structs used as fields of [`LocationConfig`],
 pub mod location_config_fields {
-    #![allow(missing_docs)]
+
     use std::{collections::BTreeMap, iter};
 
     use bytes::Bytes;
@@ -494,7 +493,6 @@ pub mod location_config_fields {
     /// Like [`LocationMorphTable`], but with a default value.
 
     #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
-    #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
     pub struct ExtendedLocationMorphTable {
         #[serde(flatten)]
