@@ -149,46 +149,14 @@
 <a href="#149" id="149">149</a>
 <a href="#150" id="150">150</a>
 <a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
-    env::{<span class="self">self</span>, VarError},
-    fmt::{Display, Formatter},
-    fs::{<span class="self">self</span>, File},
-    io::{<span class="self">self</span>, Cursor, Read, Seek, SeekFrom, Write},
-    marker::PhantomData,
-    ops::RangeInclusive,
-    path::{Path, PathBuf},
-    sync::Arc,
-};
-
-<span class="kw">use </span>::error::{Context, With};
-<span class="kw">use </span>bytes::{Buf, Bytes};
-<span class="kw">use </span>console::style;
-<span class="kw">use </span>itertools::iproduct;
+</pre><pre class="rust"><code><span class="kw">use </span>::error::Context;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>path_macro::path;
 <span class="kw">use </span>rusqlite::{Connection, OpenFlags};
 
 <span class="kw">use crate</span>::{
-    arc::Archive,
-    buf::BufExtra,
     decoder,
-    error::{<span class="self">self</span>, CacheError, CacheResult, CannotOpen},
+    error::{<span class="self">self</span>, CacheResult, CannotOpen},
     index::<span class="kw-2">*</span>,
     meta::{IndexMetadata, Metadata},
 };
@@ -199,8 +167,8 @@
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    </span><span class="kw">pub fn </span>new(index_id: u32, input: Arc&lt;CachePath&gt;) -&gt; CacheResult&lt;CacheIndex&lt;Initial&gt;&gt; {
-        <span class="kw">let </span>file = <span class="macro">path!</span>(<span class="kw-2">*</span>input / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>));
+    </span><span class="kw">pub fn </span>new(index_id: u32, input: CachePath) -&gt; CacheResult&lt;CacheIndex&lt;Initial&gt;&gt; {
+        <span class="kw">let </span>file = <span class="macro">path!</span>(input / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>));
 
         <span class="kw">let </span>connection = Connection::open_with_flags(<span class="kw-2">&amp;</span>file, OpenFlags::SQLITE_OPEN_READ_ONLY).with_context(|| CannotOpen {
             file: file.clone(),
@@ -321,9 +289,9 @@
 ///
 /// Panics if compiled with feature `mockdata`.
 </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;mockdata&quot;</span>))]
-</span><span class="kw">pub fn </span>assert_coherence(folder: Arc&lt;CachePath&gt;) -&gt; CacheResult&lt;()&gt; {
+</span><span class="kw">pub fn </span>assert_coherence(folder: CachePath) -&gt; CacheResult&lt;()&gt; {
     <span class="kw">for </span>index_id <span class="kw">in </span><span class="number">0</span>..<span class="number">70 </span>{
-        <span class="kw">if </span>fs::metadata(<span class="macro">path!</span>(<span class="kw-2">&amp;*</span>folder / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>))).is_ok() {
+        <span class="kw">if </span>std::fs::metadata(<span class="macro">path!</span>(folder / <span class="macro">format!</span>(<span class="string">&quot;js5-{index_id}.jcache&quot;</span>))).is_ok() {
             <span class="kw">match </span>CacheIndex::new(index_id, folder.clone())<span class="question-mark">?</span>.assert_coherence() {
                 <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="macro">println!</span>(<span class="string">&quot;Index {index_id} is coherent!&quot;</span>),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">println!</span>(<span class="string">&quot;Index {index_id} is not coherent: {e} and possibly others.&quot;</span>),

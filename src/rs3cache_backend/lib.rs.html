@@ -36,8 +36,6 @@
 <a href="#36" id="36">36</a>
 <a href="#37" id="37">37</a>
 <a href="#38" id="38">38</a>
-<a href="#39" id="39">39</a>
-<a href="#40" id="40">40</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Core cache interpreting utilities.
 
 </span><span class="attr">#![feature(
@@ -52,30 +50,28 @@
     let_chains,
     error_in_core
 )]
-#![allow(non_snake_case, unused_imports)]
+#![allow(clippy::result_large_err)]
 #![warn(
-     unused_qualifications,
+    unused_qualifications,
     unused_import_braces,
     unused_extern_crates,
     rustdoc::broken_intra_doc_links,
-    <span class="comment">//missing_docs,
-    </span>rustdoc::missing_crate_level_docs,
+    rustdoc::missing_crate_level_docs,
     trivial_casts,
     trivial_numeric_casts,
-    clippy::uninlined_format_args,
+    clippy::uninlined_format_args
 )]
 #![deny(keyword_idents, macro_use_extern_crate)]
 #![cfg(any(feature = <span class="string">&quot;sqlite&quot;</span>, feature = <span class="string">&quot;dat2&quot;</span>, feature = <span class="string">&quot;dat&quot;</span>))]
 
-</span><span class="kw">use </span>rs3cache_utils <span class="kw">as </span>utils;
-
-<span class="kw">pub mod </span>arc;
+</span><span class="kw">pub mod </span>arc;
 <span class="kw">pub mod </span>buf;
 <span class="kw">pub mod </span>decoder;
 <span class="kw">pub mod </span>error;
 <span class="kw">pub mod </span>hash;
 <span class="kw">pub mod </span>index;
 <span class="kw">pub mod </span>meta;
+<span class="kw">pub mod </span>path;
 <span class="attr">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
 </span><span class="kw">pub mod </span>xtea;
 </code></pre></div>

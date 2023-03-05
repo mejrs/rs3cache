@@ -227,28 +227,20 @@
 <a href="#227" id="227">227</a>
 <a href="#228" id="228">228</a>
 <a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
-<a href="#231" id="231">231</a>
-<a href="#232" id="232">232</a>
-<a href="#233" id="233">233</a>
-<a href="#234" id="234">234</a>
-<a href="#235" id="235">235</a>
-<a href="#236" id="236">236</a>
-<a href="#237" id="237">237</a>
-<a href="#238" id="238">238</a>
-<a href="#239" id="239">239</a>
-<a href="#240" id="240">240</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{ffi::OsStr, fmt, path::PathBuf, sync::Arc};
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    fmt,
+    path::{Path, PathBuf},
+};
 
-<span class="kw">use </span>clap::{ArgEnum, Parser};
-<span class="kw">use </span>rs3cache_backend::{error::CacheResult, index::CachePath};
+<span class="kw">use </span>clap::{Parser, ValueEnum};
+<span class="kw">use </span>rs3cache_backend::{error::CacheResult, path::CachePath};
 
 <span class="kw">use </span><span class="kw">crate</span>::definitions;
 <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::renderers::map;
 
 <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
-#[derive(ArgEnum, Clone, Debug)]
+#[derive(ValueEnum, Clone, Debug)]
 #[clap(rename_all = <span class="string">&quot;snake_case&quot;</span>)]
 </span><span class="kw">pub enum </span>Render {
     All,
@@ -267,7 +259,7 @@
     }
 }
 
-<span class="attr">#[derive(ArgEnum, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+<span class="attr">#[derive(ValueEnum, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[clap(rename_all = <span class="string">&quot;snake_case&quot;</span>)]
 </span><span class="kw">pub enum </span>Dump {
     All,
@@ -392,20 +384,6 @@
     }
 }
 
-<span class="kw">fn </span>path_helper(input: <span class="kw-2">&amp;</span>OsStr) -&gt; Arc&lt;CachePath&gt; {
-    Arc::new(CachePath::Given(input.into()))
-}
-
-<span class="kw">const </span>INPUT: <span class="kw-2">&amp;</span>str = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;rs3&quot;</span>) {
-    <span class="string">&quot;RS3_CACHE_INPUT_FOLDER&quot;
-</span>} <span class="kw">else if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;osrs&quot;</span>) {
-    <span class="string">&quot;OSRS_CACHE_INPUT_FOLDER&quot;
-</span>} <span class="kw">else if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;legacy&quot;</span>) {
-    <span class="string">&quot;LEGACY_CACHE_INPUT_FOLDER&quot;
-</span>} <span class="kw">else </span>{
-    <span class="macro">unimplemented!</span>()
-};
-
 <span class="kw">const </span>OUTPUT: <span class="kw-2">&amp;</span>str = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;rs3&quot;</span>) {
     <span class="string">&quot;RS3_CACHE_OUTPUT_FOLDER&quot;
 </span>} <span class="kw">else if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;osrs&quot;</span>) {
@@ -420,22 +398,22 @@
 #[clap(author, about = <span class="string">&quot;Tools and api for reading and interpreting the RuneScape game cache&quot;</span>)]
 </span><span class="kw">pub struct </span>Config {
     <span class="doccomment">/// The path where to look for the current cache.
-    </span><span class="attr">#[clap(parse(from_os_str = path_helper), long, env = INPUT, default_value = <span class="string">&quot;&quot;</span>)]
-    </span><span class="kw">pub </span>input: Arc&lt;CachePath&gt;,
+    </span><span class="attr">#[command(flatten)]
+    </span><span class="kw">pub </span>input: CachePath,
 
     <span class="doccomment">/// The path where to place output.
-    </span><span class="attr">#[clap(long, env = OUTPUT, default_value = <span class="string">&quot;&quot;</span>)]
+    </span><span class="attr">#[clap(long, env = OUTPUT, default_value_os = <span class="string">&quot;...&quot;</span>)]
     </span><span class="kw">pub </span>output: PathBuf,
 
     <span class="doccomment">/// This exports them as small tiles, formatted as `&lt;layer&gt;/&lt;mapid&gt;/&lt;zoom&gt;/&lt;plane&gt;_&lt;x&gt;_&lt;y&gt;.png`,
     /// suitable for use with interactive map libraries such as &lt;https://leafletjs.com/&gt;,
     /// as seen on &lt;https://mejrs.github.io/&gt;
     </span><span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
-    #[clap(arg_enum, long, multiple_values = <span class="bool-val">true</span>)]
+    #[clap(value_enum, long, num_args(..))]
     </span><span class="kw">pub </span>render: Vec&lt;Render&gt;,
 
     <span class="doccomment">/// Dumps the given archives.
-    </span><span class="attr">#[clap(arg_enum, long, multiple_values = <span class="bool-val">true</span>)]
+    </span><span class="attr">#[clap(value_enum, long, num_args(..))]
     </span><span class="kw">pub </span>dump: Vec&lt;Dump&gt;,
 
     <span class="doccomment">/// Checks whether the cache is in a consistent state.
@@ -448,7 +426,7 @@
     <span class="attr">#[cfg(not(feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Env(std::env::var_os(INPUT).unwrap_or_default().into())),
+            input: CachePath::Env(Path::new(<span class="kw-2">&amp;</span>std::env::var_os(rs3cache_backend::path::INPUT).unwrap_or_default()).into()),
             output: std::env::var_os(OUTPUT).unwrap_or_default().into(),
             ..Default::default()
         }
@@ -457,7 +435,7 @@
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Env(PathBuf::from(<span class="string">&quot;test_data/osrs_cache&quot;</span>))),
+            input: CachePath::Env(Path::new(<span class="string">&quot;test_data/osrs_cache&quot;</span>).into()),
             ..Default::default()
         }
     }
@@ -465,7 +443,7 @@
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Env(PathBuf::from(<span class="string">&quot;test_data/rs3_cache&quot;</span>))),
+            input: CachePath::Env(Path::new(<span class="string">&quot;test_data/rs3_cache&quot;</span>).into()),
             ..Default::default()
         }
     }
@@ -473,7 +451,7 @@
     <span class="attr">#[cfg(all(feature = <span class="string">&quot;legacy&quot;</span>, feature = <span class="string">&quot;mockdata&quot;</span>))]
     </span><span class="kw">pub fn </span>env() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            input: Arc::new(CachePath::Env(PathBuf::from(<span class="string">&quot;test_data/2005_cache&quot;</span>))),
+            input: CachePath::Env(Path::new(<span class="string">&quot;test_data/2005_cache&quot;</span>).into()),
             ..Default::default()
         }
     }

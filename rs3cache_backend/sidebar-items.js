@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["arc","buf","decoder","error","hash","index","meta"]};
+window.SIDEBAR_ITEMS = {"mod":["arc","buf","decoder","error","hash","index","meta","path"]};

@@ -171,25 +171,13 @@
 <a href="#171" id="171">171</a>
 <a href="#172" id="172">172</a>
 <a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Functions to decompress cache data.
-</span><span class="attr">#![allow(deprecated)]
-</span><span class="kw">use </span>std::{
-    fmt::{Debug, Display, Formatter},
-    io::Read,
-    mem::MaybeUninit,
-};
+
+</span><span class="kw">use </span>std::io::Read;
 
 <span class="kw">use </span>::error::Context;
-<span class="kw">use </span>bytes::{Buf, BufMut, Bytes, BytesMut};
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>libflate::{gzip, zlib};
-
-<span class="kw">use </span><span class="kw">crate</span>::buf::BufExtra;
 
 <span class="doccomment">/// Decompresses index files.
 ///

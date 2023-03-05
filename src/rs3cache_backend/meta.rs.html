@@ -349,16 +349,6 @@
 <a href="#349" id="349">349</a>
 <a href="#350" id="350">350</a>
 <a href="#351" id="351">351</a>
-<a href="#352" id="352">352</a>
-<a href="#353" id="353">353</a>
-<a href="#354" id="354">354</a>
-<a href="#355" id="355">355</a>
-<a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Metadata about the cache itself.
 
 </span><span class="kw">use </span>std::{
@@ -366,31 +356,25 @@
         btree_map::{IntoIter, Iter, Keys},
         BTreeMap,
     },
-    fmt, iter,
-    ops::Add,
+    fmt,
 };
 
-<span class="kw">use </span>bytes::{Buf, Bytes};
-<span class="kw">use </span>itertools::izip;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>serde::{Serialize, Serializer};
+<span class="attr">#[cfg(feature = <span class="string">&quot;dat2&quot;</span>)]
+</span><span class="kw">use </span>{<span class="kw">crate</span>::buf::BufExtra, <span class="kw">crate</span>::buf::ReadError, bytes::Buf, rs3cache_utils::adapters::Accumulator, std::iter::repeat_with, std::ops::Add};
+<span class="attr">#[cfg(feature = <span class="string">&quot;sqlite&quot;</span>)]
+</span><span class="kw">use </span>{<span class="kw">crate</span>::buf::BufExtra, <span class="kw">crate</span>::buf::ReadError, bytes::Buf, rs3cache_utils::adapters::Accumulator, std::iter::repeat_with, std::ops::Add};
 <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
 </span><span class="kw">use </span>{
     pyo3::class::basic::CompareOp,
     pyo3::prelude::<span class="kw-2">*</span>,
-    std::collections::{btree_map, hash_map::DefaultHasher},
+    std::collections::hash_map::DefaultHasher,
     std::hash::{Hash, Hasher},
 };
 
-<span class="kw">use crate</span>::{
-    buf::{BufExtra, ReadError},
-    error::{<span class="self">self</span>, CacheResult},
-    utils::adapters::Accumulator,
-};
-
 <span class="doccomment">/// Metadata about [`Archive`](crate::arc::Archive)s.
-
 </span><span class="attr">#[cfg_eval]
-#[allow(missing_docs)]
 #[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default, Hash, Eq, PartialOrd, Ord, PartialEq)]
@@ -506,8 +490,7 @@
         <span class="self">self</span>.version
     }
 
-    <span class="attr">#[allow(missing_docs)]
-    #[inline(always)]
+    <span class="attr">#[inline(always)]
     </span><span class="kw">pub const fn </span>unknown(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;i32&gt; {
         <span class="self">self</span>.unknown
     }
@@ -545,8 +528,7 @@
 
 <span class="doccomment">/// Contains the [`Metadata`] for every [`Archive`](crate::arc::Archive) in the index.
 
-</span><span class="attr">#[allow(missing_docs)]
-#[derive(Serialize, Clone, Debug, Default, Hash, Eq, Ord, PartialOrd, PartialEq)]
+</span><span class="attr">#[derive(Serialize, Clone, Debug, Default, Hash, Eq, Ord, PartialOrd, PartialEq)]
 </span><span class="kw">pub struct </span>IndexMetadata {
     metadatas: BTreeMap&lt;u32, Metadata&gt;,
 }
@@ -579,7 +561,7 @@
             buffer.try_get_u16()<span class="question-mark">? </span><span class="kw">as </span>usize
         };
 
-        <span class="kw">let </span>archive_ids = iter::repeat_with(|| <span class="kw">try </span>{
+        <span class="kw">let </span>archive_ids = repeat_with(|| <span class="kw">try </span>{
             <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
                 buffer.try_get_smart32()<span class="question-mark">?</span>.unwrap()
             } <span class="kw">else </span>{
@@ -593,19 +575,19 @@
         .collect::&lt;Vec&lt;u32&gt;&gt;();
 
         <span class="kw">let </span>names = <span class="kw">if </span>named {
-            iter::repeat_with(|| <span class="kw">try </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) })
+            repeat_with(|| <span class="kw">try </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) })
                 .take(entry_count)
                 .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt;, ReadError&gt;&gt;()<span class="question-mark">?
         </span>} <span class="kw">else </span>{
             <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count]
         };
 
-        <span class="kw">let </span>crcs = iter::repeat_with(|| buffer.try_get_i32())
+        <span class="kw">let </span>crcs = repeat_with(|| buffer.try_get_i32())
             .take(entry_count)
             .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;i32&gt;, ReadError&gt;&gt;()<span class="question-mark">?</span>;
 
         <span class="kw">let </span>unknowns = <span class="kw">if </span>unk4 {
-            iter::repeat_with(|| <span class="kw">try </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) })
+            repeat_with(|| <span class="kw">try </span>{ <span class="prelude-val">Some</span>(buffer.try_get_i32()<span class="question-mark">?</span>) })
                 .take(entry_count)
                 .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;i32&gt;&gt;, ReadError&gt;&gt;()<span class="question-mark">?
         </span>} <span class="kw">else </span>{
@@ -613,22 +595,20 @@
         };
 
         <span class="kw">let </span>digests = <span class="kw">if </span>hashed {
-            iter::repeat_with(|| <span class="prelude-val">Some</span>(buffer.copy_to_bytes(<span class="number">64</span>))).take(entry_count).collect()
+            repeat_with(|| <span class="prelude-val">Some</span>(buffer.copy_to_bytes(<span class="number">64</span>))).take(entry_count).collect()
         } <span class="kw">else </span>{
             <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count]
         };
 
         <span class="kw">let </span>(compressed_sizes, sizes): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = <span class="kw">if </span>unk4 {
-            iter::repeat_with(|| (<span class="prelude-val">Some</span>(buffer.get_u32()), <span class="prelude-val">Some</span>(buffer.get_u32())))
-                .take(entry_count)
-                .unzip()
+            repeat_with(|| (<span class="prelude-val">Some</span>(buffer.get_u32()), <span class="prelude-val">Some</span>(buffer.get_u32()))).take(entry_count).unzip()
         } <span class="kw">else </span>{
             (<span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count], <span class="macro">vec!</span>[<span class="prelude-val">None</span>; entry_count])
         };
 
-        <span class="kw">let </span>versions = iter::repeat_with(|| buffer.get_i32()).take(entry_count).collect::&lt;Vec&lt;i32&gt;&gt;();
+        <span class="kw">let </span>versions = repeat_with(|| buffer.get_i32()).take(entry_count).collect::&lt;Vec&lt;i32&gt;&gt;();
 
-        <span class="kw">let </span>child_counts = iter::repeat_with(|| {
+        <span class="kw">let </span>child_counts = repeat_with(|| {
             <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
                 buffer.get_smart32().unwrap()
             } <span class="kw">else </span>{
@@ -641,7 +621,7 @@
         <span class="kw">let </span>child_indices = child_counts
             .iter()
             .map(|count| {
-                iter::repeat_with(|| {
+                repeat_with(|| {
                     <span class="kw">if </span>format &gt;= <span class="number">7 </span>{
                         buffer.get_smart32().unwrap()
                     } <span class="kw">else </span>{
@@ -654,7 +634,7 @@
             })
             .collect::&lt;Vec&lt;Vec&lt;u32&gt;&gt;&gt;();
 
-        <span class="kw">let </span>metadatas = <span class="macro">izip!</span>(
+        <span class="kw">let </span>metadatas = <span class="macro">itertools::izip!</span>(
             archive_ids,
             names,
             crcs,

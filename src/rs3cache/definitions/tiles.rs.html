@@ -123,14 +123,16 @@
 <a href="#123" id="123">123</a>
 <a href="#124" id="124">124</a>
 <a href="#125" id="125">125</a>
-</pre><pre class="rust"><code><span class="attr">#[allow(unused_imports)]
-</span><span class="kw">use </span>bytes::{Buf, Bytes};
+<a href="#126" id="126">126</a>
+</pre><pre class="rust"><code><span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
 </span><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
-<span class="attr">#[allow(unused_imports)]
-</span><span class="kw">use </span>rs3cache_backend::buf::{BufExtra, ReadError};
+<span class="kw">use </span>rs3cache_backend::buf::BufExtra;
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;osrs&quot;</span>, feature = <span class="string">&quot;legacy&quot;</span>))]
+</span><span class="kw">use </span>rs3cache_backend::buf::ReadError;
 <span class="kw">use </span>serde::Serialize;
+
 <span class="doccomment">/// Type alias for the 4x64x64 array of [`Tile`]s in a [`MapSquare`](crate::definitions::mapsquares::MapSquare).
 </span><span class="kw">pub type </span>TileArray = ArrayBase&lt;OwnedRepr&lt;Tile&gt;, Dim&lt;[usize; <span class="number">3</span>]&gt;&gt;;
 

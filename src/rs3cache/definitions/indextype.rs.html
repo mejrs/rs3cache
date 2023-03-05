@@ -236,16 +236,12 @@
 <a href="#236" id="236">236</a>
 <a href="#237" id="237">237</a>
 <a href="#238" id="238">238</a>
-<a href="#239" id="239">239</a>
-<a href="#240" id="240">240</a>
-<a href="#241" id="241">241</a>
 </pre><pre class="rust"><code><span class="doccomment">//! The names of various indexes and archives.
 
 /// Enumeration of all index types.
 </span><span class="kw">pub struct </span>IndexType;
 
-<span class="attr">#[allow(dead_code)]
-</span><span class="kw">impl </span>IndexType {
+<span class="kw">impl </span>IndexType {
     <span class="doccomment">/// Unimplemented.
     </span><span class="kw">pub const </span>BASES: u32 = <span class="number">1</span>;
     <span class="doccomment">/// Contains various smaller [`ConfigType`] definitions.
@@ -255,7 +251,7 @@
     <span class="doccomment">/// Contains [`MapSquare`](../../sqlitecache/definitions/mapsquares/struct.MapSquares.html) definitions.
     </span><span class="kw">pub const </span>MAPSV2: u32 = <span class="number">5</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>MODELS: u32 = <span class="number">7</span>;
+    </span><span class="kw">pub const </span>MODELS: u32 = <span class="number">7</span>;
     <span class="doccomment">/// Contains [`sprite`](../../sqlitecache/definitions/sprites/index.html) definitions.
     </span><span class="kw">pub const </span>SPRITES: u32 = <span class="number">8</span>;
     <span class="doccomment">/// Unimplemented.
@@ -302,17 +298,17 @@
     <span class="doccomment">/// Unimplemented.
     </span><span class="kw">pub const </span>BILLBOARDS: u32 = <span class="number">29</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>DLLS: u32 = <span class="number">30</span>;
+    </span><span class="kw">pub const </span>DLLS: u32 = <span class="number">30</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>SHADERS: u32 = <span class="number">31</span>;
+    </span><span class="kw">pub const </span>SHADERS: u32 = <span class="number">31</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>LOADINGSPRITES: u32 = <span class="number">32</span>;
+    </span><span class="kw">pub const </span>LOADINGSPRITES: u32 = <span class="number">32</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>LOADINGSCREEN: u32 = <span class="number">33</span>;
+    </span><span class="kw">pub const </span>LOADINGSCREEN: u32 = <span class="number">33</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>LOADINGSPRITESRAW: u32 = <span class="number">34</span>;
+    </span><span class="kw">pub const </span>LOADINGSPRITESRAW: u32 = <span class="number">34</span>;
     <span class="doccomment">/// Discontinued.
-    </span><span class="kw">const </span>CUTSCENES: u32 = <span class="number">35</span>;
+    </span><span class="kw">pub const </span>CUTSCENES: u32 = <span class="number">35</span>;
     <span class="doccomment">/// Unimplemented.
     </span><span class="kw">pub const </span>AUDIOSTREAMS: u32 = <span class="number">40</span>;
     <span class="doccomment">/// Unimplemented.
@@ -449,8 +445,7 @@
 <span class="doccomment">/// Enumeration of the files in the [MAPSV2](IndexType::MAPSV2) archives.
 </span><span class="kw">pub struct </span>MapFileType;
 
-<span class="attr">#[allow(missing_docs)]
-#[cfg(any(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)), feature = <span class="string">&quot;legacy&quot;</span>))]
+<span class="attr">#[cfg(any(all(feature = <span class="string">&quot;osrs&quot;</span>, not(feature = <span class="string">&quot;2013_4_shim&quot;</span>)), feature = <span class="string">&quot;legacy&quot;</span>))]
 </span><span class="kw">impl </span>MapFileType {
     <span class="doccomment">/// Deserializes to the sequence of [`Location`]s in `self`.
     </span><span class="kw">pub const </span>LOCATIONS: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;l&quot;</span>;
@@ -459,8 +454,7 @@
     <span class="kw">pub const </span>ENVIRONMENT: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;e&quot;</span>;
 }
 
-<span class="attr">#[allow(missing_docs)]
-#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;rs3&quot;</span>, feature = <span class="string">&quot;2013_4_shim&quot;</span>))]
 </span><span class="kw">impl </span>MapFileType {
     <span class="doccomment">/// Deserializes to the sequence of [`Location`](../../rs3cache/definitions/locations/struct.Location.html)s in `self`.
     </span><span class="kw">pub const </span>LOCATIONS: u32 = <span class="number">0</span>;

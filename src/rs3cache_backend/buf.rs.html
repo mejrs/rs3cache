@@ -369,29 +369,15 @@
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
 <a href="#371" id="371">371</a>
-<a href="#372" id="372">372</a>
-<a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
-<a href="#375" id="375">375</a>
-<a href="#376" id="376">376</a>
-<a href="#377" id="377">377</a>
-<a href="#378" id="378">378</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrapper around [`Cursor`](std::io::Cursor).
 //!
 //! This module provides various reads used to decode the cache data
 </span><span class="kw">use </span>core::ops::Deref;
-<span class="kw">use </span>std::{
-    fmt::{<span class="self">self</span>, Debug, Display, Formatter},
-    io::{prelude::<span class="kw-2">*</span>, Cursor, SeekFrom},
-    iter,
-    panic::Location,
-};
+<span class="kw">use </span>std::{fmt::Debug, panic::Location};
 
 <span class="kw">use </span>::error::Context;
 <span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>serde::{Serialize, Serializer};
-
-<span class="kw">use </span><span class="kw">crate</span>::error::CacheError;
 
 <span class="attr">#[derive(::error::Error)]
 </span><span class="kw">pub enum </span>ReadError {

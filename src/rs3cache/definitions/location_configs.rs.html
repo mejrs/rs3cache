@@ -979,8 +979,6 @@
 <a href="#979" id="979">979</a>
 <a href="#980" id="980">980</a>
 <a href="#981" id="981">981</a>
-<a href="#982" id="982">982</a>
-<a href="#983" id="983">983</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     collections::BTreeMap,
     fmt::{<span class="self">self</span>, Display, Formatter},
@@ -1007,8 +1005,7 @@
 
 <span class="doccomment">/// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 
-</span><span class="attr">#[allow(missing_docs)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
+</span><span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>LocationConfig {
@@ -1405,8 +1402,8 @@
 
 <span class="doccomment">/// Defines the structs used as fields of [`LocationConfig`],
 </span><span class="kw">pub mod </span>location_config_fields {
-    <span class="attr">#![allow(missing_docs)]
-    </span><span class="kw">use </span>std::{collections::BTreeMap, iter};
+
+    <span class="kw">use </span>std::{collections::BTreeMap, iter};
 
     <span class="kw">use </span>bytes::Bytes;
     <span class="attr">#[cfg(feature = <span class="string">&quot;pyo3&quot;</span>)]
@@ -1477,7 +1474,6 @@
     <span class="doccomment">/// Like [`LocationMorphTable`], but with a default value.
 
     </span><span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
-    #[allow(missing_docs)]
     #[derive(Serialize, Debug, Clone)]
     </span><span class="kw">pub struct </span>ExtendedLocationMorphTable {
         <span class="attr">#[serde(flatten)]

@@ -189,7 +189,8 @@
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
 <a href="#191" id="191">191</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
+<a href="#192" id="192">192</a>
+</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf};
 
 <span class="kw">use </span>::error::Context;
 <span class="kw">use </span>pyo3::{
@@ -200,8 +201,9 @@
 <span class="kw">use </span>rs3cache_backend::{
     arc::Archive,
     error::Read,
-    index::{<span class="self">self</span>, CacheIndex, CachePath, Initial},
+    index::{<span class="self">self</span>, CacheIndex, Initial},
     meta::IndexMetadata,
+    path::CachePath,
 };
 
 <span class="kw">use crate</span>::{
@@ -268,7 +270,7 @@
     </span><span class="kw">fn </span>__new__(py: Python, path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-            config.input = Arc::new(CachePath::Given(path))
+            config.input = CachePath::Argument(path.into())
         }
         <span class="kw">let </span>constructor = py.import(<span class="string">&quot;PIL&quot;</span>)<span class="question-mark">?</span>.getattr(<span class="string">&quot;Image&quot;</span>)<span class="question-mark">?</span>.getattr(<span class="string">&quot;frombytes&quot;</span>)<span class="question-mark">?</span>.into();
 

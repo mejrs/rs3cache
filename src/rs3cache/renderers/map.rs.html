@@ -334,11 +334,6 @@
 <a href="#334" id="334">334</a>
 <a href="#335" id="335">335</a>
 <a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
 </pre><pre class="rust"><code><span class="doccomment">/// Renders the ground colours.
 </span><span class="kw">pub mod </span>base;
 <span class="doccomment">/// Responsible for drawing lines - doors, fences, walls and so on.
@@ -545,9 +540,7 @@
 <span class="kw">type </span>Img = ImageBuffer&lt;Rgba&lt;u8&gt;, Vec&lt;u8&gt;&gt;;
 
 <span class="kw">pub fn </span>save_smallest(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, i: u8, j: u8, imgs: [Img; <span class="number">4</span>]) {
-    <span class="attr">#![allow(unused_variables)]
-
-    </span><span class="kw">let </span>map_id = CONFIG.map_id;
+    <span class="kw">let </span>map_id = CONFIG.map_id;
 
     <span class="comment">// SAFETY (2) these checks assure that...
     </span><span class="macro">assert_eq!</span>(CONFIG.dim % <span class="number">4</span>, <span class="number">0</span>);
@@ -590,8 +583,7 @@
                 <span class="macro">debug_assert_eq!</span>(sub_image.width(), <span class="number">256</span>);
                 <span class="macro">debug_assert_eq!</span>(sub_image.height(), <span class="number">256</span>);
 
-                <span class="attr">#[cfg(not(test))]
-                </span><span class="kw">if </span>sub_image.pixels().any(|(<span class="kw">_</span>, <span class="kw">_</span>, pixel)| pixel[<span class="number">3</span>] != <span class="number">0</span>)
+                <span class="kw">if </span><span class="macro">cfg!</span>(not(test)) &amp;&amp; sub_image.pixels().any(|(<span class="kw">_</span>, <span class="kw">_</span>, pixel)| pixel[<span class="number">3</span>] != <span class="number">0</span>)
                 <span class="comment">/* don&#39;t save useless tiles */
                 </span>{
                     <span class="kw">let </span>xx = base_i + x;
@@ -613,8 +605,7 @@
                     CONFIG.dim / <span class="number">2</span>,
                 );
 
-                <span class="attr">#[cfg(not(test))]
-                </span><span class="kw">if </span>sub_image.pixels().any(|(<span class="kw">_</span>, <span class="kw">_</span>, pixel)| pixel[<span class="number">3</span>] != <span class="number">0</span>)
+                <span class="kw">if </span><span class="macro">cfg!</span>(not(test)) &amp;&amp; sub_image.pixels().any(|(<span class="kw">_</span>, <span class="kw">_</span>, pixel)| pixel[<span class="number">3</span>] != <span class="number">0</span>)
                 <span class="comment">/* don&#39;t save useless tiles */
                 </span>{
                     <span class="kw">let </span>resized = scale::resize_half(<span class="kw-2">*</span>sub_image);
@@ -638,8 +629,7 @@
             <span class="macro">debug_assert_eq!</span>(resized.width(), <span class="number">256</span>);
             <span class="macro">debug_assert_eq!</span>(resized.height(), <span class="number">256</span>);
 
-            <span class="attr">#[cfg(not(test))]
-            </span><span class="kw">if </span>resized.pixels().any(|<span class="kw-2">&amp;</span>pixel| pixel[<span class="number">3</span>] != <span class="number">0</span>)
+            <span class="kw">if </span><span class="macro">cfg!</span>(not(test)) &amp;&amp; resized.pixels().any(|<span class="kw-2">&amp;</span>pixel| pixel[<span class="number">3</span>] != <span class="number">0</span>)
             <span class="comment">/* don&#39;t save useless tiles */
             </span>{
                 <span class="kw">let </span>filename = <span class="macro">path!</span>(config.output / name / <span class="macro">format!</span>(<span class="string">&quot;{map_id}/2/{plane}_{base_i}_{base_j}.png&quot;</span>));

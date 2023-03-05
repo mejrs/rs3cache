@@ -206,7 +206,6 @@
     collections::{btree_map, hash_map::DefaultHasher},
     hash::{Hash, Hasher},
     path::PathBuf,
-    sync::Arc,
 };
 
 <span class="kw">use </span>pyo3::{
@@ -216,8 +215,9 @@
 };
 <span class="kw">use </span>rs3cache_backend::{
     arc::Archive,
-    index::{<span class="self">self</span>, CacheIndex, CachePath, Initial},
+    index::{<span class="self">self</span>, CacheIndex, Initial},
     meta::{IndexMetadata, Metadata},
+    path::CachePath,
 };
 
 <span class="kw">use </span><span class="kw">crate</span>::cli::Config;
@@ -245,7 +245,7 @@
     </span><span class="kw">fn </span>new(index_id: u32, path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-            config.input = Arc::new(CachePath::Given(path))
+            config.input = CachePath::Argument(path.into())
         }
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{

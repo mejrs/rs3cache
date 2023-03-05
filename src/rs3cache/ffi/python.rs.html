@@ -190,12 +190,12 @@
 <span class="kw">mod </span>mapsquares;
 <span class="kw">mod </span>sprites;
 
-<span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
+<span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf};
 
 <span class="kw">pub use </span>index::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>mapsquares::<span class="kw-2">*</span>;
 <span class="kw">use </span>pyo3::{prelude::<span class="kw-2">*</span>, wrap_pyfunction};
-<span class="kw">use </span>rs3cache_backend::{error::py_error_impl::<span class="kw-2">*</span>, index::CachePath};
+<span class="kw">use </span>rs3cache_backend::{error::py_error_impl::<span class="kw-2">*</span>, path::CachePath};
 <span class="kw">pub use </span>sprites::<span class="kw-2">*</span>;
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;rs3&quot;</span>)]
@@ -239,7 +239,7 @@
 </span><span class="kw">pub fn </span>get_achievement_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Achievement&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(Achievement::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -249,7 +249,7 @@
 </span><span class="kw">pub fn </span>get_location_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, LocationConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(LocationConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -259,7 +259,7 @@
 </span><span class="kw">pub fn </span>get_npc_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, NpcConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(NpcConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -269,7 +269,7 @@
 </span><span class="kw">pub fn </span>get_item_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, ItemConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(ItemConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -279,7 +279,7 @@
 </span><span class="kw">pub fn </span>get_struct_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Struct&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(Struct::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -289,7 +289,7 @@
 </span><span class="kw">pub fn </span>get_enum_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, Enum&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(Enum::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }
@@ -299,7 +299,7 @@
 </span><span class="kw">pub fn </span>get_varbit_configs(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;BTreeMap&lt;u32, VarbitConfig&gt;&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
     <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     <span class="prelude-val">Ok</span>(VarbitConfig::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>)
 }

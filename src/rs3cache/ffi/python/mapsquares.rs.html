@@ -213,7 +213,7 @@
 <a href="#213" id="213">213</a>
 <a href="#214" id="214">214</a>
 <a href="#215" id="215">215</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf, sync::Arc};
+</pre><pre class="rust"><code><span class="kw">use </span>std::{collections::BTreeMap, path::PathBuf};
 
 <span class="kw">use </span>::error::Context;
 <span class="kw">use </span>pyo3::{
@@ -221,7 +221,7 @@
     prelude::<span class="kw-2">*</span>,
     types::{PyInt, PyList},
 };
-<span class="kw">use </span>rs3cache_backend::{error, index, index::CachePath};
+<span class="kw">use </span>rs3cache_backend::{error, index, path::CachePath};
 
 <span class="kw">use crate</span>::{
     cli::Config,
@@ -251,7 +251,7 @@
     </span><span class="kw">fn </span>new(path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; PyResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>config = Config::env();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = path {
-            config.input = Arc::new(CachePath::Given(path))
+            config.input = CachePath::Argument(path.into())
         }
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             mapsquares: <span class="prelude-val">Some</span>(MapSquares::new(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>),

@@ -101,7 +101,6 @@
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
 <a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Describes the properties of structs.
 
 </span><span class="kw">use </span>std::{
@@ -125,8 +124,7 @@
 
 <span class="doccomment">/// Describes the properties of a given item.
 
-</span><span class="attr">#[allow(missing_docs)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
+</span><span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyclass(frozen, get_all))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>Struct {

@@ -144,11 +144,7 @@
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
 <a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-</pre><pre class="rust"><code><span class="attr">#![allow(unused_variables)]
-
-</span><span class="kw">use </span>core::panic::Location;
+</pre><pre class="rust"><code><span class="kw">use </span>core::panic::Location;
 <span class="kw">use </span>std::collections::BTreeMap;
 
 <span class="kw">use </span>::error::Context;
@@ -161,8 +157,8 @@
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">use </span><span class="kw">crate</span>::definitions::indextype::{ConfigType, IndexType};
-<span class="attr">#[allow(missing_docs)]
-#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3::pyclass)]
+
+<span class="attr">#[cfg_attr(feature = <span class="string">&quot;pyo3&quot;</span>, pyo3::pyclass)]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 </span><span class="kw">pub struct </span>DbRow {
@@ -210,18 +206,18 @@
                     <span class="number">1 </span>=&gt; obj.unknown_1 = <span class="prelude-val">Some</span>(<span class="bool-val">true</span>),
                     <span class="number">3 </span>=&gt; {
                         <span class="kw">let </span>size = buffer.try_get_u8()<span class="question-mark">?</span>;
-                        <span class="kw">let </span>objects = <span class="macro">vec!</span>[Value::Null; size <span class="kw">as </span>usize];
+                        <span class="kw">let </span>_objects = <span class="macro">vec!</span>[Value::Null; size <span class="kw">as </span>usize];
                         <span class="kw">loop </span>{
                             <span class="kw">match </span>buffer.try_get_u8()<span class="question-mark">? </span>{
                                 <span class="number">255 </span>=&gt; <span class="kw">break</span>,
-                                index =&gt; {
+                                _index =&gt; {
                                     <span class="kw">let </span>amount = buffer.try_get_u8()<span class="question-mark">? </span><span class="kw">as </span>usize;
                                     <span class="kw">let </span>types: Vec&lt;<span class="kw">_</span>&gt; = std::iter::repeat_with(|| buffer.get_smarts()).take(amount).collect();
                                     <span class="kw">let </span>count = buffer.get_smarts() <span class="kw">as </span>usize;
 
-                                    <span class="kw">let </span>subobjects = <span class="macro">vec!</span>[Value::Null; count * amount];
-                                    <span class="kw">for </span>c <span class="kw">in </span><span class="number">0</span>..count {
-                                        <span class="kw">for </span>(pos, ty) <span class="kw">in </span>types.iter().enumerate() {
+                                    <span class="kw">let </span>_subobjects = <span class="macro">vec!</span>[Value::Null; count * amount];
+                                    <span class="kw">for </span>_c <span class="kw">in </span><span class="number">0</span>..count {
+                                        <span class="kw">for </span>(_pos, ty) <span class="kw">in </span>types.iter().enumerate() {
                                             <span class="kw">match </span>ty {
                                                 <span class="number">35 </span>=&gt; {
                                                     buffer.try_get_array::&lt;<span class="number">8</span>&gt;()<span class="question-mark">?</span>;
@@ -289,7 +285,7 @@
     </span><span class="kw">fn </span>t() -&gt; CacheResult&lt;()&gt; {
         <span class="kw">let </span>config = Config::env();
 
-        <span class="kw">let </span>dbrows = DbRow::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
+        <span class="kw">let </span>_dbrows = DbRow::dump_all(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
