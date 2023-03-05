@@ -35,12 +35,12 @@ mod index;
 mod mapsquares;
 mod sprites;
 
-use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
+use std::{collections::BTreeMap, path::PathBuf};
 
 pub use index::*;
 pub use mapsquares::*;
 use pyo3::{prelude::*, wrap_pyfunction};
-use rs3cache_backend::{error::py_error_impl::*, index::CachePath};
+use rs3cache_backend::{error::py_error_impl::*, path::CachePath};
 pub use sprites::*;
 
 #[cfg(feature = "rs3")]
@@ -84,7 +84,7 @@ pub fn initializer(py: Python, m: &PyModule) -> PyResult<()> {
 pub fn get_achievement_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Achievement>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(Achievement::dump_all(&config)?)
 }
@@ -94,7 +94,7 @@ pub fn get_achievement_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, 
 pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, LocationConfig>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(LocationConfig::dump_all(&config)?)
 }
@@ -104,7 +104,7 @@ pub fn get_location_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Loc
 pub fn get_npc_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, NpcConfig>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(NpcConfig::dump_all(&config)?)
 }
@@ -114,7 +114,7 @@ pub fn get_npc_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, NpcConfi
 pub fn get_item_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, ItemConfig>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(ItemConfig::dump_all(&config)?)
 }
@@ -124,7 +124,7 @@ pub fn get_item_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, ItemCon
 pub fn get_struct_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Struct>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(Struct::dump_all(&config)?)
 }
@@ -134,7 +134,7 @@ pub fn get_struct_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Struc
 pub fn get_enum_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Enum>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(Enum::dump_all(&config)?)
 }
@@ -144,7 +144,7 @@ pub fn get_enum_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, Enum>> 
 pub fn get_varbit_configs(path: Option<PathBuf>) -> PyResult<BTreeMap<u32, VarbitConfig>> {
     let mut config = Config::env();
     if let Some(path) = path {
-        config.input = Arc::new(CachePath::Given(path))
+        config.input = CachePath::Argument(path.into())
     }
     Ok(VarbitConfig::dump_all(&config)?)
 }

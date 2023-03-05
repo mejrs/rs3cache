@@ -12,7 +12,8 @@ use error::With;
 use crate::{
     buf::ReadError,
     decoder::DecodeError,
-    index::{CachePath, IntegrityError},
+    index::IntegrityError,
+    path::{CachePath, LocationHelp},
 };
 pub type CacheResult<T> = Result<T, CacheError>;
 
@@ -28,7 +29,7 @@ pub enum CacheError {
         #[source]
         source: rusqlite::Error,
         file: PathBuf,
-        input: Arc<CachePath>,
+        input: CachePath,
         #[location]
         location: &'static Location<'static>,
     },
@@ -86,23 +87,6 @@ pub enum CacheError {
         #[location]
         location: &'static Location<'static>,
     },
-}
-
-pub struct LocationHelp<'p>(&'p CachePath);
-
-impl fmt::Display for LocationHelp<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.0 {
-            CachePath::Given(path) => writeln!(f, "looking in this location because the path {path:?} was given as an argument")?,
-            CachePath::Env(path) => writeln!(
-                f,
-                "looking in this location because the path {path:?} was retrieved from an environment variable"
-            )?,
-            CachePath::Omitted => writeln!(f, "looking in the current directory because no path was given")?,
-        }
-
-        Ok(())
-    }
 }
 
 pub const STRUCTURE: &str = if cfg!(feature = "sqlite") {

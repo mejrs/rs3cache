@@ -27,8 +27,8 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    fn get_entry(a: u32, b: u32, input: &Arc<CachePath>) -> CacheResult<(u32, u32)> {
-        let file = path!(**input / "cache" / format!("main_file_cache.idx{a}"));
+    fn get_entry(a: u32, b: u32, input: &CachePath) -> CacheResult<(u32, u32)> {
+        let file = path!(input / "cache" / format!("main_file_cache.idx{a}"));
         let entry_data = fs::read(&file).context(CannotOpen { file, input: input.clone() })?;
         let mut buf = Cursor::new(entry_data);
         buf.seek(SeekFrom::Start((b * 6) as _)).unwrap();
@@ -149,7 +149,7 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, input: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
+    pub fn new(index_id: u32, input: CachePath) -> CacheResult<CacheIndex<Initial>> {
         let file = path!(input.as_ref() / "cache" / "main_file_cache.dat2");
 
         let file = File::open(&file).with_context(|| CannotOpen {
@@ -157,14 +157,14 @@ impl CacheIndex<Initial> {
             input: input.clone(),
         })?;
         let xteas = if index_id == 5 {
-            let path1 = path!(&*input / "xteas.json");
+            let path1 = path!(input / "xteas.json");
 
             // Try to load either xteas.json or keys.json
             match Xtea::load(path1) {
                 Ok(file) => Some(file),
                 // Let's try looking somewhere else
                 Err(_) => {
-                    let alt_path = path!(&*input / "keys.json");
+                    let alt_path = path!(input / "keys.json");
                     match Xtea::load(alt_path) {
                         Ok(file) => Some(file),
                         Err(e) => return Err(e),

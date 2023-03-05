@@ -32,8 +32,8 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, input: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(*input / format!("js5-{index_id}.jcache"));
+    pub fn new(index_id: u32, input: CachePath) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(input / format!("js5-{index_id}.jcache"));
 
         let connection = Connection::open_with_flags(&file, OpenFlags::SQLITE_OPEN_READ_ONLY).with_context(|| CannotOpen {
             file: file.clone(),
@@ -154,9 +154,9 @@ where
 ///
 /// Panics if compiled with feature `mockdata`.
 #[cfg(not(feature = "mockdata"))]
-pub fn assert_coherence(folder: Arc<CachePath>) -> CacheResult<()> {
+pub fn assert_coherence(folder: CachePath) -> CacheResult<()> {
     for index_id in 0..70 {
-        if fs::metadata(path!(&*folder / format!("js5-{index_id}.jcache"))).is_ok() {
+        if fs::metadata(path!(folder / format!("js5-{index_id}.jcache"))).is_ok() {
             match CacheIndex::new(index_id, folder.clone())?.assert_coherence() {
                 Ok(_) => println!("Index {index_id} is coherent!"),
                 Err(e) => println!("Index {index_id} is not coherent: {e} and possibly others."),

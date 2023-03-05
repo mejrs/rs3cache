@@ -1,14 +1,17 @@
-use std::{ffi::OsStr, fmt, path::PathBuf, sync::Arc};
+use std::{
+    fmt,
+    path::{Path, PathBuf},
+};
 
-use clap::{ArgEnum, Parser};
-use rs3cache_backend::{error::CacheResult, index::CachePath};
+use clap::{Parser, ValueEnum};
+use rs3cache_backend::{error::CacheResult, path::CachePath};
 
 use crate::definitions;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::renderers::map;
 
 #[cfg(not(target_arch = "wasm32"))]
-#[derive(ArgEnum, Clone, Debug)]
+#[derive(ValueEnum, Clone, Debug)]
 #[clap(rename_all = "snake_case")]
 pub enum Render {
     All,
@@ -27,7 +30,7 @@ impl Render {
     }
 }
 
-#[derive(ArgEnum, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(ValueEnum, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[clap(rename_all = "snake_case")]
 pub enum Dump {
     All,
@@ -152,20 +155,6 @@ impl fmt::Display for Dump {
     }
 }
 
-fn path_helper(input: &OsStr) -> Arc<CachePath> {
-    Arc::new(CachePath::Given(input.into()))
-}
-
-const INPUT: &str = if cfg!(feature = "rs3") {
-    "RS3_CACHE_INPUT_FOLDER"
-} else if cfg!(feature = "osrs") {
-    "OSRS_CACHE_INPUT_FOLDER"
-} else if cfg!(feature = "legacy") {
-    "LEGACY_CACHE_INPUT_FOLDER"
-} else {
-    unimplemented!()
-};
-
 const OUTPUT: &str = if cfg!(feature = "rs3") {
     "RS3_CACHE_OUTPUT_FOLDER"
 } else if cfg!(feature = "osrs") {
@@ -180,22 +169,22 @@ const OUTPUT: &str = if cfg!(feature = "rs3") {
 #[clap(author, about = "Tools and api for reading and interpreting the RuneScape game cache")]
 pub struct Config {
     /// The path where to look for the current cache.
-    #[clap(parse(from_os_str = path_helper), long, env = INPUT, default_value = "")]
-    pub input: Arc<CachePath>,
+    #[command(flatten)]
+    pub input: CachePath,
 
     /// The path where to place output.
-    #[clap(long, env = OUTPUT, default_value = "")]
+    #[clap(long, env = OUTPUT, default_value_os = "...")]
     pub output: PathBuf,
 
     /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
     /// suitable for use with interactive map libraries such as <https://leafletjs.com/>,
     /// as seen on <https://mejrs.github.io/>
     #[cfg(not(target_arch = "wasm32"))]
-    #[clap(arg_enum, long, multiple_values = true)]
+    #[clap(value_enum, long, num_args(..))]
     pub render: Vec<Render>,
 
     /// Dumps the given archives.
-    #[clap(arg_enum, long, multiple_values = true)]
+    #[clap(value_enum, long, num_args(..))]
     pub dump: Vec<Dump>,
 
     /// Checks whether the cache is in a consistent state.
@@ -208,7 +197,7 @@ impl Config {
     #[cfg(not(feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Env(std::env::var_os(INPUT).unwrap_or_default().into())),
+            input: CachePath::Env(Path::new(&std::env::var_os(rs3cache_backend::path::INPUT).unwrap_or_default()).into()),
             output: std::env::var_os(OUTPUT).unwrap_or_default().into(),
             ..Default::default()
         }
@@ -217,7 +206,7 @@ impl Config {
     #[cfg(all(feature = "osrs", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Env(PathBuf::from("test_data/osrs_cache"))),
+            input: CachePath::Env(Path::new("test_data/osrs_cache").into()),
             ..Default::default()
         }
     }
@@ -225,7 +214,7 @@ impl Config {
     #[cfg(all(feature = "rs3", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Env(PathBuf::from("test_data/rs3_cache"))),
+            input: CachePath::Env(Path::new("test_data/rs3_cache").into()),
             ..Default::default()
         }
     }
@@ -233,7 +222,7 @@ impl Config {
     #[cfg(all(feature = "legacy", feature = "mockdata"))]
     pub fn env() -> Self {
         Self {
-            input: Arc::new(CachePath::Env(PathBuf::from("test_data/2005_cache"))),
+            input: CachePath::Env(Path::new("test_data/2005_cache").into()),
             ..Default::default()
         }
     }

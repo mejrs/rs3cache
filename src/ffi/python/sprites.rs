@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
+use std::{collections::BTreeMap, path::PathBuf};
 
 use ::error::Context;
 use pyo3::{
@@ -9,8 +9,9 @@ use pyo3::{
 use rs3cache_backend::{
     arc::Archive,
     error::Read,
-    index::{self, CacheIndex, CachePath, Initial},
+    index::{self, CacheIndex, Initial},
     meta::IndexMetadata,
+    path::CachePath,
 };
 
 use crate::{
@@ -77,7 +78,7 @@ impl PySprites {
     fn __new__(py: Python, path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
-            config.input = Arc::new(CachePath::Given(path))
+            config.input = CachePath::Argument(path.into())
         }
         let constructor = py.import("PIL")?.getattr("Image")?.getattr("frombytes")?.into();
 

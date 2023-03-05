@@ -12,7 +12,7 @@
     let_chains,
     error_in_core
 )]
-#![allow(non_snake_case, unused_imports)]
+#![allow(non_snake_case, unused_imports, clippy::result_large_err)]
 #![warn(
      unused_qualifications,
     unused_import_braces,
@@ -36,5 +36,6 @@ pub mod error;
 pub mod hash;
 pub mod index;
 pub mod meta;
+pub mod path;
 #[cfg(feature = "dat2")]
 pub mod xtea;

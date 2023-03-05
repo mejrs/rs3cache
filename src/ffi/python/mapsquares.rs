@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
+use std::{collections::BTreeMap, path::PathBuf};
 
 use ::error::Context;
 use pyo3::{
@@ -6,7 +6,7 @@ use pyo3::{
     prelude::*,
     types::{PyInt, PyList},
 };
-use rs3cache_backend::{error, index, index::CachePath};
+use rs3cache_backend::{error, index, path::CachePath};
 
 use crate::{
     cli::Config,
@@ -36,7 +36,7 @@ impl PyMapSquares {
     fn new(path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
-            config.input = Arc::new(CachePath::Given(path))
+            config.input = CachePath::Argument(path.into())
         }
         Ok(Self {
             mapsquares: Some(MapSquares::new(&config)?),

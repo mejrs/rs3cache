@@ -27,6 +27,7 @@ use crate::{
     decoder,
     error::{self, CacheError, CacheResult},
     meta::{IndexMetadata, Metadata},
+    path::CachePath,
 };
 
 /// This contains the game-specific implementations.
@@ -60,7 +61,7 @@ pub struct CacheIndex<S: IndexState> {
     index_id: u32,
     metadatas: IndexMetadata,
     state: S,
-    input: Arc<CachePath>,
+    input: CachePath,
 
     #[cfg(feature = "sqlite")]
     connection: rusqlite::Connection,
@@ -70,34 +71,6 @@ pub struct CacheIndex<S: IndexState> {
 
     #[cfg(feature = "dat2")]
     xteas: Option<HashMap<u32, Xtea>>,
-}
-
-#[derive(Clone, Debug, Default)]
-pub enum CachePath {
-    #[default]
-    Omitted,
-    Env(PathBuf),
-    Given(PathBuf),
-}
-
-impl fmt::Display for CachePath {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let path = self.as_ref();
-
-        #[cfg(not(target_arch = "wasm32"))]
-        let path = ::path_absolutize::Absolutize::absolutize(path).unwrap_or(std::borrow::Cow::Borrowed(path));
-
-        fmt::Display::fmt(&path.display(), f)
-    }
-}
-
-impl AsRef<Path> for CachePath {
-    fn as_ref(&self) -> &Path {
-        match self {
-            CachePath::Omitted => Path::new(""),
-            CachePath::Env(p) | CachePath::Given(p) => p,
-        }
-    }
 }
 
 // methods valid in any state

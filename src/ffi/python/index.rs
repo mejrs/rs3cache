@@ -2,7 +2,6 @@ use std::{
     collections::{btree_map, hash_map::DefaultHasher},
     hash::{Hash, Hasher},
     path::PathBuf,
-    sync::Arc,
 };
 
 use pyo3::{
@@ -12,8 +11,9 @@ use pyo3::{
 };
 use rs3cache_backend::{
     arc::Archive,
-    index::{self, CacheIndex, CachePath, Initial},
+    index::{self, CacheIndex, Initial},
     meta::{IndexMetadata, Metadata},
+    path::CachePath,
 };
 
 use crate::cli::Config;
@@ -41,7 +41,7 @@ impl PyCacheIndex {
     fn new(index_id: u32, path: Option<PathBuf>) -> PyResult<Self> {
         let mut config = Config::env();
         if let Some(path) = path {
-            config.input = Arc::new(CachePath::Given(path))
+            config.input = CachePath::Argument(path.into())
         }
 
         Ok(Self {

@@ -4,7 +4,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use clap::{ArgEnum, Parser};
+use clap::{Parser, ValueEnum};
 use console::style;
 use indicatif::{ProgressBar, ProgressStyle};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};

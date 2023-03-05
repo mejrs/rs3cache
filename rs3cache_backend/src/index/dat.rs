@@ -26,8 +26,8 @@ impl<S> CacheIndex<S>
 where
     S: IndexState,
 {
-    fn get_entry(a: u32, b: u32, input: &Arc<CachePath>) -> CacheResult<(u32, u32)> {
-        let file = path!(**input / "cache" / format!("main_file_cache.idx{a}"));
+    fn get_entry(a: u32, b: u32, input: &CachePath) -> CacheResult<(u32, u32)> {
+        let file = path!(input / "cache" / format!("main_file_cache.idx{a}"));
         let entry_data = fs::read(&file).context(CannotOpen { file, input: input.clone() })?;
 
         let mut buf = Cursor::new(entry_data);
@@ -180,8 +180,8 @@ impl CacheIndex<Initial> {
     /// # Errors
     ///
     /// Raises [`CacheNotFoundError`](CacheError::CacheNotFoundError) if the cache database cannot be found.
-    pub fn new(index_id: u32, input: Arc<CachePath>) -> CacheResult<CacheIndex<Initial>> {
-        let file = path!(&*input / "cache/main_file_cache.dat");
+    pub fn new(index_id: u32, input: CachePath) -> CacheResult<CacheIndex<Initial>> {
+        let file = path!(input / "cache/main_file_cache.dat");
 
         let file = File::open(&file).context(CannotOpen { file, input: input.clone() })?;
 
