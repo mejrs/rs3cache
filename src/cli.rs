@@ -173,7 +173,7 @@ pub struct Config {
     pub input: CachePath,
 
     /// The path where to place output.
-    #[clap(long, env = OUTPUT, default_value_os = "...")]
+    #[clap(long, env = OUTPUT, default_value_os = ".")]
     pub output: PathBuf,
 
     /// This exports them as small tiles, formatted as `<layer>/<mapid>/<zoom>/<plane>_<x>_<y>.png`,
