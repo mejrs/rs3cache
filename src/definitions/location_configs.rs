@@ -274,14 +274,14 @@ impl LocationConfig {
                             loc.interact_type = Some(0);
                         }
                         loc.break_line_of_sight = Some(false)
-                    },
+                    }
                     18 => {
                         #[cfg(feature = "osrs")]
                         {
                             loc.break_line_of_sight = Some(false);
                         }
                         loc.is_transparent = Some(true)
-                    },
+                    }
                     19 => loc.unknown_19 = Some(buffer.try_get_u8()?),
                     21 => loc.unknown_21 = Some(true),
                     22 => loc.unknown_22 = Some(true),
@@ -295,7 +295,7 @@ impl LocationConfig {
                             loc.interact_type = Some(1);
                         }
                         loc.unknown_27 = Some(false)
-                    },
+                    }
                     28 => loc.unknown_28 = Some(buffer.try_get_u8()?),
                     29 => loc.ambient = Some(buffer.try_get_i8()?),
                     opcode @ 30..=34 => {
