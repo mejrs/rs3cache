@@ -6,7 +6,7 @@ use rusqlite::{Connection, OpenFlags};
 use crate::{
     decoder,
     error::{self, CacheResult, CannotOpen},
-    index::*,
+    index::{ArchiveMissing, CacheIndex, CachePath, IndexState, Initial, IntegrityError, Other},
     meta::{IndexMetadata, Metadata},
 };
 

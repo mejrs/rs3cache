@@ -32,7 +32,7 @@ pub fn put(plane: usize, img: &mut RgbaImage, squares: &GroupMapSquare, location
                                 && plane == 0))
                 })
                 .for_each(|(location, properties)| {
-                    let fill = if properties.unknown_19.contains(&1) || properties.actions.is_some() {
+                    let fill = if properties.unknown_19 == Some(1) || properties.actions.is_some() {
                         Rgba(Color::PURE_RED)
                     } else {
                         Rgba(Color::WHITE)

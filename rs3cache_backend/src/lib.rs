@@ -2,7 +2,6 @@
 
 #![feature(
     lint_reasons,
-    provide_any,
     error_generic_member_access,
     error_iter,
     cfg_eval,
