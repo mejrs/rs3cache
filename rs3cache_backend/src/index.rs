@@ -23,6 +23,7 @@ use crate::{
 #[cfg_attr(feature = "dat", path = "index/dat.rs")]
 mod index_impl;
 
+#[allow(unused_imports)]
 pub use index_impl::*;
 
 mod states {

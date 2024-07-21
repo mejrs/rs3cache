@@ -130,6 +130,10 @@ pub struct NpcConfig {
     pub unknown_180: Option<u8>,
     pub unknown_182: Option<bool>,
     pub unknown_184: Option<u16>,
+    #[cfg(feature = "rs3")]
+    pub unknown_185: Option<u8>,
+    #[cfg(feature = "rs3")]
+    pub unknown_253: Option<u8>,
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -285,7 +289,11 @@ impl NpcConfig {
                 181 => unimplemented!(),
                 182 => npc.unknown_182 = Some(true),
                 184 => npc.unknown_184 = Some(buffer.get_unsigned_smart()),
+                #[cfg(feature = "rs3")]
+                185 => npc.unknown_185 = Some(buffer.get_u8()),
                 249 => npc.params = Some(ParamTable::deserialize(&mut buffer)),
+                #[cfg(feature = "rs3")]
+                253 => npc.unknown_253 = Some(buffer.get_u8()),
                 missing => {
                     unimplemented!("NpcConfig::deserialize cannot deserialize opcode {} in npc: \n {}\n", missing, npc)
                 }

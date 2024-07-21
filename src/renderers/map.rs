@@ -35,7 +35,7 @@ use crate::{
     },
     renderers::{scale, zoom},
 };
-///
+
 pub struct RenderConfig {
     /// -1 is the "real" world map.
     pub map_id: i32,

@@ -19,7 +19,7 @@ pub struct DbRow {
     /// Its id.
     pub id: u32,
     pub unknown_1: Option<bool>,
-    pub content_type: Option<u8>,
+    pub content_type: Option<u16>,
     pub data: Option<Vec<Vec<Value>>>,
 }
 
@@ -43,7 +43,18 @@ impl DbRow {
         let mut opcodes = Vec::new();
 
         loop {
-            let opcode = buffer.try_get_u8()?;
+            let opcode = match buffer.try_get_u8() {
+                Ok(o) => o,
+                Err(e) => {
+                    return Err(Box::new(e)).context(WithInfo {
+                        #[cfg(debug_assertions)]
+                        opcodes,
+                        buffer,
+                        #[cfg(debug_assertions)]
+                        thing: obj.to_string(),
+                    })
+                }
+            };
 
             #[cfg(debug_assertions)]
             opcodes.push(opcode);
@@ -52,7 +63,7 @@ impl DbRow {
                 match opcode {
                     0 => {
                         if buffer.has_remaining() {
-                            return Err(NotExhausted::new(buffer.remaining()));
+                            return Err(NotExhausted::new(buffer));
                         } else {
                             break Ok(obj);
                         }
@@ -71,7 +82,7 @@ impl DbRow {
 
                                     let _subobjects = vec![Value::Null; count * amount];
                                     for _c in 0..count {
-                                        for (_pos, ty) in types.iter().enumerate() {
+                                        for ty in &types {
                                             match ty {
                                                 35 => {
                                                     buffer.try_get_array::<8>()?;
@@ -89,7 +100,7 @@ impl DbRow {
                             }
                         }
                     }
-                    4 => obj.content_type = Some(buffer.try_get_u8()?),
+                    4 => obj.content_type = Some(buffer.try_get_unsigned_smart()?),
                     opcode => Err(ReadError::OpcodeNotImplemented {
                         location: Location::caller(),
                         opcode,
@@ -102,7 +113,7 @@ impl DbRow {
                     opcodes.push(opcode);
                 }
                 Err(e) => {
-                    return Err(e).map_err(Box::new).context(WithInfo {
+                    return Err(Box::new(e)).context(WithInfo {
                         #[cfg(debug_assertions)]
                         opcodes,
                         buffer,

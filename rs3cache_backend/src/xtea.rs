@@ -4,7 +4,6 @@ use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 
 use ::error::Context;
 use serde::{Deserialize, Serialize};
-use serde_json;
 
 use crate::error::{self, CacheResult};
 

@@ -12,8 +12,9 @@ use crate::{
     buf::{BufExtra, FileSeek},
     decoder,
     error::{self, CacheResult, CannotOpen},
-    index::*,
+    index::{ArchiveMissingNamed, CacheIndex, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
+    path::CachePath,
 };
 impl<S> CacheIndex<S>
 where

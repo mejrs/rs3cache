@@ -13,7 +13,7 @@ use crate::{
     buf::{BufExtra, FileSeek},
     decoder,
     error::{self, CacheResult, CannotOpen},
-    index::*,
+    index::{ArchiveMissing, ArchiveMissingNamed, CacheIndex, CachePath, IndexState, Initial},
     meta::{IndexMetadata, Metadata},
     xtea::Xtea,
 };

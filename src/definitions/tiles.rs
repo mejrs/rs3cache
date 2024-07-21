@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use bytes::{Buf, Bytes};
 use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
 #[cfg(feature = "pyo3")]
@@ -28,13 +29,19 @@ pub struct Tile {
     pub underlay_id: Option<u16>,
 
     /// The height of the tile.
-    pub height: Option<u8>,
+    // Before 936 this used to be a u8
+    pub height: Option<u16>,
 }
 
 impl Tile {
     /// Constructor for a sequence of [`Tile`]s.
     #[cfg(any(feature = "rs3", feature = "2013_shim"))]
     pub fn dump(buffer: &mut Bytes) -> TileArray {
+        let is_936 = &buffer[0..5] == b"jagx\x01";
+        if is_936 {
+            buffer.advance(5)
+        }
+
         Array::from_shape_simple_fn((4, 64, 64), || {
             let mut tile = Tile::default();
 
@@ -54,7 +61,8 @@ impl Tile {
             }
 
             if flag_4 {
-                tile.height = Some(buffer.get_u8());
+                // Before 936 this used to be a u8
+                tile.height = Some(if is_936 { buffer.get_u16() } else { buffer.get_u8() as _ });
             }
 
             tile
@@ -97,7 +105,7 @@ impl Tile {
                 match opcode {
                     0 => break tile,
                     1 => {
-                        tile.height = Some(buffer.try_get_u8()?);
+                        tile.height = Some(buffer.try_get_u8()? as u16);
                         break tile;
                     }
                     opcode @ 2..=49 => {
@@ -120,7 +128,7 @@ impl Tile {
         if buffer.is_empty() {
             ret
         } else {
-            Err(rs3cache_backend::buf::NotExhausted::new(buffer.remaining()))
+            Err(rs3cache_backend::buf::NotExhausted::new(buffer))
         }
     }
 }

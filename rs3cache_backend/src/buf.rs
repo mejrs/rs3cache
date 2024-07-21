@@ -23,11 +23,11 @@ pub enum ReadError {
         location: &'static Location<'static>,
         terminator: u8,
     },
-    #[error = "reached the end of the buffer unexpectedly"]
+    #[error = "the buffer was not exhausted: {remainder:?} left."]
     NotExhausted {
         #[location]
         location: &'static Location<'static>,
-        remainder: usize,
+        remainder: Bytes,
     },
     #[error = "opcode {opcode} is not implemented"]
     OpcodeNotImplemented {
@@ -307,10 +307,24 @@ impl<R: Buf> Serialize for JString<R> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub enum JStringKind<R: Buf> {
     Refcounted { buf: R, len: usize },
     Allocated(String),
+}
+
+impl<R: ::core::fmt::Debug + Buf> ::core::fmt::Debug for JStringKind<R> {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        match self {
+            JStringKind::Refcounted { buf, len } => f
+                .debug_struct("Refcounted")
+                .field("buf", &&buf.chunk()[..*len])
+                .field("len", len)
+                .finish(),
+            JStringKind::Allocated(s) => f.debug_tuple("Allocated").field(s).finish(),
+        }
+    }
 }
 
 impl<R: Buf> JString<R> {

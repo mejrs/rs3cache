@@ -153,7 +153,7 @@ impl Archive {
 
         let files_length = buffer.get_u16();
 
-        let mut headers = buffer.split_to((files_length * 10).try_into().unwrap());
+        let mut headers = buffer.split_to((files_length * 10).into());
         let mut archive = Archive {
             index_id: metadata.index_id(),
             archive_id: metadata.archive_id(),

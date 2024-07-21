@@ -99,6 +99,9 @@ pub fn put(
                                     51 => (118, 80, 37),
                                     91 => (171, 176, 181),
                                     119 => (50, 48, 44),
+                                    120 => (6, 4, 4),
+                                    121 | 122 => (87, 70, 62),
+                                    125 | 126 => (50, 44, 36),
                                     unknown => unimplemented!("unimplemented texture id {}", unknown),
                                 };
                                 let fill = Rgba([red, green, blue, 255]);

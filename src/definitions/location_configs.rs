@@ -235,7 +235,7 @@ impl LocationConfig {
                 match opcode {
                     0 => {
                         if buffer.has_remaining() {
-                            return Err(NotExhausted::new(buffer.remaining()));
+                            return Err(NotExhausted::new(buffer));
                         } else {
                             break Ok(loc);
                         }
@@ -391,7 +391,10 @@ impl LocationConfig {
                         loc.unknown_204 = Some(out)
                     }
                     249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
-                    opcode => do yeet OpcodeNotImplemented::new(opcode),
+                    opcode => {
+                        println!("{loc}");
+                        do yeet OpcodeNotImplemented::new(opcode)
+                    }
                 }
             };
             match read {
@@ -400,7 +403,7 @@ impl LocationConfig {
                     opcodes.push(opcode);
                 }
                 Err(e) => {
-                    return Err(e).map_err(Box::new).context(WithInfo {
+                    return Err(Box::new(e)).context(WithInfo {
                         #[cfg(debug_assertions)]
                         opcodes,
                         buffer,
@@ -701,6 +704,10 @@ pub mod location_config_fields {
             let unknown_1 = buffer.try_get_u16()?;
             let unknown_2 = buffer.try_get_u16()?;
             let unknown_3 = buffer.try_get_u8()?;
+            if cfg!(features = "osrs") {
+                //FIXME: Post rev 220
+                let _sound_retain = buffer.try_get_u8()?;
+            }
 
             let count = buffer.try_get_u8()? as usize;
 
@@ -772,6 +779,10 @@ pub mod location_config_fields {
         pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
             let unknown_1 = buffer.try_get_u16()?;
             let unknown_2 = buffer.try_get_u8()?;
+            if cfg!(feature = "osrs") {
+                // FIXME: Post rev 220
+                let _sound_retain = buffer.try_get_u8()?;
+            }
 
             Ok(Self { unknown_1, unknown_2 })
         }
