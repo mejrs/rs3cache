@@ -202,7 +202,7 @@ impl IndexMetadata {
 
         let _index_utc_stamp = if format > 5 { Some(buffer.try_get_i32()?) } else { None };
 
-        let [named, hashed, unk4, ..] = buffer.get_bitflags();
+        let [named, hashed, sized, ..] = buffer.get_bitflags();
 
         let entry_count = if format >= 7 {
             buffer.try_get_smart32()?.unwrap() as usize
@@ -235,7 +235,7 @@ impl IndexMetadata {
             .take(entry_count)
             .collect::<Result<Vec<i32>, ReadError>>()?;
 
-        let unknowns = if unk4 {
+        let unknowns = if cfg!(feature = "sqlite") && sized {
             repeat_with(|| try { Some(buffer.try_get_i32()?) })
                 .take(entry_count)
                 .collect::<Result<Vec<Option<i32>>, ReadError>>()?
@@ -249,7 +249,7 @@ impl IndexMetadata {
             vec![None; entry_count]
         };
 
-        let (compressed_sizes, sizes): (Vec<_>, Vec<_>) = if unk4 {
+        let (compressed_sizes, sizes): (Vec<_>, Vec<_>) = if sized {
             repeat_with(|| (Some(buffer.get_u32()), Some(buffer.get_u32()))).take(entry_count).unzip()
         } else {
             (vec![None; entry_count], vec![None; entry_count])
@@ -317,7 +317,7 @@ impl IndexMetadata {
         )
         .collect();
 
-        //assert!(!buffer.buf.has_remaining());
+        debug_assert!(!buffer.has_remaining());
 
         Ok(Self { metadatas })
     }
