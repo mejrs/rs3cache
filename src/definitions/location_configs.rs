@@ -98,7 +98,7 @@ pub struct LocationConfig {
     pub maparea_id: Option<u16>,
     pub unknown_88: Option<bool>,
     pub unknown_89: Option<bool>,
-    #[cfg(feature = "2008_3_shim")]
+    #[cfg(any(feature = "2008_3_shim", feature = "osrs"))]
     pub unknown_90: Option<bool>,
     pub is_members: Option<bool>,
     /// This location can have different appearances depending on a players varbits,
@@ -230,7 +230,6 @@ impl LocationConfig {
 
         loop {
             let opcode = buffer.try_get_u8()?;
-
             let read: Result<(), ReadError> = try {
                 match opcode {
                     0 => {
@@ -314,7 +313,7 @@ impl LocationConfig {
                     82 => loc.maparea_id = Some(buffer.try_get_u16()?),
                     88 => loc.unknown_88 = Some(false),
                     89 => loc.unknown_89 = Some(false),
-                    #[cfg(feature = "2008_3_shim")]
+                    #[cfg(any(feature = "2008_3_shim", feature = "osrs"))]
                     90 => loc.unknown_90 = Some(true),
                     91 => loc.is_members = Some(true),
                     92 => loc.morphs_2 = Some(ExtendedLocationMorphTable::deserialize(&mut buffer)?),
@@ -704,7 +703,7 @@ pub mod location_config_fields {
             let unknown_1 = buffer.try_get_u16()?;
             let unknown_2 = buffer.try_get_u16()?;
             let unknown_3 = buffer.try_get_u8()?;
-            if cfg!(features = "osrs") {
+            if cfg!(feature = "osrs") {
                 //FIXME: Post rev 220
                 let _sound_retain = buffer.try_get_u8()?;
             }
