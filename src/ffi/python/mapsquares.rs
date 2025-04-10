@@ -165,7 +165,7 @@ impl PyMapSquare {
                 })
                 .context(error::Integrity)?
         } else {
-            locations.ok_or(rs3cache_backend::error::CacheError::Xtea { i: self.i(), j: self.j() })?
+            locations.ok_or(error::CacheError::Xtea { i: self.i(), j: self.j() })?
         };
 
         #[cfg(feature = "legacy")]

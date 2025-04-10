@@ -1,5 +1,3 @@
-#![cfg(feature = "osrs")]
-
 use std::{
     collections::HashMap,
     fs::{self, File},

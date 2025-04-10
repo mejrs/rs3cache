@@ -200,7 +200,6 @@ pub fn get_mapscenes(scale: u32, config: &crate::cli::Config) -> CacheResult<BTr
 /// # Panics
 ///
 /// **Panics** if `scale == 0`.
-
 pub fn dumps(scale: u32, ids: Vec<u32>, config: &crate::cli::Config) -> CacheResult<BTreeMap<(u32, u32), Sprite>> {
     assert_ne!(scale, 0);
 

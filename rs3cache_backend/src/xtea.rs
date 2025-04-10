@@ -1,5 +1,3 @@
-#![cfg(feature = "dat2")]
-
 use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 
 use ::error::Context;

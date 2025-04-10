@@ -1,5 +1,5 @@
 #![doc = include_str!("../README.md")]
-#![feature(cfg_eval, doc_cfg, doc_auto_cfg, option_get_or_insert_default, lazy_cell, try_blocks, yeet_expr)]
+#![feature(cfg_eval, doc_cfg, doc_auto_cfg, try_blocks, yeet_expr)]
 #![allow(clippy::too_many_arguments, clippy::type_complexity)]
 #![warn(
     unused_qualifications,

@@ -306,7 +306,7 @@ pub fn save_smallest(config: &Config, name: &str, i: u8, j: u8, imgs: [Img; 4]) 
 #[doc(hidden)]
 #[cfg(feature = "rs3")]
 pub fn render_bench() -> CacheResult<()> {
-    let config = crate::cli::Config::default();
+    let config = Config::default();
     let path = "test_data/tiles";
     fs::create_dir_all(path).unwrap();
     let coordinates: Vec<(u8, u8)> = iproduct!(45..55, 45..55).collect();

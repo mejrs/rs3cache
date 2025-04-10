@@ -1,6 +1,5 @@
 //! Miscellanious utilities.
 #![forbid(unsafe_code)]
-#![feature(lint_reasons)]
 #![warn(
     unused_crate_dependencies,
     unused_imports,

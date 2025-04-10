@@ -95,7 +95,6 @@ impl Iterator for MapSquareIterator {
 impl ExactSizeIterator for MapSquareIterator {}
 
 /// Iterates over [`GroupMapSquare`] in arbitrary order.
-
 pub struct GroupMapSquareIterator {
     inner: CacheIndex<index::Initial>,
     range_i: RangeInclusive<i32>,

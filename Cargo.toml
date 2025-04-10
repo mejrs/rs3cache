@@ -63,6 +63,7 @@ error = {git = "https://github.com/mejrs/error", rev = "82c78704fec42b0c35eb65dd
 [features]
 pyo3 = ["dep:pyo3", "rs3cache_backend/pyo3", "rs3cache_macros"]
 mockdata = ["rs3cache_backend/mockdata"]
+save_mockdata = []
 fast = []
 rs3 = ["rs3cache_backend/sqlite", "filetime"]
 osrs = ["rs3cache_backend/dat2"]
