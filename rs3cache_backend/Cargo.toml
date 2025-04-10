@@ -8,7 +8,8 @@ edition = "2021"
 rs3cache_macros = { path = "../rs3cache_macros", version = "0.1.0" , optional = true}
 rs3cache_utils = { path = "../rs3cache_utils", version = "0.1.0" }
 
-bytes = "1.1.0"
+# upgrading bytes gives method ambiguities which fucks up everything
+bytes = "=1.9.0"
 bzip2-rs = "0.1.2"
 clap = { version = "4.1.8", features = ["derive", "env"] }
 itertools = "0.10.3"

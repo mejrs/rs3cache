@@ -24,17 +24,17 @@ crate-type = ["lib", "cdylib"]
 
 [[bin]]
 name = "rs3"
-path = "src/rs3.rs"
+path = "bin/rs3.rs"
 required-features = ["rs3"]
 
 [[bin]]
 name = "osrs"
-path = "src/osrs.rs"
+path = "bin/osrs.rs"
 required-features = ["osrs"]
 
 [[bin]]
 name = "legacy"
-path = "src/legacy.rs"
+path = "bin/legacy.rs"
 required-features = ["legacy"]
 
 [dependencies]
