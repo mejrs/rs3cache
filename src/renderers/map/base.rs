@@ -102,7 +102,7 @@ pub fn put(
                                     120 => (6, 4, 4),
                                     121 | 122 => (87, 70, 62),
                                     125 | 126 => (50, 44, 36),
-                                    unknown => (78, 95, 129), // unimplemented!("unimplemented texture id {}", unknown),
+                                    unknown => unimplemented!("unimplemented texture id {}", unknown), //for the new water with sailing, probably (78, 95, 129)
                                 };
                                 let fill = Rgba([red, green, blue, 255]);
 
