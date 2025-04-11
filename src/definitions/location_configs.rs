@@ -51,7 +51,8 @@ pub struct LocationConfig {
     pub dim_y: Option<u8>,
     #[cfg(feature = "2008_3_shim")]
     pub unknown_16: Option<bool>,
-    pub unknown_17: Option<bool>,
+    pub interact_type: Option<u8>,
+    pub break_line_of_sight: Option<bool>,
     pub is_transparent: Option<bool>,
     /// Flag for whether this object has a red rather than a white line on the map.
     pub unknown_19: Option<u8>,
@@ -236,6 +237,13 @@ impl LocationConfig {
                         if buffer.has_remaining() {
                             return Err(NotExhausted::new(buffer));
                         } else {
+                            #[cfg(feature = "osrs")]
+                            {
+                                if loc.breakroutefinding.unwrap_or(false) {
+                                    loc.interact_type = Some(0);
+                                    loc.break_line_of_sight = Some(false);
+                                }
+                            }
                             break Ok(loc);
                         }
                     }
@@ -259,8 +267,20 @@ impl LocationConfig {
                     #[cfg(feature = "2008_3_shim")]
                     16 => loc.unknown_16 = Some(true),
 
-                    17 => loc.unknown_17 = Some(false),
-                    18 => loc.is_transparent = Some(true),
+                    17 => {
+                        #[cfg(feature = "osrs")]
+                        {
+                            loc.interact_type = Some(0);
+                        }
+                        loc.break_line_of_sight = Some(false)
+                    }
+                    18 => {
+                        #[cfg(feature = "osrs")]
+                        {
+                            loc.break_line_of_sight = Some(false);
+                        }
+                        loc.is_transparent = Some(true)
+                    }
                     19 => loc.unknown_19 = Some(buffer.try_get_u8()?),
                     21 => loc.unknown_21 = Some(true),
                     22 => loc.unknown_22 = Some(true),
@@ -268,7 +288,13 @@ impl LocationConfig {
                     24 => loc.unknown_24 = buffer.try_get_smart32()?,
                     #[cfg(feature = "legacy")]
                     25 => loc.unknown_25 = Some(true),
-                    27 => loc.unknown_27 = Some(false),
+                    27 => {
+                        #[cfg(feature = "osrs")]
+                        {
+                            loc.interact_type = Some(1);
+                        }
+                        loc.unknown_27 = Some(false)
+                    }
                     28 => loc.unknown_28 = Some(buffer.try_get_u8()?),
                     29 => loc.ambient = Some(buffer.try_get_i8()?),
                     opcode @ 30..=34 => {
