@@ -14,7 +14,7 @@ where
 {
     base: IterBridge<T>,
     progress: ProgressBar,
-    #[allow(dead_code, reason = "used for Drop impl")]
+    #[allow(dead_code)]
     finalize: Finalizer,
 }
 

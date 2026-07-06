@@ -28,18 +28,14 @@ use path_macro::path;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
 use rs3cache_backend::xtea::Xtea;
+#[allow(unused_imports)]
 use rs3cache_backend::{
-    error::{self, CacheResult},
+    error::{self, CacheError, CacheResult},
     index::{CacheIndex, Initial},
 };
 use rs3cache_utils::rangeclamp::RangeClamp;
 #[cfg(any(feature = "rs3", feature = "2013_4_shim"))]
-use {
-    crate::definitions::indextype::MapFileType,
-    bytes::Buf,
-    rs3cache_backend::{arc::Archive, error::CacheError},
-    rs3cache_utils::lazy::Lazy,
-};
+use {crate::definitions::indextype::MapFileType, bytes::Buf, rs3cache_backend::arc::Archive, rs3cache_utils::lazy::Lazy};
 
 pub use self::iterator::*;
 use crate::definitions::{
@@ -47,6 +43,8 @@ use crate::definitions::{
     tiles::{Tile, TileArray},
 };
 
+#[cfg(feature = "osrs")]
+const MAX_REGIONS: u32 = 25287;
 /// Represents a section of the game map
 #[derive(Debug)]
 pub struct MapSquare {
@@ -109,7 +107,8 @@ impl MapSquare {
     }
 
     #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
-    fn new(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
+    fn new_named(index: &CacheIndex<Initial>, xtea: Option<Xtea>, land: u32, tiles: u32, env: Option<u32>, i: u8, j: u8) -> CacheResult<MapSquare> {
+        use rs3cache_backend::decoder::DecodeError;
         let land = index
             .archive_with_xtea(land, xtea)
             .and_then(|arch| arch.file(&0).context(rs3cache_backend::index::Other).context(error::Integrity));
@@ -124,6 +123,9 @@ impl MapSquare {
         let locations = match land {
             Ok(land) => Some(Location::dump(i, j, &tiles, land)),
             // most likely xtea error...
+            Err(CacheError::Decode {
+                source: DecodeError::Xtea, ..
+            }) => None,
             Err(_) => None,
         };
 
@@ -133,6 +135,31 @@ impl MapSquare {
             tiles: Some(tiles),
             locations,
             xtea,
+        })
+    }
+
+    #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
+    fn new(index: &CacheIndex<Initial>, i: u8, j: u8) -> CacheResult<MapSquare> {
+        assert!(i < 0xFF, "Index out of range.");
+
+        let archive_id = ((i as u32) << 8) | (j as u32);
+        let archive = index.archive(archive_id)?;
+
+        let location_bytes = archive.file(&1).context(rs3cache_backend::index::Other).context(error::Integrity)?;
+        assert_ne!(location_bytes.len(), 0);
+        let mut tile_bytes = archive.file(&0).context(rs3cache_backend::index::Other).context(error::Integrity)?;
+        assert_ne!(tile_bytes.len(), 0);
+
+        let tiles = Tile::dump(&mut tile_bytes);
+
+        let locations = Location::dump(i, j, &tiles, location_bytes);
+
+        Ok(MapSquare {
+            i,
+            j,
+            tiles: Some(tiles),
+            locations: Some(locations),
+            xtea: None,
         })
     }
 
@@ -190,7 +217,7 @@ impl MapSquare {
     }
 
     /// Iterator over a columns of planes with their x, y coordinates
-    pub fn indexed_columns(&self) -> Option<ColumnIter> {
+    pub fn indexed_columns(&self) -> Option<ColumnIter<'_>> {
         Some(self.tiles()?.lanes(Axis(0)).into_iter().zip(iproduct!(0..64u32, 0..64u32)))
     }
 
@@ -224,7 +251,7 @@ impl MapSquare {
 pub struct MapSquares {
     index: CacheIndex<Initial>,
     #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
-    mapping: std::collections::BTreeMap<(&'static str, u8, u8), u32>,
+    mapping: Option<std::collections::BTreeMap<(&'static str, u8, u8), u32>>,
     #[cfg(feature = "legacy")]
     meta: std::collections::BTreeMap<(u8, u8), rs3cache_backend::index::MapsquareMeta>,
 }
@@ -247,12 +274,26 @@ impl IntoIterator for MapSquares {
 
     #[cfg(all(feature = "osrs", not(feature = "2013_4_shim")))]
     fn into_iter(self) -> Self::IntoIter {
-        let state = self
-            .mapping
-            .keys()
-            .filter_map(|(ty, i, j)| if *ty == "m" { Some((*i, *j)) } else { None })
-            .collect::<Vec<_>>()
-            .into_iter();
+        let state = if let Some(mapping) = &self.mapping {
+            mapping
+                .keys()
+                .filter_map(|(ty, i, j)| if *ty == "m" { Some((*i, *j)) } else { None })
+                .collect::<Vec<_>>()
+                .into_iter()
+        } else {
+            self.index
+                .metadatas()
+                .keys()
+                .flat_map(|id| {
+                    if *id < MAX_REGIONS {
+                        Some(((id >> 8) as u8, (id & 0xFF) as u8))
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Vec<_>>()
+                .into_iter()
+        };
         MapSquareIterator { mapsquares: self, state }
     }
 

@@ -41,13 +41,13 @@ pub fn decompress(mut encoded_data: Vec<u8>, #[cfg(feature = "dat2")] xtea: Opti
         // A xtea-encrypted gzip
         #[cfg(feature = "dat2")]
         // TODO: see if a missing xtea can be handled more gently
-        [2, _, _, _, _, data @ .., _, _] if let Some(xtea) = xtea => {
-            let decrypted = crate::xtea::Xtea::decrypt(data, xtea);
-
+        [2, y0, y1, y2, y3, data @ .., _, _] if let Some(xtea) = xtea => {
+            let length = u32::from_be_bytes([*y0, *y1, *y2, *y3]) as usize;
+            let decrypted = crate::xtea::Xtea::decrypt(&data, xtea);
             if let [x0, x1, x2, x3, decrypted @ ..] = &*decrypted {
-                let decoder = gzip::Decoder::new(decrypted).context(Gzip)?;
-                let length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
-                let ret = do_read(decoder, length)?;
+                let decoder = gzip::Decoder::new(&decrypted[..length]).context(Gzip).unwrap();
+                let decompressed_length = u32::from_be_bytes([*x0, *x1, *x2, *x3]);
+                let ret = do_read(decoder, decompressed_length).unwrap();
                 Ok(ret)
             } else {
                 unreachable!()

@@ -125,10 +125,14 @@ impl Tile {
         };
 
         let ret = std::iter::repeat_with(producer).take(4 * 64 * 64).collect();
+
+        #[allow(clippy::if_same_then_else)]
         if buffer.is_empty() {
             ret
         } else {
-            Err(rs3cache_backend::buf::NotExhausted::new(buffer))
+            ret
+            // At some point this was filled with a bunch of extra \0
+            // Err(rs3cache_backend::buf::NotExhausted::new(buffer))
         }
     }
 }

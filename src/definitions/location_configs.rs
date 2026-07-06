@@ -49,6 +49,10 @@ pub struct LocationConfig {
     ///
     /// Code using this value must account for the location's rotation.
     pub dim_y: Option<u8>,
+    #[cfg(feature = "osrs")]
+    pub object_models_and_types: Option<ObjectModelsAndTypes>,
+    #[cfg(feature = "osrs")]
+    pub object_models: Option<ObjectModels>,
     #[cfg(feature = "2008_3_shim")]
     pub unknown_16: Option<bool>,
     pub unknown_17: Option<bool>,
@@ -100,18 +104,28 @@ pub struct LocationConfig {
     pub unknown_89: Option<bool>,
     #[cfg(any(feature = "2008_3_shim", feature = "osrs"))]
     pub unknown_90: Option<bool>,
+    #[cfg(feature = "osrs")]
+    pub sound_fade: Option<u8>,
+
     pub is_members: Option<bool>,
     /// This location can have different appearances depending on a players varbits,
     /// like the [morphs_1](LocationConfig::morphs_1) field, but with a default value.
     pub morphs_2: Option<ExtendedLocationMorphTable>,
+    #[cfg(feature = "rs3")]
     pub unknown_93: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub sound_fade_curve: Option<SoundFade>,
     pub unknown_94: Option<bool>,
     #[cfg(any(feature = "rs3", feature = "2010_3_shim"))]
     pub unknown_95: Option<u16>,
     #[cfg(all(feature = "2008_3_shim", not(feature = "2010_3_shim")))]
     pub unknown_95: Option<bool>,
+    #[cfg(feature = "osrs")]
+    pub sound_visibility: Option<u8>,
     #[cfg(feature = "2008_3_shim")]
     pub unknown_96: Option<bool>,
+    #[cfg(feature = "osrs")]
+    pub raise: Option<u8>,
     pub unknown_97: Option<bool>,
     pub unknown_98: Option<bool>,
     pub unknown_99: Option<()>,
@@ -120,6 +134,12 @@ pub struct LocationConfig {
     ///
     /// This works differently between rs3 and osrs
     pub mapscene: Option<u16>,
+    #[cfg(feature = "osrs")]
+    pub sub_op: Vec<SubOp>,
+    #[cfg(feature = "osrs")]
+    pub conditional_op: Vec<ConditionalOp>,
+    #[cfg(feature = "osrs")]
+    pub conditional_sub_op: Vec<ConditionalSubOp>,
     pub occludes_2: Option<bool>,
     pub unknown_104: Option<u8>,
     pub headmodels: Option<HeadModels>,
@@ -158,6 +178,7 @@ pub struct LocationConfig {
     pub unknown_202: Option<u16>,
     pub unknown_203: Option<bool>,
     pub unknown_204: Option<Vec<Unknown204>>,
+    pub model_morphs: Option<ModelMorphs>,
     #[serde(flatten)]
     pub params: Option<ParamTable>,
 }
@@ -253,12 +274,15 @@ impl LocationConfig {
 
                         loc.models_2 = Some(Models2::deserialize(&mut buffer)?);
                     }
+                    #[cfg(feature = "osrs")]
+                    6 => loc.object_models_and_types = Some(ObjectModelsAndTypes::deserialize(&mut buffer)?),
+                    #[cfg(feature = "osrs")]
+                    7 => loc.object_models = Some(ObjectModels::deserialize(&mut buffer)?),
 
                     14 => loc.dim_x = Some(buffer.try_get_u8()?),
                     15 => loc.dim_y = Some(buffer.try_get_u8()?),
                     #[cfg(feature = "2008_3_shim")]
                     16 => loc.unknown_16 = Some(true),
-
                     17 => loc.unknown_17 = Some(false),
                     18 => loc.is_transparent = Some(true),
                     19 => loc.unknown_19 = Some(buffer.try_get_u8()?),
@@ -315,16 +339,26 @@ impl LocationConfig {
                     89 => loc.unknown_89 = Some(false),
                     #[cfg(any(feature = "2008_3_shim", feature = "osrs"))]
                     90 => loc.unknown_90 = Some(true),
+                    #[cfg(feature = "rs3")]
                     91 => loc.is_members = Some(true),
+                    #[cfg(feature = "osrs")]
+                    91 => loc.sound_fade = Some(buffer.try_get_u8()?),
                     92 => loc.morphs_2 = Some(ExtendedLocationMorphTable::deserialize(&mut buffer)?),
+                    #[cfg(feature = "rs3")]
                     93 => loc.unknown_93 = Some(buffer.try_get_u16()?),
+                    #[cfg(feature = "osrs")]
+                    93 => loc.sound_fade_curve = Some(SoundFade::deserialize(&mut buffer)?),
                     94 => loc.unknown_94 = Some(true),
                     #[cfg(all(feature = "2008_3_shim", not(feature = "2010_3_shim")))]
                     95 => loc.unknown_95 = Some(true),
+                    #[cfg(feature = "osrs")]
+                    95 => loc.sound_visibility = Some(buffer.try_get_u8()?),
                     #[cfg(any(feature = "rs3", feature = "2010_3_shim"))]
                     95 => loc.unknown_95 = Some(buffer.try_get_u16()?),
                     #[cfg(feature = "2008_3_shim")]
                     96 => loc.unknown_96 = Some(true),
+                    #[cfg(feature = "osrs")]
+                    96 => loc.raise = Some(buffer.try_get_u8()?),
                     97 => loc.unknown_97 = Some(true),
                     98 => loc.unknown_98 = Some(true),
                     #[cfg(feature = "2009_1_shim")]
@@ -333,8 +367,15 @@ impl LocationConfig {
                         buffer.try_get_u8()?;
                         cursors[opcode as usize - 99] = Some(buffer.try_get_u16()?);
                     }
+                    #[cfg(feature = "osrs")]
+                    100 => loc.sub_op.push(SubOp::deserialize(&mut buffer)?),
+                    #[cfg(feature = "osrs")]
+                    101 => loc.conditional_op.push(ConditionalOp::deserialize(&mut buffer)?),
+                    #[cfg(feature = "osrs")]
+                    102 => loc.conditional_sub_op.push(ConditionalSubOp::deserialize(&mut buffer)?),
                     #[cfg(any(feature = "rs3", feature = "2008_3_shim"))]
                     102 => loc.mapscene = Some(buffer.try_get_u16()?),
+
                     103 => loc.occludes_2 = Some(false),
                     104 => loc.unknown_104 = Some(buffer.try_get_u8()?),
                     106 => loc.headmodels = Some(HeadModels::deserialize(&mut buffer)?),
@@ -349,13 +390,13 @@ impl LocationConfig {
                         let actions = loc.member_actions.get_or_insert([None, None, None, None, None]);
                         actions[opcode as usize - 150] = Some(buffer.try_get_string()?);
                     }
-
                     159 => loc.unknown_159 = Some(buffer.try_get_u8()?),
                     160 => loc.unknown_160 = Some(Unknown160::deserialize(&mut buffer)?),
                     162 => loc.unknown_162 = Some(buffer.try_get_i32()?),
                     163 => loc.unknown_163 = Some(Unknown163::deserialize(&mut buffer)?),
                     164 => loc.unknown_164 = Some(buffer.try_get_u16()?),
-                    165 => loc.unknown_166 = Some(buffer.try_get_u16()?),
+                    165 => loc.unknown_165 = Some(buffer.try_get_u16()?),
+                    166 => loc.unknown_166 = Some(buffer.try_get_u16()?),
                     167 => loc.unknown_167 = Some(buffer.try_get_u16()?),
                     #[cfg(feature = "2010_3_shim")]
                     168 => loc.unknown_168 = Some(true),
@@ -389,6 +430,7 @@ impl LocationConfig {
 
                         loc.unknown_204 = Some(out)
                     }
+                    205 => loc.model_morphs = Some(ModelMorphs::deserialize(&mut buffer)?),
                     249 => loc.params = Some(ParamTable::deserialize(&mut buffer)),
                     opcode => {
                         println!("{loc}");
@@ -429,7 +471,7 @@ pub mod location_config_fields {
     use bytes::Bytes;
     #[cfg(feature = "pyo3")]
     use pyo3::prelude::*;
-    use rs3cache_backend::buf::{BufExtra, ReadError};
+    use rs3cache_backend::buf::{BufExtra, JString, ReadError};
     use serde::Serialize;
 
     use crate::types::variables::{Varbit, Varp, VarpOrVarbit};
@@ -870,6 +912,425 @@ pub mod location_config_fields {
             let vec_2 = [buffer.try_get_u32()?, buffer.try_get_u32()?, buffer.try_get_u32()?];
 
             Ok(Self { id, some_bool, vec_1, vec_2 })
+        }
+    }
+
+    #[cfg(feature = "osrs")]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct SoundFade {
+        pub fade_in_curve: u8,
+        pub fade_in_duration: u16,
+        pub fade_out_curve: u8,
+        pub fade_out_duration: u16,
+    }
+
+    #[cfg(feature = "osrs")]
+    impl SoundFade {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let fade_in_curve = buffer.try_get_u8()?;
+            let fade_in_duration = buffer.try_get_u16()?;
+            let fade_out_curve = buffer.try_get_u8()?;
+            let fade_out_duration = buffer.try_get_u16()?;
+            Ok(Self {
+                fade_in_curve,
+                fade_in_duration,
+                fade_out_curve,
+                fade_out_duration,
+            })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct ModelMorphs {
+        pub unk0: u16,
+        #[serde(flatten)]
+        pub var: VarpOrVarbit,
+        pub multi_model: Option<Vec<MultiModel>>,
+
+        pub multi_head_model: Option<Vec<MultiHeadModel>>,
+        pub multi_retex: Option<Vec<MultiRetex>>,
+        pub multi_recol: Option<Vec<MultiRecol>>,
+        pub multi_ret_int: Option<Vec<MultiRetInt>>,
+        pub default: u16,
+    }
+
+    impl ModelMorphs {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let unk0 = buffer.try_get_u16()?;
+
+            let varbit = Varbit::new(buffer.try_get_u16()?);
+            let varp = Varp::new(buffer.try_get_u16()?);
+            let var = VarpOrVarbit::new(varp, varbit);
+
+            let flags = buffer.try_get_u8()?;
+
+            let multi_model = if flags & 0x1 != 0 {
+                let count = buffer.try_get_u8()? as usize;
+                let models = iter::repeat_with(|| MultiModel::deserialize(buffer))
+                    .take(count)
+                    .collect::<Result<_, ReadError>>()?;
+                Some(models)
+            } else {
+                None
+            };
+
+            let multi_head_model = if flags & 0x2 != 0 {
+                let count = buffer.try_get_u8()? as usize;
+                let models = iter::repeat_with(|| MultiHeadModel::deserialize(buffer))
+                    .take(count)
+                    .collect::<Result<_, ReadError>>()?;
+                Some(models)
+            } else {
+                None
+            };
+            let multi_retex = if flags & 0x4 != 0 {
+                let count = buffer.try_get_u8()? as usize;
+                let models = iter::repeat_with(|| MultiRetex::deserialize(buffer))
+                    .take(count)
+                    .collect::<Result<_, ReadError>>()?;
+                Some(models)
+            } else {
+                None
+            };
+            let multi_recol = if flags & 0x8 != 0 {
+                let count = buffer.try_get_u8()? as usize;
+                let models = iter::repeat_with(|| MultiRecol::deserialize(buffer))
+                    .take(count)
+                    .collect::<Result<_, ReadError>>()?;
+                Some(models)
+            } else {
+                None
+            };
+            let multi_ret_int = if flags & 0x10 != 0 {
+                let count = buffer.try_get_u8()? as usize;
+                let models = iter::repeat_with(|| MultiRetInt::deserialize(buffer))
+                    .take(count)
+                    .collect::<Result<_, ReadError>>()?;
+                Some(models)
+            } else {
+                None
+            };
+            let default = buffer.try_get_u16()?;
+
+            Ok(Self {
+                unk0,
+                var,
+                multi_model,
+                multi_head_model,
+                multi_retex,
+                multi_recol,
+                multi_ret_int,
+                default,
+            })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiModel {
+        pub value: u8,
+        pub models: Vec<MultiModelValuesExtra>,
+    }
+
+    impl MultiModel {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let value = buffer.try_get_u8()?;
+            let count = buffer.try_get_u8()? as usize;
+            let models = iter::repeat_with(|| MultiModelValuesExtra::deserialize(buffer))
+                .take(count)
+                .collect::<Result<_, ReadError>>()?;
+            Ok(Self { value, models })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiModelValuesExtra {
+        pub unk1: u16,
+        pub unk2: u16,
+        pub unk3: u32,
+        pub extra1: Option<u8>,
+        pub extra2: Option<u8>,
+        pub extra3: Option<u8>,
+    }
+    impl MultiModelValuesExtra {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let unk1 = buffer.try_get_u16()?;
+            let unk2 = buffer.try_get_u16()?;
+            let unk3 = buffer.try_get_smart32()?.unwrap();
+
+            let extra = buffer.try_get_u8()?;
+            let extra1 = if extra >= 1 { Some(buffer.try_get_u8()?) } else { None };
+            let extra2 = if extra >= 2 { Some(buffer.try_get_u8()?) } else { None };
+            let extra3 = if extra >= 3 { Some(buffer.try_get_u8()?) } else { None };
+            Ok(Self {
+                unk1,
+                unk2,
+                unk3,
+                extra1,
+                extra2,
+                extra3,
+            })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiHeadModel {
+        pub value: u8,
+        pub models: Vec<MultiModelValues>,
+    }
+
+    impl MultiHeadModel {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let value = buffer.try_get_u8()?;
+            let count = buffer.try_get_u8()? as usize;
+            let models = iter::repeat_with(|| MultiModelValues::deserialize(buffer))
+                .take(count)
+                .collect::<Result<_, ReadError>>()?;
+            Ok(Self { value, models })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiModelValues {
+        pub unk1: u16,
+        pub unk2: u16,
+        pub unk3: u32,
+    }
+
+    impl MultiModelValues {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let unk1 = buffer.try_get_u16()?;
+            let unk2 = buffer.try_get_u16()?;
+            let unk3 = buffer.try_get_smart32()?.unwrap();
+            Ok(Self { unk3, unk1, unk2 })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiRetex {
+        pub value: u8,
+        pub models: Vec<MultiRetexValues>,
+    }
+    impl MultiRetex {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let value = buffer.try_get_u8()?;
+            let count = buffer.try_get_u8()? as usize;
+            let models = iter::repeat_with(|| MultiRetexValues::deserialize(buffer))
+                .take(count)
+                .collect::<Result<_, ReadError>>()?;
+            Ok(Self { value, models })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiRetexValues {
+        pub unk1: u16,
+        pub unk2: u16,
+        pub unk3: u16,
+        pub unk4: u16,
+    }
+
+    impl MultiRetexValues {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let unk1 = buffer.try_get_u16()?;
+            let unk2 = buffer.try_get_u16()?;
+            let unk3 = buffer.try_get_u16()?;
+            let unk4 = buffer.try_get_u16()?;
+
+            Ok(Self { unk1, unk2, unk3, unk4 })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiRecol {
+        pub value: u8,
+        pub models: Vec<MultiRecolValues>,
+    }
+    impl MultiRecol {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let value = buffer.try_get_u8()?;
+            let count = buffer.try_get_u8()? as usize;
+            let models = iter::repeat_with(|| MultiRecolValues::deserialize(buffer))
+                .take(count)
+                .collect::<Result<_, ReadError>>()?;
+            Ok(Self { value, models })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiRecolValues {
+        pub unk1: u16,
+        pub unk2: u16,
+        pub unk3: u16,
+        pub unk4: u16,
+    }
+
+    impl MultiRecolValues {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let unk1 = buffer.try_get_u16()?;
+            let unk2 = buffer.try_get_u16()?;
+            let unk3 = buffer.try_get_u16()?;
+            let unk4 = buffer.try_get_u16()?;
+
+            Ok(Self { unk1, unk2, unk3, unk4 })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiRetInt {
+        pub value: u8,
+        pub models: Vec<MultiRetIntValues>,
+    }
+    impl MultiRetInt {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let value = buffer.try_get_u8()?;
+            let count = buffer.try_get_u8()? as usize;
+            let models = iter::repeat_with(|| MultiRetIntValues::deserialize(buffer))
+                .take(count)
+                .collect::<Result<_, ReadError>>()?;
+            Ok(Self { value, models })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct MultiRetIntValues {
+        pub unk1: u16,
+        pub unk2: u16,
+        pub unk3: u32,
+    }
+
+    impl MultiRetIntValues {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let unk1 = buffer.try_get_u16()?;
+            let unk2 = buffer.try_get_u16()?;
+            let unk3 = buffer.try_get_u32()?;
+
+            Ok(Self { unk1, unk2, unk3 })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct ObjectModels {
+        pub models: Vec<i32>,
+    }
+
+    impl ObjectModels {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let count = buffer.try_get_u8()? as usize;
+            let models = iter::repeat_with(|| buffer.try_get_i32()).take(count).collect::<Result<_, ReadError>>()?;
+            Ok(Self { models })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct ObjectModelsAndTypes {
+        pub models: Vec<i32>,
+        pub types: Vec<u8>,
+    }
+
+    impl ObjectModelsAndTypes {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let count = buffer.try_get_u8()? as usize;
+            let mut models = Vec::new();
+            let mut types = Vec::new();
+            for _ in 0..count {
+                models.push(buffer.try_get_i32()?);
+                types.push(buffer.try_get_u8()?);
+            }
+            Ok(Self { models, types })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct SubOp {
+        pub index: u8,
+        pub sub_id: u8,
+        pub text: JString<Bytes>,
+    }
+
+    impl SubOp {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let index = buffer.try_get_u8()?;
+            let sub_id = buffer.try_get_u8()?;
+            let text = buffer.try_get_string()?;
+            Ok(Self { index, sub_id, text })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct ConditionalOp {
+        pub index: u8,
+        pub varp: u16,
+        pub varb: u16,
+        pub min: i32,
+        pub max: i32,
+        pub text: JString<Bytes>,
+    }
+
+    impl ConditionalOp {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let index = buffer.try_get_u8()?;
+            let varp = buffer.try_get_u16()?;
+            let varb = buffer.try_get_u16()?;
+            let min = buffer.try_get_i32()?;
+            let max = buffer.try_get_i32()?;
+            let text = buffer.try_get_string()?;
+            Ok(Self {
+                index,
+                varp,
+                varb,
+                min,
+                max,
+                text,
+            })
+        }
+    }
+
+    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[derive(Serialize, Debug, Clone)]
+    pub struct ConditionalSubOp {
+        pub index: u8,
+        pub sub_id: u8,
+        pub varp: u16,
+        pub varb: u16,
+        pub min: i32,
+        pub max: i32,
+        pub text: JString<Bytes>,
+    }
+
+    impl ConditionalSubOp {
+        pub fn deserialize(buffer: &mut Bytes) -> Result<Self, ReadError> {
+            let index = buffer.try_get_u8()?;
+            let sub_id = buffer.try_get_u8()?;
+            let varp = buffer.try_get_u16()?;
+            let varb = buffer.try_get_u16()?;
+            let min = buffer.try_get_i32()?;
+            let max = buffer.try_get_i32()?;
+            let text = buffer.try_get_string()?;
+            Ok(Self {
+                index,
+                sub_id,
+                varp,
+                varb,
+                min,
+                max,
+                text,
+            })
         }
     }
 }
