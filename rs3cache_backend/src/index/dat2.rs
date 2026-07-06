@@ -159,10 +159,7 @@ impl CacheIndex<Initial> {
                 // Let's try looking somewhere else
                 Err(_) => {
                     let alt_path = path!(input / "keys.json");
-                    match Xtea::load(alt_path) {
-                        Ok(file) => Some(file),
-                        Err(e) => return Err(e),
-                    }
+                    Some(Xtea::load(alt_path)?)
                 }
             }
         } else {

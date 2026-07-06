@@ -21,8 +21,9 @@ use serde::Serialize;
 
 use crate::definitions::indextype::IndexType;
 
-#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy, Default)]
 pub enum KeyType {
+    #[default]
     Uninit = -1,
     Int0 = 0,
     Int9 = 9,
@@ -87,14 +88,9 @@ impl KeyType {
     }
 }
 
-impl Default for KeyType {
-    fn default() -> Self {
-        Self::Uninit
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, Serialize, Clone, Copy, Default)]
 pub enum ValueType {
+    #[default]
     Uninit = -1,
     Int0 = 0,
     Int1 = 1,
@@ -189,12 +185,6 @@ impl TryFrom<u8> for ValueType {
 impl ValueType {
     pub fn is_init(&self) -> bool {
         *self == Self::Uninit
-    }
-}
-
-impl Default for ValueType {
-    fn default() -> Self {
-        Self::Uninit
     }
 }
 

@@ -48,10 +48,10 @@ impl Xtea {
 
     pub fn decrypt(input: impl AsRef<[u8]>, xtea: Xtea) -> Vec<u8> {
         let input = input.as_ref();
-        let mut iter = input.array_chunks::<8>();
-        let mut output: Vec<u8> = iter.by_ref().flat_map(|block| Xtea::decrypt_block(*block, &xtea)).collect();
+        let mut iter = input.iter().copied().array_chunks::<8>();
+        let mut output: Vec<u8> = iter.by_ref().flat_map(|block| Xtea::decrypt_block(block, &xtea)).collect();
 
-        output.extend(iter.remainder());
+        output.extend(iter.into_remainder());
         output
     }
 }

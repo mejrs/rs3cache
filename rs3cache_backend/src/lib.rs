@@ -1,6 +1,10 @@
 //! Core cache interpreting utilities.
 
-#![feature(error_generic_member_access, error_iter, cfg_eval, try_blocks, array_chunks, if_let_guard, let_chains)]
+#![feature(error_generic_member_access)]
+#![feature(error_iter)]
+#![feature(cfg_eval)]
+#![feature(try_blocks)]
+#![cfg_attr(feature = "dat2", feature(iter_array_chunks))]
 #![allow(clippy::result_large_err, unexpected_cfgs)]
 #![warn(
     unused_qualifications,

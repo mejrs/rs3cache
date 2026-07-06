@@ -1,6 +1,8 @@
 #![doc = include_str!("../README.md")]
-#![feature(cfg_eval, doc_cfg, try_blocks, yeet_expr)]
-#![allow(clippy::too_many_arguments, clippy::type_complexity)]
+#![feature(doc_cfg)]
+#![feature(try_blocks)]
+#![feature(yeet_expr)]
+#![allow(clippy::too_many_arguments, clippy::type_complexity, clippy::result_large_err)]
 #![warn(
     unused_qualifications,
     unused_import_braces,

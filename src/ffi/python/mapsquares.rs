@@ -191,10 +191,7 @@ impl PyMapSquare {
                 file: crate::definitions::indextype::MapFileType::WATER_LOCATIONS,
             })
             .context(error::Integrity)?;
-        let water_locations = match water_locations {
-            Ok(v) => v,
-            Err(e) => return Err(e.into()),
-        };
+        let water_locations = water_locations.as_ref()?;
         Ok(PyList::new(py, water_locations.iter().copied()))
     }
 
