@@ -53,7 +53,7 @@ use crate::{
     },
 };
 
-pub fn initializer(py: Python, m: &PyModule) -> PyResult<()> {
+pub fn initializer<'py>(py: Python<'py>, m: &Bound<'py, PyModule>) -> PyResult<()> {
     #[cfg(feature = "rs3")]
     m.add_function(wrap_pyfunction!(get_achievement_configs, m)?)?;
     m.add_function(wrap_pyfunction!(get_location_configs, m)?)?;

@@ -24,7 +24,7 @@ use {
 
 /// Metadata about [`Archive`](crate::arc::Archive)s.
 #[cfg_eval]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default, Hash, Eq, PartialOrd, Ord, PartialEq)]
 pub struct Metadata {
@@ -63,7 +63,7 @@ impl fmt::Display for Metadata {
 #[pyo3::pymethods]
 impl Metadata {
     #[getter(digest)]
-    fn py_digest(&self, py: Python) -> Py<PyAny> {
+    fn py_digest(&self, py: Python<'_>) -> Py<PyAny> {
         match self.digest {
             Some(ref b) => pyo3::types::PyBytes::new(py, b).into(),
             None => py.None(),

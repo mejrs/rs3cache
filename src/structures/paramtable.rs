@@ -10,7 +10,7 @@ use serde::Serialize;
 /// items and
 /// [`NpcConfig`](crate::definitions::npc_configs::NpcConfig)s can have additional mapping of keys to properties.
 
-#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
 #[derive(Serialize, Debug, Clone)]
 pub struct ParamTable {
     /// Key:Value pairs of additional properties.
@@ -62,21 +62,27 @@ pub enum Param {
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<PyObject> for Param {
-    fn into_py(self, py: Python) -> PyObject {
+impl<'py> IntoPyObject<'py> for Param {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         match self {
-            Param::Integer(val) => val.into_py(py),
-            Param::String(val) => val.into_py(py),
+            Param::Integer(val) => val.into_pyobject(py).map(Bound::into_any),
+            Param::String(val) => val.into_pyobject(py).map(Bound::into_any),
         }
     }
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<PyObject> for &Param {
-    fn into_py(self, py: Python) -> PyObject {
+impl<'py> IntoPyObject<'py> for &Param {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         match self {
-            Param::Integer(val) => val.into_py(py),
-            Param::String(val) => val.as_ref().into_py(py),
+            Param::Integer(val) => val.into_pyobject(py).map(Bound::into_any),
+            Param::String(val) => val.as_ref().into_pyobject(py).map(Bound::into_any),
         }
     }
 }

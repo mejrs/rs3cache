@@ -21,7 +21,7 @@ use crate::{definitions::indextype::IndexType, structures::paramtable::ParamTabl
 
 /// Describes the properties of a given item.
 
-#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Struct {

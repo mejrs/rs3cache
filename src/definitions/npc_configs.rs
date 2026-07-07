@@ -23,7 +23,7 @@ use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Npc`](crate::definitions::npcs::Npc).
 
-#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct NpcConfig {
@@ -335,7 +335,7 @@ pub mod npc_config_fields {
 
     use crate::types::variables::{Varbit, Varp, VarpOrVarbit};
     /// Contains an array of possible ids this npc can morph into, controlled by either a varbit or varp.
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct NpcMorphTable {
         #[serde(flatten)]
@@ -368,7 +368,7 @@ pub mod npc_config_fields {
         }
     }
     /// Like [`NpcMorphTable`], but with a default value.
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ExtendedNpcMorphTable {
         pub var: VarpOrVarbit,
@@ -405,7 +405,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct NpcModels {
         pub models: Vec<Option<u32>>,
@@ -434,7 +434,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct ShadowIntensity {
         pub src_colour: i8,
@@ -450,7 +450,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Shadow {
         pub src_colour: u16,
@@ -466,7 +466,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
         #[cfg(feature = "rs3")]
@@ -497,7 +497,7 @@ pub mod npc_config_fields {
             Self { models }
         }
     }
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
         pub colour_replacements: Vec<(u16, u16)>,
@@ -511,7 +511,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
         pub textures: BTreeMap<u16, u16>,
@@ -527,7 +527,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone, Copy)]
     pub struct AmbientSounds {
         pub unknown_1: u16,
@@ -558,7 +558,7 @@ pub mod npc_config_fields {
             }
         }
     }
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone)]
     pub struct Translations {
         pub translations: Vec<[u8; 4]>,
@@ -575,7 +575,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone)]
     pub struct RecolourPalette {
         pub recolour_palette: Vec<i8>,
@@ -590,7 +590,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone, Copy)]
     pub struct OldCursors {
         pub op: u8,
@@ -606,7 +606,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone, Copy)]
     pub struct Unknown155 {
         pub unknown_1: i8,
@@ -631,7 +631,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone, Copy)]
     pub struct Unknown179 {
         pub unknown_1: u16,
@@ -662,7 +662,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone, Copy)]
     pub struct Unknown164 {
         pub unknown_1: u16,
@@ -678,7 +678,7 @@ pub mod npc_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Debug, Serialize, Clone)]
     pub struct Quests {
         pub quests: Vec<u16>,

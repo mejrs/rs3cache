@@ -1,5 +1,8 @@
 use core::panic::Location;
-use std::collections::BTreeMap;
+use std::{
+    collections::BTreeMap,
+    fmt::{self, Display, Formatter},
+};
 
 use ::error::Context;
 use bytes::{Buf, Bytes};
@@ -12,7 +15,7 @@ use serde::Serialize;
 
 use crate::definitions::indextype::{ConfigType, IndexType};
 
-#[cfg_attr(feature = "pyo3", pyo3::pyclass)]
+#[cfg_attr(feature = "pyo3", pyo3::pyclass(frozen, get_all, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct DbRow {
@@ -133,7 +136,19 @@ pub enum Value {
     Null,
 }
 
-use std::fmt::{self, Display, Formatter};
+#[cfg(feature = "pyo3")]
+impl<'py> pyo3::IntoPyObject<'py> for Value {
+    type Target = pyo3::PyAny;
+    type Output = pyo3::Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: pyo3::Python<'py>) -> Result<Self::Output, Self::Error> {
+        match self {
+            Self::Integer(i) => i.into_pyobject(py).map(pyo3::Bound::into_any),
+            Self::Text(t) => t.into_pyobject(py).map(pyo3::Bound::into_any),
+            Self::Null => Ok(py.None().into_bound(py)),
+        }
+    }
+}
 
 impl Display for DbRow {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {

@@ -55,18 +55,21 @@ impl Serialize for Watery {
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<PyObject> for Watery {
-    fn into_py(self, py: Python) -> PyObject {
+impl<'py> IntoPyObject<'py> for Watery {
+    type Target = pyo3::types::PyInt;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         match self {
-            Self::True(val) => ((val as i8) - 1).into_py(py),
-            Self::False(val) => (val as i8).into_py(py),
+            Self::True(val) => ((val as i8) - 1).into_pyobject(py),
+            Self::False(val) => (val as i8).into_pyobject(py),
         }
     }
 }
 
 /// A location, also referred to as an "object".
 
-#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Location {
@@ -225,12 +228,5 @@ impl Location {
             pyo3::class::basic::CompareOp::Eq => Ok(*self == other),
             _ => todo!(),
         }
-    }
-}
-
-#[cfg(feature = "pyo3")]
-impl ToPyObject for Location {
-    fn to_object(&self, py: Python<'_>) -> PyObject {
-        (*self).into_py(py)
     }
 }

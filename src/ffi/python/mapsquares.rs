@@ -24,7 +24,7 @@ use crate::{
 ///
 /// mapsquares = MapSquares()
 ///```
-#[pyclass(name = "MapSquares")]
+#[pyclass(name = "MapSquares", unsendable)]
 pub struct PyMapSquares {
     mapsquares: Option<MapSquares>,
 }
@@ -58,17 +58,17 @@ impl PyMapSquares {
     /// lumbridge = mapsquares.get(50, 50)
     ///```
     #[pyo3(text_signature = "($self, i, j)")]
-    pub fn get(&self, i: &PyAny, j: &PyAny) -> PyResult<PyMapSquare> {
+    pub fn get(&self, i: Bound<'_, PyAny>, j: Bound<'_, PyAny>) -> PyResult<PyMapSquare> {
         let i = i
-            .downcast::<PyInt>()
+            .cast::<PyInt>()
             .map_err(|_| PyTypeError::new_err(format!("i was of type {}. i must be an integer.", i.get_type())))?
             .extract::<u8>()
-            .map_err(|_| PyIndexError::new_err(format!("i was {i}. It must satisfy 0 <= i <= 100.")))?;
+            .map_err(|_| PyIndexError::new_err(format!("i was {i:?}. It must satisfy 0 <= i <= 100.")))?;
         let j = j
-            .downcast::<PyInt>()
+            .cast::<PyInt>()
             .map_err(|_| PyTypeError::new_err(format!("j was of type {}. j must be an integer.", j.get_type())))?
             .extract::<u8>()
-            .map_err(|_| PyIndexError::new_err(format!("j was {j}. It must satisfy 0 <= j <= 200.")))?;
+            .map_err(|_| PyIndexError::new_err(format!("j was {j:?}. It must satisfy 0 <= j <= 200.")))?;
 
         if i >= 100 {
             Err(PyIndexError::new_err(format!("i was {i}. It must satisfy 0 <= i <= 100.")))
@@ -85,7 +85,7 @@ impl PyMapSquares {
         }
     }
 
-    fn __iter__(&mut self, py: Python) -> PyResult<Py<PyMapSquaresIter>> {
+    fn __iter__(&mut self, py: Python<'_>) -> PyResult<Py<PyMapSquaresIter>> {
         let inner = std::mem::take(&mut self.mapsquares);
         let inner = inner.ok_or_else(|| PyReferenceError::new_err("Mapsquares is not available after using `iter()`"))?;
         let inner = inner.into_iter();
@@ -96,7 +96,7 @@ impl PyMapSquares {
 }
 
 /// Iterator over all archives in an Index.
-#[pyclass(name = "MapSquaresIter")]
+#[pyclass(name = "MapSquaresIter", unsendable)]
 pub struct PyMapSquaresIter {
     inner: MapSquareIterator,
 }
@@ -107,7 +107,7 @@ impl PyMapSquaresIter {
         slf
     }
 
-    fn __next__(&mut self, py: Python) -> Option<PyMapSquare> {
+    fn __next__(&mut self, py: Python<'_>) -> Option<PyMapSquare> {
         match self.inner.next() {
             Some(Ok(sq)) => Some(PyMapSquare { inner: sq }),
             Some(Err(e)) => {
@@ -144,7 +144,7 @@ impl PyMapSquare {
     }
 
     /// The [`Location`]s in a mapsquare.
-    pub fn locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
+    pub fn locations<'gil>(&self, py: Python<'gil>) -> PyResult<Bound<'gil, PyList>> {
         let locations = self.inner.locations();
 
         #[cfg(feature = "rs3")]
@@ -176,12 +176,12 @@ impl PyMapSquare {
             })
             .context(error::Integrity)?;
 
-        Ok(PyList::new(py, locations.iter().copied()))
+        PyList::new(py, locations.iter().copied())
     }
 
     /// The water [`Location`]s in a mapsquare.
     #[cfg(feature = "rs3")]
-    pub fn water_locations<'gil>(&self, py: Python<'gil>) -> PyResult<&'gil PyList> {
+    pub fn water_locations<'gil>(&self, py: Python<'gil>) -> PyResult<Bound<'gil, PyList>> {
         let water_locations = self
             .inner
             .water_locations()
@@ -192,7 +192,7 @@ impl PyMapSquare {
             })
             .context(error::Integrity)?;
         let water_locations = water_locations.as_ref()?;
-        Ok(PyList::new(py, water_locations.iter().copied()))
+        PyList::new(py, water_locations.iter().copied())
     }
 
     /// The [`Tile`]s in a mapsquare.   

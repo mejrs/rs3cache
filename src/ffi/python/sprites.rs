@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, path::PathBuf};
+use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
 use ::error::Context;
 use pyo3::{
@@ -39,10 +39,10 @@ impl PySprite {
     }
 }
 
-#[pyclass(name = "Frame")]
+#[pyclass(name = "Frame", from_py_object)]
 #[derive(Clone, Debug)]
 pub struct PyFrame {
-    constructor: Py<PyAny>,
+    constructor: Arc<Py<PyAny>>,
     #[pyo3(get)]
     id: usize,
     im: image::ImageBuffer<image::Rgba<u8>, Vec<u8>>,
@@ -50,12 +50,12 @@ pub struct PyFrame {
 
 #[pymethods]
 impl PyFrame {
-    fn image(&self, py: Python) -> PyResult<Py<PyAny>> {
+    fn image(&self, py: Python<'_>) -> PyResult<Py<PyAny>> {
         let image = self.constructor.call1(py, ("RGBA", self.im.dimensions(), self.bytes(py)))?;
         Ok(image)
     }
 
-    fn bytes<'py>(&self, py: Python<'py>) -> &'py PyBytes {
+    fn bytes<'py>(&self, py: Python<'py>) -> Bound<'py, PyBytes> {
         PyBytes::new(py, self.im.as_raw())
     }
 
@@ -64,9 +64,9 @@ impl PyFrame {
     }
 }
 
-#[pyclass(name = "Sprites")]
+#[pyclass(name = "Sprites", unsendable)]
 pub struct PySprites {
-    constructor: Py<PyAny>,
+    constructor: Arc<Py<PyAny>>,
     inner: Option<CacheIndex<Initial>>,
 }
 
@@ -83,12 +83,12 @@ impl PySprites {
         let constructor = py.import("PIL")?.getattr("Image")?.getattr("frombytes")?.into();
 
         Ok(Self {
-            constructor,
+            constructor: Arc::new(constructor),
             inner: Some(CacheIndex::new(IndexType::SPRITES, config.input)?),
         })
     }
 
-    fn get(&self, py: Python, id: u32) -> PyResult<PySprite> {
+    fn get(&self, id: u32) -> PyResult<PySprite> {
         let archive = self.archive(id)?;
         let sprite = sprites::deserialize(archive.file(&0).unwrap());
         let ret = sprite
@@ -100,7 +100,7 @@ impl PySprites {
                         (
                             id,
                             PyFrame {
-                                constructor: self.constructor.clone_ref(py),
+                                constructor: self.constructor.clone(),
                                 id,
                                 im,
                             },
@@ -112,8 +112,8 @@ impl PySprites {
         Ok(ret)
     }
 
-    fn __getitem__(&self, py: Python, id: u32) -> PyResult<PySprite> {
-        self.get(py, id).map_err(|_| PyKeyError::new_err("key not in sprites"))
+    fn __getitem__(&self, id: u32) -> PyResult<PySprite> {
+        self.get(id).map_err(|_| PyKeyError::new_err("key not in sprites"))
     }
 
     /// Get a specific [`Archive`].
@@ -141,14 +141,14 @@ impl PySprites {
         Ok(PyIndexMetadata { inner: Some(meta) })
     }
 
-    fn __iter__(&mut self, py: Python) -> PyResult<Py<PySpritesIter>> {
+    fn __iter__(&mut self, py: Python<'_>) -> PyResult<Py<PySpritesIter>> {
         let inner = std::mem::take(&mut self.inner);
         let inner = inner
             .ok_or_else(|| PyReferenceError::new_err("PySprites is not available after using `iter()`"))?
             .into_iter();
 
         let iter = PySpritesIter {
-            constructor: self.constructor.clone_ref(py),
+            constructor: self.constructor.clone(),
             inner,
         };
         Py::new(py, iter)
@@ -156,9 +156,9 @@ impl PySprites {
 }
 
 /// Iterator over all archives in an Index.
-#[pyclass(name = "SpritesIter")]
+#[pyclass(name = "SpritesIter", unsendable)]
 pub struct PySpritesIter {
-    constructor: Py<PyAny>,
+    constructor: Arc<Py<PyAny>>,
     inner: index::IntoIter,
 }
 
@@ -168,7 +168,7 @@ impl PySpritesIter {
         slf
     }
 
-    fn __next__(&mut self, py: Python) -> Option<PySprite> {
+    fn __next__(&mut self) -> Option<PySprite> {
         // no archive currently expose can fail here once fully loaded
         let archive = self.inner.next()?.unwrap();
         let frames = sprites::deserialize(archive.file(&0).unwrap()).unwrap();
@@ -180,7 +180,7 @@ impl PySpritesIter {
                     (
                         id,
                         PyFrame {
-                            constructor: self.constructor.clone_ref(py),
+                            constructor: self.constructor.clone(),
                             id,
                             im,
                         },

@@ -11,7 +11,7 @@ use ::error::Context;
 use bytes::{Buf, Bytes};
 use path_macro::path;
 #[cfg(feature = "pyo3")]
-use pyo3::prelude::*;
+use pyo3::{prelude::*, types::PyInt};
 use rs3cache_backend::{
     buf::{BufExtra, JString},
     error::{self, CacheResult},
@@ -48,9 +48,12 @@ pub enum KeyType {
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<PyObject> for KeyType {
-    fn into_py(self, py: Python) -> PyObject {
-        (self as i32).into_py(py)
+impl<'py> IntoPyObject<'py> for KeyType {
+    type Target = PyInt;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        (self as i32).into_pyobject(py)
     }
 }
 
@@ -131,9 +134,12 @@ pub enum ValueType {
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<PyObject> for ValueType {
-    fn into_py(self, py: Python) -> PyObject {
-        (self as i32).into_py(py)
+impl<'py> IntoPyObject<'py> for ValueType {
+    type Target = PyInt;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        (self as i32).into_pyobject(py)
     }
 }
 
@@ -198,18 +204,21 @@ pub enum Value {
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<Py<PyAny>> for Value {
-    fn into_py(self, py: Python) -> Py<PyAny> {
+impl<'py> IntoPyObject<'py> for Value {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         match self {
-            Self::Integer(val) => val.into_py(py),
-            Self::String(val) => val.into_py(py),
+            Self::Integer(val) => val.into_pyobject(py).map(Bound::into_any),
+            Self::String(val) => val.into_pyobject(py).map(Bound::into_any),
         }
     }
 }
 
 /// Describes the properties of a given enum.
 
-#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct Enum {

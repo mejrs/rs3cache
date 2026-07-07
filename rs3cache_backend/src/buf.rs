@@ -378,8 +378,11 @@ impl<R: Buf> PartialEq<str> for JString<R> {
 impl<R: Buf> Eq for JString<R> {}
 
 #[cfg(feature = "pyo3")]
-impl<R: Buf> pyo3::IntoPy<pyo3::Py<pyo3::PyAny>> for JString<R> {
-    fn into_py(self, py: pyo3::Python<'_>) -> pyo3::Py<pyo3::PyAny> {
-        pyo3::types::PyString::new(py, &self).into()
+impl<'py, R: Buf> pyo3::IntoPyObject<'py> for JString<R> {
+    type Target = pyo3::types::PyString;
+    type Output = pyo3::Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+    fn into_pyobject(self, py: pyo3::Python<'py>) -> Result<Self::Output, Self::Error> {
+        Ok(pyo3::types::PyString::new(py, &self))
     }
 }

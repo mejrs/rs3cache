@@ -28,7 +28,7 @@ use crate::cli::Config;
 ///```
 /// # Exceptions
 /// Raises `FileMissingError` if the cache cannot be found.
-#[pyclass(name = "Index")]
+#[pyclass(name = "Index", unsendable)]
 pub struct PyCacheIndex {
     inner: Option<CacheIndex<Initial>>,
 }
@@ -92,7 +92,7 @@ impl PyCacheIndex {
         ))
     }
 
-    fn __iter__(&mut self, py: Python) -> PyResult<Py<PyCacheIndexIter>> {
+    fn __iter__(&mut self, py: Python<'_>) -> PyResult<Py<PyCacheIndexIter>> {
         let inner = std::mem::take(&mut self.inner);
         let inner = inner
             .ok_or_else(|| PyReferenceError::new_err("CacheIndex is not available after using `iter()`"))?
@@ -104,7 +104,7 @@ impl PyCacheIndex {
 }
 
 /// Iterator over all archives in an Index.
-#[pyclass(name = "IndexIter")]
+#[pyclass(name = "IndexIter", unsendable)]
 pub struct PyCacheIndexIter {
     inner: index::IntoIter,
 }
@@ -158,7 +158,7 @@ impl PyIndexMetadata {
         Ok(format!("IndexMetadata({})", serde_json::to_string(inner).unwrap()))
     }
 
-    fn __iter__(&mut self, py: Python) -> PyResult<Py<PyIndexMetadataIter>> {
+    fn __iter__(&mut self, py: Python<'_>) -> PyResult<Py<PyIndexMetadataIter>> {
         let inner = std::mem::take(&mut self.inner);
         let inner = inner
             .ok_or_else(|| PyReferenceError::new_err("IndexMetadata is not available after using `iter()`"))?

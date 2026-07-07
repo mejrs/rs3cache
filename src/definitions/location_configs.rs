@@ -24,7 +24,7 @@ use crate::structures::paramtable::ParamTable;
 
 /// Describes the properties of a given [`Location`](crate::definitions::locations::Location).
 
-#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Clone, Debug, Default)]
 pub struct LocationConfig {
@@ -484,7 +484,7 @@ pub mod location_config_fields {
 
     /// Contains an array of possible ids this location can morph into, controlled by either a varbit or varp.
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct LocationMorphTable {
         #[serde(flatten)]
@@ -536,7 +536,7 @@ pub mod location_config_fields {
 
     /// Like [`LocationMorphTable`], but with a default value.
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ExtendedLocationMorphTable {
         #[serde(flatten)]
@@ -602,7 +602,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ColourReplacements {
         pub colours: Vec<(u16, u16)>,
@@ -618,7 +618,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models {
         #[cfg(any(feature = "rs3", feature = "2010_1_shim"))]
@@ -668,7 +668,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Models2 {
         #[cfg(all(any(feature = "osrs", feature = "legacy"), not(feature = "2010_1_shim")))]
@@ -712,7 +712,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Textures {
         pub textures: BTreeMap<u16, u16>,
@@ -728,7 +728,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown79 {
         pub unknown_1: u16,
@@ -763,7 +763,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown173 {
         pub unknown_1: u16,
@@ -780,7 +780,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown163 {
         pub unknown_1: i8,
@@ -808,7 +808,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown78 {
         pub unknown_1: u16,
@@ -829,7 +829,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown160 {
         pub values: Vec<u16>,
@@ -843,7 +843,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone, Copy)]
     pub struct Unknown201 {
         pub unknown_1: u16,
@@ -879,7 +879,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct HeadModels {
         pub headmodels: Vec<(Option<u32>, u8)>,
@@ -895,7 +895,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct Unknown204 {
         pub id: u16,
@@ -916,7 +916,7 @@ pub mod location_config_fields {
     }
 
     #[cfg(feature = "osrs")]
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct SoundFade {
         pub fade_in_curve: u8,
@@ -941,7 +941,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ModelMorphs {
         pub unk0: u16,
@@ -1027,7 +1027,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiModel {
         pub value: u8,
@@ -1045,7 +1045,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiModelValuesExtra {
         pub unk1: u16,
@@ -1076,7 +1076,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiHeadModel {
         pub value: u8,
@@ -1094,7 +1094,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiModelValues {
         pub unk1: u16,
@@ -1111,7 +1111,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiRetex {
         pub value: u8,
@@ -1128,7 +1128,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiRetexValues {
         pub unk1: u16,
@@ -1148,7 +1148,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiRecol {
         pub value: u8,
@@ -1165,7 +1165,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiRecolValues {
         pub unk1: u16,
@@ -1185,7 +1185,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiRetInt {
         pub value: u8,
@@ -1202,7 +1202,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, get_all, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct MultiRetIntValues {
         pub unk1: u16,
@@ -1220,7 +1220,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ObjectModels {
         pub models: Vec<i32>,
@@ -1234,7 +1234,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ObjectModelsAndTypes {
         pub models: Vec<i32>,
@@ -1254,7 +1254,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct SubOp {
         pub index: u8,
@@ -1271,7 +1271,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ConditionalOp {
         pub index: u8,
@@ -1301,7 +1301,7 @@ pub mod location_config_fields {
         }
     }
 
-    #[cfg_attr(feature = "pyo3", pyclass(frozen))]
+    #[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
     #[derive(Serialize, Debug, Clone)]
     pub struct ConditionalSubOp {
         pub index: u8,

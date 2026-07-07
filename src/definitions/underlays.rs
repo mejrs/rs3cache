@@ -20,7 +20,7 @@ use serde_with::skip_serializing_none;
 use crate::definitions::indextype::{ConfigType, IndexType};
 
 /// Describes the general ground colour. This colour is blended with surrounding tiles.
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
 #[skip_serializing_none]
 #[derive(Debug, Default, Copy, Clone, Serialize)]
 

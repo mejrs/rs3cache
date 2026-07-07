@@ -17,7 +17,7 @@ use rs3cache_backend::{
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 /// Describes (part of) ground colour.
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
 #[skip_serializing_none]
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Flo {

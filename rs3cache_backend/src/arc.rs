@@ -12,7 +12,7 @@ use std::collections::BTreeMap;
 
 use bytes::{Buf, Bytes};
 #[cfg(feature = "pyo3")]
-use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes};
+use pyo3::{exceptions::PyKeyError, prelude::*, types::PyBytes, Bound};
 #[cfg(feature = "dat")]
 use {
     crate::buf::BufExtra,
@@ -22,7 +22,7 @@ use {
 
 use crate::meta::Metadata;
 /// A collection of files.
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
 #[derive(Clone, Default)]
 pub struct Archive {
     pub(crate) index_id: u32,
@@ -174,9 +174,9 @@ impl Archive {
                 compressed.extend(buffer.split_to(header.compressed_len as usize));
 
                 use pyo3::prelude::*;
-                pyo3::prepare_freethreaded_python();
+                Python::initialize();
 
-                let res = Python::with_gil(|py| {
+                let res = Python::attach(|py| {
                     let zlib = PyModule::import(py, "bz2")?;
                     let decompress = zlib.getattr("decompress")?;
                     let bytes = PyBytes::new(py, &compressed);
@@ -222,7 +222,7 @@ impl Archive {
 #[pymethods]
 impl Archive {
     #[pyo3(name = "file")]
-    fn py_file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<&'p PyBytes> {
+    fn py_file<'p>(&self, py: Python<'p>, file_id: u32) -> PyResult<Bound<'p, PyBytes>> {
         if let Some(file) = self.files.get(&file_id) {
             Ok(PyBytes::new(py, file))
         } else {
@@ -231,7 +231,7 @@ impl Archive {
     }
 
     #[pyo3(name = "files")]
-    fn py_files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, &'p PyBytes>> {
+    fn py_files<'p>(&self, py: Python<'p>) -> PyResult<BTreeMap<u32, Bound<'p, PyBytes>>> {
         Ok(self.files.iter().map(|(&id, file)| (id, PyBytes::new(py, file))).collect())
     }
 

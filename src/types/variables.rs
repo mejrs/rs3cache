@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use serde::Serialize;
 
 /// A bitmapping of a [`Varp`]
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Varbit {
     ///The value of the `Varbit`. Cannot be `Some(u16::MAX)`.
@@ -36,7 +36,7 @@ impl Varbit {
 }
 
 /// A player variable
-#[cfg_attr(feature = "pyo3", pyclass(frozen))]
+#[cfg_attr(feature = "pyo3", pyclass(frozen, from_py_object))]
 #[derive(Serialize, Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Varp {
     ///The value of the `Varp`. Cannot be `Some(u16::MAX)`.
@@ -94,11 +94,14 @@ impl VarpOrVarbit {
 }
 
 #[cfg(feature = "pyo3")]
-impl IntoPy<PyObject> for VarpOrVarbit {
-    fn into_py(self, py: Python) -> PyObject {
+impl<'py> IntoPyObject<'py> for VarpOrVarbit {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         match self {
-            Self::Varbit(id) => Varbit { val: Some(id) }.into_py(py),
-            Self::Varp(id) => Varp { val: Some(id) }.into_py(py),
+            Self::Varbit(id) => Varbit { val: Some(id) }.into_pyobject(py).map(Bound::into_any),
+            Self::Varp(id) => Varp { val: Some(id) }.into_pyobject(py).map(Bound::into_any),
         }
     }
 }
